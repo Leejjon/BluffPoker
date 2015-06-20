@@ -1,12 +1,11 @@
 package net.leejjon.blufpoker.android;
 
+import net.leejjon.blufpoker.BlufPokerGame;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-
-import net.leejjon.blufpoker.BlufPokerGame;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override
@@ -17,17 +16,19 @@ public class AndroidLauncher extends AndroidApplication {
 		int zoomfactor = 0;
 		switch (getResources().getDisplayMetrics().densityDpi) {
 		case DisplayMetrics.DENSITY_MEDIUM: 
-			zoomfactor = 2;
+			zoomfactor = 1;
 			break;
 		case DisplayMetrics.DENSITY_HIGH:
-			zoomfactor = 4;
+			zoomfactor = 2;
 			break;
 		case DisplayMetrics.DENSITY_XHIGH:
-			zoomfactor = 6;
+			zoomfactor = 3;
 			break;
 		case DisplayMetrics.DENSITY_XXHIGH:
-			zoomfactor = 8;
+			zoomfactor = 4;
 			break;
+		case DisplayMetrics.DENSITY_TV:
+			zoomfactor = 8;
 		}
 		
 		initialize(new BlufPokerGame(zoomfactor), config);
