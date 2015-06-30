@@ -15,7 +15,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 public class BlufPokerGame extends ApplicationAdapter implements
 		ChangeStageListener {
 	Skin uiSkin;
-
+	
+	Settings settings = new Settings();
+	
 	// SpriteBatch batch;
 	// Texture img;
 	// BitmapFont font;
@@ -43,7 +45,7 @@ public class BlufPokerGame extends ApplicationAdapter implements
 		startStage = new StartStage(Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight(), zoomfactor, uiSkin, this);
 		settingsStage = new SettingsStage(Gdx.graphics.getWidth(),
-				Gdx.graphics.getHeight(), zoomfactor, uiSkin, this);
+				Gdx.graphics.getHeight(), zoomfactor, uiSkin, this, settings);
 
 		// Make sure touch input goes to the startStage.
 		Gdx.input.setInputProcessor(startStage);
@@ -91,7 +93,16 @@ public class BlufPokerGame extends ApplicationAdapter implements
 	@Override
 	public void openSettingsStage() {
 		startStage.setVisible(false);
+		settingsStage.loadLatestSettings(settings);
 		settingsStage.setVisible(true);
 		Gdx.input.setInputProcessor(settingsStage);
+	}
+
+	@Override
+	public void closeSettingsStage(Settings settings) {
+		this.settings = settings;
+		settingsStage.setVisible(false);
+		startStage.setVisible(true);
+		Gdx.input.setInputProcessor(startStage);
 	}
 }

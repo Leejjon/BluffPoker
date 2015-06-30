@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -34,12 +33,10 @@ public class StartStage extends AbstractStage {
 		});
 		
 		// Create a table and add the ui components to it.
-		Table table = new Table();
-		table.setFillParent(true);
 		table.center();
 		table.add(titleLabel).padBottom(10f);
 		table.row();
-		table.add(playButton);
+		table.add(playButton).padBottom(10f);
 		table.row();
 		table.add(settingsButton);
 		

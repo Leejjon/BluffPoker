@@ -22,7 +22,7 @@ public class AndroidLauncher extends AndroidApplication {
 			zoomfactor = 2;
 			break;
 		case DisplayMetrics.DENSITY_XHIGH:
-			zoomfactor = 3;
+			zoomfactor = 2;
 			break;
 		case DisplayMetrics.DENSITY_XXHIGH:
 			zoomfactor = 4;
