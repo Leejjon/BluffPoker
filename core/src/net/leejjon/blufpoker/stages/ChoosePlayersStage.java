@@ -3,6 +3,7 @@ package net.leejjon.blufpoker.stages;
 import java.util.ArrayList;
 
 import net.leejjon.blufpoker.dialogs.AddNewPlayerDialog;
+import net.leejjon.blufpoker.dialogs.WarningDialog;
 import net.leejjon.blufpoker.listener.ChangeStageListener;
 import net.leejjon.blufpoker.listener.ModifyPlayerListener;
 
@@ -22,8 +23,14 @@ public class ChoosePlayersStage extends AbstractStage implements ModifyPlayerLis
 	private List<String> currentPlayerList = null;
 	private List<String> existingPlayerList = null;
 	
+	private WarningDialog playerAlreadyExistsWarning;
+	private WarningDialog playerNameInvalid;
+	
 	public ChoosePlayersStage(float w, float h, int divideScreenByThis, Skin uiSkin, final ChangeStageListener changeScreen) {
 		super(w, h, divideScreenByThis, false);
+		
+		playerAlreadyExistsWarning = new WarningDialog("Player already exists.", uiSkin);
+		playerNameInvalid = new WarningDialog("Player name invalid.", uiSkin);
 		
 		// Creating the ui components.
 		Label playersInGameLabel = new Label("Players in game", uiSkin);
@@ -57,7 +64,7 @@ public class ChoosePlayersStage extends AbstractStage implements ModifyPlayerLis
 		newButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				Gdx.input.getTextInput(addNewPlayerDialog, "Insert new player name", "Player 1", "What");
+				Gdx.input.getTextInput(addNewPlayerDialog, "Insert new player name", "", "What");
 			}
 		});
 		
@@ -115,22 +122,27 @@ public class ChoosePlayersStage extends AbstractStage implements ModifyPlayerLis
 
 	@Override
 	public void addNewPlayer(String playerName) {
-		if (!existingPlayers.contains(playerName)) {	
-			existingPlayers.add(playerName);
-			existingPlayerList.setItems(existingPlayers.toArray(new String[existingPlayers.size()]));
+		final int maxNameLength = 16;
+		
+		if (playerName.length() > 0 && playerName.length() <= maxNameLength) {
+			if (!existingPlayers.contains(playerName)) {	
+				existingPlayers.add(playerName);
+				existingPlayerList.setItems(existingPlayers.toArray(new String[existingPlayers.size()]));
+			} else {
+				playerAlreadyExistsWarning.show(this);
+			}
+		} else {
+			playerNameInvalid.show(this);
 		}
 	}
 
-	public void addSelectedExistingPlayer() {
+	private void addSelectedExistingPlayer() {
 		String selectedPlayer = existingPlayerList.getSelected();
 		if (selectedPlayer != null && !currentPlayers.contains(selectedPlayer)) {
 			currentPlayers.add(selectedPlayer);
 			currentPlayerList.setItems(currentPlayers.toArray(new String[currentPlayers.size()]));
-			
-			int indexOfSelectedPlayer = existingPlayerList.getSelectedIndex();
-			if (indexOfSelectedPlayer > -1) {
-				existingPlayerList.getItems().removeIndex(indexOfSelectedPlayer);
-			}
+		} else {
+			playerAlreadyExistsWarning.show(this);
 		}
 	}
 }
