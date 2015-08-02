@@ -1,6 +1,7 @@
 package net.leejjon.blufpoker;
 
 import net.leejjon.blufpoker.listener.ChangeStageListener;
+import net.leejjon.blufpoker.stages.ChoosePlayersStage;
 import net.leejjon.blufpoker.stages.SettingsStage;
 import net.leejjon.blufpoker.stages.StartStage;
 
@@ -9,27 +10,25 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class BlufPokerGame extends ApplicationAdapter implements
 		ChangeStageListener {
-	Skin uiSkin;
+	private Skin uiSkin;
 	
-	Settings settings = new Settings();
+	private Settings settings = new Settings();
+
+	private StartStage startMenuStage;
+	private ChoosePlayersStage choosePlayerStage;
+	private SettingsStage settingsStage;
 	
-	// SpriteBatch batch;
-	// Texture img;
-	// BitmapFont font;
+	// For debug drawing
+	private ShapeRenderer shapeRenderer;
+	
+	private int zoomfactor;
 
-	Stage currentStage;
-
-	StartStage startStage;
-	SettingsStage settingsStage;
-
-	int zoomfactor;
-
-	Sound diceRoll;
+	private Sound diceRoll;
 
 	public BlufPokerGame(int zoomfactor) {
 		this.zoomfactor = zoomfactor;
@@ -40,20 +39,20 @@ public class BlufPokerGame extends ApplicationAdapter implements
 		// Use the default libgdx UI skin.
 		uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
 		uiSkin.addRegions(new TextureAtlas("uiskin.atlas"));
+		
+		shapeRenderer = new ShapeRenderer();
 
 		// Create the stages.
-		startStage = new StartStage(Gdx.graphics.getWidth(),
+		startMenuStage = new StartStage(Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight(), zoomfactor, uiSkin, this);
 		settingsStage = new SettingsStage(Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight(), zoomfactor, uiSkin, this, settings);
-
+		choosePlayerStage = new ChoosePlayersStage(Gdx.graphics.getWidth(),
+				Gdx.graphics.getHeight(), zoomfactor, uiSkin, this);
+		
 		// Make sure touch input goes to the startStage.
-		Gdx.input.setInputProcessor(startStage);
+		Gdx.input.setInputProcessor(startMenuStage);
 		diceRoll = Gdx.audio.newSound(Gdx.files.internal("sound/diceroll.mp3"));
-
-		// batch = new SpriteBatch();
-		// img = new Texture("badlogic.jpg");
-		// font = new BitmapFont();
 	}
 
 	@Override
@@ -63,36 +62,32 @@ public class BlufPokerGame extends ApplicationAdapter implements
 
 		// Just call the draw methods of the stages. They will figure out by
 		// themselves if they need to be drawn or not.
-		startStage.draw();
+		startMenuStage.draw();
 		settingsStage.draw();
-		
-		// batch.begin();
-		// batch.draw(img, Gdx.graphics.getWidth()/2,
-		// Gdx.graphics.getHeight()/2);
-		// font.setColor(0.0f, 0.0f, 1.0f, 1.0f); // tint font blue
-		// font.draw(batch, "Test", 0, 20);
-		// batch.end();
+		choosePlayerStage.draw();
+//		choosePlayerStage.drawDebug(shapeRenderer);
 	}
 
 	@Override
 	public void dispose() {
-		startStage.dispose();
+		startMenuStage.dispose();
 		settingsStage.dispose();
 		diceRoll.dispose();
-		// batch.dispose();
-		// img.dispose();
-		// font.dispose();
+		choosePlayerStage.dispose();
+		shapeRenderer.dispose();
 	}
 
 	@Override
-	public void startGame() {
-		startStage.setVisible(false);
-		System.out.println(diceRoll.play(1.0f));
+	public void startSelectingPlayersToPlayWith() {
+		startMenuStage.setVisible(false);
+		choosePlayerStage.setVisible(true);
+		Gdx.input.setInputProcessor(choosePlayerStage);
+//		System.out.println(diceRoll.play(1.0f));
 	}
 
 	@Override
 	public void openSettingsStage() {
-		startStage.setVisible(false);
+		startMenuStage.setVisible(false);
 		settingsStage.loadLatestSettings(settings);
 		settingsStage.setVisible(true);
 		Gdx.input.setInputProcessor(settingsStage);
@@ -102,7 +97,7 @@ public class BlufPokerGame extends ApplicationAdapter implements
 	public void closeSettingsStage(Settings settings) {
 		this.settings = settings;
 		settingsStage.setVisible(false);
-		startStage.setVisible(true);
-		Gdx.input.setInputProcessor(startStage);
+		startMenuStage.setVisible(true);
+		Gdx.input.setInputProcessor(startMenuStage);
 	}
 }

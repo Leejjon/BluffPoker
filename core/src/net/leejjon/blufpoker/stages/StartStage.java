@@ -20,7 +20,7 @@ public class StartStage extends AbstractStage {
 		playButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				changeScreen.startGame();
+				changeScreen.startSelectingPlayersToPlayWith();
 			}
 		});
 		
