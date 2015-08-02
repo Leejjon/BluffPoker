@@ -1,6 +1,7 @@
 package net.leejjon.blufpoker.stages;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import net.leejjon.blufpoker.dialogs.AddNewPlayerDialog;
 import net.leejjon.blufpoker.dialogs.WarningDialog;
@@ -47,8 +48,27 @@ public class ChoosePlayersStage extends AbstractStage implements ModifyPlayerLis
 		existingPlayersScrollPane.setScrollingDisabled(true, false);
 		
 		TextButton upButton = new TextButton("/\\", uiSkin);
+		upButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				swapPlayerUp();
+			}
+		});
 		TextButton downButton = new TextButton("\\/", uiSkin);
+		downButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				swapPlayerDown();
+			}
+		});
+		
 		TextButton removeButton = new TextButton("Remove", uiSkin);
+		removeButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				removeSelectedPlayer();
+			}
+		});
 		
 		TextButton addButton = new TextButton("Add", uiSkin);
 		addButton.addListener(new ClickListener() {
@@ -143,6 +163,30 @@ public class ChoosePlayersStage extends AbstractStage implements ModifyPlayerLis
 			currentPlayerList.setItems(currentPlayers.toArray(new String[currentPlayers.size()]));
 		} else {
 			playerAlreadyExistsWarning.show(this);
+		}
+	}
+	
+	private void removeSelectedPlayer() {
+		String selectedPlayer = currentPlayerList.getSelected();
+		if (selectedPlayer != null) {
+			currentPlayers.remove(selectedPlayer);
+			currentPlayerList.setItems(currentPlayers.toArray(new String[currentPlayers.size()]));
+		}
+	}
+	
+	private void swapPlayerUp() {
+		int selectedIndex = currentPlayerList.getSelectedIndex(); 
+		if (selectedIndex > 0) {
+			Collections.swap(currentPlayers, selectedIndex, selectedIndex-1);
+			currentPlayerList.setItems(currentPlayers.toArray(new String[currentPlayers.size()]));
+		}
+	}
+	
+	private void swapPlayerDown() {
+		int selectedIndex = currentPlayerList.getSelectedIndex();
+		if (selectedIndex > -1 && currentPlayers.size() > 1) {
+			Collections.swap(currentPlayers, selectedIndex, selectedIndex+1);
+			currentPlayerList.setItems(currentPlayers.toArray(new String[currentPlayers.size()]));
 		}
 	}
 }
