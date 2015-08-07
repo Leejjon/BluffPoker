@@ -184,7 +184,7 @@ public class ChoosePlayersStage extends AbstractStage implements ModifyPlayerLis
 	
 	private void swapPlayerDown() {
 		int selectedIndex = currentPlayerList.getSelectedIndex();
-		if (selectedIndex > -1 && currentPlayers.size() > 1) {
+		if (selectedIndex > -1 && selectedIndex < currentPlayers.size()-1 && currentPlayers.size() > 1) {
 			Collections.swap(currentPlayers, selectedIndex, selectedIndex+1);
 			currentPlayerList.setItems(currentPlayers.toArray(new String[currentPlayers.size()]));
 		}
