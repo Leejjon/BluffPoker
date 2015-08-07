@@ -1,7 +1,10 @@
 package net.leejjon.blufpoker;
 
+import java.util.List;
+
 import net.leejjon.blufpoker.listener.ChangeStageListener;
 import net.leejjon.blufpoker.stages.ChoosePlayersStage;
+import net.leejjon.blufpoker.stages.GameStage;
 import net.leejjon.blufpoker.stages.SettingsStage;
 import net.leejjon.blufpoker.stages.StartStage;
 
@@ -16,12 +19,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 public class BlufPokerGame extends ApplicationAdapter implements
 		ChangeStageListener {
 	private Skin uiSkin;
-	
 	private Settings settings = new Settings();
 
 	private StartStage startMenuStage;
 	private ChoosePlayersStage choosePlayerStage;
 	private SettingsStage settingsStage;
+	private GameStage gameStage;
 	
 	// For debug drawing
 	private ShapeRenderer shapeRenderer;
@@ -43,12 +46,10 @@ public class BlufPokerGame extends ApplicationAdapter implements
 		shapeRenderer = new ShapeRenderer();
 
 		// Create the stages.
-		startMenuStage = new StartStage(Gdx.graphics.getWidth(),
-				Gdx.graphics.getHeight(), zoomfactor, uiSkin, this);
-		settingsStage = new SettingsStage(Gdx.graphics.getWidth(),
-				Gdx.graphics.getHeight(), zoomfactor, uiSkin, this, settings);
-		choosePlayerStage = new ChoosePlayersStage(Gdx.graphics.getWidth(),
-				Gdx.graphics.getHeight(), zoomfactor, uiSkin, this);
+		startMenuStage = new StartStage(zoomfactor, uiSkin, this);
+		settingsStage = new SettingsStage(zoomfactor, uiSkin, this, settings);
+		choosePlayerStage = new ChoosePlayersStage(zoomfactor, uiSkin, this);
+		gameStage = new GameStage(zoomfactor, uiSkin);
 		
 		// Make sure touch input goes to the startStage.
 		Gdx.input.setInputProcessor(startMenuStage);
@@ -57,7 +58,7 @@ public class BlufPokerGame extends ApplicationAdapter implements
 
 	@Override
 	public void render() {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		// Just call the draw methods of the stages. They will figure out by
@@ -65,7 +66,7 @@ public class BlufPokerGame extends ApplicationAdapter implements
 		startMenuStage.draw();
 		settingsStage.draw();
 		choosePlayerStage.draw();
-//		choosePlayerStage.drawDebug(shapeRenderer);
+		gameStage.draw();
 	}
 
 	@Override
@@ -82,7 +83,6 @@ public class BlufPokerGame extends ApplicationAdapter implements
 		startMenuStage.setVisible(false);
 		choosePlayerStage.setVisible(true);
 		Gdx.input.setInputProcessor(choosePlayerStage);
-//		System.out.println(diceRoll.play(1.0f));
 	}
 
 	@Override
@@ -99,5 +99,13 @@ public class BlufPokerGame extends ApplicationAdapter implements
 		settingsStage.setVisible(false);
 		startMenuStage.setVisible(true);
 		Gdx.input.setInputProcessor(startMenuStage);
+	}
+
+	@Override
+	public void startGame(List<String> players) {
+		choosePlayerStage.setVisible(false);
+		gameStage.startGame(players, settings);
+		gameStage.setVisible(true);
+		Gdx.input.setInputProcessor(gameStage);
 	}
 }

@@ -6,12 +6,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 public abstract class AbstractStage extends Stage {
-	private boolean visibility;
+	protected boolean visibility;
 	
 	protected Table table;
 	
-	public AbstractStage(float w, float h, int divideScreenByThis, boolean defaultVisibility) {
-		super(new StretchViewport(divideScreenByThis > 0 ? w/divideScreenByThis : w, divideScreenByThis > 0 ? h/divideScreenByThis : h));
+	public AbstractStage(int divideScreenByThis, boolean defaultVisibility) {
+		super(new StretchViewport(divideScreenByThis > 0 ?  Gdx.graphics.getWidth()/divideScreenByThis :  Gdx.graphics.getWidth(), 
+				divideScreenByThis > 0 ? Gdx.graphics.getHeight()/divideScreenByThis : Gdx.graphics.getHeight()));
 		visibility = defaultVisibility;
 		
 		table = new Table();

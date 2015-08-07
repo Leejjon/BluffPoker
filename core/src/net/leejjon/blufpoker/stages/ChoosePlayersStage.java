@@ -26,12 +26,14 @@ public class ChoosePlayersStage extends AbstractStage implements ModifyPlayerLis
 	
 	private WarningDialog playerAlreadyExistsWarning;
 	private WarningDialog playerNameInvalid;
+	private WarningDialog minimalTwoPlayersRequired;
 	
-	public ChoosePlayersStage(float w, float h, int divideScreenByThis, Skin uiSkin, final ChangeStageListener changeScreen) {
-		super(w, h, divideScreenByThis, false);
+	public ChoosePlayersStage(int divideScreenByThis, Skin uiSkin, final ChangeStageListener changeScreen) {
+		super(divideScreenByThis, false);
 		
 		playerAlreadyExistsWarning = new WarningDialog("Player already exists.", uiSkin);
 		playerNameInvalid = new WarningDialog("Player name invalid.", uiSkin);
+		minimalTwoPlayersRequired = new WarningDialog("Select at least two players!", uiSkin);
 		
 		// Creating the ui components.
 		Label playersInGameLabel = new Label("Players in game", uiSkin);
@@ -89,6 +91,12 @@ public class ChoosePlayersStage extends AbstractStage implements ModifyPlayerLis
 		});
 		
 		TextButton startGameButton = new TextButton("Start Game", uiSkin);
+		startGameButton.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				startGame(changeScreen);
+			}
+		});
 		
 		// Adding the components to the table.
 		final float enoughDistanceToFitAnyName = 150f;
@@ -110,6 +118,14 @@ public class ChoosePlayersStage extends AbstractStage implements ModifyPlayerLis
 		addActor(table);
 	}
 	
+	protected void startGame(ChangeStageListener changeScreen) {
+		if (currentPlayers.size() < 2) {
+			minimalTwoPlayersRequired.show(this);
+		} else {
+			changeScreen.startGame(currentPlayers);
+		}
+	}
+
 	private List<String> getCurrentPlayerList(Skin uiSkin) {
 		currentPlayers = new ArrayList<>();
 		
