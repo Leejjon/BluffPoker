@@ -101,7 +101,7 @@ public class ChoosePlayersStage extends AbstractStage implements ModifyPlayerLis
 		// Adding the components to the table.
 		final float enoughDistanceToFitAnyName = 150f;
 		
-		table.debug();
+//		table.debug();
 		table.center();
 		table.add(playersInGameLabel).padTop(5f).colspan(3);
 		table.add(existingPlayersLabel).padTop(5f).colspan(3);

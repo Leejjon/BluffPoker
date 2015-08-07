@@ -3,6 +3,7 @@ package net.leejjon.blufpoker;
 import java.util.List;
 
 import net.leejjon.blufpoker.listener.ChangeStageListener;
+import net.leejjon.blufpoker.listener.PhoneInputListener;
 import net.leejjon.blufpoker.stages.ChoosePlayersStage;
 import net.leejjon.blufpoker.stages.GameStage;
 import net.leejjon.blufpoker.stages.SettingsStage;
@@ -17,7 +18,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class BlufPokerGame extends ApplicationAdapter implements
-		ChangeStageListener {
+		ChangeStageListener, PhoneInputListener {
 	private Skin uiSkin;
 	private Settings settings = new Settings();
 
@@ -30,8 +31,6 @@ public class BlufPokerGame extends ApplicationAdapter implements
 	private ShapeRenderer shapeRenderer;
 	
 	private int zoomfactor;
-
-	private Sound diceRoll;
 
 	public BlufPokerGame(int zoomfactor) {
 		this.zoomfactor = zoomfactor;
@@ -53,7 +52,6 @@ public class BlufPokerGame extends ApplicationAdapter implements
 		
 		// Make sure touch input goes to the startStage.
 		Gdx.input.setInputProcessor(startMenuStage);
-		diceRoll = Gdx.audio.newSound(Gdx.files.internal("sound/diceroll.mp3"));
 	}
 
 	@Override
@@ -73,7 +71,6 @@ public class BlufPokerGame extends ApplicationAdapter implements
 	public void dispose() {
 		startMenuStage.dispose();
 		settingsStage.dispose();
-		diceRoll.dispose();
 		choosePlayerStage.dispose();
 		shapeRenderer.dispose();
 	}
@@ -107,5 +104,10 @@ public class BlufPokerGame extends ApplicationAdapter implements
 		gameStage.startGame(players, settings);
 		gameStage.setVisible(true);
 		Gdx.input.setInputProcessor(gameStage);
+	}
+
+	@Override
+	public void shakePhone() {
+		gameStage.playDiceRoll();
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import net.leejjon.blufpoker.Settings;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -19,6 +20,7 @@ public class GameStage extends AbstractStage {
 	private Settings settings = null;
 	private Texture cupTexture;
 	private SpriteBatch batch;
+	private Sound diceRoll;
 	
 	public GameStage(int divideScreenByThis, Skin uiSkin) {
 		super(divideScreenByThis, false);
@@ -31,6 +33,7 @@ public class GameStage extends AbstractStage {
 		th = cupTexture.getHeight();
 		
 		batch = new SpriteBatch();
+		diceRoll = Gdx.audio.newSound(Gdx.files.internal("sound/diceroll.mp3"));
 	}
 	
 	public void startGame(List<String> players, Settings settings) {
@@ -41,7 +44,7 @@ public class GameStage extends AbstractStage {
 	public void draw() {
 		if (visibility) {
 			batch.begin();
-			batch.draw(cupTexture, getMiddleX()-(tw/2), getMiddleY()-(th/2));
+			batch.draw(cupTexture, getMiddleX()-(getCupWidth()/2), getMiddleY()-(getCupHeight()/2), getCupWidth(), getCupHeight());
 			batch.end();
 		}
 		super.draw();
@@ -50,13 +53,29 @@ public class GameStage extends AbstractStage {
 	private int getMiddleX() {
 		return (width/2);
 	}
+	
 	private int getMiddleY() {
 		return (height/2);
+	}
+	
+	private int getCupWidth() {
+		return tw/2;
+	}
+	
+	private int getCupHeight() {
+		return th/2;
+	}
+	
+	public void playDiceRoll() {
+		if (visibility) {
+			diceRoll.play(1.0f);
+		}
 	}
 	
 	public void dispose() {
 		batch.dispose();
 		cupTexture.dispose();
+		diceRoll.dispose();
 		super.dispose();
 	}
 }
