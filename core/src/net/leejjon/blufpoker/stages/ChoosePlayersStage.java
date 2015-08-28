@@ -64,7 +64,7 @@ public class ChoosePlayersStage extends AbstractStage implements ModifyPlayerLis
 			}
 		});
 		
-		TextButton removeButton = new TextButton("Remove", uiSkin);
+		TextButton removeButton = new TextButton("Del", uiSkin);
 		removeButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -99,15 +99,15 @@ public class ChoosePlayersStage extends AbstractStage implements ModifyPlayerLis
 		});
 		
 		// Adding the components to the table.
-		final float enoughDistanceToFitAnyName = 150f;
+		final float enoughDistanceToFitAnyName = 100f;
 		
 //		table.debug();
 		table.center();
 		table.add(playersInGameLabel).padTop(5f).colspan(3);
 		table.add(existingPlayersLabel).padTop(5f).colspan(3);
 		table.row();
-		table.add(playersInGameScrollPane).width(enoughDistanceToFitAnyName).fill().padRight(5f).colspan(3);
-		table.add(existingPlayersScrollPane).width(enoughDistanceToFitAnyName).fill().padLeft(5f).colspan(3);
+		table.add(playersInGameScrollPane).width(enoughDistanceToFitAnyName).fill().padRight(2f).colspan(3);
+		table.add(existingPlayersScrollPane).width(enoughDistanceToFitAnyName).fill().padLeft(2f).colspan(3);
 		table.row();
 		table.add(upButton, downButton, removeButton);
 		table.add(addButton).colspan(2);
