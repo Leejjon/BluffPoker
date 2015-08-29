@@ -1,6 +1,6 @@
 android {
-    buildToolsVersion "20"
-    compileSdkVersion 22
+    buildToolsVersion "23.0.0"
+    compileSdkVersion 23
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
