@@ -1,122 +1,96 @@
 package net.leejjon.blufpoker.stages;
 
-import java.util.List;
-
-import net.leejjon.blufpoker.Settings;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.input.GestureDetector.GestureListener;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import net.leejjon.blufpoker.Settings;
 
-public class GameStage extends AbstractStage implements GestureListener {
-	private int width = 0;
-	private int height = 0;
-	private int tw = 0;
-	private int th = 0;
-	
-	private Settings settings = null;
-	private Texture cupTexture;
-	private SpriteBatch batch;
-	private Sound diceRoll;
-	
-	public GameStage(int divideScreenByThis, Skin uiSkin) {
-		super(divideScreenByThis, false);
-		this.width = Gdx.graphics.getWidth();
-		this.height = Gdx.graphics.getHeight();
-		
-		
-		cupTexture = new Texture("data/ingamebeker.png");
-		tw = cupTexture.getWidth();
-		th = cupTexture.getHeight();
-		
-		batch = new SpriteBatch();
-		diceRoll = Gdx.audio.newSound(Gdx.files.internal("sound/diceroll.mp3"));
-	}
-	
-	public void startGame(List<String> players, Settings settings) {
-		this.settings = settings;
-	}
+import java.util.List;
 
-	@Override
-	public void draw() {
-		if (visibility) {
-			batch.begin();
-			batch.draw(cupTexture, getMiddleX()-(getCupWidth()/2), getMiddleY()-(getCupHeight()/2), getCupWidth(), getCupHeight());
-			batch.end();
-		}
-		super.draw();
-	}
-	
-	private int getMiddleX() {
-		return (width/2);
-	}
-	
-	private int getMiddleY() {
-		return (height/2);
-	}
-	
-	private int getCupWidth() {
-		return tw/2;
-	}
-	
-	private int getCupHeight() {
-		return th/2;
-	}
-	
-	public void playDiceRoll() {
-		if (visibility) {
-			diceRoll.play(1.0f);
-		}
-	}
-	
-	public void dispose() {
-		batch.dispose();
-		cupTexture.dispose();
-		diceRoll.dispose();
-		super.dispose();
-	}
+public class GameStage extends AbstractStage {
+    private int divideScreenByThis;
+    private int width = 0;
+    private int height = 0;
+    private int tw = 0;
+    private int th = 0;
+    private int middleHeightForCup = 0;
+    private int middleWidthForCup = 0;
 
-	@Override
-	public boolean touchDown(float x, float y, int pointer, int button) {
-		return true;
-	}
+    private Settings settings = null;
+    private Texture cupTexture;
+    private SpriteBatch batch;
+    private Sound diceRoll;
+    private Image cup;
 
-	@Override
-	public boolean tap(float x, float y, int count, int button) {
-		return true;
-	}
+    public GameStage(int divideScreenByThis, Skin uiSkin) {
+        super(divideScreenByThis, false);
+        this.divideScreenByThis = divideScreenByThis;
 
-	@Override
-	public boolean longPress(float x, float y) {
-		return true;
-	}
+        this.width = Gdx.graphics.getWidth();
+        this.height = Gdx.graphics.getHeight();
 
-	@Override
-	public boolean fling(float velocityX, float velocityY, int button) {
-		return true;
-	}
+        cupTexture = new Texture("data/ingamebeker.png");
+        tw = cupTexture.getWidth();
+        th = cupTexture.getHeight();
 
-	@Override
-	public boolean pan(float x, float y, float deltaX, float deltaY) {
-		return true;
-	}
+        batch = new SpriteBatch();
+        diceRoll = Gdx.audio.newSound(Gdx.files.internal("sound/diceroll.mp3"));
 
-	@Override
-	public boolean panStop(float x, float y, int pointer, int button) {
-		return true;
-	}
+        cup = new Image(cupTexture);
+        cup.setFillParent(false);
 
-	@Override
-	public boolean zoom(float initialDistance, float distance) {
-		return true;
-	}
+        // Yeah, everything is show bigger because of the divideScreenByThisValue to prevent buttons and labels from being too small. Because of this the picture itself is also too big, so we divide it by the same number again to end up with a satisfying result.
+        cup.setWidth(getCupWidth() / divideScreenByThis);
+        cup.setHeight(getCupHeight() / divideScreenByThis);
+        middleHeightForCup = (getMiddleY() - (getCupHeight() / 2)) /2;
+        middleWidthForCup = (getMiddleX() - (getCupWidth() / 2)) / 2;
+        cup.setPosition(middleWidthForCup, middleHeightForCup);
 
-	@Override
-	public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-		return true;
-	}
+        cup.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                System.out.println("The cup received an import event, " + "Input type: " + event.getType());
+            }
+        });
+
+        addActor(cup);
+    }
+
+    public void startGame(List<String> players, Settings settings) {
+        this.settings = settings;
+    }
+
+    private int getMiddleX() {
+        return (width / (2));
+    }
+
+    private int getMiddleY() {
+        return (height / (2));
+    }
+
+    private int getCupWidth() {
+        return tw / 2;
+    }
+
+    private int getCupHeight() {
+        return th / 2;
+    }
+
+    public void playDiceRoll() {
+        if (visibility) {
+            diceRoll.play(1.0f);
+        }
+    }
+
+    public void dispose() {
+        batch.dispose();
+        cupTexture.dispose();
+        diceRoll.dispose();
+        super.dispose();
+    }
 }

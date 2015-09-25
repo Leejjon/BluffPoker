@@ -13,7 +13,6 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class BlufPokerGame extends ApplicationAdapter implements
@@ -25,9 +24,6 @@ public class BlufPokerGame extends ApplicationAdapter implements
 	private ChoosePlayersStage choosePlayerStage;
 	private SettingsStage settingsStage;
 	private GameStage gameStage;
-	
-	// For debug drawing
-	private ShapeRenderer shapeRenderer;
 	
 	private int zoomfactor;
 
@@ -41,8 +37,6 @@ public class BlufPokerGame extends ApplicationAdapter implements
 		uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
 		uiSkin.addRegions(new TextureAtlas("uiskin.atlas"));
 		
-		shapeRenderer = new ShapeRenderer();
-
 		// Create the stages.
 		startMenuStage = new StartStage(zoomfactor, uiSkin, this);
 		settingsStage = new SettingsStage(zoomfactor, uiSkin, this, settings);
@@ -71,7 +65,7 @@ public class BlufPokerGame extends ApplicationAdapter implements
 		startMenuStage.dispose();
 		settingsStage.dispose();
 		choosePlayerStage.dispose();
-		shapeRenderer.dispose();
+		gameStage.dispose();
 	}
 
 	@Override

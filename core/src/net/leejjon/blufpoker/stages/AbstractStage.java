@@ -9,6 +9,8 @@ public abstract class AbstractStage extends Stage {
 	protected boolean visibility;
 	
 	protected Table table;
+
+	protected int height;
 	
 	public AbstractStage(int divideScreenByThis, boolean defaultVisibility) {
 		super(new StretchViewport(divideScreenByThis > 0 ?  Gdx.graphics.getWidth()/divideScreenByThis :  Gdx.graphics.getWidth(), 
