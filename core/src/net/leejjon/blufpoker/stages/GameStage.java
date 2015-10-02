@@ -4,10 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import net.leejjon.blufpoker.Settings;
 
 import java.util.List;
@@ -25,7 +28,7 @@ public class GameStage extends AbstractStage {
     private Texture cupTexture;
     private SpriteBatch batch;
     private Sound diceRoll;
-    private Image cup;
+    private final Image cup;
 
     public GameStage(int divideScreenByThis, Skin uiSkin) {
         super(divideScreenByThis, false);
@@ -47,14 +50,32 @@ public class GameStage extends AbstractStage {
         // Yeah, everything is show bigger because of the divideScreenByThisValue to prevent buttons and labels from being too small. Because of this the picture itself is also too big, so we divide it by the same number again to end up with a satisfying result.
         cup.setWidth(getCupWidth() / divideScreenByThis);
         cup.setHeight(getCupHeight() / divideScreenByThis);
-        middleHeightForCup = (getMiddleY() - (getCupHeight() / 2)) /2;
+        middleHeightForCup = (getMiddleY() - (getCupHeight() / 2)) / 2;
         middleWidthForCup = (getMiddleX() - (getCupWidth() / 2)) / 2;
         cup.setPosition(middleWidthForCup, middleHeightForCup);
-
-        cup.addListener(new ClickListener() {
+        cup.addListener(new ActorGestureListener() {
+            /**
+             * I have no clue what a fling is, but I suspect it's some sort of swipe move.
+             * @param event Contains information about
+             * @param velocityX I assume this is the speed of the swipe in horizontal direction.
+             * @param velocityY I assume this is the speed of the swipe in vertical direction.
+             * @param button Not relevant, it is always a touch event as this game is for phones/tablets only!
+             */
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                System.out.println("The cup received an import event, " + "Input type: " + event.getType());
+            public void fling(InputEvent event, float velocityX, float velocityY, int button) {
+                if (Math.abs(velocityX) > Math.abs(velocityY)) {
+                    if (velocityX > 0) {
+                        System.out.println("You've made a swipe gesture on the cup in the direction: Right");
+                    } else {
+                        System.out.println("You've made a swipe gesture on the cup in the direction: Left");
+                    }
+                } else {
+                    if (velocityY > 0) {
+                        System.out.println("You've made a swipe gesture on the cup in the direction: Up");
+                    } else {
+                        System.out.println("You've made a swipe gesture on the cup in the direction: Down");
+                    }
+                }
             }
         });
 
