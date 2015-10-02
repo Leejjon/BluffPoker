@@ -57,6 +57,7 @@ public class BlufPokerGame extends ApplicationAdapter implements
 		startMenuStage.draw();
 		settingsStage.draw();
 		choosePlayerStage.draw();
+		gameStage.act();
 		gameStage.draw();
 	}
 
