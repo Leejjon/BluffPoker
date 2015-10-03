@@ -1,32 +1,44 @@
 package net.leejjon.blufpoker.stages;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import net.leejjon.blufpoker.Settings;
 import net.leejjon.blufpoker.listener.ChangeStageListener;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class SettingsStage extends AbstractStage {
 	private final CheckBox switchPositionsCheckBox;
 	private final CheckBox allowBokCheckBox;
 	private final CheckBox allowSharedBokCheckbox;
+	private final Slider numberOfLivesSlider;
 	
 	public SettingsStage(int divideScreenByThis, Skin uiSkin, final ChangeStageListener changeScreen, Settings settings) {
 		super(divideScreenByThis, false);
 		
 		Label titleLabel = new Label("Settings", uiSkin);
 		titleLabel.setColor(Color.WHITE);
-		
-		switchPositionsCheckBox = new CheckBox("Allow switching positions during game", uiSkin);
+
+		final Label numberOfLivesLabel = new Label("Number of lives: ", uiSkin);
+		numberOfLivesLabel.setColor(Color.WHITE);
+
+		final Label actualNumberOfLivesDisplayLabel = new Label("", uiSkin);
+		actualNumberOfLivesDisplayLabel.setColor(Color.WHITE);
+
+		switchPositionsCheckBox = new CheckBox("Allow switching positions", uiSkin);
 		allowBokCheckBox = new CheckBox("Allow bok", uiSkin);
 		allowSharedBokCheckbox = new CheckBox("Allow shared bok", uiSkin);
-		
+		numberOfLivesSlider = new Slider(0f, 10f, 1f, false, uiSkin);
+		numberOfLivesSlider.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				actualNumberOfLivesDisplayLabel.setText(new Float(numberOfLivesSlider.getValue()).intValue() + "");
+			}
+		});
+
 		TextButton backButton = new TextButton("Back", uiSkin);
 		backButton.addListener(new ClickListener() {
 			@Override
@@ -35,7 +47,7 @@ public class SettingsStage extends AbstractStage {
 				newSettings.setAllowSwitchingPositions(switchPositionsCheckBox.isChecked());
 				newSettings.setAllowBok(allowBokCheckBox.isChecked());
 				newSettings.setAllowSharedBok(allowSharedBokCheckbox.isChecked());
-				
+				newSettings.setNumberOfLives(new Float(numberOfLivesSlider.getValue()).intValue());
 				changeScreen.closeSettingsStage(newSettings);
 			}
 		});
@@ -48,12 +60,18 @@ public class SettingsStage extends AbstractStage {
 		Table innerTable = new Table(uiSkin);
 		innerTable.setFillParent(false);
 		innerTable.row();
-		innerTable.add(switchPositionsCheckBox);
+		innerTable.add(switchPositionsCheckBox).colspan(2).left();
 		innerTable.row();
-		innerTable.add(allowBokCheckBox).left();
+		innerTable.add(allowBokCheckBox).colspan(2).left();
 		innerTable.row();
-		innerTable.add(allowSharedBokCheckbox).left();
-		
+		innerTable.add(allowSharedBokCheckbox).colspan(2).left();
+		innerTable.row();
+		innerTable.add(numberOfLivesLabel).left();
+		innerTable.add(actualNumberOfLivesDisplayLabel).left();
+		innerTable.row();
+		innerTable.add(numberOfLivesSlider).colspan(2).left().padBottom(5f);
+		innerTable.row();
+
 		table.add(innerTable).padBottom(5f);
 		table.row();
 		table.add(backButton);
@@ -65,5 +83,6 @@ public class SettingsStage extends AbstractStage {
 		switchPositionsCheckBox.setChecked(settings.isAllowSwitchingPositions());
 		allowBokCheckBox.setChecked(settings.isAllowBok());
 		allowSharedBokCheckbox.setChecked(settings.isAllowSharedBok());
+		numberOfLivesSlider.setValue(settings.getNumberOfLives());
 	}
 }

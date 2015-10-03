@@ -103,11 +103,11 @@ public class ChoosePlayersStage extends AbstractStage implements ModifyPlayerLis
 		
 //		table.debug();
 		table.center();
-		table.add(playersInGameLabel).padTop(5f).colspan(3);
-		table.add(existingPlayersLabel).padTop(5f).colspan(3);
+		table.add(playersInGameLabel).padLeft(3f).padTop(5f).colspan(3);
+		table.add(existingPlayersLabel).padRight(3f).padTop(5f).colspan(3);
 		table.row();
-		table.add(playersInGameScrollPane).width(enoughDistanceToFitAnyName).fill().padRight(2f).colspan(3);
-		table.add(existingPlayersScrollPane).width(enoughDistanceToFitAnyName).fill().padLeft(2f).colspan(3);
+		table.add(playersInGameScrollPane).width(enoughDistanceToFitAnyName).fill().padBottom(10f).padRight(2f).colspan(3);
+		table.add(existingPlayersScrollPane).width(enoughDistanceToFitAnyName).fill().padBottom(10f).padLeft(2f).colspan(3);
 		table.row();
 		table.add(upButton, downButton, removeButton);
 		table.add(addButton).colspan(2);

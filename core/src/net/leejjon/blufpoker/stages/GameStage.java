@@ -2,13 +2,16 @@ package net.leejjon.blufpoker.stages;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import net.leejjon.blufpoker.Settings;
 import net.leejjon.blufpoker.actors.Cup;
+import net.leejjon.blufpoker.actors.Dice;
+import net.leejjon.blufpoker.Game;
 import net.leejjon.blufpoker.listener.CupListener;
 
 import java.util.List;
@@ -20,7 +23,8 @@ public class GameStage extends AbstractStage {
     private int middleHeightForCup = 0;
     private int middleWidthForCup = 0;
 
-    private Settings settings = null;
+    private Game currentGame;
+
     private Texture cupTexture;
     private Texture believing;
     private Texture dice1;
@@ -33,9 +37,11 @@ public class GameStage extends AbstractStage {
     private SpriteBatch batch;
     private Sound diceRoll;
     private final Cup cup;
-    private Image leftDice;
-    private Image middleDice;
-    private Image rightDice;
+    private Dice leftDice;
+    private Dice middleDice;
+    private Dice rightDice;
+    private Label secondLatestOutputLabel;
+    private Label latestOutputLabel;
 
     // Putting certain images at the foreground or background usually goes via z index. However the z index seems broken
     // unless I pull off crazy hacks. What Actor is painted first is simply decided by the order you add them to the stage.
@@ -53,6 +59,32 @@ public class GameStage extends AbstractStage {
         cupTexture = new Texture("data/cup.png");
         believing = new Texture("data/believe.png");
 
+        batch = new SpriteBatch();
+        diceRoll = Gdx.audio.newSound(Gdx.files.internal("sound/diceroll.mp3"));
+
+        secondLatestOutputLabel = new Label("", uiSkin);
+        secondLatestOutputLabel.setColor(Color.BLACK);
+
+        latestOutputLabel = new Label("", uiSkin);
+        latestOutputLabel.setColor(Color.BLACK);
+
+        table.bottom();
+        table.add(secondLatestOutputLabel);
+
+        foreGroundActors = new Group();
+        foreGroundActors.addActor(table);
+        backgroundActors = new Group();
+
+        cup = new Cup(cupTexture, believing, foreGroundActors, backgroundActors);
+
+        // Yeah, everything is shown bigger because of the divideScreenByThisValue to prevent buttons and labels from being too small. Because of this the picture itself is also too big, so we divide it by the same number again to end up with a satisfying result.
+        cup.setWidth(getCupWidth() / divideScreenByThis);
+        cup.setHeight(getCupHeight() / divideScreenByThis);
+        middleHeightForCup = (getMiddleY() - (getCupHeight() / 2)) / divideScreenByThis;
+        middleWidthForCup = (getMiddleX() - (getCupWidth() / 2)) / divideScreenByThis;
+        cup.setPosition(middleWidthForCup, middleHeightForCup);
+        cup.addListener(new CupListener(cup, divideScreenByThis));
+
         // Load the textures of the dices.
         dice1 = new Texture("data/dice1.png");
         dice2 = new Texture("data/dice2.png");
@@ -61,35 +93,21 @@ public class GameStage extends AbstractStage {
         dice5 = new Texture("data/dice5.png");
         dice6 = new Texture("data/dice6.png");
 
-        batch = new SpriteBatch();
-        diceRoll = Gdx.audio.newSound(Gdx.files.internal("sound/diceroll.mp3"));
+        Texture[] diceTextures = new Texture[] {dice1, dice2, dice3, dice4, dice5, dice6};
 
-        foreGroundActors = new Group();
-        backgroundActors = new Group();
-
-        cup = new Cup(cupTexture, believing, foreGroundActors, backgroundActors);
-
-        // Yeah, everything is show bigger because of the divideScreenByThisValue to prevent buttons and labels from being too small. Because of this the picture itself is also too big, so we divide it by the same number again to end up with a satisfying result.
-        cup.setWidth(getCupWidth() / divideScreenByThis);
-        cup.setHeight(getCupHeight() / divideScreenByThis);
-        middleHeightForCup = (getMiddleY() - (getCupHeight() / 2)) / divideScreenByThis;
-        middleWidthForCup = (getMiddleX() - (getCupWidth() / 2)) / divideScreenByThis;
-        cup.setPosition(middleWidthForCup, middleHeightForCup);
-        cup.addListener(new CupListener(cup, divideScreenByThis));
-
-        leftDice = new Image(dice6);
+        leftDice = new Dice(diceTextures, 6);
         leftDice.setWidth(getDiceWidth() / divideScreenByThis);
         leftDice.setHeight(getDiceHeight() / divideScreenByThis);
         // This is the left dice, so we place it slightly left of the middle at the same height as the cup (with a little dynamic padding based on the dice size).
         leftDice.setPosition(((getMiddleX() - (getDiceWidth() / 2)) / 2) - (getDiceWidth() / divideScreenByThis), middleHeightForCup + (getDiceHeight() / (3 + divideScreenByThis)));
 
-        middleDice = new Image(dice4);
+        middleDice = new Dice(diceTextures, 4);
         middleDice.setWidth(getDiceWidth() / divideScreenByThis);
         middleDice.setHeight(getDiceHeight() / divideScreenByThis);
         // This is the middle dice, so we place it in the middle at the same height as the cup (with a little dynamic padding based on the dice size).
         middleDice.setPosition((getMiddleX() - (getDiceWidth() / 2)) / 2, middleHeightForCup + (getDiceHeight() / (3+divideScreenByThis)));
 
-        rightDice = new Image(dice3);
+        rightDice = new Dice(diceTextures, 3);
         rightDice.setWidth(getDiceWidth() / divideScreenByThis);
         rightDice.setHeight(getDiceHeight() / divideScreenByThis);
         // This is the right dice, so we place it slightly right of the middle at the same height as the cup (with a little dynamic padding based on the dice size).
@@ -103,7 +121,7 @@ public class GameStage extends AbstractStage {
     }
 
     public void startGame(List<String> players, Settings settings) {
-        this.settings = settings;
+        currentGame = new Game(players, settings);
     }
 
     private int getMiddleX() {
@@ -135,6 +153,7 @@ public class GameStage extends AbstractStage {
             if (!cup.isMoving()) {
                 resetCup();
                 diceRoll.play(1.0f);
+                generateRandomDices();
             }
         }
     }
@@ -142,6 +161,12 @@ public class GameStage extends AbstractStage {
     public void resetCup() {
         cup.setVisible(true);
         cup.setPosition(middleWidthForCup, middleHeightForCup);
+    }
+
+    public void generateRandomDices() {
+        leftDice.throwDice();
+        middleDice.throwDice();
+        rightDice.throwDice();
     }
 
     public void dispose() {
