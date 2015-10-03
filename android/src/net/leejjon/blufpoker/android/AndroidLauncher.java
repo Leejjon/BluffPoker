@@ -39,7 +39,9 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
 		case DisplayMetrics.DENSITY_TV:
 			zoomfactor = 8;
 		}
-		
+
+		System.out.println("Zoomfactor: " + zoomfactor);
+
 		SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 		Sensor acceloMeterSensor = sensorManager
 				.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);

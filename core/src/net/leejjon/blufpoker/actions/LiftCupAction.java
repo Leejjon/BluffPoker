@@ -24,7 +24,7 @@ public class LiftCupAction extends Action {
          * being faster on phones with more frames per second.
          */
         if (actor.getY() < (Gdx.graphics.getHeight() / divideScreenByThis)) {
-            actor.moveBy(0f, 1f);
+            actor.moveBy(0f, 2f);
         } else {
             actionDone = true;
         }
