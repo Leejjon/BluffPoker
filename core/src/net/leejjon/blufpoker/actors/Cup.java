@@ -6,7 +6,11 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import net.leejjon.blufpoker.BlufPokerGame;
 import net.leejjon.blufpoker.actions.LiftCupAction;
+import net.leejjon.blufpoker.listener.CupListener;
+import net.leejjon.blufpoker.stages.GameInputInterface;
+import net.leejjon.blufpoker.stages.GameStage;
 
 import java.util.Iterator;
 
@@ -14,26 +18,52 @@ import java.util.Iterator;
  * Created by Leejjon on 2-10-2015.
  */
 public class Cup extends Image {
-    private Texture believeTexture;
-    private Texture defaultTexture;
     private Group foregroundActors;
     private Group backgroundActors;
 
-    private boolean believing = false;
+    private SpriteDrawable closedCupSpriteDrawable;
+    private SpriteDrawable openCupSpriteDrawable;
 
-    public Cup(Texture defaultTexture, Texture believeTexture, Group foregroundActors, Group backgroundActors) {
-        super(defaultTexture);
-        this.defaultTexture = defaultTexture;
-        this.believeTexture = believeTexture;
+    private Texture closedCupTexture;
+
+    private int middleHeightForCup = 0;
+    private int middleWidthForCup = 0;
+
+    private boolean believing = false;
+    private boolean watchingOwnThrow = false;
+
+    public Cup(Texture closedCupTexture, Texture openCupTexture, Group foregroundActors, Group backgroundActors) {
+        super(closedCupTexture);
+        this.closedCupTexture = closedCupTexture;
         this.foregroundActors = foregroundActors;
         this.backgroundActors = backgroundActors;
+
+        // Calculate the position for the Cup.
+        this.middleWidthForCup = (GameStage.getMiddleX() - (getCupWidth() / 2)) / BlufPokerGame.getDivideScreenByThis();
+        this.middleHeightForCup = (GameStage.getMiddleY() - (getCupHeight() / 2)) / BlufPokerGame.getDivideScreenByThis();
+
+        // Yeah, everything is shown bigger because of the divideScreenByThisValue to prevent buttons and labels from being too small. Because of this the picture itself is also too big, so we divide it by the same number again to end up with a satisfying result.
+        setWidth(getCupWidth() / BlufPokerGame.getDivideScreenByThis());
+        setHeight(getCupHeight() / BlufPokerGame.getDivideScreenByThis());
+        setPosition(middleWidthForCup, middleHeightForCup);
+
+        closedCupSpriteDrawable = new SpriteDrawable(new Sprite(closedCupTexture));
+        openCupSpriteDrawable = new SpriteDrawable(new Sprite(openCupTexture));
 
         setFillParent(false);
         foregroundActors.addActor(this);
     }
 
+    private int getCupWidth() {
+        return closedCupTexture.getWidth() / 2;
+    }
+
+    private int getCupHeight() {
+        return closedCupTexture.getHeight() / 2;
+    }
+
     public void believe() {
-        setDrawable(new SpriteDrawable(new Sprite(believeTexture)));
+        setDrawable(openCupSpriteDrawable);
 
         foregroundActors.removeActor(this);
         backgroundActors.addActor(this);
@@ -42,7 +72,7 @@ public class Cup extends Image {
     }
 
     public void doneBelieving() {
-        setDrawable(new SpriteDrawable(new Sprite(defaultTexture)));
+        setDrawable(closedCupSpriteDrawable);
 
         backgroundActors.removeActor(this);
         foregroundActors.addActor(this);
@@ -52,6 +82,28 @@ public class Cup extends Image {
 
     public boolean isBelieving() {
         return believing;
+    }
+
+    public void watchOwnThrow() {
+        setDrawable(openCupSpriteDrawable);
+
+        foregroundActors.removeActor(this);
+        backgroundActors.addActor(this);
+
+        watchingOwnThrow = true;
+    }
+
+    public void doneWatchingOwnThrow() {
+        setDrawable(closedCupSpriteDrawable);
+
+        backgroundActors.removeActor(this);
+        foregroundActors.addActor(this);
+
+        watchingOwnThrow = false;
+    }
+
+    public boolean isWatchingOwnThrow() {
+        return watchingOwnThrow;
     }
 
     public boolean isMoving() {
@@ -65,5 +117,14 @@ public class Cup extends Image {
             }
         }
         return moving;
+    }
+
+    public void reset() {
+        setVisible(true);
+        setPosition(middleWidthForCup, middleHeightForCup);
+    }
+
+    public int getMiddleHeightForCup() {
+        return middleHeightForCup;
     }
 }

@@ -3,30 +3,21 @@ package net.leejjon.blufpoker.listener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import net.leejjon.blufpoker.actions.LiftCupAction;
-import net.leejjon.blufpoker.actors.Cup;
+import net.leejjon.blufpoker.stages.GameInputInterface;
 
 /**
  * Created by Leejjon on 3-10-2015.
  */
 public class CupListener extends ActorGestureListener {
-    private Cup cup;
-    private int divideScreenByThis;
+    private GameInputInterface game;
 
-    public CupListener(Cup cup, int divideScreenByThis) {
-        this.cup = cup;
-        this.divideScreenByThis = divideScreenByThis;
+    public CupListener(GameInputInterface game) {
+        this.game = game;
     }
 
     @Override
     public void tap (InputEvent event, float x, float y, int count, int button) {
-        // Once you've swiped up, you can no longer believe.
-        if (!cup.isMoving()) {
-            if (cup.isBelieving()) {
-                cup.doneBelieving();
-            } else {
-                cup.believe();
-            }
-        }
+        game.tapCup();
     }
 
     /**
@@ -50,10 +41,7 @@ public class CupListener extends ActorGestureListener {
             if (velocityY > 0) {
                 System.out.println("You've made a swipe gesture on the cup in the direction: Up");
 
-                // Obviously, you can not "not believe" something after you've first believed it.
-                if (!cup.isBelieving()) {
-                    event.getTarget().addAction(new LiftCupAction(divideScreenByThis));
-                }
+                game.swipeCupUp();
             } else {
                 System.out.println("You've made a swipe gesture on the cup in the direction: Down");
             }

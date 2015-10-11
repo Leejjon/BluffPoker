@@ -4,18 +4,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
+import net.leejjon.blufpoker.BlufPokerGame;
 
 public abstract class AbstractStage extends Stage {
-	protected boolean visibility;
+	protected boolean visible;
 	
 	protected Table table;
 
-	protected int height;
-	
-	public AbstractStage(int divideScreenByThis, boolean defaultVisibility) {
-		super(new StretchViewport(divideScreenByThis > 0 ?  Gdx.graphics.getWidth()/divideScreenByThis :  Gdx.graphics.getWidth(), 
-				divideScreenByThis > 0 ? Gdx.graphics.getHeight()/divideScreenByThis : Gdx.graphics.getHeight()));
-		visibility = defaultVisibility;
+	public AbstractStage(boolean defaultVisibility) {
+		super(new StretchViewport(BlufPokerGame.getDivideScreenByThis() > 0 ?  Gdx.graphics.getWidth() / BlufPokerGame.getDivideScreenByThis() :  Gdx.graphics.getWidth(),
+				BlufPokerGame.getDivideScreenByThis() > 0 ? Gdx.graphics.getHeight()/ BlufPokerGame.getDivideScreenByThis() : Gdx.graphics.getHeight()));
+		visible = defaultVisibility;
 		
 		table = new Table();
 		table.setFillParent(true);
@@ -24,12 +23,16 @@ public abstract class AbstractStage extends Stage {
 	@Override
 	public void draw() {
 		act(Gdx.graphics.getDeltaTime());
-		if (visibility) {
+		if (visible) {
 			super.draw();
 		}
 	}
+
+	public boolean isVisible() {
+		return visible;
+	}
 	
-	public void setVisible(boolean visibility) {
-		this.visibility = visibility;
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 }

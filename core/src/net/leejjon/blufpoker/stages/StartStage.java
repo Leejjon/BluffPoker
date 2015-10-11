@@ -10,8 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class StartStage extends AbstractStage {
-	public StartStage(int divideScreenByThis, Skin uiSkin, final ChangeStageListener changeScreen) {
-		super(divideScreenByThis, true );
+	public StartStage(Skin uiSkin, final ChangeStageListener changeScreen) {
+		super(true);
 		
 		Label titleLabel = new Label("Bluf Poker", uiSkin);
 		titleLabel.setColor(Color.WHITE);

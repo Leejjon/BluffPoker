@@ -1,21 +1,17 @@
 package net.leejjon.blufpoker.stages;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.leejjon.blufpoker.dialogs.AddNewPlayerDialog;
 import net.leejjon.blufpoker.dialogs.WarningDialog;
 import net.leejjon.blufpoker.listener.ChangeStageListener;
 import net.leejjon.blufpoker.listener.ModifyPlayerListener;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class ChoosePlayersStage extends AbstractStage implements ModifyPlayerListener {
 	private java.util.List<String> currentPlayers;
@@ -28,8 +24,8 @@ public class ChoosePlayersStage extends AbstractStage implements ModifyPlayerLis
 	private WarningDialog playerNameInvalid;
 	private WarningDialog minimalTwoPlayersRequired;
 	
-	public ChoosePlayersStage(int divideScreenByThis, Skin uiSkin, final ChangeStageListener changeScreen) {
-		super(divideScreenByThis, false);
+	public ChoosePlayersStage(Skin uiSkin, final ChangeStageListener changeScreen) {
+		super(false);
 		
 		playerAlreadyExistsWarning = new WarningDialog("Player already exists.", uiSkin);
 		playerNameInvalid = new WarningDialog("Player name invalid.", uiSkin);
@@ -130,7 +126,7 @@ public class ChoosePlayersStage extends AbstractStage implements ModifyPlayerLis
 		currentPlayers = new ArrayList<>();
 		
 		if (currentPlayerList == null) {
-			currentPlayerList = new List<String>(uiSkin);
+			currentPlayerList = new List<>(uiSkin);
 		}
 		
 		currentPlayerList.setItems(currentPlayers.toArray(new String[currentPlayers.size()]));
@@ -143,12 +139,10 @@ public class ChoosePlayersStage extends AbstractStage implements ModifyPlayerLis
 
 		final String[] commonPlayersArray = { "Barry", "Blao", "Billy", "Joop", "King Charles", "Leejjon", "Rik", "Shadowing", "Stofkat" };
 
-		for (String commonPlayer : commonPlayersArray) {
-			existingPlayers.add(commonPlayer);
-		}
-		
+		existingPlayers.addAll(Arrays.asList(commonPlayersArray));
+
 		if (existingPlayerList == null) {
-			existingPlayerList = new List<String>(uiSkin);
+			existingPlayerList = new List<>(uiSkin);
 		}
 		
 		existingPlayerList.setItems(existingPlayers.toArray(new String[existingPlayers.size()]));

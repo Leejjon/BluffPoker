@@ -6,27 +6,22 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import net.leejjon.blufpoker.DiceLocation;
+import net.leejjon.blufpoker.Game;
 import net.leejjon.blufpoker.Settings;
 import net.leejjon.blufpoker.actors.Cup;
 import net.leejjon.blufpoker.actors.Dice;
-import net.leejjon.blufpoker.Game;
-import net.leejjon.blufpoker.listener.CupListener;
 
 import java.util.List;
 
 public class GameStage extends AbstractStage {
-    private int divideScreenByThis;
-    private int width = 0;
-    private int height = 0;
-    private int middleHeightForCup = 0;
-    private int middleWidthForCup = 0;
-
     private Game currentGame;
 
-    private Texture cupTexture;
-    private Texture believing;
+    private Texture closedCupTexture;
+    private Texture openCupTexture;
     private Texture dice1;
     private Texture dice2;
     private Texture dice3;
@@ -40,8 +35,15 @@ public class GameStage extends AbstractStage {
     private Dice leftDice;
     private Dice middleDice;
     private Dice rightDice;
-    private Label secondLatestOutputLabel;
-    private Label latestOutputLabel;
+    private final Label secondLatestOutputLabel;
+    private final Label latestOutputLabel;
+
+    private SelectBox<Integer> firstNumberOfCall;
+    private SelectBox<Integer> secondNumberOfCall;
+    private SelectBox<Integer> thirdNumberOfCall;
+
+    private TextButton autoButton;
+    private TextButton submitButton;
 
     // Putting certain images at the foreground or background usually goes via z index. However the z index seems broken
     // unless I pull off crazy hacks. What Actor is painted first is simply decided by the order you add them to the stage.
@@ -49,18 +51,55 @@ public class GameStage extends AbstractStage {
     private Group foreGroundActors;
     private Group backgroundActors;
 
-    public GameStage(int divideScreenByThis, Skin uiSkin) {
-        super(divideScreenByThis, false);
-        this.divideScreenByThis = divideScreenByThis;
+    public GameStage(Skin uiSkin) {
+        super(false);
 
-        this.width = Gdx.graphics.getWidth();
-        this.height = Gdx.graphics.getHeight();
-
-        cupTexture = new Texture("data/cup.png");
-        believing = new Texture("data/believe.png");
+        closedCupTexture = new Texture("data/closedCup.png");
+        openCupTexture = new Texture("data/openCup.png");
 
         batch = new SpriteBatch();
         diceRoll = Gdx.audio.newSound(Gdx.files.internal("sound/diceroll.mp3"));
+
+        Integer[] oneTillSix = new Integer[] {0, 1, 2, 3, 4, 5, 6};
+
+        Table topTable = new Table();
+        topTable.setFillParent(true);
+
+        firstNumberOfCall = new SelectBox<>(uiSkin);
+        firstNumberOfCall.setItems(oneTillSix);
+        firstNumberOfCall.setSelected(0);
+        firstNumberOfCall.setDisabled(true);
+
+        secondNumberOfCall = new SelectBox<>(uiSkin);
+        secondNumberOfCall.setItems(oneTillSix);
+        secondNumberOfCall.setSelected(0);
+        secondNumberOfCall.setDisabled(true);
+
+        thirdNumberOfCall = new SelectBox<>(uiSkin);
+        thirdNumberOfCall.setItems(oneTillSix);
+        thirdNumberOfCall.setSelected(0);
+        thirdNumberOfCall.setDisabled(true);
+
+        float padding = 5f;
+
+        topTable.top();
+        topTable.padTop(padding);
+        topTable.add(firstNumberOfCall).pad(padding).colspan(2);
+        topTable.add(secondNumberOfCall).pad(padding).colspan(2);
+        topTable.add(thirdNumberOfCall).pad(padding).colspan(2);
+        topTable.row();
+
+        autoButton = new TextButton("Auto", uiSkin);
+        autoButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                setAutoValue();
+            }
+        });
+        submitButton = new TextButton("Submit", uiSkin);
+
+        topTable.add(autoButton).colspan(3).left();
+        topTable.add(submitButton).colspan(3).right();
 
         secondLatestOutputLabel = new Label("", uiSkin);
         secondLatestOutputLabel.setColor(Color.BLACK);
@@ -68,22 +107,17 @@ public class GameStage extends AbstractStage {
         latestOutputLabel = new Label("", uiSkin);
         latestOutputLabel.setColor(Color.BLACK);
 
+        table.left();
         table.bottom();
-        table.add(secondLatestOutputLabel);
+        table.add(secondLatestOutputLabel).left();
+        table.row();
+        table.add(latestOutputLabel).left();
 
         foreGroundActors = new Group();
         foreGroundActors.addActor(table);
         backgroundActors = new Group();
 
-        cup = new Cup(cupTexture, believing, foreGroundActors, backgroundActors);
-
-        // Yeah, everything is shown bigger because of the divideScreenByThisValue to prevent buttons and labels from being too small. Because of this the picture itself is also too big, so we divide it by the same number again to end up with a satisfying result.
-        cup.setWidth(getCupWidth() / divideScreenByThis);
-        cup.setHeight(getCupHeight() / divideScreenByThis);
-        middleHeightForCup = (getMiddleY() - (getCupHeight() / 2)) / divideScreenByThis;
-        middleWidthForCup = (getMiddleX() - (getCupWidth() / 2)) / divideScreenByThis;
-        cup.setPosition(middleWidthForCup, middleHeightForCup);
-        cup.addListener(new CupListener(cup, divideScreenByThis));
+        cup = new Cup(closedCupTexture, openCupTexture, foreGroundActors, backgroundActors);
 
         // Load the textures of the dices.
         dice1 = new Texture("data/dice1.png");
@@ -96,83 +130,62 @@ public class GameStage extends AbstractStage {
         Texture[] diceTextures = new Texture[] {dice1, dice2, dice3, dice4, dice5, dice6};
 
         leftDice = new Dice(diceTextures, 6);
-        leftDice.setWidth(getDiceWidth() / divideScreenByThis);
-        leftDice.setHeight(getDiceHeight() / divideScreenByThis);
-        // This is the left dice, so we place it slightly left of the middle at the same height as the cup (with a little dynamic padding based on the dice size).
-        leftDice.setPosition(((getMiddleX() - (getDiceWidth() / 2)) / 2) - (getDiceWidth() / divideScreenByThis), middleHeightForCup + (getDiceHeight() / (3 + divideScreenByThis)));
+        leftDice.calculateAndSetPosition(DiceLocation.LEFT, cup.getMiddleHeightForCup());
 
         middleDice = new Dice(diceTextures, 4);
-        middleDice.setWidth(getDiceWidth() / divideScreenByThis);
-        middleDice.setHeight(getDiceHeight() / divideScreenByThis);
-        // This is the middle dice, so we place it in the middle at the same height as the cup (with a little dynamic padding based on the dice size).
-        middleDice.setPosition((getMiddleX() - (getDiceWidth() / 2)) / 2, middleHeightForCup + (getDiceHeight() / (3+divideScreenByThis)));
+        middleDice.calculateAndSetPosition(DiceLocation.MIDDLE, cup.getMiddleHeightForCup());
 
         rightDice = new Dice(diceTextures, 3);
-        rightDice.setWidth(getDiceWidth() / divideScreenByThis);
-        rightDice.setHeight(getDiceHeight() / divideScreenByThis);
-        // This is the right dice, so we place it slightly right of the middle at the same height as the cup (with a little dynamic padding based on the dice size).
-        rightDice.setPosition(((getMiddleX() - (getDiceWidth() / 2)) / 2) + (getDiceWidth() / divideScreenByThis), middleHeightForCup + (getDiceHeight() / (3+divideScreenByThis)));
+        rightDice.calculateAndSetPosition(DiceLocation.RIGHT, cup.getMiddleHeightForCup());
 
+        addActor(table);
         addActor(backgroundActors);
         addActor(leftDice);
         addActor(middleDice);
         addActor(rightDice);
         addActor(foreGroundActors);
+        addActor(topTable);
     }
 
     public void startGame(List<String> players, Settings settings) {
-        currentGame = new Game(players, settings);
+        currentGame = new Game(players, settings, cup, leftDice, middleDice, rightDice, diceRoll);
+
+        logMessage(currentGame.startGame());
     }
 
-    private int getMiddleX() {
-        return width / 2;
+    private void logMessage(String message) {
+        secondLatestOutputLabel.setText(latestOutputLabel.getText());
+        latestOutputLabel.setText(message);
     }
 
-    private int getMiddleY() {
-        return height / 2;
+    public static int getMiddleX() {
+        return Gdx.graphics.getWidth() / 2;
     }
 
-    private int getCupWidth() {
-        return cupTexture.getWidth() / 2;
+    public static int getMiddleY() {
+        return Gdx.graphics.getHeight() / 2;
     }
 
-    private int getCupHeight() {
-        return cupTexture.getHeight() / 2;
-    }
-
-    private int getDiceWidth() {
-        return dice1.getWidth() / 2;
-    }
-
-    private int getDiceHeight() {
-        return dice1.getHeight() / 2;
-    }
-
-    public void playDiceRoll() {
-        if (visibility) {
-            if (!cup.isMoving()) {
-                resetCup();
-                diceRoll.play(1.0f);
-                generateRandomDices();
-            }
+    public void shake() {
+        if (currentGame.isAllowedToThrow()) {
+            logMessage(currentGame.throwDicesInCup());
+            firstNumberOfCall.setDisabled(false);
+            secondNumberOfCall.setDisabled(false);
+            thirdNumberOfCall.setDisabled(false);
+            autoButton.setDisabled(false);
         }
     }
 
-    public void resetCup() {
-        cup.setVisible(true);
-        cup.setPosition(middleWidthForCup, middleHeightForCup);
-    }
-
-    public void generateRandomDices() {
-        leftDice.throwDice();
-        middleDice.throwDice();
-        rightDice.throwDice();
+    private void setAutoValue() {
+        firstNumberOfCall.setSelected(6);
+        secondNumberOfCall.setSelected(4);
+        thirdNumberOfCall.setSelected(3);
     }
 
     public void dispose() {
         batch.dispose();
-        cupTexture.dispose();
-        believing.dispose();
+        closedCupTexture.dispose();
+        openCupTexture.dispose();
         dice1.dispose();
         dice2.dispose();
         dice3.dispose();

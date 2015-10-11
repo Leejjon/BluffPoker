@@ -25,10 +25,14 @@ public class BlufPokerGame extends ApplicationAdapter implements
 	private SettingsStage settingsStage;
 	private GameStage gameStage;
 	
-	private int zoomfactor;
+	private static int divideScreenByThis;
 
-	public BlufPokerGame(int zoomfactor) {
-		this.zoomfactor = zoomfactor;
+    public static int getDivideScreenByThis() {
+        return divideScreenByThis;
+    }
+
+	public BlufPokerGame(int divideScreenByThis) {
+		this.divideScreenByThis = divideScreenByThis;
 	}
 
 	@Override
@@ -38,10 +42,10 @@ public class BlufPokerGame extends ApplicationAdapter implements
 		uiSkin.addRegions(new TextureAtlas("uiskin.atlas"));
 		
 		// Create the stages.
-		startMenuStage = new StartStage(zoomfactor, uiSkin, this);
-		settingsStage = new SettingsStage(zoomfactor, uiSkin, this, settings);
-		choosePlayerStage = new ChoosePlayersStage(zoomfactor, uiSkin, this);
-		gameStage = new GameStage(zoomfactor, uiSkin);
+		startMenuStage = new StartStage(uiSkin, this);
+		settingsStage = new SettingsStage(uiSkin, this, settings);
+		choosePlayerStage = new ChoosePlayersStage(uiSkin, this);
+		gameStage = new GameStage(uiSkin);
 		
 		// Make sure touch input goes to the startStage.
 		Gdx.input.setInputProcessor(startMenuStage);
@@ -67,6 +71,7 @@ public class BlufPokerGame extends ApplicationAdapter implements
 		settingsStage.dispose();
 		choosePlayerStage.dispose();
 		gameStage.dispose();
+		uiSkin.dispose();
 	}
 
 	@Override
@@ -102,6 +107,8 @@ public class BlufPokerGame extends ApplicationAdapter implements
 
 	@Override
 	public void shakePhone() {
-		gameStage.playDiceRoll();
+		if (gameStage.isVisible()) {
+            gameStage.shake();
+        }
 	}
 }

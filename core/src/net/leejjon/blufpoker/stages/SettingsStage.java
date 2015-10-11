@@ -16,8 +16,8 @@ public class SettingsStage extends AbstractStage {
 	private final CheckBox allowSharedBokCheckbox;
 	private final Slider numberOfLivesSlider;
 	
-	public SettingsStage(int divideScreenByThis, Skin uiSkin, final ChangeStageListener changeScreen, Settings settings) {
-		super(divideScreenByThis, false);
+	public SettingsStage(Skin uiSkin, final ChangeStageListener changeScreen, Settings settings) {
+		super(false);
 		
 		Label titleLabel = new Label("Settings", uiSkin);
 		titleLabel.setColor(Color.WHITE);
