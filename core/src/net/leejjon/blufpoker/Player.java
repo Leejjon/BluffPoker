@@ -14,27 +14,19 @@ public class Player {
         this.lives = lives;
     }
 
-    /**
-     * Call this method when a player dies.
-     *
-     * @return Boolean that tells if the player has any lives left or is completely dead.
-     */
-    public boolean die() {
+    public void loseLife(boolean bokAvailable) {
         lives--;
 
-        if (lives == 0) {
-            return true;
+        if (lives == 0 && !bokAvailable) {
+            dead = true;
+        } else if (lives == 0 && bokAvailable) {
+            ridingOnTheBok = true;
+            dead = false;
         } else {
-            return false;
+            dead = false;
         }
     }
 
-    /**
-     * If this player has died and the bok is still available, call this method to make this player ride on the bok.
-     */
-    public void jumpOnBok() {
-        ridingOnTheBok = true;
-    }
 
     public boolean isRidingOnTheBok() {
         return ridingOnTheBok;

@@ -69,4 +69,8 @@ public class Dice extends Image {
     public void pullAwayFromCup() {
         underCup = false;
     }
+
+    public int getDiceValue() {
+        return diceValue;
+    }
 }

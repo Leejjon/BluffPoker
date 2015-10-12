@@ -9,15 +9,14 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import net.leejjon.blufpoker.DiceLocation;
-import net.leejjon.blufpoker.Game;
-import net.leejjon.blufpoker.Settings;
+import net.leejjon.blufpoker.*;
 import net.leejjon.blufpoker.actors.Cup;
 import net.leejjon.blufpoker.actors.Dice;
+import net.leejjon.blufpoker.listener.LogListener;
 
 import java.util.List;
 
-public class GameStage extends AbstractStage {
+public class GameStage extends AbstractStage implements LogListener{
     private Game currentGame;
 
     private Texture closedCupTexture;
@@ -35,6 +34,8 @@ public class GameStage extends AbstractStage {
     private Dice leftDice;
     private Dice middleDice;
     private Dice rightDice;
+
+    private final Label thirdLatestOutputLabel;
     private final Label secondLatestOutputLabel;
     private final Label latestOutputLabel;
 
@@ -43,7 +44,7 @@ public class GameStage extends AbstractStage {
     private SelectBox<Integer> thirdNumberOfCall;
 
     private TextButton autoButton;
-    private TextButton submitButton;
+    private TextButton callButton;
 
     // Putting certain images at the foreground or background usually goes via z index. However the z index seems broken
     // unless I pull off crazy hacks. What Actor is painted first is simply decided by the order you add them to the stage.
@@ -96,10 +97,19 @@ public class GameStage extends AbstractStage {
                 setAutoValue();
             }
         });
-        submitButton = new TextButton("Submit", uiSkin);
+        callButton = new TextButton("Call", uiSkin);
+        callButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                call();
+            }
+        });
 
-        topTable.add(autoButton).colspan(3).left();
-        topTable.add(submitButton).colspan(3).right();
+        topTable.add(autoButton).pad(padding).colspan(3).left();
+        topTable.add(callButton).pad(padding).colspan(3).right();
+
+        thirdLatestOutputLabel = new Label("", uiSkin);
+        thirdLatestOutputLabel.setColor(Color.BLACK);
 
         secondLatestOutputLabel = new Label("", uiSkin);
         secondLatestOutputLabel.setColor(Color.BLACK);
@@ -109,6 +119,8 @@ public class GameStage extends AbstractStage {
 
         table.left();
         table.bottom();
+        table.add(thirdLatestOutputLabel).left();
+        table.row();
         table.add(secondLatestOutputLabel).left();
         table.row();
         table.add(latestOutputLabel).left();
@@ -148,14 +160,27 @@ public class GameStage extends AbstractStage {
     }
 
     public void startGame(List<String> players, Settings settings) {
-        currentGame = new Game(players, settings, cup, leftDice, middleDice, rightDice, diceRoll);
-
-        logMessage(currentGame.startGame());
+        currentGame = new Game(players, settings, cup, leftDice, middleDice, rightDice, diceRoll, this);
+        currentGame.startGame();
     }
 
-    private void logMessage(String message) {
-        secondLatestOutputLabel.setText(latestOutputLabel.getText());
-        latestOutputLabel.setText(message);
+    private void call() {
+        // The user is now allowed to make calls while he did not close his cup.
+        // TODO: We could cause his cup to auto close.
+        if (!cup.isWatchingOwnThrow()) {
+            boolean validCall = false;
+            try {
+                NumberCombination newCall = new NumberCombination(firstNumberOfCall.getSelected(), secondNumberOfCall.getSelected(), thirdNumberOfCall.getSelected());
+                currentGame.call(newCall);
+                validCall = true;
+            } catch (InputValidationException e) {
+                // TODO: Launch a dialog to warn the user.
+            }
+
+            if (validCall) {
+                enableCallUserInterface();
+            }
+        }
     }
 
     public static int getMiddleX() {
@@ -168,12 +193,21 @@ public class GameStage extends AbstractStage {
 
     public void shake() {
         if (currentGame.isAllowedToThrow()) {
-            logMessage(currentGame.throwDicesInCup());
-            firstNumberOfCall.setDisabled(false);
-            secondNumberOfCall.setDisabled(false);
-            thirdNumberOfCall.setDisabled(false);
-            autoButton.setDisabled(false);
+            log(currentGame.throwDicesInCup());
+            disableCallUserInterface();
         }
+    }
+
+    private void enableCallUserInterface() {
+        firstNumberOfCall.setDisabled(true);
+        secondNumberOfCall.setDisabled(true);
+        thirdNumberOfCall.setDisabled(true);
+    }
+
+    private void disableCallUserInterface() {
+        firstNumberOfCall.setDisabled(false);
+        secondNumberOfCall.setDisabled(false);
+        thirdNumberOfCall.setDisabled(false);
     }
 
     private void setAutoValue() {
@@ -194,5 +228,12 @@ public class GameStage extends AbstractStage {
         dice6.dispose();
         diceRoll.dispose();
         super.dispose();
+    }
+
+    @Override
+    public void log(String message) {
+        thirdLatestOutputLabel.setText(secondLatestOutputLabel.getText());
+        secondLatestOutputLabel.setText(latestOutputLabel.getText());
+        latestOutputLabel.setText(message);
     }
 }
