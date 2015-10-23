@@ -70,7 +70,9 @@ public class Dice extends Image {
         underCup = false;
     }
 
+    public void putBackUnderCup() { underCup = true; }
+
     public int getDiceValue() {
-        return diceValue;
+        return diceValue + 1;
     }
 }

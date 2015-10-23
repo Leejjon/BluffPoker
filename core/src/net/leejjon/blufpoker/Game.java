@@ -5,7 +5,7 @@ import net.leejjon.blufpoker.actions.LiftCupAction;
 import net.leejjon.blufpoker.actors.Cup;
 import net.leejjon.blufpoker.actors.Dice;
 import net.leejjon.blufpoker.listener.CupListener;
-import net.leejjon.blufpoker.listener.LogListener;
+import net.leejjon.blufpoker.listener.UserInterface;
 import net.leejjon.blufpoker.stages.GameInputInterface;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
  * Created by Leejjon on 3-10-2015.
  */
 public class Game implements GameInputInterface {
-    private LogListener logger;
+    private UserInterface userInterface;
     private Settings settings;
     private Player[] players;
     private int playerIterator = 0;
@@ -37,14 +37,14 @@ public class Game implements GameInputInterface {
     private boolean isAllowedToBelieveOrNotBelieve = false;
     private boolean canViewOwnThrow = false;
 
-    public Game(List<String> playerNames, Settings settings, Cup cup, Dice leftDice, Dice middleDice, Dice rightDice, Sound diceRoll, LogListener logger) {
+    public Game(List<String> playerNames, Settings settings, Cup cup, Dice leftDice, Dice middleDice, Dice rightDice, Sound diceRoll, UserInterface userInterface) {
         this.settings = settings;
         this.cup = cup;
         this.leftDice = leftDice;
         this.middleDice = middleDice;
         this.rightDice = rightDice;
         this.diceRoll = diceRoll;
-        this.logger = logger;
+        this.userInterface = userInterface;
 
         cup.addListener(new CupListener(this));
 
@@ -57,16 +57,19 @@ public class Game implements GameInputInterface {
     }
 
     public void startGame() {
-        logger.log("Shake the cup: " + currentPlayer.getName());
+        userInterface.log("Shake the cup: " + currentPlayer.getName());
     }
 
     public void call(NumberCombination newCall) throws InputValidationException {
         if (latestCall == null || newCall.isGreaterThan(latestCall)) {
+            if (cup.isWatchingOwnThrow()) {
+                cup.doneWatchingOwnThrow();
+            }
             canViewOwnThrow = false;
             isAllowedToBelieveOrNotBelieve = true;
             latestCall = newCall;
-            logger.log(currentPlayer.getName() + " called " + newCall);
-            logger.log(getMessageToTellNextUserToBelieveOrNot());
+            userInterface.log(currentPlayer.getName() + " called " + newCall);
+            userInterface.log(getMessageToTellNextUserToBelieveOrNot());
         } else {
             throw new InputValidationException("Your call must be higher than: " + latestCall);
         }
@@ -100,9 +103,12 @@ public class Game implements GameInputInterface {
                     cup.doneBelieving();
                     isAllowedToBelieveOrNotBelieve = false;
                     isAllowedToThrow = true;
+                    canViewOwnThrow = true;
                 } else {
+                    // Start next turn.
+                    nextPlayer();
+                    userInterface.log(currentPlayer.getName() + " believed the call.");
                     cup.believe();
-                    // TODO: Start of next turn
                 }
             } else if (canViewOwnThrow) {
                 if (cup.isWatchingOwnThrow()) {
@@ -133,11 +139,11 @@ public class Game implements GameInputInterface {
             }
 
             if (currentPlayer.isDead()) {
-                logger.log(currentPlayer.getName() + " has no more lives left");
+                userInterface.log(currentPlayer.getName() + " has no more lives left");
                 nextPlayer();
 
             } else {
-                logger.log(currentPlayer.getName() + " lost a life and has " + currentPlayer.getLives() +" left");
+                userInterface.log(currentPlayer.getName() + " lost a life and has " + currentPlayer.getLives() + " left");
             }
 
             // TODO: Make sure the following code is being executed after the LiftCupAction...
@@ -147,7 +153,7 @@ public class Game implements GameInputInterface {
             canViewOwnThrow = false;
             isAllowedToThrow = true;
 
-            logger.log("Shake the cup: " + currentPlayer.getName());
+            userInterface.log("Shake the cup: " + currentPlayer.getName());
         }
     }
 

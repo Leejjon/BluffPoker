@@ -12,11 +12,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.leejjon.blufpoker.*;
 import net.leejjon.blufpoker.actors.Cup;
 import net.leejjon.blufpoker.actors.Dice;
-import net.leejjon.blufpoker.listener.LogListener;
+import net.leejjon.blufpoker.dialogs.CallTooLowDialog;
+import net.leejjon.blufpoker.listener.UserInterface;
 
 import java.util.List;
 
-public class GameStage extends AbstractStage implements LogListener{
+public class GameStage extends AbstractStage implements UserInterface {
     private Game currentGame;
 
     private Texture closedCupTexture;
@@ -39,6 +40,8 @@ public class GameStage extends AbstractStage implements LogListener{
     private final Label secondLatestOutputLabel;
     private final Label latestOutputLabel;
 
+    private CallTooLowDialog callTooLowDialog;
+
     private SelectBox<Integer> firstNumberOfCall;
     private SelectBox<Integer> secondNumberOfCall;
     private SelectBox<Integer> thirdNumberOfCall;
@@ -60,6 +63,8 @@ public class GameStage extends AbstractStage implements LogListener{
 
         batch = new SpriteBatch();
         diceRoll = Gdx.audio.newSound(Gdx.files.internal("sound/diceroll.mp3"));
+
+        callTooLowDialog = new CallTooLowDialog(uiSkin);
 
         Integer[] oneTillSix = new Integer[] {0, 1, 2, 3, 4, 5, 6};
 
@@ -165,21 +170,17 @@ public class GameStage extends AbstractStage implements LogListener{
     }
 
     private void call() {
-        // The user is now allowed to make calls while he did not close his cup.
-        // TODO: We could cause his cup to auto close.
-        if (!cup.isWatchingOwnThrow()) {
-            boolean validCall = false;
-            try {
-                NumberCombination newCall = new NumberCombination(firstNumberOfCall.getSelected(), secondNumberOfCall.getSelected(), thirdNumberOfCall.getSelected());
-                currentGame.call(newCall);
-                validCall = true;
-            } catch (InputValidationException e) {
-                // TODO: Launch a dialog to warn the user.
-            }
+        boolean validCall = false;
+        try {
+            currentGame.call(getNewCall());
+            validCall = true;
+        } catch (InputValidationException e) {
+            callTooLowDialog.callTooLow(getNewCall());
+            callTooLowDialog.show(this);
+        }
 
-            if (validCall) {
-                enableCallUserInterface();
-            }
+        if (validCall) {
+            disableCallUserInterface();
         }
     }
 
@@ -194,17 +195,17 @@ public class GameStage extends AbstractStage implements LogListener{
     public void shake() {
         if (currentGame.isAllowedToThrow()) {
             log(currentGame.throwDicesInCup());
-            disableCallUserInterface();
+            enableCallUserInterface();
         }
     }
 
-    private void enableCallUserInterface() {
+    private void disableCallUserInterface() {
         firstNumberOfCall.setDisabled(true);
         secondNumberOfCall.setDisabled(true);
         thirdNumberOfCall.setDisabled(true);
     }
 
-    private void disableCallUserInterface() {
+    private void enableCallUserInterface() {
         firstNumberOfCall.setDisabled(false);
         secondNumberOfCall.setDisabled(false);
         thirdNumberOfCall.setDisabled(false);
@@ -235,5 +236,9 @@ public class GameStage extends AbstractStage implements LogListener{
         thirdLatestOutputLabel.setText(secondLatestOutputLabel.getText());
         secondLatestOutputLabel.setText(latestOutputLabel.getText());
         latestOutputLabel.setText(message);
+    }
+
+    public NumberCombination getNewCall() {
+        return new NumberCombination(firstNumberOfCall.getSelected(), secondNumberOfCall.getSelected(), thirdNumberOfCall.getSelected());
     }
 }
