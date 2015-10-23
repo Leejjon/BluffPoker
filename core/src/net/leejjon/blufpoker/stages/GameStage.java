@@ -13,6 +13,7 @@ import net.leejjon.blufpoker.*;
 import net.leejjon.blufpoker.actors.Cup;
 import net.leejjon.blufpoker.actors.Dice;
 import net.leejjon.blufpoker.dialogs.CallTooLowDialog;
+import net.leejjon.blufpoker.dialogs.WarningDialog;
 import net.leejjon.blufpoker.listener.UserInterface;
 
 import java.util.List;
@@ -41,6 +42,7 @@ public class GameStage extends AbstractStage implements UserInterface {
     private final Label latestOutputLabel;
 
     private CallTooLowDialog callTooLowDialog;
+    private WarningDialog throwAtLeastOneDice;
 
     private SelectBox<Integer> firstNumberOfCall;
     private SelectBox<Integer> secondNumberOfCall;
@@ -53,7 +55,9 @@ public class GameStage extends AbstractStage implements UserInterface {
     // unless I pull off crazy hacks. What Actor is painted first is simply decided by the order you add them to the stage.
     // So I decided to create two groups and switch the actors between the groups.
     private Group foreGroundActors;
+    private Group dicesUnderCupActors;
     private Group backgroundActors;
+    private Group dicesBeforeCupActors;
 
     public GameStage(Skin uiSkin) {
         super(false);
@@ -65,6 +69,7 @@ public class GameStage extends AbstractStage implements UserInterface {
         diceRoll = Gdx.audio.newSound(Gdx.files.internal("sound/diceroll.mp3"));
 
         callTooLowDialog = new CallTooLowDialog(uiSkin);
+        throwAtLeastOneDice = new WarningDialog("Throw at least one dice!", uiSkin);
 
         Integer[] oneTillSix = new Integer[] {0, 1, 2, 3, 4, 5, 6};
 
@@ -136,6 +141,9 @@ public class GameStage extends AbstractStage implements UserInterface {
 
         cup = new Cup(closedCupTexture, openCupTexture, foreGroundActors, backgroundActors);
 
+        dicesUnderCupActors = new Group();
+        dicesBeforeCupActors = new Group();
+
         // Load the textures of the dices.
         dice1 = new Texture("data/dice1.png");
         dice2 = new Texture("data/dice2.png");
@@ -146,21 +154,21 @@ public class GameStage extends AbstractStage implements UserInterface {
 
         Texture[] diceTextures = new Texture[] {dice1, dice2, dice3, dice4, dice5, dice6};
 
-        leftDice = new Dice(diceTextures, 6);
-        leftDice.calculateAndSetPosition(DiceLocation.LEFT, cup.getMiddleHeightForCup());
+        leftDice = new Dice(cup, diceTextures, 6, DiceLocation.LEFT, dicesUnderCupActors, dicesBeforeCupActors);
+        leftDice.calculateAndSetPosition();
 
-        middleDice = new Dice(diceTextures, 4);
-        middleDice.calculateAndSetPosition(DiceLocation.MIDDLE, cup.getMiddleHeightForCup());
+        middleDice = new Dice(cup, diceTextures, 4, DiceLocation.MIDDLE, dicesUnderCupActors, dicesBeforeCupActors);
+        middleDice.calculateAndSetPosition();
 
-        rightDice = new Dice(diceTextures, 3);
-        rightDice.calculateAndSetPosition(DiceLocation.RIGHT, cup.getMiddleHeightForCup());
+        rightDice = new Dice(cup, diceTextures, 3, DiceLocation.RIGHT, dicesUnderCupActors, dicesBeforeCupActors);
+        rightDice.calculateAndSetPosition();
+
 
         addActor(table);
         addActor(backgroundActors);
-        addActor(leftDice);
-        addActor(middleDice);
-        addActor(rightDice);
+        addActor(dicesBeforeCupActors);
         addActor(foreGroundActors);
+        addActor(dicesUnderCupActors);
         addActor(topTable);
     }
 
@@ -194,9 +202,27 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     public void shake() {
         if (currentGame.isAllowedToThrow()) {
-            log(currentGame.throwDicesInCup());
-            enableCallUserInterface();
-        }
+            int numberOfDicesUnderCup = 0;
+
+            if (leftDice.isUnderCup()) {
+                numberOfDicesUnderCup++;
+            }
+
+            if (middleDice.isUnderCup()) {
+                numberOfDicesUnderCup++;
+            }
+
+            if (rightDice.isUnderCup()) {
+                numberOfDicesUnderCup++;
+            }
+
+            if (numberOfDicesUnderCup > 0) {
+                currentGame.throwDicesInCup();
+                enableCallUserInterface();
+            } else {
+                throwAtLeastOneDice.show(this);
+            }
+        } 
     }
 
     private void disableCallUserInterface() {

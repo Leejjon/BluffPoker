@@ -5,6 +5,7 @@ import net.leejjon.blufpoker.actions.LiftCupAction;
 import net.leejjon.blufpoker.actors.Cup;
 import net.leejjon.blufpoker.actors.Dice;
 import net.leejjon.blufpoker.listener.CupListener;
+import net.leejjon.blufpoker.listener.DiceListener;
 import net.leejjon.blufpoker.listener.UserInterface;
 import net.leejjon.blufpoker.stages.GameInputInterface;
 
@@ -47,6 +48,9 @@ public class Game implements GameInputInterface {
         this.userInterface = userInterface;
 
         cup.addListener(new CupListener(this));
+        leftDice.addListener(new DiceListener(leftDice));
+        middleDice.addListener(new DiceListener(middleDice));
+        rightDice.addListener(new DiceListener(rightDice));
 
         players = new Player[playerNames.size()];
         for (int i = 0; i < playerNames.size(); i++) {
@@ -192,14 +196,13 @@ public class Game implements GameInputInterface {
         }
     }
 
-    @Override
-    public String throwDicesInCup() {
+    public void throwDicesInCup() {
         cup.reset();
         diceRoll.play(1.0f);
         generateRandomDices();
         isAllowedToThrow = false;
         canViewOwnThrow = true;
-        return "Now enter your call ...";
+        userInterface.log("Now enter your call ...");
     }
 
     /**
