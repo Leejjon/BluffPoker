@@ -178,17 +178,21 @@ public class GameStage extends AbstractStage implements UserInterface {
     }
 
     private void call() {
-        boolean validCall = false;
-        try {
-            currentGame.call(getNewCall());
-            validCall = true;
-        } catch (InputValidationException e) {
-            callTooLowDialog.callTooLow(getNewCall());
-            callTooLowDialog.show(this);
-        }
+        if (currentGame.isAllowedToCall()) {
+            boolean validCall = false;
+            try {
+                currentGame.call(getNewCall());
+                validCall = true;
+            } catch (InputValidationException e) {
+                callTooLowDialog.callTooLow(getNewCall());
+                callTooLowDialog.show(this);
+            }
 
-        if (validCall) {
-            disableCallUserInterface();
+            if (validCall) {
+                disableCallUserInterface();
+            }
+        } else {
+            throwAtLeastOneDice.show(this);
         }
     }
 
@@ -222,19 +226,21 @@ public class GameStage extends AbstractStage implements UserInterface {
             } else {
                 throwAtLeastOneDice.show(this);
             }
-        } 
+        }
     }
 
     private void disableCallUserInterface() {
         firstNumberOfCall.setDisabled(true);
         secondNumberOfCall.setDisabled(true);
         thirdNumberOfCall.setDisabled(true);
+        callButton.setDisabled(true);
     }
 
     private void enableCallUserInterface() {
         firstNumberOfCall.setDisabled(false);
         secondNumberOfCall.setDisabled(false);
         thirdNumberOfCall.setDisabled(false);
+        callButton.setDisabled(false);
     }
 
     private void setAutoValue() {

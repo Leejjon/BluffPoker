@@ -34,9 +34,10 @@ public class Game implements GameInputInterface {
     private Player currentPlayer;
     private NumberCombination latestCall = null;
 
-    private boolean isAllowedToThrow = true;
-    private boolean isAllowedToBelieveOrNotBelieve = false;
+    private boolean allowedToThrow = true;
+    private boolean allowedToBelieveOrNotBelieve = false;
     private boolean canViewOwnThrow = false;
+    private boolean allowedToCall = false;
 
     public Game(List<String> playerNames, Settings settings, Cup cup, Dice leftDice, Dice middleDice, Dice rightDice, Sound diceRoll, UserInterface userInterface) {
         this.settings = settings;
@@ -69,8 +70,9 @@ public class Game implements GameInputInterface {
             if (cup.isWatchingOwnThrow()) {
                 cup.doneWatchingOwnThrow();
             }
+            allowedToCall = false;
             canViewOwnThrow = false;
-            isAllowedToBelieveOrNotBelieve = true;
+            allowedToBelieveOrNotBelieve = true;
             latestCall = newCall;
             userInterface.log(currentPlayer.getName() + " called " + newCall);
             userInterface.log(getMessageToTellNextUserToBelieveOrNot());
@@ -90,7 +92,7 @@ public class Game implements GameInputInterface {
     }
 
     public boolean isAllowedToThrow() {
-        return isAllowedToThrow;
+        return allowedToThrow;
     }
 
     private void generateRandomDices() {
@@ -102,11 +104,11 @@ public class Game implements GameInputInterface {
     @Override
     public void tapCup() {
         if (!cup.isMoving()) {
-            if (isAllowedToBelieveOrNotBelieve) {
+            if (allowedToBelieveOrNotBelieve) {
                 if (cup.isBelieving()) {
                     cup.doneBelieving();
-                    isAllowedToBelieveOrNotBelieve = false;
-                    isAllowedToThrow = true;
+                    allowedToBelieveOrNotBelieve = false;
+                    allowedToThrow = true;
                     canViewOwnThrow = true;
                 } else {
                     // Start next turn.
@@ -127,7 +129,7 @@ public class Game implements GameInputInterface {
     @Override
     public void swipeCupUp() {
         // Obviously, you can not "not believe" something after you've first believed it, or if you have just made a throw yourself.
-        if (!cup.isBelieving() && !cup.isWatchingOwnThrow() && isAllowedToBelieveOrNotBelieve) {
+        if (!cup.isBelieving() && !cup.isWatchingOwnThrow() && allowedToBelieveOrNotBelieve) {
             cup.addAction(new LiftCupAction());
 
             // If the one who did not believed loses, it becomes his turn (the one who made the call was still the currentPlayer).
@@ -144,7 +146,9 @@ public class Game implements GameInputInterface {
 
             if (currentPlayer.isDead()) {
                 userInterface.log(currentPlayer.getName() + " has no more lives left");
-                nextPlayer();
+                if (!nextPlayer()) {
+                    // There is a winner!
+                }
 
             } else {
                 userInterface.log(currentPlayer.getName() + " lost a life and has " + currentPlayer.getLives() + " left");
@@ -152,19 +156,24 @@ public class Game implements GameInputInterface {
 
             // TODO: Make sure the following code is being executed after the LiftCupAction...
 
+            leftDice.reset();
+            middleDice.reset();
+            rightDice.reset();
+
             latestCall = null;
-            isAllowedToBelieveOrNotBelieve = false;
+            allowedToBelieveOrNotBelieve = false;
             canViewOwnThrow = false;
-            isAllowedToThrow = true;
+            allowedToThrow = true;
 
             userInterface.log("Shake the cup: " + currentPlayer.getName());
         }
     }
 
     /**
-     * Watch out, recursive stuff.
+     * Watch out, this is a recursive function.
+     * @return A boolean if there is a next player.
      */
-    private void nextPlayer() {
+    private boolean nextPlayer() {
         // TODO: Check if there is a winner.
 
         if (playerIterator+1 < players.length) {
@@ -178,6 +187,9 @@ public class Game implements GameInputInterface {
         } else {
             currentPlayer = players[playerIterator];
         }
+
+        // There is more than one player left
+        return true;
     }
 
     private boolean canUseBok() {
@@ -200,8 +212,9 @@ public class Game implements GameInputInterface {
         cup.reset();
         diceRoll.play(1.0f);
         generateRandomDices();
-        isAllowedToThrow = false;
+        allowedToThrow = false;
         canViewOwnThrow = true;
+        allowedToCall = true;
         userInterface.log("Now enter your call ...");
     }
 
@@ -210,5 +223,9 @@ public class Game implements GameInputInterface {
      */
     private NumberCombination getNumberCombinationFromDices() {
         return new NumberCombination(leftDice.getDiceValue(), middleDice.getDiceValue(), rightDice.getDiceValue());
+    }
+
+    public boolean isAllowedToCall() {
+        return allowedToCall;
     }
 }
