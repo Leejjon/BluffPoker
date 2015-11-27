@@ -31,7 +31,7 @@ public class SettingsStage extends AbstractStage {
 		switchPositionsCheckBox = new CheckBox("Allow switching positions", uiSkin);
 		allowBokCheckBox = new CheckBox("Allow bok", uiSkin);
 		allowSharedBokCheckbox = new CheckBox("Allow shared bok", uiSkin);
-		numberOfLivesSlider = new Slider(0f, 10f, 1f, false, uiSkin);
+		numberOfLivesSlider = new Slider(1f, 10f, 1f, false, uiSkin);
 		numberOfLivesSlider.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {

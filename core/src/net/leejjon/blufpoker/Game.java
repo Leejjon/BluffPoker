@@ -17,6 +17,7 @@ import java.util.List;
 public class Game implements GameInputInterface {
     private UserInterface userInterface;
     private Settings settings;
+    private List<String> originalPlayers;
     private Player[] players;
     private int playerIterator = 0;
 
@@ -39,7 +40,7 @@ public class Game implements GameInputInterface {
     private boolean canViewOwnThrow = false;
     private boolean allowedToCall = false;
 
-    public Game(List<String> playerNames, Settings settings, Cup cup, Dice leftDice, Dice middleDice, Dice rightDice, Sound diceRoll, UserInterface userInterface) {
+    public Game(List<String> originalPlayers, Settings settings, Cup cup, Dice leftDice, Dice middleDice, Dice rightDice, Sound diceRoll, UserInterface userInterface) {
         this.settings = settings;
         this.cup = cup;
         this.leftDice = leftDice;
@@ -47,18 +48,23 @@ public class Game implements GameInputInterface {
         this.rightDice = rightDice;
         this.diceRoll = diceRoll;
         this.userInterface = userInterface;
+        this.originalPlayers = originalPlayers;
 
         cup.addListener(new CupListener(this));
         leftDice.addListener(new DiceListener(leftDice));
         middleDice.addListener(new DiceListener(middleDice));
         rightDice.addListener(new DiceListener(rightDice));
 
-        players = new Player[playerNames.size()];
-        for (int i = 0; i < playerNames.size(); i++) {
-            players[i] = new Player(playerNames.get(i), settings.getNumberOfLives());
-        }
+        constructPlayers(originalPlayers, settings);
 
         currentPlayer = players[playerIterator];
+    }
+
+    private void constructPlayers(List<String> originalPlayers, Settings settings) {
+        players = new Player[originalPlayers.size()];
+        for (int i = 0; i < originalPlayers.size(); i++) {
+            players[i] = new Player(originalPlayers.get(i), settings.getNumberOfLives());
+        }
     }
 
     public void startGame() {
@@ -148,6 +154,8 @@ public class Game implements GameInputInterface {
                 userInterface.log(currentPlayer.getName() + " has no more lives left");
                 if (!nextPlayer()) {
                     // There is a winner!
+                    // TODO: Create retry dialog.
+                    return;
                 }
 
             } else {
@@ -174,7 +182,25 @@ public class Game implements GameInputInterface {
      * @return A boolean if there is a next player.
      */
     private boolean nextPlayer() {
-        // TODO: Check if there is a winner.
+        int numberOfPlayersStillAlive = 0;
+
+        // Check if there are still more than two players alive.
+        int indexOfLastLivingPlayer = 0;
+        for (int i = 0; i < players.length; i++) {
+            Player p = players[i];
+            if (!p.isDead()) {
+                numberOfPlayersStillAlive++;
+            } else {
+                indexOfLastLivingPlayer = i;
+            }
+        }
+
+        if (numberOfPlayersStillAlive < 2) {
+            // Set the winning player as the one to start next game.
+            playerIterator = indexOfLastLivingPlayer;
+            
+            return false;
+        }
 
         if (playerIterator+1 < players.length) {
             playerIterator++;
