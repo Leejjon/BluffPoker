@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.leejjon.blufpoker.*;
 import net.leejjon.blufpoker.actors.Cup;
 import net.leejjon.blufpoker.actors.Dice;
+import net.leejjon.blufpoker.dialogs.CallNotThreeIdenticalNumbersDialog;
 import net.leejjon.blufpoker.dialogs.CallTooLowDialog;
 import net.leejjon.blufpoker.dialogs.WarningDialog;
 import net.leejjon.blufpoker.dialogs.WinnerDialog;
@@ -43,6 +44,7 @@ public class GameStage extends AbstractStage implements UserInterface {
     private final Label latestOutputLabel;
 
     private CallTooLowDialog callTooLowDialog;
+    private CallNotThreeIdenticalNumbersDialog callNotThreeIdenticalNumbersDialog;
     private WarningDialog throwAtLeastOneDice;
     private WarningDialog throwAllDices;
     private WinnerDialog winnerDialog;
@@ -72,6 +74,7 @@ public class GameStage extends AbstractStage implements UserInterface {
         diceRoll = Gdx.audio.newSound(Gdx.files.internal("sound/diceroll.mp3"));
 
         callTooLowDialog = new CallTooLowDialog(uiSkin);
+        callNotThreeIdenticalNumbersDialog = new CallNotThreeIdenticalNumbersDialog(uiSkin);
         throwAtLeastOneDice = new WarningDialog("Throw at least one dice!", uiSkin);
         throwAllDices = new WarningDialog("Throw with all dices!", uiSkin);
         winnerDialog = new WinnerDialog(uiSkin);
@@ -191,8 +194,13 @@ public class GameStage extends AbstractStage implements UserInterface {
                 currentGame.validateCall(getNewCall());
                 validCall = true;
             } catch (InputValidationException e) {
-                callTooLowDialog.callTooLow(getNewCall());
-                callTooLowDialog.show(this);
+                if (currentGame.hasBelieved666()) {
+                    callNotThreeIdenticalNumbersDialog.setInvalidCallMessage(currentGame.getLatestCall());
+                    callNotThreeIdenticalNumbersDialog.show(this);
+                } else {
+                    callTooLowDialog.callTooLow(getNewCall());
+                    callTooLowDialog.show(this);
+                }
             }
 
             if (validCall) {
@@ -264,27 +272,43 @@ public class GameStage extends AbstractStage implements UserInterface {
     }
 
     private void setAutoValue() {
-        if (firstNumberOfCall.getSelected().intValue() == 0 &&
-                secondNumberOfCall.getSelected().intValue() == 0 &&
-                thirdNumberOfCall.getSelected().intValue() == 0) {
-            firstNumberOfCall.setSelected(6);
-            secondNumberOfCall.setSelected(4);
-            thirdNumberOfCall.setSelected(3);
-        } else {
-            if (thirdNumberOfCall.getSelected().intValue() < 6) {
-                thirdNumberOfCall.setSelected(thirdNumberOfCall.getSelected().intValue() + 1);
-            } else {
-                thirdNumberOfCall.setSelected(0);
-                if (secondNumberOfCall.getSelected().intValue() < 6) {
-                    secondNumberOfCall.setSelected(secondNumberOfCall.getSelected().intValue() + 1);
+        if (currentGame.isAllowedToCall()) {
+            if (currentGame.hasBelieved666()) {
+                if (thirdNumberOfCall.getSelected().intValue() == 6 &&
+                        secondNumberOfCall.getSelected().intValue() == 6 &&
+                        firstNumberOfCall.getSelected().intValue() == 6) {
+                    thirdNumberOfCall.setSelected(1);
+                    secondNumberOfCall.setSelected(1);
+                    firstNumberOfCall.setSelected(1);
                 } else {
-                    secondNumberOfCall.setSelected(0);
-                    if (firstNumberOfCall.getSelected().intValue() < 6) {
-                        firstNumberOfCall.setSelected(firstNumberOfCall.getSelected().intValue() + 1);
-                    } else { // In case of 666
-                        firstNumberOfCall.setSelected(1);
-                        secondNumberOfCall.setSelected(1);
-                        thirdNumberOfCall.setSelected(1);
+                    thirdNumberOfCall.setSelected(thirdNumberOfCall.getSelected().intValue() + 1);
+                    secondNumberOfCall.setSelected(secondNumberOfCall.getSelected().intValue() + 1);
+                    firstNumberOfCall.setSelected(firstNumberOfCall.getSelected().intValue() + 1);
+                }
+            } else {
+                if (firstNumberOfCall.getSelected().intValue() == 0 &&
+                        secondNumberOfCall.getSelected().intValue() == 0 &&
+                        thirdNumberOfCall.getSelected().intValue() == 0) {
+                    firstNumberOfCall.setSelected(6);
+                    secondNumberOfCall.setSelected(4);
+                    thirdNumberOfCall.setSelected(3);
+                } else {
+                    if (thirdNumberOfCall.getSelected().intValue() < 6) {
+                        thirdNumberOfCall.setSelected(thirdNumberOfCall.getSelected().intValue() + 1);
+                    } else {
+                        thirdNumberOfCall.setSelected(0);
+                        if (secondNumberOfCall.getSelected().intValue() < 6) {
+                            secondNumberOfCall.setSelected(secondNumberOfCall.getSelected().intValue() + 1);
+                        } else {
+                            secondNumberOfCall.setSelected(0);
+                            if (firstNumberOfCall.getSelected().intValue() < 6) {
+                                firstNumberOfCall.setSelected(firstNumberOfCall.getSelected().intValue() + 1);
+                            } else { // In case of 666
+                                firstNumberOfCall.setSelected(1);
+                                secondNumberOfCall.setSelected(1);
+                                thirdNumberOfCall.setSelected(1);
+                            }
+                        }
                     }
                 }
             }

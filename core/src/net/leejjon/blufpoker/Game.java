@@ -33,6 +33,7 @@ public class Game implements GameInputInterface {
      * The player that has the turn.
      */
     private Player currentPlayer;
+
     private NumberCombination latestCall = null;
 
     private boolean allowedToThrow = true;
@@ -301,5 +302,9 @@ public class Game implements GameInputInterface {
 
     public boolean hasBelieved666() {
         return believed666;
+    }
+
+    public NumberCombination getLatestCall() {
+        return latestCall;
     }
 }
