@@ -10,7 +10,6 @@ import net.leejjon.blufpoker.NumberCombination;
 public class CallTooLowDialog extends Dialog {
     public CallTooLowDialog(Skin skin) {
         super("Warning", skin);
-        text(""); // Leave empty because we only know what number to tell when we show this message.
         button("Ok");
     }
 

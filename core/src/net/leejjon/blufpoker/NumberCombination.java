@@ -7,20 +7,30 @@ public class NumberCombination {
     private int highestNumber = 0;
     private int middleNumber = 0;
     private int lowestNumber = 0;
+    private boolean call;
 
-    public NumberCombination(int firstNumber, int secondNumber, int thirdNumber) {
-        int[] numbers = new int[] {firstNumber, secondNumber, thirdNumber};
-        for (int number : numbers) {
-            if (number > highestNumber) {
-                lowestNumber = middleNumber;
-                middleNumber = highestNumber;
-                highestNumber = number;
-            } else /* (number <= highestNumber) */ {
-                if (number > middleNumber) {
+    public NumberCombination(int firstNumber, int secondNumber, int thirdNumber, boolean call) {
+        this.call = call;
+
+        // If it's a validateCall, take the number exactly how it's being inserted.
+        if (call) {
+            highestNumber = firstNumber;
+            middleNumber = secondNumber;
+            lowestNumber = thirdNumber;
+        } else { // If it's a throw, 
+            int[] numbers = new int[]{firstNumber, secondNumber, thirdNumber};
+            for (int number : numbers) {
+                if (number > highestNumber) {
                     lowestNumber = middleNumber;
-                    middleNumber = number;
-                } else /* number <= middleNumber */ {
-                    lowestNumber = number;
+                    middleNumber = highestNumber;
+                    highestNumber = number;
+                } else /* (number <= highestNumber) */ {
+                    if (number > middleNumber) {
+                        lowestNumber = middleNumber;
+                        middleNumber = number;
+                    } else /* number <= middleNumber */ {
+                        lowestNumber = number;
+                    }
                 }
             }
         }
@@ -56,6 +66,24 @@ public class NumberCombination {
 
     public int getLowestNumber() {
         return lowestNumber;
+    }
+
+    public boolean equals(NumberCombination numberCombination) {
+        if (numberCombination.getHighestNumber() == highestNumber &&
+                numberCombination.getMiddleNumber() == middleNumber &&
+                numberCombination.getLowestNumber() == lowestNumber) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean areAllDicesEqual() {
+        if (highestNumber != 0 && highestNumber == middleNumber && middleNumber == lowestNumber) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override

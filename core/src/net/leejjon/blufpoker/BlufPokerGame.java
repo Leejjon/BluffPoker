@@ -56,7 +56,7 @@ public class BlufPokerGame extends ApplicationAdapter implements
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		// Just call the draw methods of the stages. They will figure out by
+		// Just validateCall the draw methods of the stages. They will figure out by
 		// themselves if they need to be drawn or not.
 		startMenuStage.draw();
 		settingsStage.draw();

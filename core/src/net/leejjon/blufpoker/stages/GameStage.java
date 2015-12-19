@@ -14,6 +14,7 @@ import net.leejjon.blufpoker.actors.Cup;
 import net.leejjon.blufpoker.actors.Dice;
 import net.leejjon.blufpoker.dialogs.CallTooLowDialog;
 import net.leejjon.blufpoker.dialogs.WarningDialog;
+import net.leejjon.blufpoker.dialogs.WinnerDialog;
 import net.leejjon.blufpoker.listener.UserInterface;
 
 import java.util.List;
@@ -43,6 +44,8 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     private CallTooLowDialog callTooLowDialog;
     private WarningDialog throwAtLeastOneDice;
+    private WarningDialog throwAllDices;
+    private WinnerDialog winnerDialog;
 
     private SelectBox<Integer> firstNumberOfCall;
     private SelectBox<Integer> secondNumberOfCall;
@@ -70,6 +73,8 @@ public class GameStage extends AbstractStage implements UserInterface {
 
         callTooLowDialog = new CallTooLowDialog(uiSkin);
         throwAtLeastOneDice = new WarningDialog("Throw at least one dice!", uiSkin);
+        throwAllDices = new WarningDialog("Throw with all dices!", uiSkin);
+        winnerDialog = new WinnerDialog(uiSkin);
 
         Integer[] oneTillSix = new Integer[] {0, 1, 2, 3, 4, 5, 6};
 
@@ -107,6 +112,7 @@ public class GameStage extends AbstractStage implements UserInterface {
                 setAutoValue();
             }
         });
+        autoButton.setDisabled(true);
         callButton = new TextButton("Call", uiSkin);
         callButton.addListener(new ClickListener() {
             @Override
@@ -114,6 +120,7 @@ public class GameStage extends AbstractStage implements UserInterface {
                 call();
             }
         });
+        callButton.setDisabled(true);
 
         topTable.add(autoButton).pad(padding).colspan(3).left();
         topTable.add(callButton).pad(padding).colspan(3).right();
@@ -181,7 +188,7 @@ public class GameStage extends AbstractStage implements UserInterface {
         if (currentGame.isAllowedToCall()) {
             boolean validCall = false;
             try {
-                currentGame.call(getNewCall());
+                currentGame.validateCall(getNewCall());
                 validCall = true;
             } catch (InputValidationException e) {
                 callTooLowDialog.callTooLow(getNewCall());
@@ -220,11 +227,22 @@ public class GameStage extends AbstractStage implements UserInterface {
                 numberOfDicesUnderCup++;
             }
 
-            if (numberOfDicesUnderCup > 0) {
-                currentGame.throwDicesInCup();
-                enableCallUserInterface();
+            if (currentGame.hasBelieved666()) {
+                // You must throw all dices at once.
+                if (numberOfDicesUnderCup < 3) {
+                    throwAllDices.show(this);
+                } else {
+                    currentGame.throwDicesInCup();
+                    enableCallUserInterface();
+                }
             } else {
-                throwAtLeastOneDice.show(this);
+                // You must throw at least one dice.
+                if (numberOfDicesUnderCup > 0) {
+                    currentGame.throwDicesInCup();
+                    enableCallUserInterface();
+                } else {
+                    throwAtLeastOneDice.show(this);
+                }
             }
         }
     }
@@ -234,6 +252,7 @@ public class GameStage extends AbstractStage implements UserInterface {
         secondNumberOfCall.setDisabled(true);
         thirdNumberOfCall.setDisabled(true);
         callButton.setDisabled(true);
+        autoButton.setDisabled(true);
     }
 
     private void enableCallUserInterface() {
@@ -241,12 +260,35 @@ public class GameStage extends AbstractStage implements UserInterface {
         secondNumberOfCall.setDisabled(false);
         thirdNumberOfCall.setDisabled(false);
         callButton.setDisabled(false);
+        autoButton.setDisabled(false);
     }
 
     private void setAutoValue() {
-        firstNumberOfCall.setSelected(6);
-        secondNumberOfCall.setSelected(4);
-        thirdNumberOfCall.setSelected(3);
+        if (firstNumberOfCall.getSelected().intValue() == 0 &&
+                secondNumberOfCall.getSelected().intValue() == 0 &&
+                thirdNumberOfCall.getSelected().intValue() == 0) {
+            firstNumberOfCall.setSelected(6);
+            secondNumberOfCall.setSelected(4);
+            thirdNumberOfCall.setSelected(3);
+        } else {
+            if (thirdNumberOfCall.getSelected().intValue() < 6) {
+                thirdNumberOfCall.setSelected(thirdNumberOfCall.getSelected().intValue() + 1);
+            } else {
+                thirdNumberOfCall.setSelected(0);
+                if (secondNumberOfCall.getSelected().intValue() < 6) {
+                    secondNumberOfCall.setSelected(secondNumberOfCall.getSelected().intValue() + 1);
+                } else {
+                    secondNumberOfCall.setSelected(0);
+                    if (firstNumberOfCall.getSelected().intValue() < 6) {
+                        firstNumberOfCall.setSelected(firstNumberOfCall.getSelected().intValue() + 1);
+                    } else { // In case of 666
+                        firstNumberOfCall.setSelected(1);
+                        secondNumberOfCall.setSelected(1);
+                        thirdNumberOfCall.setSelected(1);
+                    }
+                }
+            }
+        }
     }
 
     public void dispose() {
@@ -270,7 +312,33 @@ public class GameStage extends AbstractStage implements UserInterface {
         latestOutputLabel.setText(message);
     }
 
+    @Override
+    public void finishGame(String winner ) {
+        winnerDialog.setWinner(winner);
+        winnerDialog.show(this);
+    }
+
+    @Override
+    public void restart() {
+        currentGame.constructPlayers();
+        currentGame.startGame();
+        // TODO: Clear console labels
+        // TODO: Put the validateCall comboboxes back.
+        // TODO: Reset the games booleans such as bok.
+    }
+
     public NumberCombination getNewCall() {
-        return new NumberCombination(firstNumberOfCall.getSelected(), secondNumberOfCall.getSelected(), thirdNumberOfCall.getSelected());
+        return new NumberCombination(firstNumberOfCall.getSelected(), secondNumberOfCall.getSelected(), thirdNumberOfCall.getSelected(), true);
+    }
+
+    @Override
+    public void resetCall() {
+        autoButton.setDisabled(true);
+        firstNumberOfCall.setSelected(0);
+        firstNumberOfCall.setDisabled(true);
+        secondNumberOfCall.setSelected(0);
+        secondNumberOfCall.setDisabled(true);
+        thirdNumberOfCall.setSelected(0);
+        thirdNumberOfCall.setDisabled(true);
     }
 }

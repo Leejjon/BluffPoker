@@ -7,4 +7,10 @@ import net.leejjon.blufpoker.NumberCombination;
  */
 public interface UserInterface {
     void log(String message);
+
+    void finishGame(String winner);
+
+    void restart();
+
+    void resetCall();
 }

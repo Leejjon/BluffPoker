@@ -19,6 +19,9 @@ public class Player {
 
         if (lives == 0 && !bokAvailable) {
             dead = true;
+        } else if (lives < 0) {
+            // If the player was riding on the bok he had 0 lives. If he has died again his lifes would be -1.
+            dead = true;
         } else if (lives == 0 && bokAvailable) {
             ridingOnTheBok = true;
             dead = false;
