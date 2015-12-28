@@ -134,6 +134,11 @@ public class ChoosePlayersStage extends AbstractStage implements ModifyPlayerLis
 		return currentPlayerList;
 	}
 
+	public void clearCurrentPlayers() {
+        currentPlayers.clear();
+        currentPlayerList.clearItems();
+    }
+
 	private List<String> getExistingPlayerList(Skin uiSkin) {
 		existingPlayers = new ArrayList<>();
 

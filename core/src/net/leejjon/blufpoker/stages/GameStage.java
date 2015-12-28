@@ -16,6 +16,7 @@ import net.leejjon.blufpoker.dialogs.CallNotThreeIdenticalNumbersDialog;
 import net.leejjon.blufpoker.dialogs.CallTooLowDialog;
 import net.leejjon.blufpoker.dialogs.WarningDialog;
 import net.leejjon.blufpoker.dialogs.WinnerDialog;
+import net.leejjon.blufpoker.listener.ChangeStageListener;
 import net.leejjon.blufpoker.listener.UserInterface;
 
 import java.util.List;
@@ -64,7 +65,7 @@ public class GameStage extends AbstractStage implements UserInterface {
     private Group backgroundActors;
     private Group dicesBeforeCupActors;
 
-    public GameStage(Skin uiSkin) {
+    public GameStage(Skin uiSkin, final ChangeStageListener stageListener) {
         super(false);
 
         closedCupTexture = new Texture("data/closedCup.png");
@@ -77,7 +78,7 @@ public class GameStage extends AbstractStage implements UserInterface {
         callNotThreeIdenticalNumbersDialog = new CallNotThreeIdenticalNumbersDialog(uiSkin);
         throwAtLeastOneDice = new WarningDialog("Throw at least one dice!", uiSkin);
         throwAllDices = new WarningDialog("Throw with all dices!", uiSkin);
-        winnerDialog = new WinnerDialog(uiSkin);
+        winnerDialog = new WinnerDialog(stageListener, this, uiSkin);
 
         Integer[] oneTillSix = new Integer[] {0, 1, 2, 3, 4, 5, 6};
 
@@ -183,8 +184,15 @@ public class GameStage extends AbstractStage implements UserInterface {
     }
 
     public void startGame(List<String> players, Settings settings) {
-        currentGame = new Game(players, settings, cup, leftDice, middleDice, rightDice, diceRoll, this);
-        currentGame.startGame();
+        resetCall();
+        resetLog();
+
+        if (currentGame == null) {
+            currentGame = new Game(cup, leftDice, middleDice, rightDice, diceRoll, this);
+        }
+
+        currentGame.resetPlayerIterator();
+        currentGame.startGame(players, settings);
     }
 
     private void call() {
@@ -220,7 +228,7 @@ public class GameStage extends AbstractStage implements UserInterface {
     }
 
     public void shake() {
-        if (currentGame.isAllowedToThrow()) {
+        if (currentGame.isAllowedToThrow() && !cup.isBelieving() && !cup.isWatchingOwnThrow()) {
             int numberOfDicesUnderCup = 0;
 
             if (leftDice.isUnderCup()) {
@@ -274,35 +282,35 @@ public class GameStage extends AbstractStage implements UserInterface {
     private void setAutoValue() {
         if (currentGame.isAllowedToCall()) {
             if (currentGame.hasBelieved666()) {
-                if (thirdNumberOfCall.getSelected().intValue() == 6 &&
-                        secondNumberOfCall.getSelected().intValue() == 6 &&
-                        firstNumberOfCall.getSelected().intValue() == 6) {
+                if (thirdNumberOfCall.getSelected() == 6 &&
+                        secondNumberOfCall.getSelected() == 6 &&
+                        firstNumberOfCall.getSelected() == 6) {
                     thirdNumberOfCall.setSelected(1);
                     secondNumberOfCall.setSelected(1);
                     firstNumberOfCall.setSelected(1);
                 } else {
-                    thirdNumberOfCall.setSelected(thirdNumberOfCall.getSelected().intValue() + 1);
-                    secondNumberOfCall.setSelected(secondNumberOfCall.getSelected().intValue() + 1);
-                    firstNumberOfCall.setSelected(firstNumberOfCall.getSelected().intValue() + 1);
+                    thirdNumberOfCall.setSelected(thirdNumberOfCall.getSelected() + 1);
+                    secondNumberOfCall.setSelected(secondNumberOfCall.getSelected() + 1);
+                    firstNumberOfCall.setSelected(firstNumberOfCall.getSelected() + 1);
                 }
             } else {
-                if (firstNumberOfCall.getSelected().intValue() == 0 &&
-                        secondNumberOfCall.getSelected().intValue() == 0 &&
-                        thirdNumberOfCall.getSelected().intValue() == 0) {
+                if (firstNumberOfCall.getSelected() == 0 &&
+                        secondNumberOfCall.getSelected() == 0 &&
+                        thirdNumberOfCall.getSelected() == 0) {
                     firstNumberOfCall.setSelected(6);
                     secondNumberOfCall.setSelected(4);
                     thirdNumberOfCall.setSelected(3);
                 } else {
-                    if (thirdNumberOfCall.getSelected().intValue() < 6) {
-                        thirdNumberOfCall.setSelected(thirdNumberOfCall.getSelected().intValue() + 1);
+                    if (thirdNumberOfCall.getSelected() < 6) {
+                        thirdNumberOfCall.setSelected(thirdNumberOfCall.getSelected() + 1);
                     } else {
                         thirdNumberOfCall.setSelected(0);
-                        if (secondNumberOfCall.getSelected().intValue() < 6) {
-                            secondNumberOfCall.setSelected(secondNumberOfCall.getSelected().intValue() + 1);
+                        if (secondNumberOfCall.getSelected() < 6) {
+                            secondNumberOfCall.setSelected(secondNumberOfCall.getSelected() + 1);
                         } else {
                             secondNumberOfCall.setSelected(0);
-                            if (firstNumberOfCall.getSelected().intValue() < 6) {
-                                firstNumberOfCall.setSelected(firstNumberOfCall.getSelected().intValue() + 1);
+                            if (firstNumberOfCall.getSelected() < 6) {
+                                firstNumberOfCall.setSelected(firstNumberOfCall.getSelected() + 1);
                             } else { // In case of 666
                                 firstNumberOfCall.setSelected(1);
                                 secondNumberOfCall.setSelected(1);
@@ -344,11 +352,15 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     @Override
     public void restart() {
-        currentGame.constructPlayers();
-        currentGame.startGame();
-        // TODO: Clear console labels
-        // TODO: Put the validateCall comboboxes back.
-        // TODO: Reset the games booleans such as bok.
+        resetCall();
+        resetLog();
+        currentGame.restart();
+    }
+
+    private void resetLog() {
+        thirdLatestOutputLabel.setText("");
+        secondLatestOutputLabel.setText("");
+        latestOutputLabel.setText("");
     }
 
     public NumberCombination getNewCall() {

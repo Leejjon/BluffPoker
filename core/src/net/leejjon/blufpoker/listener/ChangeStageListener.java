@@ -8,5 +8,6 @@ public interface ChangeStageListener {
 	void startSelectingPlayersToPlayWith();
 	void openSettingsStage();
 	void closeSettingsStage(Settings newSettings);
+	void backToStartStage();
 	void startGame(List<String> players);
 }

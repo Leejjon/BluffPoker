@@ -19,6 +19,7 @@ public class Game implements GameInputInterface {
     private Settings settings;
     private List<String> originalPlayers;
     private Player[] players;
+
     private int playerIterator = 0;
 
     private Cup cup;
@@ -40,37 +41,49 @@ public class Game implements GameInputInterface {
     private boolean allowedToBelieveOrNotBelieve = false;
     private boolean canViewOwnThrow = false;
     private boolean allowedToCall = false;
-
     private boolean believed666 = false;
 
-    public Game(List<String> originalPlayers, Settings settings, Cup cup, Dice leftDice, Dice middleDice, Dice rightDice, Sound diceRoll, UserInterface userInterface) {
-        this.settings = settings;
+    public Game(Cup cup, Dice leftDice, Dice middleDice, Dice rightDice, Sound diceRoll, UserInterface userInterface) {
         this.cup = cup;
         this.leftDice = leftDice;
         this.middleDice = middleDice;
         this.rightDice = rightDice;
         this.diceRoll = diceRoll;
         this.userInterface = userInterface;
-        this.originalPlayers = originalPlayers;
 
         cup.addListener(new CupListener(this));
         leftDice.addListener(new DiceListener(leftDice));
         middleDice.addListener(new DiceListener(middleDice));
         rightDice.addListener(new DiceListener(rightDice));
-
-        constructPlayers();
-
-        currentPlayer = players[playerIterator];
     }
 
-    public void constructPlayers() {
+    private void setGameStatusBooleans() {
+        allowedToThrow = true;
+        allowedToBelieveOrNotBelieve = false;
+        canViewOwnThrow = false;
+        allowedToCall = false;
+        believed666 = false;
+        latestCall = null;
+    }
+
+    private void constructPlayers() {
         players = new Player[originalPlayers.size()];
         for (int i = 0; i < originalPlayers.size(); i++) {
             players[i] = new Player(originalPlayers.get(i), settings.getNumberOfLives());
         }
+        currentPlayer = players[playerIterator];
     }
 
-    public void startGame() {
+    public void restart() {
+        startGame(originalPlayers, settings);
+    }
+
+    public void startGame(List<String> originalPlayers, Settings settings) {
+        this.settings = settings;
+        this.originalPlayers = originalPlayers;
+        cup.reset();
+        setGameStatusBooleans();
+        constructPlayers();
         userInterface.log("Shake the cup: " + currentPlayer.getName());
     }
 
@@ -180,6 +193,7 @@ public class Game implements GameInputInterface {
             }
 
             currentPlayer.loseLife(canUseBok());
+            // TODO: make sure all people on the bok die when the shared bok is allowed.
 
             // Detect if the current player jumped on the block and check if we should not allow other players to get on the bok too.
             if (bokAvailable && !settings.isAllowSharedBok() && currentPlayer.isRidingOnTheBok()) {
@@ -253,7 +267,7 @@ public class Game implements GameInputInterface {
             if (!p.isDead()) {
                 numberOfPlayersStillAlive++;
                 indexOfLastLivingPlayer = i;
-            } 
+            }
         }
 
         if (numberOfPlayersStillAlive < 2) {
@@ -309,5 +323,9 @@ public class Game implements GameInputInterface {
 
     public NumberCombination getLatestCall() {
         return latestCall;
+    }
+
+    public void resetPlayerIterator() {
+        playerIterator = 0;
     }
 }

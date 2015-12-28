@@ -45,7 +45,7 @@ public class BlufPokerGame extends ApplicationAdapter implements
 		startMenuStage = new StartStage(uiSkin, this);
 		settingsStage = new SettingsStage(uiSkin, this, settings);
 		choosePlayerStage = new ChoosePlayersStage(uiSkin, this);
-		gameStage = new GameStage(uiSkin);
+		gameStage = new GameStage(uiSkin, this);
 		
 		// Make sure touch input goes to the startStage.
 		Gdx.input.setInputProcessor(startMenuStage);
@@ -77,6 +77,7 @@ public class BlufPokerGame extends ApplicationAdapter implements
 	@Override
 	public void startSelectingPlayersToPlayWith() {
 		startMenuStage.setVisible(false);
+		choosePlayerStage.clearCurrentPlayers();
 		choosePlayerStage.setVisible(true);
 		Gdx.input.setInputProcessor(choosePlayerStage);
 	}
@@ -93,6 +94,13 @@ public class BlufPokerGame extends ApplicationAdapter implements
 	public void closeSettingsStage(Settings settings) {
 		this.settings = settings;
 		settingsStage.setVisible(false);
+		startMenuStage.setVisible(true);
+		Gdx.input.setInputProcessor(startMenuStage);
+	}
+
+	@Override
+	public void backToStartStage() {
+		gameStage.setVisible(false);
 		startMenuStage.setVisible(true);
 		Gdx.input.setInputProcessor(startMenuStage);
 	}
