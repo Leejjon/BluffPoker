@@ -127,7 +127,7 @@ public class Game implements GameInputInterface {
     }
 
     public boolean isAllowedToThrow() {
-        if (allowedToThrow && !cup.isMoving()) {
+        if (allowedToThrow && !cup.isMoving() && !cup.isBelieving() && !cup.isWatchingOwnThrow()) {
             return true;
         } else {
             return false;
@@ -138,6 +138,12 @@ public class Game implements GameInputInterface {
         leftDice.throwDice();
         middleDice.throwDice();
         rightDice.throwDice();
+    }
+
+    private void allowDicesToBeThrownAgain() {
+        leftDice.allowToBeThrownAgain();
+        middleDice.allowToBeThrownAgain();
+        rightDice.allowToBeThrownAgain();
     }
 
     @Override

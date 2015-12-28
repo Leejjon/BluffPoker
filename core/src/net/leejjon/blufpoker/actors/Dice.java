@@ -22,6 +22,8 @@ public class Dice extends Image {
     private boolean underCup = true;
     private Group dicesBeforeCupActors, dicesUnderCupActors;
 
+    private boolean thrownThisTurn = false;
+
     public Dice(Cup cup, Texture[] diceTextures, int initialValue, DiceLocation location,  Group dicesBeforeCupActors, Group dicesUnderCupActors) {
         super(diceTextures[initialValue-1]);
         this.cup = cup;
@@ -43,6 +45,7 @@ public class Dice extends Image {
             int randomNumber = randomDiceNumber.nextInt(6);
             setDrawable(new SpriteDrawable(new Sprite(diceTextures[randomNumber])));
             diceValue = randomNumber++;
+            thrownThisTurn = true;
         }
     }
 
@@ -94,6 +97,7 @@ public class Dice extends Image {
     }
 
     public void reset() {
+        thrownThisTurn = false;
         if (!underCup) {
             underCup = true;
             moveBy(0, getDiceHeight() / 2);
@@ -104,5 +108,13 @@ public class Dice extends Image {
 
     public int getDiceValue() {
         return diceValue + 1;
+    }
+
+    public void allowToBeThrownAgain() {
+        thrownThisTurn = false;
+    }
+
+    public boolean hasAlreadyBeenThrownThisTurn() {
+        return thrownThisTurn;
     }
 }

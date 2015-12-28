@@ -228,7 +228,7 @@ public class GameStage extends AbstractStage implements UserInterface {
     }
 
     public void shake() {
-        if (currentGame.isAllowedToThrow() && !cup.isBelieving() && !cup.isWatchingOwnThrow()) {
+        if (currentGame.isAllowedToThrow()) {
             int numberOfDicesUnderCup = 0;
 
             if (leftDice.isUnderCup()) {
