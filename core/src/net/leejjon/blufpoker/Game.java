@@ -182,7 +182,7 @@ public class Game implements GameInputInterface {
             currentPlayer.loseLife(canUseBok());
 
             // Detect if the current player jumped on the block and check if we should not allow other players to get on the bok too.
-            if (!settings.isAllowSharedBok() && currentPlayer.isRidingOnTheBok()) {
+            if (bokAvailable && !settings.isAllowSharedBok() && currentPlayer.isRidingOnTheBok()) {
                 userInterface.log(currentPlayer.getName() + " is riding on the bok");
                 bokAvailable = false;
             }
@@ -252,9 +252,8 @@ public class Game implements GameInputInterface {
             Player p = players[i];
             if (!p.isDead()) {
                 numberOfPlayersStillAlive++;
-            } else {
                 indexOfLastLivingPlayer = i;
-            }
+            } 
         }
 
         if (numberOfPlayersStillAlive < 2) {
