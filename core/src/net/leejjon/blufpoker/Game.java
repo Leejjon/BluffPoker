@@ -114,7 +114,11 @@ public class Game implements GameInputInterface {
     }
 
     public boolean isAllowedToThrow() {
-        return allowedToThrow;
+        if (allowedToThrow && !cup.isMoving()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void generateRandomDices() {
