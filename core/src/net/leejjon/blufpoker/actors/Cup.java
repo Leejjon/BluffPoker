@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import net.leejjon.blufpoker.BlufPokerGame;
 import net.leejjon.blufpoker.actions.LiftCupAction;
+import net.leejjon.blufpoker.interfaces.Lockable;
 import net.leejjon.blufpoker.listener.CupListener;
 import net.leejjon.blufpoker.stages.GameInputInterface;
 import net.leejjon.blufpoker.stages.GameStage;
@@ -17,7 +18,7 @@ import java.util.Iterator;
 /**
  * Created by Leejjon on 2-10-2015.
  */
-public class Cup extends Image {
+public class Cup extends Image implements Lockable {
     private Group foregroundActors;
     private Group backgroundActors;
 
@@ -31,6 +32,7 @@ public class Cup extends Image {
 
     private boolean believing = false;
     private boolean watchingOwnThrow = false;
+    private boolean locked = false;
 
     public Cup(Texture closedCupTexture, Texture openCupTexture, Group foregroundActors, Group backgroundActors) {
         super(closedCupTexture);
@@ -126,5 +128,20 @@ public class Cup extends Image {
 
     public int getMiddleHeightForCup() {
         return middleHeightForCup;
+    }
+
+    @Override
+    public void lock() {
+        locked = true;
+    }
+
+    @Override
+    public void unlock() {
+        locked = false;
+    }
+
+    @Override
+    public boolean isLocked() {
+        return locked;
     }
 }

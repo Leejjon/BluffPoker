@@ -26,6 +26,7 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     private Texture closedCupTexture;
     private Texture openCupTexture;
+    private Texture lockTexture;
     private Texture dice1;
     private Texture dice2;
     private Texture dice3;
@@ -70,6 +71,7 @@ public class GameStage extends AbstractStage implements UserInterface {
 
         closedCupTexture = new Texture("data/closedCup.png");
         openCupTexture = new Texture("data/openCup.png");
+        lockTexture = new Texture("data/lock.png");
 
         batch = new SpriteBatch();
         diceRoll = Gdx.audio.newSound(Gdx.files.internal("sound/diceroll.mp3"));
@@ -165,13 +167,13 @@ public class GameStage extends AbstractStage implements UserInterface {
 
         Texture[] diceTextures = new Texture[] {dice1, dice2, dice3, dice4, dice5, dice6};
 
-        leftDice = new Dice(cup, diceTextures, 6, DiceLocation.LEFT, dicesUnderCupActors, dicesBeforeCupActors);
+        leftDice = new Dice(cup, diceTextures, lockTexture, 6, DiceLocation.LEFT, dicesUnderCupActors, dicesBeforeCupActors);
         leftDice.calculateAndSetPosition();
 
-        middleDice = new Dice(cup, diceTextures, 4, DiceLocation.MIDDLE, dicesUnderCupActors, dicesBeforeCupActors);
+        middleDice = new Dice(cup, diceTextures, lockTexture, 4, DiceLocation.MIDDLE, dicesUnderCupActors, dicesBeforeCupActors);
         middleDice.calculateAndSetPosition();
 
-        rightDice = new Dice(cup, diceTextures, 3, DiceLocation.RIGHT, dicesUnderCupActors, dicesBeforeCupActors);
+        rightDice = new Dice(cup, diceTextures, lockTexture, 3, DiceLocation.RIGHT, dicesUnderCupActors, dicesBeforeCupActors);
         rightDice.calculateAndSetPosition();
 
 
@@ -206,7 +208,7 @@ public class GameStage extends AbstractStage implements UserInterface {
                     callNotThreeIdenticalNumbersDialog.setInvalidCallMessage(currentGame.getLatestCall());
                     callNotThreeIdenticalNumbersDialog.show(this);
                 } else {
-                    callTooLowDialog.callTooLow(getNewCall());
+                    callTooLowDialog.callTooLow(currentGame.getLatestCall());
                     callTooLowDialog.show(this);
                 }
             }
@@ -229,32 +231,32 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     public void shake() {
         if (currentGame.isAllowedToThrow()) {
-            int numberOfDicesUnderCup = 0;
+            int numberOfDicesToBeThrown = 0;
 
-            if (leftDice.isUnderCup()) {
-                numberOfDicesUnderCup++;
+            if ((leftDice.isUnderCup() && !cup.isLocked()) || !leftDice.isLocked()) {
+                numberOfDicesToBeThrown++;
             }
 
-            if (middleDice.isUnderCup()) {
-                numberOfDicesUnderCup++;
+            if ((middleDice.isUnderCup() && !cup.isLocked()) || !middleDice.isLocked()) {
+                numberOfDicesToBeThrown++;
             }
 
-            if (rightDice.isUnderCup()) {
-                numberOfDicesUnderCup++;
+            if ((rightDice.isUnderCup() && !cup.isLocked()) || !rightDice.isLocked()) {
+                numberOfDicesToBeThrown++;
             }
 
             if (currentGame.hasBelieved666()) {
                 // You must throw all dices at once.
-                if (numberOfDicesUnderCup < 3) {
+                if (numberOfDicesToBeThrown < 3) {
                     throwAllDices.show(this);
                 } else {
-                    currentGame.throwDicesInCup();
+                    currentGame.throwDices();
                     enableCallUserInterface();
                 }
             } else {
                 // You must throw at least one dice.
-                if (numberOfDicesUnderCup > 0) {
-                    currentGame.throwDicesInCup();
+                if (numberOfDicesToBeThrown > 0) {
+                    currentGame.throwDices();
                     enableCallUserInterface();
                 } else {
                     throwAtLeastOneDice.show(this);
@@ -327,6 +329,7 @@ public class GameStage extends AbstractStage implements UserInterface {
         batch.dispose();
         closedCupTexture.dispose();
         openCupTexture.dispose();
+        lockTexture.dispose();
         dice1.dispose();
         dice2.dispose();
         dice3.dispose();

@@ -4,6 +4,7 @@ import com.badlogic.gdx.audio.Sound;
 import net.leejjon.blufpoker.actions.LiftCupAction;
 import net.leejjon.blufpoker.actors.Cup;
 import net.leejjon.blufpoker.actors.Dice;
+import net.leejjon.blufpoker.interfaces.Throwable;
 import net.leejjon.blufpoker.listener.CupListener;
 import net.leejjon.blufpoker.listener.DiceListener;
 import net.leejjon.blufpoker.listener.UserInterface;
@@ -14,7 +15,7 @@ import java.util.List;
 /**
  * Created by Leejjon on 3-10-2015.
  */
-public class Game implements GameInputInterface {
+public class Game implements GameInputInterface, Throwable {
     private UserInterface userInterface;
     private Settings settings;
     private List<String> originalPlayers;
@@ -52,9 +53,9 @@ public class Game implements GameInputInterface {
         this.userInterface = userInterface;
 
         cup.addListener(new CupListener(this));
-        leftDice.addListener(new DiceListener(leftDice));
-        middleDice.addListener(new DiceListener(middleDice));
-        rightDice.addListener(new DiceListener(rightDice));
+        leftDice.addListener(new DiceListener(leftDice, this));
+        middleDice.addListener(new DiceListener(middleDice, this));
+        rightDice.addListener(new DiceListener(rightDice, this));
     }
 
     private void setGameStatusBooleans() {
@@ -110,11 +111,16 @@ public class Game implements GameInputInterface {
         allowedToCall = false;
         canViewOwnThrow = false;
         allowedToBelieveOrNotBelieve = true;
+
+        cup.unlock();
+        leftDice.lock();
+        middleDice.lock();
+        rightDice.lock();
+
         latestCall = newCall;
         userInterface.log(currentPlayer.getName() + " called " + newCall);
         userInterface.log(getMessageToTellNextUserToBelieveOrNot());
     }
-
 
     private String getMessageToTellNextUserToBelieveOrNot() {
         Player nextPlayer;
@@ -126,24 +132,10 @@ public class Game implements GameInputInterface {
         return "Believe it or not, " + nextPlayer.getName();
     }
 
-    public boolean isAllowedToThrow() {
-        if (allowedToThrow && !cup.isMoving() && !cup.isBelieving() && !cup.isWatchingOwnThrow()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     private void generateRandomDices() {
         leftDice.throwDice();
         middleDice.throwDice();
         rightDice.throwDice();
-    }
-
-    private void allowDicesToBeThrownAgain() {
-        leftDice.allowToBeThrownAgain();
-        middleDice.allowToBeThrownAgain();
-        rightDice.allowToBeThrownAgain();
     }
 
     @Override
@@ -302,7 +294,7 @@ public class Game implements GameInputInterface {
         }
     }
 
-    public void throwDicesInCup() {
+    public void throwDices() {
         cup.reset();
         diceRoll.play(1.0f);
         generateRandomDices();
@@ -333,5 +325,18 @@ public class Game implements GameInputInterface {
 
     public void resetPlayerIterator() {
         playerIterator = 0;
+    }
+
+    public boolean isAllowedToThrow() {
+        if (allowedToThrow && !cup.isMoving() && !cup.isBelieving() && !cup.isWatchingOwnThrow()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean stillHasToThrow() {
+        return allowedToThrow;
     }
 }

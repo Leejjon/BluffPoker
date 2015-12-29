@@ -4,9 +4,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import net.leejjon.blufpoker.BlufPokerGame;
 import net.leejjon.blufpoker.DiceLocation;
+import net.leejjon.blufpoker.interfaces.Lockable;
 import net.leejjon.blufpoker.stages.GameStage;
 
 import java.util.Random;
@@ -14,18 +16,23 @@ import java.util.Random;
 /**
  * Created by Leejjon on 3-10-2015.
  */
-public class Dice extends Image {
+public class Dice extends Stack implements Lockable {
     private Cup cup;
     private Texture[] diceTextures;
     private int diceValue;
     private DiceLocation location;
     private boolean underCup = true;
     private Group dicesBeforeCupActors, dicesUnderCupActors;
+    private Image diceImage;
+    private Image lockImage;
+    private boolean lock = false;
 
-    private boolean thrownThisTurn = false;
-
-    public Dice(Cup cup, Texture[] diceTextures, int initialValue, DiceLocation location,  Group dicesBeforeCupActors, Group dicesUnderCupActors) {
-        super(diceTextures[initialValue-1]);
+    public Dice(Cup cup, Texture[] diceTextures, Texture lockTexture, int initialValue, DiceLocation location,  Group dicesBeforeCupActors, Group dicesUnderCupActors) {
+        diceImage = new Image(diceTextures[initialValue-1]);
+        lockImage = new Image(lockTexture);
+        lockImage.setVisible(false);
+        add(diceImage);
+        add(lockImage);
         this.cup = cup;
         this.diceTextures = diceTextures;
         diceValue = initialValue;
@@ -40,13 +47,17 @@ public class Dice extends Image {
     }
 
     public void throwDice() {
-        if (underCup) {
-            Random randomDiceNumber = new Random();
-            int randomNumber = randomDiceNumber.nextInt(6);
-            setDrawable(new SpriteDrawable(new Sprite(diceTextures[randomNumber])));
-            diceValue = randomNumber++;
-            thrownThisTurn = true;
+        if ((underCup && !cup.isLocked()) || !isLocked()) {
+            generateRandomNumber();
+            unlock();
         }
+    }
+
+    private void generateRandomNumber() {
+        Random randomDiceNumber = new Random();
+        int randomNumber = randomDiceNumber.nextInt(6);
+        diceImage.setDrawable(new SpriteDrawable(new Sprite(diceTextures[randomNumber])));
+        diceValue = randomNumber;
     }
 
     public void calculateAndSetPosition() {
@@ -97,8 +108,8 @@ public class Dice extends Image {
     }
 
     public void reset() {
-        thrownThisTurn = false;
         if (!underCup) {
+            unlock();
             underCup = true;
             moveBy(0, getDiceHeight() / 2);
             dicesBeforeCupActors.removeActor(this);
@@ -110,11 +121,22 @@ public class Dice extends Image {
         return diceValue + 1;
     }
 
-    public void allowToBeThrownAgain() {
-        thrownThisTurn = false;
+    @Override
+    public void lock() {
+        if (!isUnderCup() || cup.isLocked()) {
+            lock = true;
+            lockImage.setVisible(true);
+        }
     }
 
-    public boolean hasAlreadyBeenThrownThisTurn() {
-        return thrownThisTurn;
+    @Override
+    public void unlock() {
+        lock = false;
+        lockImage.setVisible(false);
+    }
+
+    @Override
+    public boolean isLocked() {
+        return lock;
     }
 }
