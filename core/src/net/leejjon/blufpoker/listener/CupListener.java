@@ -1,8 +1,8 @@
 package net.leejjon.blufpoker.listener;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import net.leejjon.blufpoker.actions.LiftCupAction;
 import net.leejjon.blufpoker.stages.GameInputInterface;
 
 /**
@@ -46,5 +46,10 @@ public class CupListener extends ActorGestureListener {
                 System.out.println("You've made a swipe gesture on the cup in the direction: Down");
             }
         }
+    }
+
+    @Override
+    public boolean longPress (Actor actor, float x, float y) {
+        return game.longTapOnCup();
     }
 }

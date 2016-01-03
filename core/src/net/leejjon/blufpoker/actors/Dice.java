@@ -27,8 +27,8 @@ public class Dice extends Stack implements Lockable {
     private Image lockImage;
     private boolean lock = false;
 
-    public Dice(Cup cup, Texture[] diceTextures, Texture lockTexture, int initialValue, DiceLocation location,  Group dicesBeforeCupActors, Group dicesUnderCupActors) {
-        diceImage = new Image(diceTextures[initialValue-1]);
+    public Dice(Cup cup, Texture[] diceTextures, Texture lockTexture, int initialValue, DiceLocation location, Group dicesBeforeCupActors, Group dicesUnderCupActors) {
+        diceImage = new Image(diceTextures[initialValue - 1]);
         lockImage = new Image(lockTexture);
         lockImage.setVisible(false);
         add(diceImage);
@@ -47,9 +47,12 @@ public class Dice extends Stack implements Lockable {
     }
 
     public void throwDice() {
-        if ((underCup && !cup.isLocked()) || !isLocked()) {
+        if ((isUnderCup() && !cup.isLocked()) || (!isUnderCup() && !isLocked())) {
             generateRandomNumber();
-            unlock();
+        } else {
+            if (diceValue != 6) {
+                unlock();
+            }
         }
     }
 
@@ -93,7 +96,7 @@ public class Dice extends Stack implements Lockable {
     }
 
     public void pullAwayFromCup() {
-        if (cup.isBelieving() || cup.isWatchingOwnThrow()) {
+        if ((cup.isBelieving() || cup.isWatchingOwnThrow()) && isUnderCup()) {
             underCup = false;
             moveBy(0, -getDiceHeight() / 2);
             dicesUnderCupActors.removeActor(this);
@@ -109,7 +112,11 @@ public class Dice extends Stack implements Lockable {
 
     public void reset() {
         if (!underCup) {
-            unlock();
+            if (cup.isLocked()) {
+                lock();
+            } else {
+                unlock();
+            }
             underCup = true;
             moveBy(0, getDiceHeight() / 2);
             dicesBeforeCupActors.removeActor(this);

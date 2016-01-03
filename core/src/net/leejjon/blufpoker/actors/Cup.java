@@ -3,8 +3,10 @@ package net.leejjon.blufpoker.actors;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import net.leejjon.blufpoker.BlufPokerGame;
 import net.leejjon.blufpoker.actions.LiftCupAction;
@@ -18,7 +20,7 @@ import java.util.Iterator;
 /**
  * Created by Leejjon on 2-10-2015.
  */
-public class Cup extends Image implements Lockable {
+public class Cup extends Stack implements Lockable {
     private Group foregroundActors;
     private Group backgroundActors;
 
@@ -26,6 +28,8 @@ public class Cup extends Image implements Lockable {
     private SpriteDrawable openCupSpriteDrawable;
 
     private Texture closedCupTexture;
+    private Image cup;
+    private Image lock;
 
     private int middleHeightForCup = 0;
     private int middleWidthForCup = 0;
@@ -34,8 +38,13 @@ public class Cup extends Image implements Lockable {
     private boolean watchingOwnThrow = false;
     private boolean locked = false;
 
-    public Cup(Texture closedCupTexture, Texture openCupTexture, Group foregroundActors, Group backgroundActors) {
-        super(closedCupTexture);
+    public Cup(Texture closedCupTexture, Texture openCupTexture, Texture cupLockTexture, Group foregroundActors, Group backgroundActors) {
+        cup = new Image(closedCupTexture);
+        lock = new Image(cupLockTexture);
+        lock.setVisible(false);
+        add(cup);
+        add(lock);
+
         this.closedCupTexture = closedCupTexture;
         this.foregroundActors = foregroundActors;
         this.backgroundActors = backgroundActors;
@@ -65,7 +74,7 @@ public class Cup extends Image implements Lockable {
     }
 
     public void believe() {
-        setDrawable(openCupSpriteDrawable);
+        cup.setDrawable(openCupSpriteDrawable);
 
         foregroundActors.removeActor(this);
         backgroundActors.addActor(this);
@@ -74,7 +83,7 @@ public class Cup extends Image implements Lockable {
     }
 
     public void doneBelieving() {
-        setDrawable(closedCupSpriteDrawable);
+        cup.setDrawable(closedCupSpriteDrawable);
 
         backgroundActors.removeActor(this);
         foregroundActors.addActor(this);
@@ -87,7 +96,7 @@ public class Cup extends Image implements Lockable {
     }
 
     public void watchOwnThrow() {
-        setDrawable(openCupSpriteDrawable);
+        cup.setDrawable(openCupSpriteDrawable);
 
         foregroundActors.removeActor(this);
         backgroundActors.addActor(this);
@@ -96,7 +105,7 @@ public class Cup extends Image implements Lockable {
     }
 
     public void doneWatchingOwnThrow() {
-        setDrawable(closedCupSpriteDrawable);
+        cup.setDrawable(closedCupSpriteDrawable);
 
         backgroundActors.removeActor(this);
         foregroundActors.addActor(this);
@@ -122,7 +131,7 @@ public class Cup extends Image implements Lockable {
     }
 
     public void reset() {
-        setVisible(true);
+        cup.setVisible(true);
         setPosition(middleWidthForCup, middleHeightForCup);
     }
 
@@ -133,11 +142,13 @@ public class Cup extends Image implements Lockable {
     @Override
     public void lock() {
         locked = true;
+        lock.setVisible(true);
     }
 
     @Override
     public void unlock() {
         locked = false;
+        lock.setVisible(false);
     }
 
     @Override

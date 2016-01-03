@@ -26,7 +26,8 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     private Texture closedCupTexture;
     private Texture openCupTexture;
-    private Texture lockTexture;
+    private Texture diceLockTexture;
+    private Texture cupLockTexture;
     private Texture dice1;
     private Texture dice2;
     private Texture dice3;
@@ -71,7 +72,8 @@ public class GameStage extends AbstractStage implements UserInterface {
 
         closedCupTexture = new Texture("data/closedCup.png");
         openCupTexture = new Texture("data/openCup.png");
-        lockTexture = new Texture("data/lock.png");
+        diceLockTexture = new Texture("data/dicelock.png");
+        cupLockTexture = new Texture("data/cuplock.png");
 
         batch = new SpriteBatch();
         diceRoll = Gdx.audio.newSound(Gdx.files.internal("sound/diceroll.mp3"));
@@ -152,7 +154,7 @@ public class GameStage extends AbstractStage implements UserInterface {
         foreGroundActors.addActor(table);
         backgroundActors = new Group();
 
-        cup = new Cup(closedCupTexture, openCupTexture, foreGroundActors, backgroundActors);
+        cup = new Cup(closedCupTexture, openCupTexture, cupLockTexture, foreGroundActors, backgroundActors);
 
         dicesUnderCupActors = new Group();
         dicesBeforeCupActors = new Group();
@@ -167,13 +169,13 @@ public class GameStage extends AbstractStage implements UserInterface {
 
         Texture[] diceTextures = new Texture[] {dice1, dice2, dice3, dice4, dice5, dice6};
 
-        leftDice = new Dice(cup, diceTextures, lockTexture, 6, DiceLocation.LEFT, dicesUnderCupActors, dicesBeforeCupActors);
+        leftDice = new Dice(cup, diceTextures, diceLockTexture, 6, DiceLocation.LEFT, dicesUnderCupActors, dicesBeforeCupActors);
         leftDice.calculateAndSetPosition();
 
-        middleDice = new Dice(cup, diceTextures, lockTexture, 4, DiceLocation.MIDDLE, dicesUnderCupActors, dicesBeforeCupActors);
+        middleDice = new Dice(cup, diceTextures, diceLockTexture, 4, DiceLocation.MIDDLE, dicesUnderCupActors, dicesBeforeCupActors);
         middleDice.calculateAndSetPosition();
 
-        rightDice = new Dice(cup, diceTextures, lockTexture, 3, DiceLocation.RIGHT, dicesUnderCupActors, dicesBeforeCupActors);
+        rightDice = new Dice(cup, diceTextures, diceLockTexture, 3, DiceLocation.RIGHT, dicesUnderCupActors, dicesBeforeCupActors);
         rightDice.calculateAndSetPosition();
 
 
@@ -329,7 +331,8 @@ public class GameStage extends AbstractStage implements UserInterface {
         batch.dispose();
         closedCupTexture.dispose();
         openCupTexture.dispose();
-        lockTexture.dispose();
+        diceLockTexture.dispose();
+        cupLockTexture.dispose();
         dice1.dispose();
         dice2.dispose();
         dice3.dispose();

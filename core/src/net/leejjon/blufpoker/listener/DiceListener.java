@@ -25,12 +25,16 @@ public class DiceListener extends ActorGestureListener {
         if (dice.isUnderCup()) {
             // You've tapped while the dice was under the cup, so you probably meant to swipe it down. We'll do that anyway for you.
             dice.pullAwayFromCup();
-            dice.lock();
-        } else {
-            if (dice.isLocked()) {
-                dice.unlock();
-            } else {
+            if (throwable.stillHasToThrow()) {
                 dice.lock();
+            }
+        } else {
+            if (throwable.stillHasToThrow()) {
+                if (dice.isLocked()) {
+                    dice.unlock();
+                } else {
+                    dice.lock();
+                }
             }
         }
     }
@@ -45,7 +49,9 @@ public class DiceListener extends ActorGestureListener {
             } else {
                 // You've made a swipe gesture on the dice in the direction: Down
                 dice.pullAwayFromCup();
-                dice.lock();
+                if (throwable.stillHasToThrow()) {
+                    dice.lock();
+                }
             }
         }
     }

@@ -38,7 +38,8 @@ public class Game implements GameInputInterface, Throwable {
 
     private NumberCombination latestCall = null;
 
-    private boolean allowedToThrow = true;
+    private boolean firstThrowSinceDeath = true;
+    private boolean stillHasToThrow = true;
     private boolean allowedToBelieveOrNotBelieve = false;
     private boolean canViewOwnThrow = false;
     private boolean allowedToCall = false;
@@ -59,11 +60,12 @@ public class Game implements GameInputInterface, Throwable {
     }
 
     private void setGameStatusBooleans() {
-        allowedToThrow = true;
+        stillHasToThrow = true;
         allowedToBelieveOrNotBelieve = false;
         canViewOwnThrow = false;
         allowedToCall = false;
         believed666 = false;
+        firstThrowSinceDeath = true;
         latestCall = null;
     }
 
@@ -113,9 +115,6 @@ public class Game implements GameInputInterface, Throwable {
         allowedToBelieveOrNotBelieve = true;
 
         cup.unlock();
-        leftDice.lock();
-        middleDice.lock();
-        rightDice.lock();
 
         latestCall = newCall;
         userInterface.log(currentPlayer.getName() + " called " + newCall);
@@ -145,7 +144,6 @@ public class Game implements GameInputInterface, Throwable {
                 if (cup.isBelieving()) {
                     cup.doneBelieving();
                     allowedToBelieveOrNotBelieve = false;
-                    allowedToThrow = true;
                     canViewOwnThrow = true;
                 } else {
                     // Start next turn.
@@ -160,6 +158,18 @@ public class Game implements GameInputInterface, Throwable {
                     } else {
                         userInterface.log(currentPlayer.getName() + " believed the call.");
                     }
+                    stillHasToThrow = true;
+
+                    if (!leftDice.isUnderCup() && leftDice.getDiceValue() == 6) {
+                        leftDice.lock();
+                    }
+                    if (!middleDice.isUnderCup() && middleDice.getDiceValue() == 6) {
+                        middleDice.lock();
+                    }
+                    if (!rightDice.isUnderCup() && rightDice.getDiceValue() == 6) {
+                        rightDice.lock();
+                    }
+
                     cup.believe();
                 }
             } else if (canViewOwnThrow) {
@@ -191,6 +201,7 @@ public class Game implements GameInputInterface, Throwable {
             }
 
             currentPlayer.loseLife(canUseBok());
+            firstThrowSinceDeath = true;
             // TODO: make sure all people on the bok die when the shared bok is allowed.
 
             // Detect if the current player jumped on the block and check if we should not allow other players to get on the bok too.
@@ -215,6 +226,7 @@ public class Game implements GameInputInterface, Throwable {
             // TODO: Make sure the following code is being executed after the LiftCupAction...
             userInterface.resetCall();
 
+            // The cup should not be locked at this point.
             leftDice.reset();
             middleDice.reset();
             rightDice.reset();
@@ -223,10 +235,42 @@ public class Game implements GameInputInterface, Throwable {
             allowedToBelieveOrNotBelieve = false;
             canViewOwnThrow = false;
             believed666 = false;
-            allowedToThrow = true;
+            stillHasToThrow = true;
 
             userInterface.log("Shake the cup: " + currentPlayer.getName());
         }
+    }
+
+    @Override
+    public boolean longTapOnCup() {
+        // Very important to use stillHasToThrow and not isAllowed.
+        if (/*!allowedToBelieveOrNotBelieve && */stillHasToThrow && !cup.isMoving() && !firstThrowSinceDeath) {
+            if (cup.isLocked()) {
+                cup.unlock();
+                if (leftDice.isUnderCup()) {
+                    leftDice.unlock();
+                }
+                if (middleDice.isUnderCup()) {
+                    middleDice.unlock();
+                }
+                if (rightDice.isUnderCup()) {
+                    rightDice.unlock();
+                }
+            } else {
+                cup.lock();
+                if (leftDice.isUnderCup()) {
+                    leftDice.lock();
+                }
+                if (middleDice.isUnderCup()) {
+                    middleDice.lock();
+                }
+                if (rightDice.isUnderCup()) {
+                    rightDice.lock();
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -298,9 +342,14 @@ public class Game implements GameInputInterface, Throwable {
         cup.reset();
         diceRoll.play(1.0f);
         generateRandomDices();
-        allowedToThrow = false;
+        firstThrowSinceDeath = false;
+        stillHasToThrow = false;
         canViewOwnThrow = true;
         allowedToCall = true;
+        cup.unlock();
+        leftDice.unlock();
+        middleDice.unlock();
+        rightDice.unlock();
         userInterface.log("Now enter your call ...");
     }
 
@@ -328,7 +377,7 @@ public class Game implements GameInputInterface, Throwable {
     }
 
     public boolean isAllowedToThrow() {
-        if (allowedToThrow && !cup.isMoving() && !cup.isBelieving() && !cup.isWatchingOwnThrow()) {
+        if (stillHasToThrow && !cup.isMoving() && !cup.isBelieving() && !cup.isWatchingOwnThrow()) {
             return true;
         } else {
             return false;
@@ -337,6 +386,6 @@ public class Game implements GameInputInterface, Throwable {
 
     @Override
     public boolean stillHasToThrow() {
-        return allowedToThrow;
+        return stillHasToThrow;
     }
 }
