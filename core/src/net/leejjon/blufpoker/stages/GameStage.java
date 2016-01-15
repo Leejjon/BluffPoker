@@ -267,7 +267,8 @@ public class GameStage extends AbstractStage implements UserInterface {
         }
     }
 
-    private void disableCallUserInterface() {
+    @Override
+    public void disableCallUserInterface() {
         firstNumberOfCall.setDisabled(true);
         secondNumberOfCall.setDisabled(true);
         thirdNumberOfCall.setDisabled(true);

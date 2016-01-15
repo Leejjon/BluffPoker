@@ -14,5 +14,7 @@ public interface UserInterface {
 
     void enableCallUserInterface();
 
+    void disableCallUserInterface();
+
     void resetCall();
 }
