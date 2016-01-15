@@ -44,6 +44,7 @@ public class Game implements GameInputInterface, Throwable {
     private boolean canViewOwnThrow = false;
     private boolean allowedToCall = false;
     private boolean believed666 = false;
+    private boolean blindPass = false;
 
     public Game(Cup cup, Dice leftDice, Dice middleDice, Dice rightDice, Sound diceRoll, UserInterface userInterface) {
         this.cup = cup;
@@ -67,6 +68,7 @@ public class Game implements GameInputInterface, Throwable {
         believed666 = false;
         firstThrowSinceDeath = true;
         latestCall = null;
+        blindPass = false;
     }
 
     private void constructPlayers() {
@@ -113,6 +115,7 @@ public class Game implements GameInputInterface, Throwable {
         allowedToCall = false;
         canViewOwnThrow = false;
         allowedToBelieveOrNotBelieve = true;
+        blindPass = false;
 
         cup.unlock();
 
@@ -156,7 +159,7 @@ public class Game implements GameInputInterface, Throwable {
                         userInterface.log(currentPlayer.getName() + " believed 666!");
                         userInterface.log("Throw three of the same numbers in one throw!");
                     } else {
-                        userInterface.log(currentPlayer.getName() + " believed the call.");
+                        userInterface.log(currentPlayer.getName() + " believed the call");
                     }
                     stillHasToThrow = true;
 
@@ -243,32 +246,48 @@ public class Game implements GameInputInterface, Throwable {
 
     @Override
     public boolean longTapOnCup() {
-        // Very important to use stillHasToThrow and not isAllowed.
-        if (/*!allowedToBelieveOrNotBelieve && */stillHasToThrow && !cup.isMoving() && !firstThrowSinceDeath) {
-            if (cup.isLocked()) {
-                cup.unlock();
-                if (leftDice.isUnderCup()) {
-                    leftDice.unlock();
+        if (allowedToBelieveOrNotBelieve) {
+            // Start next turn.
+            nextPlayer();
+            cup.lock();
+
+            userInterface.log(currentPlayer.getName() + " believed the call (blind)");
+
+            allowedToBelieveOrNotBelieve = false;
+            allowedToCall = true;
+            stillHasToThrow = false;
+            blindPass = true;
+            userInterface.enableCallUserInterface();
+            // canViewOwnThrow is already false, so let's keep it false.
+            //canViewOwnThrow = false;
+        } else {
+            // Very important to use stillHasToThrow and not isAllowedToThrow().
+            if (stillHasToThrow && !cup.isMoving() && !firstThrowSinceDeath) {
+                if (cup.isLocked()) {
+                    cup.unlock();
+                    if (leftDice.isUnderCup()) {
+                        leftDice.unlock();
+                    }
+                    if (middleDice.isUnderCup()) {
+                        middleDice.unlock();
+                    }
+                    if (rightDice.isUnderCup()) {
+                        rightDice.unlock();
+                    }
+                } else {
+                    cup.lock();
+                    if (leftDice.isUnderCup()) {
+                        leftDice.lock();
+                    }
+                    if (middleDice.isUnderCup()) {
+                        middleDice.lock();
+                    }
+                    if (rightDice.isUnderCup()) {
+                        rightDice.lock();
+                    }
                 }
-                if (middleDice.isUnderCup()) {
-                    middleDice.unlock();
-                }
-                if (rightDice.isUnderCup()) {
-                    rightDice.unlock();
-                }
-            } else {
-                cup.lock();
-                if (leftDice.isUnderCup()) {
-                    leftDice.lock();
-                }
-                if (middleDice.isUnderCup()) {
-                    middleDice.lock();
-                }
-                if (rightDice.isUnderCup()) {
-                    rightDice.lock();
-                }
+                return true;
             }
-            return true;
         }
         return false;
     }

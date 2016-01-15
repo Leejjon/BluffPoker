@@ -12,5 +12,7 @@ public interface UserInterface {
 
     void restart();
 
+    void enableCallUserInterface();
+
     void resetCall();
 }

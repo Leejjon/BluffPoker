@@ -275,7 +275,8 @@ public class GameStage extends AbstractStage implements UserInterface {
         autoButton.setDisabled(true);
     }
 
-    private void enableCallUserInterface() {
+    @Override
+    public void enableCallUserInterface() {
         firstNumberOfCall.setDisabled(false);
         secondNumberOfCall.setDisabled(false);
         thirdNumberOfCall.setDisabled(false);
