@@ -23,6 +23,7 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		
 		int zoomfactor = 0;
+        int verkleinDeCup = 2;
 		switch (getResources().getDisplayMetrics().densityDpi) {
 		case DisplayMetrics.DENSITY_MEDIUM: 
 			zoomfactor = 1;
@@ -31,16 +32,20 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
 			zoomfactor = 2;
 			break;
 		case DisplayMetrics.DENSITY_XHIGH:
-			zoomfactor = 2;
+			zoomfactor = 3;
 			break;
 		case DisplayMetrics.DENSITY_XXHIGH:
 			zoomfactor = 4;
 			break;
+		case DisplayMetrics.DENSITY_XXXHIGH:
+			zoomfactor = 6;
+			break;
 		case DisplayMetrics.DENSITY_TV:
 			zoomfactor = 8;
+			break;
 		}
 
-		System.out.println("Zoomfactor: " + zoomfactor);
+		System.out.println("Zoomfactor: " + getResources().getDisplayMetrics().densityDpi);
 
 		SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 		Sensor acceloMeterSensor = sensorManager

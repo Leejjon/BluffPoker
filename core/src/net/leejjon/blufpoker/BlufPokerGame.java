@@ -27,10 +27,6 @@ public class BlufPokerGame extends ApplicationAdapter implements
 	
 	private static int divideScreenByThis;
 
-    public static int getDivideScreenByThis() {
-        return divideScreenByThis;
-    }
-
 	public BlufPokerGame(int divideScreenByThis) {
 		this.divideScreenByThis = divideScreenByThis;
 	}
@@ -40,13 +36,13 @@ public class BlufPokerGame extends ApplicationAdapter implements
 		// Use the default libgdx UI skin.
 		uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
 		uiSkin.addRegions(new TextureAtlas("uiskin.atlas"));
-		
+
 		// Create the stages.
 		startMenuStage = new StartStage(uiSkin, this);
 		settingsStage = new SettingsStage(uiSkin, this, settings);
 		choosePlayerStage = new ChoosePlayersStage(uiSkin, this);
 		gameStage = new GameStage(uiSkin, this);
-		
+
 		// Make sure touch input goes to the startStage.
 		Gdx.input.setInputProcessor(startMenuStage);
 	}
@@ -119,4 +115,8 @@ public class BlufPokerGame extends ApplicationAdapter implements
             gameStage.shake();
         }
 	}
+
+    public static int getDivideScreenByThis() {
+        return divideScreenByThis;
+    }
 }

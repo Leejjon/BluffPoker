@@ -50,12 +50,13 @@ public class Cup extends Stack implements Lockable {
         this.backgroundActors = backgroundActors;
 
         // Calculate the position for the Cup.
-        this.middleWidthForCup = (GameStage.getMiddleX() - (getCupWidth() / 2)) / BlufPokerGame.getDivideScreenByThis();
-        this.middleHeightForCup = (GameStage.getMiddleY() - (getCupHeight() / 2)) / BlufPokerGame.getDivideScreenByThis();
+        this.middleWidthForCup = (GameStage.getMiddleX() / BlufPokerGame.getDivideScreenByThis()) - ((getCupWidth() / 2) / 2);
+        this.middleHeightForCup = (GameStage.getMiddleY() / BlufPokerGame.getDivideScreenByThis()) - ((getCupHeight() / 2) / 2);
 
-        // Yeah, everything is shown bigger because of the divideScreenByThisValue to prevent buttons and labels from being too small. Because of this the picture itself is also too big, so we divide it by the same number again to end up with a satisfying result.
-        setWidth(getCupWidth() / BlufPokerGame.getDivideScreenByThis());
-        setHeight(getCupHeight() / BlufPokerGame.getDivideScreenByThis());
+        // Yeah, everything is shown bigger because of the divideScreenByThisValue to prevent buttons and labels from being too small.
+        // Because of this the picture itself is also too big, so we divide it by the same number again to end up with a satisfying result.
+        setWidth(getCupWidth() / 2);
+        setHeight(getCupHeight() / 2);
         setPosition(middleWidthForCup, middleHeightForCup);
 
         closedCupSpriteDrawable = new SpriteDrawable(new Sprite(closedCupTexture));

@@ -42,8 +42,8 @@ public class Dice extends Stack implements Lockable {
 
         dicesUnderCupActors.addActor(this);
 
-        setWidth(getDiceWidth() / BlufPokerGame.getDivideScreenByThis());
-        setHeight(getDiceHeight() / BlufPokerGame.getDivideScreenByThis());
+        setWidth(getDiceWidth() / 2);
+        setHeight(getDiceHeight() / 2);
     }
 
     public void throwDice() {
@@ -64,18 +64,17 @@ public class Dice extends Stack implements Lockable {
     }
 
     public void calculateAndSetPosition() {
-        float x = ((GameStage.getMiddleX() - (getDiceWidth() / 2)) / 2);
-
+        float x = (GameStage.getMiddleX() / BlufPokerGame.getDivideScreenByThis()) - ((getDiceWidth() / 2) / 2);
         switch (location) {
             case LEFT:
                 // This is the left dice, so we place it slightly left of the middle at the same height as the cup (with a little dynamic padding based on the dice size).
-                x = x - (getDiceWidth() / BlufPokerGame.getDivideScreenByThis());
+                x = x - (getDiceWidth() / BlufPokerGame.getVerkleinDeCup());
                 break;
             case MIDDLE:
                 // This is the middle dice, so we place it in the middle at the same height as the cup (with a little dynamic padding based on the dice size).
                 break;
             case RIGHT:
-                x = x + (getDiceWidth() / BlufPokerGame.getDivideScreenByThis());
+                x = x + (getDiceWidth() / BlufPokerGame.getVerkleinDeCup());
                 break;
         }
 
