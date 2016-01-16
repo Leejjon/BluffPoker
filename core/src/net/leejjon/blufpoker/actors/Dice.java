@@ -68,13 +68,13 @@ public class Dice extends Stack implements Lockable {
         switch (location) {
             case LEFT:
                 // This is the left dice, so we place it slightly left of the middle at the same height as the cup (with a little dynamic padding based on the dice size).
-                x = x - (getDiceWidth() / BlufPokerGame.getVerkleinDeCup());
+                x = x - (getDiceWidth() / 2);
                 break;
             case MIDDLE:
                 // This is the middle dice, so we place it in the middle at the same height as the cup (with a little dynamic padding based on the dice size).
                 break;
             case RIGHT:
-                x = x + (getDiceWidth() / BlufPokerGame.getVerkleinDeCup());
+                x = x + (getDiceWidth() / 2);
                 break;
         }
 
