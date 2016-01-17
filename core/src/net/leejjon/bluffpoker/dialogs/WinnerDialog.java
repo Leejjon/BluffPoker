@@ -28,6 +28,6 @@ public class WinnerDialog extends Dialog {
     }
 
     public void setWinner(String winner) {
-        text("Congratulations, " + winner + ", has won the game!");
+        text(winner + ", has won the game!");
     }
  }

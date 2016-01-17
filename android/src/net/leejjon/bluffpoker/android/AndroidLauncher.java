@@ -27,7 +27,8 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
         Point size = new Point();
         display.getSize(size);
 
-		int zoomfactor = 0;
+		// 2 Is a nice default isn't it?
+		int zoomfactor = 2;
 		switch (getResources().getDisplayMetrics().densityDpi) {
 		case DisplayMetrics.DENSITY_MEDIUM:
 			zoomfactor = 1;
@@ -46,11 +47,10 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
 		case DisplayMetrics.DENSITY_XXHIGH:
 			zoomfactor = 4;
 			break;
+		// Robert's Samsung Galaxy S6 Edge had DENSITY_XXXHIGH and Michel's Moto X style had DENSITY_560. Both had 2560x1440 resolutions.
 		case DisplayMetrics.DENSITY_XXXHIGH:
+		case DisplayMetrics.DENSITY_560:
 			zoomfactor = 6;
-			break;
-		case DisplayMetrics.DENSITY_TV:
-			zoomfactor = 8;
 			break;
 		}
 
