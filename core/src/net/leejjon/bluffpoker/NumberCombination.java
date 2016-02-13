@@ -12,7 +12,7 @@ public class NumberCombination {
     public NumberCombination(int firstNumber, int secondNumber, int thirdNumber, boolean call) {
         this.call = call;
 
-        // If it's a validateCall, take the number exactly how it's being inserted.
+        // If it's a call, take the number exactly how it's being inserted.
         if (call) {
             highestNumber = firstNumber;
             middleNumber = secondNumber;

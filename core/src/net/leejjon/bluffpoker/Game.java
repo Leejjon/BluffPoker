@@ -136,11 +136,20 @@ public class Game implements GameInputInterface, Throwable {
 
     private String getMessageToTellNextUserToBelieveOrNot() {
         Player nextPlayer;
-        if (playerIterator + 1 < players.length) {
-            nextPlayer = players[playerIterator + 1];
-        } else {
-            nextPlayer = players[0];
-        }
+
+        int localPlayerIterator = playerIterator + 1;
+
+        do {
+            // If the localPlayerIterator runs out of the arrays bounds, we reset it to 0.
+            if (localPlayerIterator == players.length) {
+                localPlayerIterator = 0;
+            }
+
+            nextPlayer = players[localPlayerIterator];
+
+            localPlayerIterator++;
+        } while (nextPlayer.isDead());
+
         return "Believe it or not, " + nextPlayer.getName();
     }
 
