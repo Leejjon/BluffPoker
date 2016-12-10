@@ -39,20 +39,12 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
 		case DisplayMetrics.DENSITY_XHIGH:
             // If the screen is square, make it a smaller.
             // For BlackBerry Classic, Q10 and Q5
-            if (size.x == size.y) {
-                zoomfactor = 3;
-            } else {
-                zoomfactor = 2;
-            }
+            zoomfactor = (size.x == size.y) ? 3 : 2;
 			break;
 		case DisplayMetrics.DENSITY_XXHIGH:
             // If the screen is square, make it smaller.
             // For BlackBerry Passport.
-			if (size.x == size.y) {
-                zoomfactor = 5;
-            } else {
-                zoomfactor = 4;
-            }
+            zoomfactor = (size.x == size.y) ? 5 : 4;
 			break;
 		// Robert's Samsung Galaxy S6 Edge had DENSITY_XXXHIGH and Michel's Moto X style had DENSITY_560. Both had 2560x1440 resolutions.
 		case DisplayMetrics.DENSITY_XXXHIGH:
