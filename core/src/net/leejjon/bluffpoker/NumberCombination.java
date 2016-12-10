@@ -3,7 +3,7 @@ package net.leejjon.bluffpoker;
 /**
  * Created by Leejjon on 12-10-2015.
  */
-public class NumberCombination {
+public class NumberCombination implements Comparable<NumberCombination> {
     private int highestNumber = 0;
     private int middleNumber = 0;
     private int lowestNumber = 0;
@@ -36,23 +36,14 @@ public class NumberCombination {
         }
     }
 
-    public boolean isGreaterThan(NumberCombination numberCombinationToCompare) {
-        if (highestNumber > numberCombinationToCompare.getHighestNumber()) {
+    /**
+     * Reads easier than compareTo(ncToCompare) > 0.
+     */
+    public boolean isGreaterThan(NumberCombination ncToCompare) {
+        if (compareTo(ncToCompare) > 0) {
             return true;
-        } else if (highestNumber < numberCombinationToCompare.getHighestNumber()) {
+        } else {
             return false;
-        } else /* highestNumber == numberCombinationToCompare.getHighestNumber() */ {
-            if (middleNumber > numberCombinationToCompare.getMiddleNumber()) {
-                return true;
-            } else if (middleNumber < numberCombinationToCompare.getMiddleNumber()){
-                return false;
-            } else /* middleNumber == numberCombinationToCompare.getMiddleNumber() */ {
-                if (lowestNumber > numberCombinationToCompare.getLowestNumber()) {
-                    return true;
-                } else /* lowestNumber <= numberCombinationToCompare.getLowestNumber() */ {
-                    return false;
-                }
-            }
         }
     }
 
@@ -69,13 +60,7 @@ public class NumberCombination {
     }
 
     public boolean equals(NumberCombination numberCombination) {
-        if (numberCombination.getHighestNumber() == highestNumber &&
-                numberCombination.getMiddleNumber() == middleNumber &&
-                numberCombination.getLowestNumber() == lowestNumber) {
-            return true;
-        } else {
-            return false;
-        }
+        return compareTo(numberCombination) == 0;
     }
 
     public boolean areAllDicesEqual() {
@@ -89,5 +74,25 @@ public class NumberCombination {
     @Override
     public String toString() {
         return "" + highestNumber + middleNumber + lowestNumber;
+    }
+
+    /**
+     * @param ncToCompare The NumberCombination object to compare.
+     * @return
+     * This method returns the value 0 if this NumberCombination is equal to the argument.
+     * A value less than 0 if this NumberCombination is less than the argument.
+     * A value greater than 0 if this NumberCombination is greater than the argument Integer.
+     */
+    @Override
+    public int compareTo(NumberCombination ncToCompare) {
+        if (highestNumber != ncToCompare.getHighestNumber()) {
+            return highestNumber - ncToCompare.getHighestNumber();
+        } else {
+            if (middleNumber != ncToCompare.getMiddleNumber()) {
+                return middleNumber - ncToCompare.getMiddleNumber();
+            } else {
+                return lowestNumber - ncToCompare.getLowestNumber();
+            }
+        }
     }
 }
