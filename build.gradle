@@ -1,10 +1,11 @@
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.0.0'
+        classpath 'com.android.tools.build:gradle:2.2.0'
     }
 }
 
@@ -15,7 +16,7 @@ allprojects {
     version = '1.0'
     ext {
         appName = 'blufpoker'
-        gdxVersion = '1.8.0'
+        gdxVersion = '1.9.5'
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.6.0'
         aiVersion = '1.5.0'
@@ -60,3 +61,5 @@ project(":core") {
 tasks.eclipse.doLast {
     delete ".project"
 }
+
+task createWrapper(type: Wrapper) { gradleVersion = "3.2.1" }

@@ -1,1 +1,1 @@
-include 'android', 'core', 'ios'
+include 'android', 'core'
