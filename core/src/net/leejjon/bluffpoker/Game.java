@@ -12,9 +12,6 @@ import net.leejjon.bluffpoker.stages.GameInputInterface;
 
 import java.util.List;
 
-/**
- * Created by Leejjon on 3-10-2015.
- */
 public class Game implements GameInputInterface, Throwable {
     private UserInterface userInterface;
     private Settings settings;
@@ -94,7 +91,7 @@ public class Game implements GameInputInterface, Throwable {
 
     public void validateCall(NumberCombination newCall) throws InputValidationException {
         if (believed666) {
-            if (newCall.areAllDicesEqual() && (newCall.isGreaterThan(latestCall) || latestCall.equals(new NumberCombination(6, 6, 6, true)))) {
+            if (newCall.areAllDicesEqual() && (newCall.isGreaterThan(latestCall) || latestCall.equals(NumberCombination.MAX))) {
                 call(newCall);
             } else {
                 throw new InputValidationException("Call three the identical numbers higher than " + latestCall);
@@ -170,7 +167,7 @@ public class Game implements GameInputInterface, Throwable {
                 } else {
                     // Start next turn.
                     nextPlayer();
-                    if (latestCall.equals(new NumberCombination(6,6,6,false))) {
+                    if (latestCall.equals(new NumberCombination(6,6,6, false))) {
                         believed666 = true;
                         leftDice.putBackUnderCup();
                         middleDice.putBackUnderCup();
@@ -417,7 +414,7 @@ public class Game implements GameInputInterface, Throwable {
      * @return A NumberCombination object based on the values of the dices.
      */
     private NumberCombination getNumberCombinationFromDices() {
-        return new NumberCombination(leftDice.getDiceValue(), middleDice.getDiceValue(), rightDice.getDiceValue(), false);
+        return new NumberCombination(leftDice.getDiceValue(), middleDice.getDiceValue(), rightDice.getDiceValue(), true);
     }
 
     public boolean isAllowedToCall() {

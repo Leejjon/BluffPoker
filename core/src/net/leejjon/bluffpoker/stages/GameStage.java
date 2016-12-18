@@ -52,9 +52,7 @@ public class GameStage extends AbstractStage implements UserInterface {
     private WarningDialog throwAllDices;
     private WinnerDialog winnerDialog;
 
-    private SelectBox<Integer> firstNumberOfCall;
-    private SelectBox<Integer> secondNumberOfCall;
-    private SelectBox<Integer> thirdNumberOfCall;
+    private TextField callInputField;
 
     private TextButton autoButton;
     private TextButton callButton;
@@ -89,28 +87,13 @@ public class GameStage extends AbstractStage implements UserInterface {
         Table topTable = new Table();
         topTable.setFillParent(true);
 
-        firstNumberOfCall = new SelectBox<>(uiSkin);
-        firstNumberOfCall.setItems(oneTillSix);
-        firstNumberOfCall.setSelected(0);
-        firstNumberOfCall.setDisabled(true);
-
-        secondNumberOfCall = new SelectBox<>(uiSkin);
-        secondNumberOfCall.setItems(oneTillSix);
-        secondNumberOfCall.setSelected(0);
-        secondNumberOfCall.setDisabled(true);
-
-        thirdNumberOfCall = new SelectBox<>(uiSkin);
-        thirdNumberOfCall.setItems(oneTillSix);
-        thirdNumberOfCall.setSelected(0);
-        thirdNumberOfCall.setDisabled(true);
+        callInputField = new TextField(NumberCombination.JUNK.toString(), uiSkin);
 
         float padding = 5f;
 
         topTable.top();
         topTable.padTop(padding);
-        topTable.add(firstNumberOfCall).pad(padding).colspan(2);
-        topTable.add(secondNumberOfCall).pad(padding).colspan(2);
-        topTable.add(thirdNumberOfCall).pad(padding).colspan(2);
+        topTable.add(callInputField).pad(padding).colspan(2);
         topTable.row();
 
         autoButton = new TextButton("Auto", uiSkin);
@@ -130,8 +113,8 @@ public class GameStage extends AbstractStage implements UserInterface {
         });
         callButton.setDisabled(true);
 
-        topTable.add(autoButton).pad(padding).colspan(3).left();
-        topTable.add(callButton).pad(padding).colspan(3).right();
+        topTable.add(autoButton).pad(padding).colspan(1).left();
+        topTable.add(callButton).pad(padding).colspan(1).right();
 
         thirdLatestOutputLabel = new Label("", uiSkin);
         thirdLatestOutputLabel.setColor(Color.BLACK);
@@ -269,63 +252,34 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     @Override
     public void disableCallUserInterface() {
-        firstNumberOfCall.setDisabled(true);
-        secondNumberOfCall.setDisabled(true);
-        thirdNumberOfCall.setDisabled(true);
+        callInputField.setDisabled(true);
         callButton.setDisabled(true);
         autoButton.setDisabled(true);
     }
 
     @Override
     public void enableCallUserInterface() {
-        firstNumberOfCall.setDisabled(false);
-        secondNumberOfCall.setDisabled(false);
-        thirdNumberOfCall.setDisabled(false);
+        callInputField.setDisabled(false);
         callButton.setDisabled(false);
         autoButton.setDisabled(false);
     }
 
     private void setAutoValue() {
         if (currentGame.isAllowedToCall()) {
-            if (currentGame.hasBelieved666()) {
-                if (thirdNumberOfCall.getSelected() == 6 &&
-                        secondNumberOfCall.getSelected() == 6 &&
-                        firstNumberOfCall.getSelected() == 6) {
-                    thirdNumberOfCall.setSelected(1);
-                    secondNumberOfCall.setSelected(1);
-                    firstNumberOfCall.setSelected(1);
+            NumberCombination currentTextBoxValue;
+            NumberCombination generatedCall;
+            try {
+                currentTextBoxValue = new NumberCombination(callInputField.getText());
+                if (currentGame.hasBelieved666()) {
+                    generatedCall = currentTextBoxValue.incrementAll();
                 } else {
-                    thirdNumberOfCall.setSelected(thirdNumberOfCall.getSelected() + 1);
-                    secondNumberOfCall.setSelected(secondNumberOfCall.getSelected() + 1);
-                    firstNumberOfCall.setSelected(firstNumberOfCall.getSelected() + 1);
+                    generatedCall = currentTextBoxValue.increment();
                 }
-            } else {
-                if (firstNumberOfCall.getSelected() == 0 &&
-                        secondNumberOfCall.getSelected() == 0 &&
-                        thirdNumberOfCall.getSelected() == 0) {
-                    firstNumberOfCall.setSelected(6);
-                    secondNumberOfCall.setSelected(4);
-                    thirdNumberOfCall.setSelected(3);
-                } else {
-                    if (thirdNumberOfCall.getSelected() < 6) {
-                        thirdNumberOfCall.setSelected(thirdNumberOfCall.getSelected() + 1);
-                    } else {
-                        thirdNumberOfCall.setSelected(0);
-                        if (secondNumberOfCall.getSelected() < 6) {
-                            secondNumberOfCall.setSelected(secondNumberOfCall.getSelected() + 1);
-                        } else {
-                            secondNumberOfCall.setSelected(0);
-                            if (firstNumberOfCall.getSelected() < 6) {
-                                firstNumberOfCall.setSelected(firstNumberOfCall.getSelected() + 1);
-                            } else { // In case of 666
-                                firstNumberOfCall.setSelected(1);
-                                secondNumberOfCall.setSelected(1);
-                                thirdNumberOfCall.setSelected(1);
-                            }
-                        }
-                    }
-                }
+            } catch (InputValidationException e) {
+                // Just put something in there.
+                generatedCall = NumberCombination.JUNK;
             }
+            callInputField.setText(generatedCall.toString());
         }
     }
 
@@ -371,18 +325,14 @@ public class GameStage extends AbstractStage implements UserInterface {
         latestOutputLabel.setText("");
     }
 
-    public NumberCombination getNewCall() {
-        return new NumberCombination(firstNumberOfCall.getSelected(), secondNumberOfCall.getSelected(), thirdNumberOfCall.getSelected(), true);
+    public NumberCombination getNewCall() throws InputValidationException {
+        return new NumberCombination(callInputField.getText());
     }
 
     @Override
     public void resetCall() {
         autoButton.setDisabled(true);
-        firstNumberOfCall.setSelected(0);
-        firstNumberOfCall.setDisabled(true);
-        secondNumberOfCall.setSelected(0);
-        secondNumberOfCall.setDisabled(true);
-        thirdNumberOfCall.setSelected(0);
-        thirdNumberOfCall.setDisabled(true);
+        callInputField.setDisabled(true);
+        callInputField.setText(NumberCombination.MIN.toString());
     }
 }
