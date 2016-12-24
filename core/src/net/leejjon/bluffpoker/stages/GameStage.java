@@ -269,7 +269,7 @@ public class GameStage extends AbstractStage implements UserInterface {
             NumberCombination currentTextBoxValue;
             NumberCombination generatedCall;
             try {
-                currentTextBoxValue = new NumberCombination(callInputField.getText());
+                currentTextBoxValue = NumberCombination.validNumberCombinationFrom(callInputField.getText());
                 if (currentGame.hasBelieved666()) {
                     generatedCall = currentTextBoxValue.incrementAll();
                 } else {
@@ -326,7 +326,7 @@ public class GameStage extends AbstractStage implements UserInterface {
     }
 
     public NumberCombination getNewCall() throws InputValidationException {
-        return new NumberCombination(callInputField.getText());
+        return NumberCombination.validNumberCombinationFrom(callInputField.getText());
     }
 
     @Override

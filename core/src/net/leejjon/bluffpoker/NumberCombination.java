@@ -1,5 +1,10 @@
 package net.leejjon.bluffpoker;
 
+import com.google.common.primitives.Ints;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,28 +17,9 @@ public class NumberCombination implements Comparable<NumberCombination> {
     public static NumberCombination BLUFF_NUMBER = new NumberCombination(6, 4, 3, true);
     public static NumberCombination MAX = new NumberCombination(6, 6, 6, true);
 
-    private int highestNumber;
-    private int middleNumber;
-    private int lowestNumber;
-
-    private final boolean ordered;
-
-    /**
-     * Use this constructor to generate a NumberCombination object from a call. No ordering is done.
-     * @param input
-     * @throws InputValidationException
-     */
-    public NumberCombination(String input) throws InputValidationException {
-        ordered = false;
-        if (!validateNumberCombinationInput(input)) {
-            throw new InputValidationException("Input did not match expected pattern.");
-        }
-
-        // No more validation is done because it already happened with the regex.
-
-        final int decimalRadix = 10;
-        setFinalNumbers(Character.digit(input.charAt(0), decimalRadix), Character.digit(input.charAt(1), decimalRadix), Character.digit(input.charAt(2), decimalRadix));
-    }
+    private final int highestNumber;
+    private final int middleNumber;
+    private final int lowestNumber;
 
     /**
      * Use this parameter to generate a NumberCombination object from a throw or hard coded value.
@@ -43,39 +29,28 @@ public class NumberCombination implements Comparable<NumberCombination> {
      * @param ordered
      */
     public NumberCombination(int firstNumber, int secondNumber, int thirdNumber, boolean ordered) {
-        this.ordered = ordered;
         // TODO: Add preconditions for the ranges of the integers.
 
+        int[] order;
         if (ordered) {
-            orderNumbers(firstNumber, secondNumber, thirdNumber);
+            order = orderNumbersFromLowToHigh(firstNumber, secondNumber, thirdNumber);
         } else {
-            setFinalNumbers(firstNumber, secondNumber, thirdNumber);
+            order = new int[] {thirdNumber, secondNumber, firstNumber};
         }
+
+        highestNumber = order[2];
+        middleNumber = order[1];
+        lowestNumber = order[0];
     }
 
-    private void orderNumbers(int highestNumber, int middleNumber, int lowestNumber) {
-        int[] numbers = new int[]{highestNumber, middleNumber, lowestNumber};
-        for (int number : numbers) {
-            if (number > highestNumber) {
-                lowestNumber = middleNumber;
-                middleNumber = highestNumber;
-                highestNumber = number;
-            } else /* (number <= highestNumber) */ {
-                if (number > middleNumber) {
-                    lowestNumber = middleNumber;
-                    middleNumber = number;
-                } else /* number <= middleNumber */ {
-                    lowestNumber = number;
-                }
-            }
-        }
-        setFinalNumbers(highestNumber, middleNumber, lowestNumber);
-    }
+    private static int[] orderNumbersFromLowToHigh(int highestNumber, int middleNumber, int lowestNumber) {
+        List<Integer> listToSort = new ArrayList<>(3);
+        listToSort.add(highestNumber);
+        listToSort.add(middleNumber);
+        listToSort.add(lowestNumber);
 
-    private void setFinalNumbers(int highestNumber, int middleNumber, int lowestNumber) {
-        this.highestNumber = highestNumber;
-        this.middleNumber = middleNumber;
-        this.lowestNumber = lowestNumber;
+        Collections.sort(listToSort);
+        return Ints.toArray(listToSort);
     }
 
     /**
@@ -149,6 +124,23 @@ public class NumberCombination implements Comparable<NumberCombination> {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Use this constructor to generate a NumberCombination object from a call. No ordering is done.
+     * @param input A three digit string only containing 0-6
+     * @return A valid NumberCombination.
+     * @throws InputValidationException
+     */
+    public static NumberCombination validNumberCombinationFrom(String input) throws InputValidationException {
+        if (!validateNumberCombinationInput(input)) {
+            throw new InputValidationException("Input did not match expected pattern.");
+        }
+
+        // No more validation is done because it already happened with the regex.
+
+        final int decimalRadix = 10;
+        return new NumberCombination(Character.digit(input.charAt(0), decimalRadix), Character.digit(input.charAt(1), decimalRadix), Character.digit(input.charAt(2), decimalRadix), false);
     }
 
     /**
