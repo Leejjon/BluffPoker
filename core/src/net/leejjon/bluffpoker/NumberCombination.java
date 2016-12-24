@@ -12,14 +12,14 @@ public class NumberCombination implements Comparable<NumberCombination> {
     public static NumberCombination BLUFF_NUMBER = new NumberCombination(6, 4, 3, true);
     public static NumberCombination MAX = new NumberCombination(6, 6, 6, true);
 
-    private int highestNumber = 0;
-    private int middleNumber = 0;
-    private int lowestNumber = 0;
+    private int highestNumber;
+    private int middleNumber;
+    private int lowestNumber;
 
     private final boolean ordered;
 
     /**
-     * Use this constructor to generate a NumberCombination object from a call.
+     * Use this constructor to generate a NumberCombination object from a call. No ordering is done.
      * @param input
      * @throws InputValidationException
      */
@@ -53,12 +53,6 @@ public class NumberCombination implements Comparable<NumberCombination> {
         }
     }
 
-    private void setFinalNumbers(int highestNumber, int middleNumber, int lowestNumber) {
-        this.highestNumber = highestNumber;
-        this.middleNumber = middleNumber;
-        this.lowestNumber = lowestNumber;
-    }
-
     private void orderNumbers(int highestNumber, int middleNumber, int lowestNumber) {
         int[] numbers = new int[]{highestNumber, middleNumber, lowestNumber};
         for (int number : numbers) {
@@ -76,6 +70,12 @@ public class NumberCombination implements Comparable<NumberCombination> {
             }
         }
         setFinalNumbers(highestNumber, middleNumber, lowestNumber);
+    }
+
+    private void setFinalNumbers(int highestNumber, int middleNumber, int lowestNumber) {
+        this.highestNumber = highestNumber;
+        this.middleNumber = middleNumber;
+        this.lowestNumber = lowestNumber;
     }
 
     /**
@@ -163,8 +163,12 @@ public class NumberCombination implements Comparable<NumberCombination> {
         return matcher.matches();
     }
 
-    public boolean equals(NumberCombination numberCombination) {
-        return compareTo(numberCombination) == 0;
+    @Override
+    public boolean equals(Object numberCombination) {
+        if (numberCombination == null) return false;
+        if (numberCombination == this) return true;
+        if (!(numberCombination instanceof NumberCombination))return false;
+        return compareTo((NumberCombination) numberCombination) == 0;
     }
 
     /**
