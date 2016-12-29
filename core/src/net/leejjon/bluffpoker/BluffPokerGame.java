@@ -15,10 +15,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-public class BlufPokerGame extends ApplicationAdapter implements
+public class BluffPokerGame extends ApplicationAdapter implements
 		ChangeStageListener, PhoneInputListener {
 	private Skin uiSkin;
-	private Settings settings = new Settings();
+	private net.leejjon.bluffpoker.logic.Settings settings = new net.leejjon.bluffpoker.logic.Settings();
 
 	private StartStage startMenuStage;
 	private ChoosePlayersStage choosePlayerStage;
@@ -27,7 +27,7 @@ public class BlufPokerGame extends ApplicationAdapter implements
 	
 	private static int divideScreenByThis;
 
-	public BlufPokerGame(int divideScreenByThis) {
+	public BluffPokerGame(int divideScreenByThis) {
 		this.divideScreenByThis = divideScreenByThis;
 	}
 
@@ -87,7 +87,7 @@ public class BlufPokerGame extends ApplicationAdapter implements
 	}
 
 	@Override
-	public void closeSettingsStage(Settings settings) {
+	public void closeSettingsStage(net.leejjon.bluffpoker.logic.Settings settings) {
 		this.settings = settings;
 		settingsStage.setVisible(false);
 		startMenuStage.setVisible(true);

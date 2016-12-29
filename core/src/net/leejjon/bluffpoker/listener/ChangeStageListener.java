@@ -2,7 +2,7 @@ package net.leejjon.bluffpoker.listener;
 
 import java.util.List;
 
-import net.leejjon.bluffpoker.Settings;
+import net.leejjon.bluffpoker.logic.Settings;
 
 public interface ChangeStageListener {
 	void startSelectingPlayersToPlayWith();

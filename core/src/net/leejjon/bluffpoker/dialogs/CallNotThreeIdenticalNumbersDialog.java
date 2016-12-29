@@ -2,7 +2,7 @@ package net.leejjon.bluffpoker.dialogs;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import net.leejjon.bluffpoker.NumberCombination;
+import net.leejjon.bluffpoker.logic.NumberCombination;
 
 /**
  * Created by Leejjon on 19-12-2015.

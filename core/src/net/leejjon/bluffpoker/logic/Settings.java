@@ -1,4 +1,4 @@
-package net.leejjon.bluffpoker;
+package net.leejjon.bluffpoker.logic;
 
 public class Settings {
 	private int numberOfLives = 3;

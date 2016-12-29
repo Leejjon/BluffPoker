@@ -2,7 +2,7 @@ package net.leejjon.bluffpoker.actions;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Action;
-import net.leejjon.bluffpoker.BlufPokerGame;
+import net.leejjon.bluffpoker.BluffPokerGame;
 
 /**
  * Created by Leejjon on 2-10-2015.
@@ -19,7 +19,7 @@ public class LiftCupAction extends Action {
          * I don't care about this being slow on phones who display less than 30 frames per second and this
          * being faster on phones with more frames per second.
          */
-        if (actor.getY() < (Gdx.graphics.getHeight() / BlufPokerGame.getDivideScreenByThis())) {
+        if (actor.getY() < (Gdx.graphics.getHeight() / BluffPokerGame.getDivideScreenByThis())) {
             actor.moveBy(0f, 2f);
         } else {
             actionDone = true;

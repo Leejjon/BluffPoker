@@ -1,4 +1,4 @@
-package net.leejjon.bluffpoker;
+package net.leejjon.bluffpoker.logic;
 
 import com.google.common.primitives.Ints;
 
@@ -98,11 +98,11 @@ public class NumberCombination implements Comparable<NumberCombination> {
             int highestNumberThatMightIncrement = highestNumber;
             int middleNumberThatMightIncrement = middleNumber;
             int lowestNumberThatMightIncrement = lowestNumber;
-            if (lowestNumberThatMightIncrement < 6) {
+            if (lowestNumberThatMightIncrement < middleNumberThatMightIncrement) {
                 lowestNumberThatMightIncrement++;
             } else {
                 lowestNumberThatMightIncrement = 1;
-                if (middleNumberThatMightIncrement < 6) {
+                if (middleNumberThatMightIncrement < highestNumberThatMightIncrement) {
                     middleNumberThatMightIncrement++;
                 } else {
                     middleNumberThatMightIncrement = 1;

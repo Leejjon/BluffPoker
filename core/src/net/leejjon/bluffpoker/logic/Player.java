@@ -1,8 +1,5 @@
-package net.leejjon.bluffpoker;
+package net.leejjon.bluffpoker.logic;
 
-/**
- * Created by Leejjon on 11-10-2015.
- */
 public class Player {
     private String name;
     private int lives;

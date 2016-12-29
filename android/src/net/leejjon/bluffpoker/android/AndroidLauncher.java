@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import android.graphics.Point;
 import android.view.Display;
-import net.leejjon.bluffpoker.BlufPokerGame;
+import net.leejjon.bluffpoker.BluffPokerGame;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -15,10 +15,11 @@ import android.util.DisplayMetrics;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import net.leejjon.bluffpoker.android.keyboard.NumberCombinationInput;
 
 public class AndroidLauncher extends AndroidApplication implements SensorEventListener {
-	private BlufPokerGame game;
-	
+	private BluffPokerGame game;
+
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -62,12 +63,12 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
 		sensorManager.registerListener(this, acceloMeterSensor,
 				SensorManager.SENSOR_DELAY_NORMAL);
 		
-		game = new BlufPokerGame(zoomfactor);
+		game = new BluffPokerGame(zoomfactor);
 		initialize(game, config);
+		input = new NumberCombinationInput(this, this, graphics.getView(),  config);
 	}
 	
 	private AtomicLong lastUpdate;
-	private AtomicLong timestampOffirstShake;
 	private AtomicInteger numberOfTimesShaked = new AtomicInteger(0);
 	private volatile float last_x, last_y, last_z;
 	

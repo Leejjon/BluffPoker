@@ -1,4 +1,4 @@
-package net.leejjon.bluffpoker;
+package net.leejjon.bluffpoker.logic;
 
 import com.badlogic.gdx.audio.Sound;
 import net.leejjon.bluffpoker.actions.LiftCupAction;

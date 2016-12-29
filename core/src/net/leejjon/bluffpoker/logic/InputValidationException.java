@@ -1,10 +1,7 @@
-package net.leejjon.bluffpoker;
+package net.leejjon.bluffpoker.logic;
 
 import java.io.IOException;
 
-/**
- * Created by Leejjon on 12-10-2015.
- */
 public class InputValidationException extends IOException {
     private String message;
 

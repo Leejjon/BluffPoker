@@ -9,15 +9,12 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import net.leejjon.bluffpoker.*;
 import net.leejjon.bluffpoker.actors.Cup;
 import net.leejjon.bluffpoker.actors.Dice;
-import net.leejjon.bluffpoker.dialogs.CallNotThreeIdenticalNumbersDialog;
-import net.leejjon.bluffpoker.dialogs.CallTooLowDialog;
-import net.leejjon.bluffpoker.dialogs.WarningDialog;
-import net.leejjon.bluffpoker.dialogs.WinnerDialog;
+import net.leejjon.bluffpoker.dialogs.*;
 import net.leejjon.bluffpoker.listener.ChangeStageListener;
 import net.leejjon.bluffpoker.listener.UserInterface;
+import net.leejjon.bluffpoker.logic.*;
 
 import java.util.List;
 
@@ -82,18 +79,26 @@ public class GameStage extends AbstractStage implements UserInterface {
         throwAllDices = new WarningDialog("Throw with all dices!", uiSkin);
         winnerDialog = new WinnerDialog(stageListener, this, uiSkin);
 
-        Integer[] oneTillSix = new Integer[] {0, 1, 2, 3, 4, 5, 6};
-
         Table topTable = new Table();
         topTable.setFillParent(true);
 
         callInputField = new TextField(NumberCombination.JUNK.toString(), uiSkin);
+        final CallInputDialog callInputDialog = new CallInputDialog(callInputField);
+        callInputField.setDisabled(true);
+        callInputField.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (currentGame.isAllowedToCall()) {
+                    Gdx.input.getTextInput(callInputDialog, CallInputDialog.ENTER_THREE_DIGITS, "", "Enter three numbers.");
+                }
+            }
+        });
 
         float padding = 5f;
 
         topTable.top();
         topTable.padTop(padding);
-        topTable.add(callInputField).pad(padding).colspan(2);
+        Cell<TextField> callInputFieldCell = topTable.add(callInputField).pad(padding).colspan(2);
         topTable.row();
 
         autoButton = new TextButton("Auto", uiSkin);
@@ -113,8 +118,9 @@ public class GameStage extends AbstractStage implements UserInterface {
         });
         callButton.setDisabled(true);
 
-        topTable.add(autoButton).pad(padding).colspan(1).left();
-        topTable.add(callButton).pad(padding).colspan(1).right();
+        Cell<TextButton> autoButtonCell = topTable.add(autoButton).pad(padding).colspan(1).left();
+        Cell<TextButton> callButtonCell = topTable.add(callButton).pad(padding).colspan(1).right();
+        callInputFieldCell.width(autoButtonCell.getMinWidth() + callButtonCell.getMinWidth() + (2 * padding));
 
         thirdLatestOutputLabel = new Label("", uiSkin);
         thirdLatestOutputLabel.setColor(Color.BLACK);
@@ -127,11 +133,11 @@ public class GameStage extends AbstractStage implements UserInterface {
 
         table.left();
         table.bottom();
-        table.add(thirdLatestOutputLabel).left();
+        table.add(thirdLatestOutputLabel).left().padLeft(padding);
         table.row();
-        table.add(secondLatestOutputLabel).left();
+        table.add(secondLatestOutputLabel).left().padLeft(padding);
         table.row();
-        table.add(latestOutputLabel).left();
+        table.add(latestOutputLabel).left().padLeft(padding);
 
         foreGroundActors = new Group();
         foreGroundActors.addActor(table);
@@ -161,8 +167,6 @@ public class GameStage extends AbstractStage implements UserInterface {
         rightDice = new Dice(cup, diceTextures, diceLockTexture, 3, DiceLocation.RIGHT, dicesUnderCupActors, dicesBeforeCupActors);
         rightDice.calculateAndSetPosition();
 
-
-        addActor(table);
         addActor(backgroundActors);
         addActor(dicesBeforeCupActors);
         addActor(foreGroundActors);

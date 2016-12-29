@@ -3,7 +3,7 @@ package net.leejjon.bluffpoker.stages;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import net.leejjon.bluffpoker.Settings;
+import net.leejjon.bluffpoker.logic.Settings;
 import net.leejjon.bluffpoker.listener.ChangeStageListener;
 
 import com.badlogic.gdx.graphics.Color;
