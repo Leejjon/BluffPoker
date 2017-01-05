@@ -6,11 +6,8 @@ android {
         main {
             aidl.srcDirs = ['src']
             renderscript.srcDirs = ['src']
-            assets.srcDirs = ['assets']
             jniLibs.srcDirs = ['libs']
         }
-
-        instrumentTest.setRoot('tests')
     }
 
     defaultConfig {
