@@ -1,0 +1,16 @@
+package net.leejjon.bluffpoker.android.keyboard;
+
+import org.junit.Test;
+
+import static junit.framework.Assert.assertTrue;
+
+public class NumberCombinationInputFilterTest {
+    @Test
+    public void testMethod() {
+        NumberCombinationInputFilter ncf = new NumberCombinationInputFilter();
+
+//        final String input = ""
+
+        assertTrue(new Boolean(false));
+    }
+}

@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.leejjon.bluffpoker.listener.ChangeStageListener;
 import net.leejjon.bluffpoker.listener.PhoneInputListener;
+import net.leejjon.bluffpoker.logic.Settings;
 import net.leejjon.bluffpoker.stages.ChoosePlayersStage;
 import net.leejjon.bluffpoker.stages.GameStage;
 import net.leejjon.bluffpoker.stages.SettingsStage;
@@ -18,7 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 public class BluffPokerGame extends ApplicationAdapter implements
 		ChangeStageListener, PhoneInputListener {
 	private Skin uiSkin;
-	private net.leejjon.bluffpoker.logic.Settings settings = new net.leejjon.bluffpoker.logic.Settings();
+	private Settings settings = new Settings();
 
 	private StartStage startMenuStage;
 	private ChoosePlayersStage choosePlayerStage;
@@ -87,7 +88,7 @@ public class BluffPokerGame extends ApplicationAdapter implements
 	}
 
 	@Override
-	public void closeSettingsStage(net.leejjon.bluffpoker.logic.Settings settings) {
+	public void closeSettingsStage(Settings settings) {
 		this.settings = settings;
 		settingsStage.setVisible(false);
 		startMenuStage.setVisible(true);

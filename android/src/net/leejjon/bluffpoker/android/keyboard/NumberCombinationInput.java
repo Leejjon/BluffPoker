@@ -31,7 +31,7 @@ public class NumberCombinationInput extends AndroidInputThreePlus {
             alert.setTitle(title);
             final EditText input = new EditText(context);
             if (title.equals(CallInputDialog.ENTER_THREE_DIGITS)) {
-                InputFilter.LengthFilter filter = new InputFilter.LengthFilter(3) ;
+                NumberCombinationInputFilter filter = new NumberCombinationInputFilter();
                 input.setFilters(new InputFilter[]{filter});
                 input.setInputType(InputType.TYPE_CLASS_PHONE);
             }
