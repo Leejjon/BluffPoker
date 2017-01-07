@@ -3,7 +3,7 @@ android {
     compileSdkVersion 25
 
     defaultConfig {
-        applicationId "net.leejjon.blufpoker.android"
+        applicationId "net.leejjon.bluffpoker.android"
         minSdkVersion 14
         targetSdkVersion 25
         versionCode 4
@@ -12,9 +12,14 @@ android {
         jackOptions {
             enabled true
         }
+
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
             targetCompatibility JavaVersion.VERSION_1_8
+        }
+
+        testOptions {
+            unitTests.returnDefaultValues = true
         }
     }
 }
@@ -62,7 +67,7 @@ task run(type: Exec) {
     }
 
     def adb = path + "/platform-tools/adb"
-    commandLine "$adb", 'shell', 'am', 'start', '-n', 'net.leejjon.blufpoker.android/net.leejjon.blufpoker.android.AndroidLauncher'
+    commandLine "$adb", 'shell', 'am', 'start', '-n', 'net.leejjon.bluffpoker.android/net.leejjon.bluffpoker.android.AndroidLauncher'
 }
 
 // sets up the Android Eclipse project, using the old Ant based build.
