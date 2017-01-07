@@ -19,8 +19,11 @@ android {
         }
 
         testOptions {
+            // Currently have no Android speficic unit tests.
             unitTests.returnDefaultValues = true
         }
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 }
 
