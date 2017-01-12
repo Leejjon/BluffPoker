@@ -1,21 +1,24 @@
 package net.leejjon.bluffpoker.dialogs;
 
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.Input.TextInputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import net.leejjon.bluffpoker.listener.UserInterface;
+import net.leejjon.bluffpoker.stages.GameInputInterface;
 
+public class CallInputDialog implements TextInputListener {
+    public final static String ENTER_YOUR_CALL = "Enter your call:";
+    public final static String ENTER_THREE_DIGITS = "Enter three numbers.";
 
-public class CallInputDialog implements Input.TextInputListener {
-    public final static String ENTER_THREE_DIGITS = "Enter your call:";
+    private UserInterface ui;
 
-    private TextField callInputField;
-
-    public CallInputDialog(TextField callInputField) {
-        this.callInputField = callInputField;
+    public CallInputDialog(UserInterface ui) {
+        this.ui = ui;
     }
 
     @Override
     public void input(String text) {
-        callInputField.setText(text);
+        ui.setCallField(text);
+        ui.call();
     }
 
     @Override

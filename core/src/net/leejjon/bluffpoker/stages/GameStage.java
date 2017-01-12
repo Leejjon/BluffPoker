@@ -49,18 +49,12 @@ public class GameStage extends AbstractStage implements UserInterface {
     private WarningDialog throwAllDices;
     private WinnerDialog winnerDialog;
 
-    private TextField callInputField;
+    private Label callInputField;
 
     private TextButton autoButton;
     private TextButton callButton;
 
-    // Putting certain images at the foreground or background usually goes via z index. However the z index seems broken
-    // unless I pull off crazy hacks. What Actor is painted first is simply decided by the order you add them to the stage.
-    // So I decided to create two groups and switch the actors between the groups.
-    private Group foreGroundActors;
-    private Group dicesUnderCupActors;
-    private Group backgroundActors;
-    private Group dicesBeforeCupActors;
+    private boolean autoButtonPressed = false;
 
     public GameStage(Skin uiSkin, final ChangeStageListener stageListener) {
         super(false);
@@ -82,23 +76,17 @@ public class GameStage extends AbstractStage implements UserInterface {
         Table topTable = new Table();
         topTable.setFillParent(true);
 
-        callInputField = new TextField(NumberCombination.JUNK.toString(), uiSkin);
-        final CallInputDialog callInputDialog = new CallInputDialog(callInputField);
-        callInputField.setDisabled(true);
-        callInputField.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (currentGame.isAllowedToCall()) {
-                    Gdx.input.getTextInput(callInputDialog, CallInputDialog.ENTER_THREE_DIGITS, "", "Enter three numbers.");
-                }
-            }
-        });
+        callInputField = new Label(NumberCombination.JUNK.toString(), uiSkin, "arial", Color.BLACK);
+        callInputField.setColor(Color.BLACK);
+        callInputField.setFontScale(2.0f);
+
+        final CallInputDialog callInputDialog = new CallInputDialog(this);
 
         float padding = 5f;
 
         topTable.top();
         topTable.padTop(padding);
-        Cell<TextField> callInputFieldCell = topTable.add(callInputField).pad(padding).colspan(2);
+        topTable.add(callInputField).pad(padding).colspan(2).center();
         topTable.row();
 
         autoButton = new TextButton("Auto", uiSkin);
@@ -113,14 +101,19 @@ public class GameStage extends AbstractStage implements UserInterface {
         callButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                call();
+                if (currentGame.isAllowedToCall()) {
+                    String prefilledText = "";
+                    if (autoButtonPressed) {
+                        prefilledText = callInputField.getText().toString();
+                    }
+                    Gdx.input.getTextInput(callInputDialog, CallInputDialog.ENTER_YOUR_CALL, prefilledText, CallInputDialog.ENTER_THREE_DIGITS);
+                }
             }
         });
         callButton.setDisabled(true);
 
-        Cell<TextButton> autoButtonCell = topTable.add(autoButton).pad(padding).colspan(1).left();
-        Cell<TextButton> callButtonCell = topTable.add(callButton).pad(padding).colspan(1).right();
-        callInputFieldCell.width(autoButtonCell.getMinWidth() + callButtonCell.getMinWidth() + (2 * padding));
+        topTable.add(autoButton).pad(padding).colspan(1).left();
+        topTable.add(callButton).pad(padding).colspan(1).right();
 
         thirdLatestOutputLabel = new Label("", uiSkin);
         thirdLatestOutputLabel.setColor(Color.BLACK);
@@ -139,14 +132,17 @@ public class GameStage extends AbstractStage implements UserInterface {
         table.row();
         table.add(latestOutputLabel).left().padLeft(padding);
 
-        foreGroundActors = new Group();
+        // Putting certain images at the foreground or background usually goes via z index. However the z index seems broken
+        // unless I pull off crazy hacks. What Actor is painted first is simply decided by the order you add them to the stage.
+        // So I decided to create two groups and switch the actors between the groups.
+        Group foreGroundActors = new Group();
+        Group backgroundActors = new Group();
+        Group dicesUnderCupActors = new Group();
+        Group dicesBeforeCupActors = new Group();
+
         foreGroundActors.addActor(table);
-        backgroundActors = new Group();
 
         cup = new Cup(closedCupTexture, openCupTexture, cupLockTexture, foreGroundActors, backgroundActors);
-
-        dicesUnderCupActors = new Group();
-        dicesBeforeCupActors = new Group();
 
         // Load the textures of the dices.
         dice1 = new Texture("data/dice1.png");
@@ -186,7 +182,8 @@ public class GameStage extends AbstractStage implements UserInterface {
         currentGame.startGame(players, settings);
     }
 
-    private void call() {
+    @Override
+    public void call() {
         if (currentGame.isAllowedToCall()) {
             boolean validCall = false;
             try {
@@ -256,14 +253,18 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     @Override
     public void disableCallUserInterface() {
-        callInputField.setDisabled(true);
+        autoButtonPressed = false;
         callButton.setDisabled(true);
         autoButton.setDisabled(true);
     }
 
     @Override
+    public void setCallField(String call) {
+        callInputField.setText(call);
+    }
+
+    @Override
     public void enableCallUserInterface() {
-        callInputField.setDisabled(false);
         callButton.setDisabled(false);
         autoButton.setDisabled(false);
     }
@@ -273,7 +274,7 @@ public class GameStage extends AbstractStage implements UserInterface {
             NumberCombination currentTextBoxValue;
             NumberCombination generatedCall;
             try {
-                currentTextBoxValue = NumberCombination.validNumberCombinationFrom(callInputField.getText());
+                currentTextBoxValue = NumberCombination.validNumberCombinationFrom(callInputField.getText().toString());
                 if (currentGame.hasBelieved666()) {
                     generatedCall = currentTextBoxValue.incrementAll();
                 } else {
@@ -284,6 +285,7 @@ public class GameStage extends AbstractStage implements UserInterface {
                 generatedCall = NumberCombination.JUNK;
             }
             callInputField.setText(generatedCall.toString());
+            autoButtonPressed = true;
         }
     }
 
@@ -330,13 +332,12 @@ public class GameStage extends AbstractStage implements UserInterface {
     }
 
     public NumberCombination getNewCall() throws InputValidationException {
-        return NumberCombination.validNumberCombinationFrom(callInputField.getText());
+        return NumberCombination.validNumberCombinationFrom(callInputField.getText().toString());
     }
 
     @Override
     public void resetCall() {
         autoButton.setDisabled(true);
-        callInputField.setDisabled(true);
         callInputField.setText(NumberCombination.MIN.toString());
     }
 }

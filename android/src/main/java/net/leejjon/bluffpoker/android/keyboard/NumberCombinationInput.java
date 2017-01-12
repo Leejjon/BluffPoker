@@ -6,10 +6,13 @@ import android.content.DialogInterface;
 import android.os.Handler;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.backends.android.AndroidGraphics;
 import com.badlogic.gdx.backends.android.AndroidInputThreePlus;
 import net.leejjon.bluffpoker.dialogs.CallInputDialog;
 
@@ -30,13 +33,28 @@ public class NumberCombinationInput extends AndroidInputThreePlus {
             AlertDialog.Builder alert = new AlertDialog.Builder(context);
             alert.setTitle(title);
             final EditText input = new EditText(context);
-            if (title.equals(CallInputDialog.ENTER_THREE_DIGITS)) {
+
+            // I abuse the title text to detect if number input is needed.
+            if (title.equals(CallInputDialog.ENTER_YOUR_CALL)) {
                 input.setFilters(new InputFilter[]{new NumberCombinationInputFilter()});
                 input.setInputType(InputType.TYPE_CLASS_PHONE);
             }
             input.setHint(hint);
-            input.setText(text);
+
+            // Instead of just setting the text, we first add an empty String.
+            input.setText("");
+
+            // And then we append our value so the cursor will be at the end.
+            input.append(text);
+
             input.setSingleLine();
+
+            // Open the keyboard when the EditText is finished loading.
+            input.post(() -> {
+                InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                manager.showSoftInput(input,0);
+            });
+
             alert.setView(input);
             alert.setPositiveButton(context.getString(android.R.string.ok), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {

@@ -3,6 +3,7 @@ package net.leejjon.bluffpoker.android;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import android.content.Context;
 import android.graphics.Point;
 import android.view.Display;
 import net.leejjon.bluffpoker.BluffPokerGame;

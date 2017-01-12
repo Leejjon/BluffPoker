@@ -1,8 +1,5 @@
 package net.leejjon.bluffpoker.listener;
 
-/**
- * Created by Leejjon on 12-10-2015.
- */
 public interface UserInterface {
     void log(String message);
 
@@ -13,6 +10,10 @@ public interface UserInterface {
     void enableCallUserInterface();
 
     void disableCallUserInterface();
+
+    void setCallField(String call);
+
+    void call();
 
     void resetCall();
 }
