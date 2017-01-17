@@ -4,9 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import net.leejjon.bluffpoker.BluffPokerGame;
 
-/**
- * Created by Leejjon on 2-10-2015.
- */
 public class LiftCupAction extends Action {
 
     @Override

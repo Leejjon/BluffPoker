@@ -50,7 +50,7 @@ public class BluffPokerGame extends ApplicationAdapter implements
 
 	@Override
 	public void render() {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0.29f, 0.47f, 0.33f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		// Just validateCall the draw methods of the stages. They will figure out by

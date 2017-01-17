@@ -13,9 +13,6 @@ import net.leejjon.bluffpoker.stages.GameStage;
 
 import java.util.Random;
 
-/**
- * Created by Leejjon on 3-10-2015.
- */
 public class Dice extends Stack implements Lockable {
     private Cup cup;
     private Texture[] diceTextures;
@@ -26,6 +23,8 @@ public class Dice extends Stack implements Lockable {
     private Image diceImage;
     private Image lockImage;
     private boolean lock = false;
+
+    private SpriteDrawable[] spriteDrawables = new SpriteDrawable[6];
 
     public Dice(Cup cup, Texture[] diceTextures, Texture lockTexture, int initialValue, DiceLocation location, Group dicesBeforeCupActors, Group dicesUnderCupActors) {
         diceImage = new Image(diceTextures[initialValue - 1]);
@@ -44,6 +43,14 @@ public class Dice extends Stack implements Lockable {
 
         setWidth(getDiceWidth() / 2);
         setHeight(getDiceHeight() / 2);
+
+        initializeSpriteDrawables();
+    }
+
+    private void initializeSpriteDrawables() {
+        for (int i = 0; i < diceTextures.length; i++) {
+            spriteDrawables[i] = new SpriteDrawable(new Sprite(diceTextures[i]));
+        }
     }
 
     public void throwDice() {
@@ -59,7 +66,8 @@ public class Dice extends Stack implements Lockable {
     private void generateRandomNumber() {
         Random randomDiceNumber = new Random();
         int randomNumber = randomDiceNumber.nextInt(6);
-        diceImage.setDrawable(new SpriteDrawable(new Sprite(diceTextures[randomNumber])));
+
+        diceImage.setDrawable(spriteDrawables[randomNumber]);
         diceValue = randomNumber;
     }
 
@@ -78,7 +86,7 @@ public class Dice extends Stack implements Lockable {
                 break;
         }
 
-        float y = cup.getMiddleHeightForCup() + (getDiceHeight() / (3 + BluffPokerGame.getDivideScreenByThis()));
+        float y = cup.getMiddleYForCup() + (getDiceHeight() / (3 + BluffPokerGame.getDivideScreenByThis()));
         setPosition(x, y);
     }
 
@@ -144,5 +152,23 @@ public class Dice extends Stack implements Lockable {
     @Override
     public boolean isLocked() {
         return lock;
+    }
+
+    /**
+     * Remove this method if possible. Due to a bug this dice image stays visible even when under a cup. This method forces it to be invisible.
+     */
+    @Deprecated
+    public void makeInvisible() {
+        if (underCup) {
+            diceImage.setVisible(false);
+        }
+    }
+
+    /**
+     * Remove this method if possible. Due to a bug this dice image stays visible even when under a cup.
+     */
+    @Deprecated
+    public void makeVisible() {
+        diceImage.setVisible(true);
     }
 }

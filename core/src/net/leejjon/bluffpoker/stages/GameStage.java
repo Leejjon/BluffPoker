@@ -9,18 +9,21 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import net.leejjon.bluffpoker.actors.CallBoard;
 import net.leejjon.bluffpoker.actors.Cup;
 import net.leejjon.bluffpoker.actors.Dice;
 import net.leejjon.bluffpoker.dialogs.*;
 import net.leejjon.bluffpoker.listener.ChangeStageListener;
 import net.leejjon.bluffpoker.listener.UserInterface;
 import net.leejjon.bluffpoker.logic.*;
+import net.leejjon.bluffpoker.ui.ClickableLabel;
 
 import java.util.List;
 
 public class GameStage extends AbstractStage implements UserInterface {
     private Game currentGame;
 
+    private Texture callBoardTexture;
     private Texture closedCupTexture;
     private Texture openCupTexture;
     private Texture diceLockTexture;
@@ -35,6 +38,7 @@ public class GameStage extends AbstractStage implements UserInterface {
     private SpriteBatch batch;
     private Sound diceRoll;
     private final Cup cup;
+    private final CallBoard callBoard;
     private Dice leftDice;
     private Dice middleDice;
     private Dice rightDice;
@@ -51,16 +55,17 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     private Label callInputField;
 
-    private TextButton autoButton;
-    private TextButton callButton;
+    private ClickableLabel autoButton;
+    private ClickableLabel callButton;
 
     private boolean autoButtonPressed = false;
 
     public GameStage(Skin uiSkin, final ChangeStageListener stageListener) {
         super(false);
 
-        closedCupTexture = new Texture("data/closedCup.png");
-        openCupTexture = new Texture("data/openCup.png");
+        callBoardTexture = new Texture("data/callboardwithcolor.png");
+        closedCupTexture = new Texture("data/closedCup2.png");
+        openCupTexture = new Texture("data/openCup2.png");
         diceLockTexture = new Texture("data/dicelock.png");
         cupLockTexture = new Texture("data/cuplock.png");
 
@@ -75,21 +80,18 @@ public class GameStage extends AbstractStage implements UserInterface {
 
         Table topTable = new Table();
         topTable.setFillParent(true);
+        topTable.top();
 
-        callInputField = new Label(NumberCombination.JUNK.toString(), uiSkin, "arial", Color.BLACK);
-        callInputField.setColor(Color.BLACK);
-        callInputField.setFontScale(2.0f);
+        callInputField = new Label(NumberCombination.JUNK.toString(), uiSkin, "arial64", Color.WHITE);
 
         final CallInputDialog callInputDialog = new CallInputDialog(this);
 
         float padding = 5f;
 
-        topTable.top();
-        topTable.padTop(padding);
-        topTable.add(callInputField).pad(padding).colspan(2).center();
+        topTable.add(callInputField).pad(padding).padTop(padding * 2).colspan(2).center();
         topTable.row();
 
-        autoButton = new TextButton("Auto", uiSkin);
+        autoButton = new ClickableLabel("Auto", uiSkin);
         autoButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -97,7 +99,7 @@ public class GameStage extends AbstractStage implements UserInterface {
             }
         });
         autoButton.setDisabled(true);
-        callButton = new TextButton("Call", uiSkin);
+        callButton = new ClickableLabel("Call", uiSkin);
         callButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -142,6 +144,8 @@ public class GameStage extends AbstractStage implements UserInterface {
 
         foreGroundActors.addActor(table);
 
+        callBoard = new CallBoard(callBoardTexture);
+
         cup = new Cup(closedCupTexture, openCupTexture, cupLockTexture, foreGroundActors, backgroundActors);
 
         // Load the textures of the dices.
@@ -167,6 +171,7 @@ public class GameStage extends AbstractStage implements UserInterface {
         addActor(dicesBeforeCupActors);
         addActor(foreGroundActors);
         addActor(dicesUnderCupActors);
+        addActor(callBoard);
         addActor(topTable);
     }
 
@@ -213,6 +218,10 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     public static int getMiddleY() {
         return Gdx.graphics.getHeight() / 2;
+    }
+
+    public static int getTopY() {
+        return Gdx.graphics.getHeight();
     }
 
     public void shake() {
@@ -291,6 +300,7 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     public void dispose() {
         batch.dispose();
+        callBoardTexture.dispose();
         closedCupTexture.dispose();
         openCupTexture.dispose();
         diceLockTexture.dispose();
@@ -331,7 +341,7 @@ public class GameStage extends AbstractStage implements UserInterface {
         latestOutputLabel.setText("");
     }
 
-    public NumberCombination getNewCall() throws InputValidationException {
+    private NumberCombination getNewCall() throws InputValidationException {
         return NumberCombination.validNumberCombinationFrom(callInputField.getText().toString());
     }
 

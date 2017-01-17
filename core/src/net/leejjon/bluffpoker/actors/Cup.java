@@ -14,9 +14,6 @@ import net.leejjon.bluffpoker.stages.GameStage;
 
 import java.util.Iterator;
 
-/**
- * Created by Leejjon on 2-10-2015.
- */
 public class Cup extends Stack implements Lockable {
     private Group foregroundActors;
     private Group backgroundActors;
@@ -28,8 +25,8 @@ public class Cup extends Stack implements Lockable {
     private Image cup;
     private Image lock;
 
-    private int middleHeightForCup = 0;
-    private int middleWidthForCup = 0;
+    private int middleYForCup = 0;
+    private int middleXForCup = 0;
 
     private boolean believing = false;
     private boolean watchingOwnThrow = false;
@@ -47,14 +44,14 @@ public class Cup extends Stack implements Lockable {
         this.backgroundActors = backgroundActors;
 
         // Calculate the position for the Cup.
-        this.middleWidthForCup = (GameStage.getMiddleX() / BluffPokerGame.getDivideScreenByThis()) - ((getCupWidth() / 2) / 2);
-        this.middleHeightForCup = (GameStage.getMiddleY() / BluffPokerGame.getDivideScreenByThis()) - ((getCupHeight() / 2) / 2);
+        this.middleXForCup = (GameStage.getMiddleX() / BluffPokerGame.getDivideScreenByThis()) - ((getCupWidth() / 2) / 2);
+        this.middleYForCup = (GameStage.getMiddleY() / BluffPokerGame.getDivideScreenByThis()) - ((getCupHeight() / 2) / 2);
 
         // Yeah, everything is shown bigger because of the divideScreenByThisValue to prevent buttons and labels from being too small.
         // Because of this the picture itself is also too big, so we divide it by the same number again to end up with a satisfying result.
         setWidth(getCupWidth() / 2);
         setHeight(getCupHeight() / 2);
-        setPosition(middleWidthForCup, middleHeightForCup);
+        setPosition(middleXForCup, middleYForCup);
 
         closedCupSpriteDrawable = new SpriteDrawable(new Sprite(closedCupTexture));
         openCupSpriteDrawable = new SpriteDrawable(new Sprite(openCupTexture));
@@ -76,7 +73,6 @@ public class Cup extends Stack implements Lockable {
 
         foregroundActors.removeActor(this);
         backgroundActors.addActor(this);
-
         believing = true;
     }
 
@@ -85,7 +81,6 @@ public class Cup extends Stack implements Lockable {
 
         backgroundActors.removeActor(this);
         foregroundActors.addActor(this);
-
         believing = false;
     }
 
@@ -130,11 +125,11 @@ public class Cup extends Stack implements Lockable {
 
     public void reset() {
         cup.setVisible(true);
-        setPosition(middleWidthForCup, middleHeightForCup);
+        setPosition(middleXForCup, middleYForCup);
     }
 
-    public int getMiddleHeightForCup() {
-        return middleHeightForCup;
+    public int getMiddleYForCup() {
+        return middleYForCup;
     }
 
     @Override
