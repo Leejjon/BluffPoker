@@ -153,22 +153,4 @@ public class Dice extends Stack implements Lockable {
     public boolean isLocked() {
         return lock;
     }
-
-    /**
-     * Remove this method if possible. Due to a bug this dice image stays visible even when under a cup. This method forces it to be invisible.
-     */
-    @Deprecated
-    public void makeInvisible() {
-        if (underCup) {
-            diceImage.setVisible(false);
-        }
-    }
-
-    /**
-     * Remove this method if possible. Due to a bug this dice image stays visible even when under a cup.
-     */
-    @Deprecated
-    public void makeVisible() {
-        diceImage.setVisible(true);
-    }
 }

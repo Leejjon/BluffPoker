@@ -2,11 +2,13 @@ package net.leejjon.bluffpoker.actors;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.actions.LiftCupAction;
 import net.leejjon.bluffpoker.interfaces.Lockable;
@@ -18,8 +20,8 @@ public class Cup extends Stack implements Lockable {
     private Group foregroundActors;
     private Group backgroundActors;
 
-    private SpriteDrawable closedCupSpriteDrawable;
-    private SpriteDrawable openCupSpriteDrawable;
+    private TextureRegionDrawable closedCupSpriteDrawable;
+    private TextureRegionDrawable openCupSpriteDrawable;
 
     private Texture closedCupTexture;
     private Image cup;
@@ -53,8 +55,8 @@ public class Cup extends Stack implements Lockable {
         setHeight(getCupHeight() / 2);
         setPosition(middleXForCup, middleYForCup);
 
-        closedCupSpriteDrawable = new SpriteDrawable(new Sprite(closedCupTexture));
-        openCupSpriteDrawable = new SpriteDrawable(new Sprite(openCupTexture));
+        closedCupSpriteDrawable = new TextureRegionDrawable(new TextureRegion(closedCupTexture));
+        openCupSpriteDrawable = new TextureRegionDrawable(new TextureRegion(openCupTexture));
 
         setFillParent(false);
         foregroundActors.addActor(this);

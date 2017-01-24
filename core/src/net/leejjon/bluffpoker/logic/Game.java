@@ -161,7 +161,6 @@ public class Game implements GameInputInterface, Throwable {
         if (!cup.isMoving()) {
             if (allowedToBelieveOrNotBelieve) {
                 if (cup.isBelieving()) {
-                    makeDicesInvisible();
                     cup.doneBelieving();
                     allowedToBelieveOrNotBelieve = false;
                     canViewOwnThrow = true;
@@ -179,7 +178,6 @@ public class Game implements GameInputInterface, Throwable {
                         userInterface.log(currentPlayer.getName() + " believed 666!");
                         userInterface.log("Throw three of the same numbers in one throw!");
                     } else {
-                        makeDicesVisible();
                         userInterface.log(currentPlayer.getName() + " believed the call");
                     }
                     stillHasToThrow = true;
@@ -200,10 +198,8 @@ public class Game implements GameInputInterface, Throwable {
             } else if (canViewOwnThrow) {
                 if (cup.isWatchingOwnThrow()) {
                     cup.doneWatchingOwnThrow();
-                    makeDicesInvisible();
                 } else {
                     cup.watchOwnThrow();
-                    makeDicesVisible();
                     blindPass = false;
                 }
             }
@@ -214,7 +210,6 @@ public class Game implements GameInputInterface, Throwable {
     public void swipeCupUp() {
         // Obviously, you can not "not believe" something after you've first believed it, or if you have just made a throw yourself.
         if (!cup.isBelieving() && !cup.isWatchingOwnThrow() && allowedToBelieveOrNotBelieve) {
-            makeDicesVisible();
             cup.addAction(new LiftCupAction());
 
             if (believed666) {
@@ -416,8 +411,6 @@ public class Game implements GameInputInterface, Throwable {
         middleDice.unlock();
         rightDice.unlock();
 
-        makeDicesInvisible();
-
         userInterface.log("Now enter your call ...");
     }
 
@@ -455,29 +448,5 @@ public class Game implements GameInputInterface, Throwable {
     @Override
     public boolean stillHasToThrow() {
         return stillHasToThrow;
-    }
-
-    @Deprecated
-    public void makeDicesInvisible() {
-        if (!cup.isBelieving() || !cup.isWatchingOwnThrow()) {
-            if (leftDice.isUnderCup()) {
-                leftDice.makeInvisible();
-            }
-
-            if (middleDice.isUnderCup()) {
-                middleDice.makeInvisible();
-            }
-
-            if (rightDice.isUnderCup()) {
-                rightDice.makeInvisible();
-            }
-        }
-    }
-
-    @Deprecated
-    public void makeDicesVisible() {
-        leftDice.makeVisible();
-        middleDice.makeVisible();
-        rightDice.makeVisible();
     }
 }
