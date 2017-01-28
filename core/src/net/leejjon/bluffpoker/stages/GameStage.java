@@ -3,6 +3,7 @@ package net.leejjon.bluffpoker.stages;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -99,6 +100,7 @@ public class GameStage extends AbstractStage implements UserInterface {
             }
         });
         autoButton.setDisabled(true);
+
         callButton = new ClickableLabel("Call", uiSkin);
         callButton.addListener(new ClickListener() {
             @Override
@@ -114,8 +116,9 @@ public class GameStage extends AbstractStage implements UserInterface {
         });
         callButton.setDisabled(true);
 
-        topTable.add(autoButton).pad(padding).colspan(1).left();
-        topTable.add(callButton).pad(padding).colspan(1).right();
+        float extraClickableSpace = 10f;
+        topTable.add(autoButton).width(autoButton.getWidth() + (extraClickableSpace*2)).height(autoButton.getHeight() + extraClickableSpace).colspan(1).left();
+        topTable.add(callButton).width(callButton.getWidth() + (extraClickableSpace*2)).height(callButton.getHeight() + extraClickableSpace).colspan(1).right();
 
         thirdLatestOutputLabel = new Label("", uiSkin);
         thirdLatestOutputLabel.setColor(Color.BLACK);
