@@ -3,7 +3,6 @@ package net.leejjon.bluffpoker.stages;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -120,22 +119,18 @@ public class GameStage extends AbstractStage implements UserInterface {
         topTable.add(autoButton).width(autoButton.getWidth() + (extraClickableSpace*2)).height(autoButton.getHeight() + extraClickableSpace).colspan(1).left();
         topTable.add(callButton).width(callButton.getWidth() + (extraClickableSpace*2)).height(callButton.getHeight() + extraClickableSpace).colspan(1).right();
 
-        thirdLatestOutputLabel = new Label("", uiSkin);
-        thirdLatestOutputLabel.setColor(Color.BLACK);
-
-        secondLatestOutputLabel = new Label("", uiSkin);
-        secondLatestOutputLabel.setColor(Color.BLACK);
-
-        latestOutputLabel = new Label("", uiSkin);
-        latestOutputLabel.setColor(Color.BLACK);
+        thirdLatestOutputLabel = new Label("", uiSkin,"console", Color.BLACK);
+        secondLatestOutputLabel = new Label("", uiSkin,"console", Color.BLACK);
+        latestOutputLabel = new Label("", uiSkin,"console", Color.BLACK);
 
         table.left();
         table.bottom();
-        table.add(thirdLatestOutputLabel).left().padLeft(padding);
+        float bottomPadding = 3f;
+        table.add(thirdLatestOutputLabel).left().padLeft(padding).padBottom(bottomPadding);
         table.row();
-        table.add(secondLatestOutputLabel).left().padLeft(padding);
+        table.add(secondLatestOutputLabel).left().padLeft(padding).padBottom(bottomPadding);
         table.row();
-        table.add(latestOutputLabel).left().padLeft(padding);
+        table.add(latestOutputLabel).left().padLeft(padding).padBottom(bottomPadding);
 
         // Putting certain images at the foreground or background usually goes via z index. However the z index seems broken
         // unless I pull off crazy hacks. What Actor is painted first is simply decided by the order you add them to the stage.
