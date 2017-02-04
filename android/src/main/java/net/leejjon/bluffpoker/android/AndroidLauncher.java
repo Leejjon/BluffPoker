@@ -3,8 +3,11 @@ package net.leejjon.bluffpoker.android;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import android.database.Cursor;
 import android.graphics.Point;
+import android.provider.ContactsContract;
 import android.view.Display;
+import com.badlogic.gdx.Gdx;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -23,6 +26,9 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+
+
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -62,10 +68,22 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
 
 		sensorManager.registerListener(this, acceloMeterSensor,
 				SensorManager.SENSOR_DELAY_NORMAL);
-		
-		game = new BluffPokerGame(zoomfactor);
+
+
+		game = new BluffPokerGame(zoomfactor, getDeviceOwnerName());
 		initialize(game, config);
 		input = new NumberCombinationInput(this, this, graphics.getView(),  config);
+	}
+
+	private String getDeviceOwnerName() {
+
+		try (Cursor c = getApplication().getContentResolver().query(ContactsContract.Profile.CONTENT_URI, null, null, null, null)) {
+			c.moveToFirst();
+			return c.getString(c.getColumnIndex(ContactsContract.Profile.DISPLAY_NAME));
+		} catch (SecurityException e) {
+            System.err.print(e.getMessage());
+            return "Defaultname";
+        }
 	}
 	
 	private AtomicLong lastUpdate;
@@ -98,10 +116,8 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
 
 				if (speed > SHAKE_THRESHOLD) {
 					
-					System.out.println("shake detected w/ speed: " + speed
-							+ ", x: " + x + ", y=" + y + ", z=" + z);
-					
-					
+//					System.out.println("shake detected w/ speed: " + speed
+//							+ ", x: " + x + ", y=" + y + ", z=" + z);
 					if (numberOfTimesShaked.incrementAndGet() == 3) {
 						game.shakePhone();
 						

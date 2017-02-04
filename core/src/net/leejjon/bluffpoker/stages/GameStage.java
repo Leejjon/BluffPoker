@@ -119,6 +119,7 @@ public class GameStage extends AbstractStage implements UserInterface {
         topTable.add(autoButton).width(autoButton.getWidth() + (extraClickableSpace*2)).height(autoButton.getHeight() + extraClickableSpace).colspan(1).left();
         topTable.add(callButton).width(callButton.getWidth() + (extraClickableSpace*2)).height(callButton.getHeight() + extraClickableSpace).colspan(1).right();
 
+        // Font used in console is Microsoft JingHei
         thirdLatestOutputLabel = new Label("", uiSkin,"console", Color.BLACK);
         secondLatestOutputLabel = new Label("", uiSkin,"console", Color.BLACK);
         latestOutputLabel = new Label("", uiSkin,"console", Color.BLACK);

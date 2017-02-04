@@ -5,10 +5,7 @@ import java.util.List;
 import net.leejjon.bluffpoker.listener.ChangeStageListener;
 import net.leejjon.bluffpoker.listener.PhoneInputListener;
 import net.leejjon.bluffpoker.logic.Settings;
-import net.leejjon.bluffpoker.stages.ChoosePlayersStage;
-import net.leejjon.bluffpoker.stages.GameStage;
-import net.leejjon.bluffpoker.stages.SettingsStage;
-import net.leejjon.bluffpoker.stages.StartStage;
+import net.leejjon.bluffpoker.stages.*;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -23,13 +20,16 @@ public class BluffPokerGame extends ApplicationAdapter implements
 
 	private StartStage startMenuStage;
 	private ChoosePlayersStage choosePlayerStage;
+	private SelectPlayersStage selectPlayersStage;
 	private SettingsStage settingsStage;
 	private GameStage gameStage;
 	
 	private static int divideScreenByThis;
+	private final String deviceOwnerName;
 
-	public BluffPokerGame(int divideScreenByThis) {
+	public BluffPokerGame(int divideScreenByThis, String deviceOwnerName) {
 		this.divideScreenByThis = divideScreenByThis;
+		this.deviceOwnerName = deviceOwnerName;
 	}
 
 	@Override
@@ -42,6 +42,7 @@ public class BluffPokerGame extends ApplicationAdapter implements
 		startMenuStage = new StartStage(uiSkin, this);
 		settingsStage = new SettingsStage(uiSkin, this, settings);
 		choosePlayerStage = new ChoosePlayersStage(uiSkin, this);
+		selectPlayersStage = new SelectPlayersStage(uiSkin, this, deviceOwnerName);
 		gameStage = new GameStage(uiSkin, this);
 
 		// Make sure touch input goes to the startStage.
@@ -58,6 +59,7 @@ public class BluffPokerGame extends ApplicationAdapter implements
 		startMenuStage.draw();
 		settingsStage.draw();
 		choosePlayerStage.draw();
+		selectPlayersStage.draw();
 		gameStage.act();
 		gameStage.draw();
 	}
@@ -67,6 +69,7 @@ public class BluffPokerGame extends ApplicationAdapter implements
 		startMenuStage.dispose();
 		settingsStage.dispose();
 		choosePlayerStage.dispose();
+		selectPlayersStage.dispose();
 		gameStage.dispose();
 		uiSkin.dispose();
 	}
@@ -74,9 +77,12 @@ public class BluffPokerGame extends ApplicationAdapter implements
 	@Override
 	public void startSelectingPlayersToPlayWith() {
 		startMenuStage.setVisible(false);
-		choosePlayerStage.clearCurrentPlayers();
-		choosePlayerStage.setVisible(true);
-		Gdx.input.setInputProcessor(choosePlayerStage);
+//		choosePlayerStage.clearCurrentPlayers();
+//		choosePlayerStage.setVisible(true);
+//		Gdx.input.setInputProcessor(choosePlayerStage);
+//        selectPlayersStage.clearCurrentPlayers();
+        selectPlayersStage.setVisible(true);
+        Gdx.input.setInputProcessor(selectPlayersStage);
 	}
 
 	@Override
@@ -104,7 +110,7 @@ public class BluffPokerGame extends ApplicationAdapter implements
 
 	@Override
 	public void startGame(List<String> players) {
-		choosePlayerStage.setVisible(false);
+		selectPlayersStage.setVisible(false);
 		gameStage.startGame(players, settings);
 		gameStage.setVisible(true);
 		Gdx.input.setInputProcessor(gameStage);

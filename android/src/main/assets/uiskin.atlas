@@ -107,6 +107,22 @@ default-round-large
   orig: 20, 20
   offset: 0, 0
   index: -1
+bluffpoker-button
+  rotate: false
+  xy: 78, 29
+  size: 20, 20
+  split: 5, 7, 2, 2
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+bluffpoker-button-down
+  rotate: false
+  xy: 78, 7
+  size: 20, 20
+  split: 5, 7, 2, 2
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
 default-scroll
   rotate: false
   xy: 78, 29

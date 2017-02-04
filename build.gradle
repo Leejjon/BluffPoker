@@ -10,7 +10,6 @@ buildscript {
 }
 
 allprojects {
-    apply plugin: "eclipse"
     apply plugin: "idea"
 
     version = '1.0'
@@ -64,8 +63,4 @@ project(":core") {
     }
 }
 
-tasks.eclipse.doLast {
-    delete ".project"
-}
-
-task createWrapper(type: Wrapper) { gradleVersion = "3.2.1" }
+task createWrapper(type: Wrapper) { gradleVersion = "3.3" }
