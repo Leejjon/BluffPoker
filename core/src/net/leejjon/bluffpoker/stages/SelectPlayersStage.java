@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.dialogs.AddNewPlayerDialog;
 import net.leejjon.bluffpoker.dialogs.WarningDialog;
+import net.leejjon.bluffpoker.interfaces.ContactsRequesterInterface;
 import net.leejjon.bluffpoker.listener.ChangeStageListener;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
 
@@ -22,7 +23,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
     private WarningDialog playerNameInvalid;
     private WarningDialog minimalTwoPlayersRequired;
 
-    public SelectPlayersStage(Skin uiSkin, final ChangeStageListener changeScreen, String deviceOwnerName) {
+    public SelectPlayersStage(Skin uiSkin, final ChangeStageListener changeScreen, ContactsRequesterInterface contactsRequester) {
         super(false);
 
         playerAlreadyExistsWarning = new WarningDialog("Player already exists.", uiSkin);
@@ -31,7 +32,10 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         final AddNewPlayerDialog addNewPlayerDialog = new AddNewPlayerDialog(this);
 
         players = new ArrayList<>();
-        players.add(deviceOwnerName);
+
+        if (contactsRequester.hasContactPermissions()) {
+            players.add(contactsRequester.getDeviceOwnerName());
+        }
 
         playerList = new List<>(uiSkin);
         playerList.setItems(players.toArray(new String[players.size()]));
@@ -85,6 +89,16 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
             }
         });
         TextButton phonebook = new TextButton("Phonebook", uiSkin);
+        phonebook.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (contactsRequester.hasContactPermissions()) {
+                    // TODO: Open contacts dialog.
+                } else {
+                    contactsRequester.requestContactPermission();
+                }
+            }
+        });
         TextButton startGame = new TextButton("Start game", uiSkin);
         startGame.addListener(new ClickListener() {
             @Override
