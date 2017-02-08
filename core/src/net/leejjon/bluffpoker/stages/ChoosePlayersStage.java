@@ -156,19 +156,24 @@ public class ChoosePlayersStage extends AbstractStage implements ModifyPlayerLis
     }
 
     @Override
-    public void addNewPlayer(String playerName) {
+    public void addNewPlayer(String ... playerNames) {
         final int maxNameLength = 16;
 
-        if (playerName.length() > 0 && playerName.length() <= maxNameLength) {
-            if (!existingPlayers.contains(playerName)) {
-                existingPlayers.add(playerName);
-                existingPlayerList.setItems(existingPlayers.toArray(new String[existingPlayers.size()]));
+        for (String playerName : playerNames) {
+            if (playerName.length() > 0 && playerName.length() <= maxNameLength) {
+                if (!currentPlayers.contains(playerName)) {
+                    currentPlayers.add(playerName);
+                } else {
+                    playerAlreadyExistsWarning.setRuntimeSpecificWarning("Player " + playerName + " already exists.");
+                    playerAlreadyExistsWarning.show(this);
+                }
             } else {
-                playerAlreadyExistsWarning.show(this);
+                playerNameInvalid.show(this);
             }
-        } else {
-            playerNameInvalid.show(this);
         }
+
+        // Update the actual UI list with the new players.
+        currentPlayerList.setItems(currentPlayers.toArray(new String[currentPlayers.size()]));
     }
 
     private void addSelectedExistingPlayer() {

@@ -1,12 +1,16 @@
 package net.leejjon.bluffpoker.android;
 
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Point;
+import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -29,6 +33,7 @@ import android.util.DisplayMetrics;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import net.leejjon.bluffpoker.android.keyboard.NumberCombinationInput;
 import net.leejjon.bluffpoker.interfaces.ContactsRequesterInterface;
+import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
 
 
 public class AndroidLauncher extends FragmentActivity implements AndroidFragmentApplication.Callbacks {
@@ -50,6 +55,15 @@ public class AndroidLauncher extends FragmentActivity implements AndroidFragment
 
     public static class GameFragment extends AndroidFragmentApplication implements SensorEventListener, ContactsRequesterInterface {
         private BluffPokerGame game;
+
+        private static final int READ_CONTACTS_FOR_PLAYER_NAME = 1;
+        private static final int SELECT_CONTACTS = 2;
+
+
+        private ModifyPlayerListener playerModifier = null;
+        private AtomicLong lastUpdate;
+        private AtomicInteger numberOfTimesShaked = new AtomicInteger(0);
+        private volatile float last_x, last_y, last_z;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -112,12 +126,6 @@ public class AndroidLauncher extends FragmentActivity implements AndroidFragment
             return zoomfactor;
         }
 
-        private static final int READ_CONTACTS_FOR_PLAYER_NAME = 1;
-
-        private AtomicLong lastUpdate;
-        private AtomicInteger numberOfTimesShaked = new AtomicInteger(0);
-        private volatile float last_x, last_y, last_z;
-
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
         }
@@ -174,16 +182,47 @@ public class AndroidLauncher extends FragmentActivity implements AndroidFragment
             return deviceOwnerName != null ? deviceOwnerName : "Player 1";
         }
 
-        @Override
-        public boolean hasContactPermissions() {
+        private boolean hasContactPermissions() {
             return ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
         }
 
         @Override
-        public void requestContactPermission() {
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{Manifest.permission.READ_CONTACTS},
-                    READ_CONTACTS_FOR_PLAYER_NAME);
+        public void initiateSelectContacts(ModifyPlayerListener playerModifier) {
+            if (this.playerModifier == null) {
+                this.playerModifier = playerModifier;
+            }
+
+            if (hasContactPermissions()) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+                startActivityForResult(intent, SELECT_CONTACTS);
+            } else {
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.READ_CONTACTS},
+                        READ_CONTACTS_FOR_PLAYER_NAME);
+            }
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+
+            if (playerModifier != null) {
+                if(requestCode == SELECT_CONTACTS){
+                    if(resultCode == RESULT_OK){
+                        Uri contactData = data.getData();
+                        Cursor cursor =  getActivity().getApplication().getContentResolver().query(contactData, null, null, null, null);
+                        cursor.moveToFirst();
+
+                        Set<String> players = new TreeSet<>();
+                        do {
+                            players.add(cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+                        } while (cursor.moveToNext());
+
+                        playerModifier.addNewPlayer(players.toArray(new String[players.size()]));
+                    }
+                }
+            }
         }
     }
 

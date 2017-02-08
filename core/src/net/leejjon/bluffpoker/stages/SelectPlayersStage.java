@@ -26,16 +26,14 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
     public SelectPlayersStage(Skin uiSkin, final ChangeStageListener changeScreen, ContactsRequesterInterface contactsRequester) {
         super(false);
 
-        playerAlreadyExistsWarning = new WarningDialog("Player already exists.", uiSkin);
-        playerNameInvalid = new WarningDialog("Player name invalid.", uiSkin);
+        playerAlreadyExistsWarning = new WarningDialog(uiSkin);
+        playerNameInvalid = new WarningDialog("Player name too long!", uiSkin);
         minimalTwoPlayersRequired = new WarningDialog("Select at least two players!", uiSkin);
         final AddNewPlayerDialog addNewPlayerDialog = new AddNewPlayerDialog(this);
 
         players = new ArrayList<>();
 
-        if (contactsRequester.hasContactPermissions()) {
-            players.add(contactsRequester.getDeviceOwnerName());
-        }
+        players.add(contactsRequester.getDeviceOwnerName());
 
         playerList = new List<>(uiSkin);
         playerList.setItems(players.toArray(new String[players.size()]));
@@ -92,11 +90,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         phonebook.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (contactsRequester.hasContactPermissions()) {
-                    // TODO: Open contacts dialog.
-                } else {
-                    contactsRequester.requestContactPermission();
-                }
+                contactsRequester.initiateSelectContacts(SelectPlayersStage.this);
             }
         });
         TextButton startGame = new TextButton("Start game", uiSkin);
@@ -128,19 +122,31 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
     }
 
     @Override
-    public void addNewPlayer(String playerName) {
+    public void addNewPlayer(String ... playerNames) {
         final int maxNameLength = 16;
 
-        if (playerName.length() > 0 && playerName.length() <= maxNameLength) {
-            if (!players.contains(playerName)) {
-                players.add(playerName);
-                playerList.setItems(players.toArray(new String[players.size()]));
-            } else {
-                playerAlreadyExistsWarning.show(this);
+        for (String playerName : playerNames) {
+            if (playerName.length() > maxNameLength && playerName.contains(" ")) {
+                final String[] split = playerName.split("\\s+");
+                playerName = split[0];
+
+                // TODO: Add first letter of last name maybe? will suck if people have a lot of initials...
             }
-        } else {
-            playerNameInvalid.show(this);
+
+            if (playerName.length() > 0 && playerName.length() <= maxNameLength) {
+                if (!players.contains(playerName)) {
+                    players.add(playerName);
+                } else {
+                    playerAlreadyExistsWarning.setRuntimeSpecificWarning("Player " + playerName + " already exists.");
+                    playerAlreadyExistsWarning.show(this);
+                }
+            } else {
+                playerNameInvalid.show(this);
+            }
         }
+
+        // Update the actual UI list with the new players.
+        playerList.setItems(players.toArray(new String[players.size()]));
     }
 
     private void swapPlayerUp() {

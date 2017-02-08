@@ -4,9 +4,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import net.leejjon.bluffpoker.logic.NumberCombination;
 
-/**
- * Created by Leejjon on 23-10-2015.
- */
 public class CallTooLowDialog extends Dialog {
     public CallTooLowDialog(Skin skin) {
         super("Warning", skin);
