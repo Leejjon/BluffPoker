@@ -22,6 +22,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
+import com.onegravity.contactpicker.contact.ContactDescription;
+import com.onegravity.contactpicker.contact.ContactSortOrder;
+import com.onegravity.contactpicker.core.ContactPickerActivity;
+import com.onegravity.contactpicker.picture.ContactPictureType;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -37,12 +41,15 @@ import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
 
 
 public class AndroidLauncher extends FragmentActivity implements AndroidFragmentApplication.Callbacks {
+    private GameFragment gameFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        GameFragment gameFragment = new GameFragment();
+        setTheme(R.style.ContactPicker_Theme_Dark);
+
+        gameFragment = new GameFragment();
         FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
         trans.replace(android.R.id.content, gameFragment);
         trans.commit();
@@ -193,14 +200,44 @@ public class AndroidLauncher extends FragmentActivity implements AndroidFragment
             }
 
             if (hasContactPermissions()) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
-                startActivityForResult(intent, SELECT_CONTACTS);
+//                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//                intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+//                startActivityForResult(intent, SELECT_CONTACTS);
+                startSelectingContacts();
             } else {
                 ActivityCompat.requestPermissions(getActivity(),
                         new String[]{Manifest.permission.READ_CONTACTS},
                         READ_CONTACTS_FOR_PLAYER_NAME);
             }
+        }
+
+        public void startSelectingContacts() {
+            Intent intent = new Intent(getActivity(), ContactPickerActivity.class)
+                    .putExtra(ContactPickerActivity.EXTRA_THEME, R.style.ContactPicker_Theme_Dark /*: R.style.Theme_Light*/)
+                    .putExtra(ContactPickerActivity.EXTRA_CONTACT_BADGE_TYPE, ContactPictureType.ROUND.name())
+                    .putExtra(ContactPickerActivity.EXTRA_SHOW_CHECK_ALL, true)
+                    .putExtra(ContactPickerActivity.EXTRA_CONTACT_DESCRIPTION, ContactDescription.ADDRESS.name())
+                    .putExtra(ContactPickerActivity.EXTRA_CONTACT_DESCRIPTION_TYPE, ContactsContract.CommonDataKinds.Email.TYPE_WORK)
+                    .putExtra(ContactPickerActivity.EXTRA_CONTACT_SORT_ORDER, ContactSortOrder.AUTOMATIC.name());
+
+//            Intent intent = new Intent(DemoActivity.this, ContactPickerActivity.class)
+//                    .putExtra(ContactPickerActivity.EXTRA_THEME, R.style.Theme_Dark)
+//
+//                    .putExtra(ContactPickerActivity.EXTRA_CONTACT_BADGE_TYPE,
+//                            ContactPictureType.ROUND.name())
+//
+//                    .putExtra(ContactPickerActivity.EXTRA_CONTACT_DESCRIPTION,
+//                            ContactDescription.ADDRESS.name())
+//                    .putExtra(ContactPickerActivity.EXTRA_SHOW_CHECK_ALL, true)
+//                    .putExtra(ContactPickerActivity.EXTRA_SELECT_CONTACTS_LIMIT, 0)
+//                    .putExtra(ContactPickerActivity.EXTRA_ONLY_CONTACTS_WITH_PHONE, false)
+//
+//                    .putExtra(ContactPickerActivity.EXTRA_CONTACT_DESCRIPTION_TYPE,
+//                            ContactsContract.CommonDataKinds.Email.TYPE_WORK)
+//
+//                    .putExtra(ContactPickerActivity.EXTRA_CONTACT_SORT_ORDER,
+//                            ContactSortOrder.AUTOMATIC.name());
+            startActivityForResult(intent, SELECT_CONTACTS);
         }
 
         @Override
@@ -228,6 +265,6 @@ public class AndroidLauncher extends FragmentActivity implements AndroidFragment
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        System.out.println("Some permission granted.");
+        gameFragment.startSelectingContacts();
     }
 }
