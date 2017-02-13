@@ -211,7 +211,7 @@ public class AndroidLauncher extends FragmentActivity implements AndroidFragment
 
         public void startSelectingContacts() {
             Intent intent = new Intent(getActivity(), ContactPickerActivity.class)
-                    .putExtra(ContactPickerActivity.EXTRA_THEME, R.style.Theme_Dark /*: R.style.Theme_Light*/)
+                    .putExtra(ContactPickerActivity.EXTRA_THEME, R.style.ContactPicker_Theme_Dark)
                     .putExtra(ContactPickerActivity.EXTRA_CONTACT_BADGE_TYPE, ContactPictureType.ROUND.name())
                     .putExtra(ContactPickerActivity.EXTRA_SHOW_CHECK_ALL, true)
                     .putExtra(ContactPickerActivity.EXTRA_CONTACT_DESCRIPTION, ContactDescription.ADDRESS.name())
