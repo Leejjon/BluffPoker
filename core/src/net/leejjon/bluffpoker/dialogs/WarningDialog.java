@@ -18,5 +18,6 @@ public class WarningDialog extends Dialog {
 	public void setRuntimeSpecificWarning(String runtimeSpecificWarning) {
         getContentTable().clearChildren();
         text(runtimeSpecificWarning);
+		button("Ok");
 	}
 }
