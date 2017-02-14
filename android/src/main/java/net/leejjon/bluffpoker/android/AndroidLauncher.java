@@ -6,22 +6,26 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Point;
-import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.view.Display;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
+import com.onegravity.contactpicker.contact.Contact;
+import com.onegravity.contactpicker.contact.ContactDescription;
+import com.onegravity.contactpicker.contact.ContactSortOrder;
+import com.onegravity.contactpicker.core.ContactPickerActivity;
+import com.onegravity.contactpicker.picture.ContactPictureType;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -37,12 +41,13 @@ import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
 
 
 public class AndroidLauncher extends FragmentActivity implements AndroidFragmentApplication.Callbacks {
+    private GameFragment gameFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        GameFragment gameFragment = new GameFragment();
+        gameFragment = new GameFragment();
         FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
         trans.replace(android.R.id.content, gameFragment);
         trans.commit();
@@ -50,7 +55,7 @@ public class AndroidLauncher extends FragmentActivity implements AndroidFragment
 
     @Override
     public void exit() {
-
+        gameFragment.exit();
     }
 
     public static class GameFragment extends AndroidFragmentApplication implements SensorEventListener, ContactsRequesterInterface {
@@ -128,6 +133,7 @@ public class AndroidLauncher extends FragmentActivity implements AndroidFragment
 
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
         }
 
         @Override
@@ -193,14 +199,22 @@ public class AndroidLauncher extends FragmentActivity implements AndroidFragment
             }
 
             if (hasContactPermissions()) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
-                startActivityForResult(intent, SELECT_CONTACTS);
+                startSelectingContacts();
             } else {
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.READ_CONTACTS},
+                requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
                         READ_CONTACTS_FOR_PLAYER_NAME);
             }
+        }
+
+        public void startSelectingContacts() {
+            Intent intent = new Intent(getActivity(), ContactPickerActivity.class)
+                    .putExtra(ContactPickerActivity.EXTRA_THEME, R.style.ContactPicker_Theme_Dark)
+                    .putExtra(ContactPickerActivity.EXTRA_CONTACT_BADGE_TYPE, ContactPictureType.ROUND.name())
+                    .putExtra(ContactPickerActivity.EXTRA_SHOW_CHECK_ALL, true)
+                    .putExtra(ContactPickerActivity.EXTRA_CONTACT_DESCRIPTION, ContactDescription.ADDRESS.name())
+                    .putExtra(ContactPickerActivity.EXTRA_CONTACT_DESCRIPTION_TYPE, ContactsContract.CommonDataKinds.Email.TYPE_WORK)
+                    .putExtra(ContactPickerActivity.EXTRA_CONTACT_SORT_ORDER, ContactSortOrder.AUTOMATIC.name());
+            startActivityForResult(intent, SELECT_CONTACTS);
         }
 
         @Override
@@ -208,19 +222,16 @@ public class AndroidLauncher extends FragmentActivity implements AndroidFragment
             super.onActivityResult(requestCode, resultCode, data);
 
             if (playerModifier != null) {
-                if(requestCode == SELECT_CONTACTS){
-                    if(resultCode == RESULT_OK){
-                        Uri contactData = data.getData();
-                        Cursor cursor =  getActivity().getApplication().getContentResolver().query(contactData, null, null, null, null);
-                        cursor.moveToFirst();
+                if (requestCode == SELECT_CONTACTS && resultCode == Activity.RESULT_OK &&
+                        data != null && data.hasExtra(ContactPickerActivity.RESULT_CONTACT_DATA)) {
+                    java.util.List<Contact> contacts = (java.util.List<Contact>) data.getSerializableExtra(ContactPickerActivity.RESULT_CONTACT_DATA);
 
-                        Set<String> players = new TreeSet<>();
-                        do {
-                            players.add(cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
-                        } while (cursor.moveToNext());
-
-                        playerModifier.addNewPlayer(players.toArray(new String[players.size()]));
+                    Set<String> players = new TreeSet<>();
+                    for (Contact contact : contacts) {
+                        // TODO: Figure out if we can trust the first/last name.
+                        players.add(contact.getDisplayName());
                     }
+                    playerModifier.addNewPlayer(players.toArray(new String[players.size()]));
                 }
             }
         }
@@ -228,6 +239,6 @@ public class AndroidLauncher extends FragmentActivity implements AndroidFragment
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        System.out.println("Some permission granted.");
+        gameFragment.startSelectingContacts();
     }
 }

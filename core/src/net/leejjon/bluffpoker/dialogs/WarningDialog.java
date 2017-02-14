@@ -7,12 +7,13 @@ public class WarningDialog extends Dialog {
 
     public WarningDialog(Skin skin) {
         super("Warning", skin);
+        button("Ok");
     }
 
 	public WarningDialog(String warningMessage, Skin skin) {
 		super("Warning", skin);
 		text(warningMessage);
-		button("Ok");
+        button("Ok");
 	}
 
 	public void setRuntimeSpecificWarning(String runtimeSpecificWarning) {
