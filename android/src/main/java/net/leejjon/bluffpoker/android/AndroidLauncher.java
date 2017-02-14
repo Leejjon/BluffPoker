@@ -11,14 +11,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Point;
-import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.view.Display;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -203,8 +201,7 @@ public class AndroidLauncher extends FragmentActivity implements AndroidFragment
             if (hasContactPermissions()) {
                 startSelectingContacts();
             } else {
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.READ_CONTACTS},
+                requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
                         READ_CONTACTS_FOR_PLAYER_NAME);
             }
         }
