@@ -4,12 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import net.leejjon.bluffpoker.BluffPokerGame;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class LiftCupAction extends Action {
+    private AtomicBoolean done = new AtomicBoolean(false);
 
     @Override
     public boolean act(float delta) {
-        boolean actionDone = false;
-
         /**
          * This will move the cup up one pixel by frame until the cup moves completely out of the screen.
          *
@@ -19,9 +20,9 @@ public class LiftCupAction extends Action {
         if (actor.getY() < (Gdx.graphics.getHeight() / BluffPokerGame.getDivideScreenByThis())) {
             actor.moveBy(0f, 2f);
         } else {
-            actionDone = true;
+            done.set(true);
         }
 
-        return actionDone;
+        return done.get();
     }
 }

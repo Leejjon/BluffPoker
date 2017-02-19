@@ -1,5 +1,6 @@
 package net.leejjon.bluffpoker.actors;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -128,6 +129,7 @@ public class Cup extends Stack implements Lockable {
     public void reset() {
         cup.setVisible(true);
         setPosition(middleXForCup, middleYForCup);
+        Gdx.app.log("bluffpoker", "Cup has been reset.");
     }
 
     public int getMiddleYForCup() {

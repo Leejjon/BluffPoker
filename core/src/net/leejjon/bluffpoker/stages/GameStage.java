@@ -256,6 +256,8 @@ public class GameStage extends AbstractStage implements UserInterface {
                     throwAtLeastOneDice.show(this);
                 }
             }
+        } else {
+            Gdx.app.log("bluffpoker", "Could not throw. Cup moving: " + cup.isMoving() + " Cup is open : " + (cup.isWatchingOwnThrow() | cup.isBelieving()));
         }
     }
 
