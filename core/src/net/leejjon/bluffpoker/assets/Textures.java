@@ -4,6 +4,12 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 
 public enum Textures {
+    BACKGROUND("blackbackground") {
+        @Override
+        public void load(AssetManager assetManager) {
+            // Logic to add texture to assetManager.
+        }
+    },
     CALL_BOARD("data/callboard.png"),
     CLOSED_CUP("data/closedCup.png"),
     CUP_LOCK("data/cuplock.png"),
@@ -22,18 +28,19 @@ public enum Textures {
         this.fileName = fileName;
     }
 
-    public String getFileName() {
-        return fileName;
-    }
-
     public Texture get(AssetManager assetManager) {
         return assetManager.get(fileName);
     }
 
+    public void load(AssetManager assetManager) {
+        assetManager.load(fileName, Texture.class);
+    }
+
     public static void loadTextures(AssetManager assetManager) {
         for (Textures t : Textures.values()) {
-            assetManager.load(t.getFileName(), Texture.class);
+            t.load(assetManager);
         }
+
         assetManager.finishLoading();
     }
 }
