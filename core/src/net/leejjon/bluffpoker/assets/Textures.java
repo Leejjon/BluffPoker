@@ -1,13 +1,18 @@
 package net.leejjon.bluffpoker.assets;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 
 public enum Textures {
     BACKGROUND("blackbackground") {
         @Override
         public void load(AssetManager assetManager) {
-            // Logic to add texture to assetManager.
+            Pixmap backgroundPixmap = new Pixmap(1, 1, Pixmap.Format.RGB888);
+            backgroundPixmap.setColor(0.25f,0.25f,0.25f, 1f);
+            backgroundPixmap.fill();
+            Texture backgroundTexture = new Texture(backgroundPixmap);
+            backgroundPixmap.dispose();
         }
     },
     CALL_BOARD("data/callboard.png"),
