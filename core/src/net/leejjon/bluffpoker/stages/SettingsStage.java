@@ -4,7 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import net.leejjon.bluffpoker.logic.Settings;
-import net.leejjon.bluffpoker.listener.ChangeStageListener;
+import net.leejjon.bluffpoker.listener.StageInterface;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -16,7 +16,7 @@ public class SettingsStage extends AbstractStage {
 	private final CheckBox allowSharedBokCheckbox;
 	private final Slider numberOfLivesSlider;
 	
-	public SettingsStage(Skin uiSkin, final ChangeStageListener changeScreen, Settings settings) {
+	public SettingsStage(Skin uiSkin, final StageInterface stageInterface, Settings settings) {
 		super(false);
 		
 		Label titleLabel = new Label("Settings", uiSkin);
@@ -48,7 +48,7 @@ public class SettingsStage extends AbstractStage {
 				newSettings.setAllowBok(allowBokCheckBox.isChecked());
 				newSettings.setAllowSharedBok(allowSharedBokCheckbox.isChecked());
 				newSettings.setNumberOfLives(new Float(numberOfLivesSlider.getValue()).intValue());
-				changeScreen.closeSettingsStage(newSettings);
+				stageInterface.closeSettingsStage(newSettings);
 			}
 		});
 		

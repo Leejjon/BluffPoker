@@ -2,8 +2,11 @@ package net.leejjon.bluffpoker;
 
 import java.util.List;
 
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
+import net.leejjon.bluffpoker.assets.Textures;
 import net.leejjon.bluffpoker.interfaces.ContactsRequesterInterface;
-import net.leejjon.bluffpoker.listener.ChangeStageListener;
+import net.leejjon.bluffpoker.listener.StageInterface;
 import net.leejjon.bluffpoker.listener.PhoneInputListener;
 import net.leejjon.bluffpoker.logic.Settings;
 import net.leejjon.bluffpoker.stages.*;
@@ -15,7 +18,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class BluffPokerGame extends ApplicationAdapter implements
-		ChangeStageListener, PhoneInputListener {
+        StageInterface, PhoneInputListener {
 	private Skin uiSkin;
 	private Settings settings = new Settings();
 
@@ -25,6 +28,8 @@ public class BluffPokerGame extends ApplicationAdapter implements
 	private GameStage gameStage;
 
 	private ContactsRequesterInterface contactsRequester;
+
+	private AssetManager assetManager;
 
 	private static int divideScreenByThis;
 
@@ -38,6 +43,9 @@ public class BluffPokerGame extends ApplicationAdapter implements
 		// Use the default libgdx UI skin.
 		uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
 		uiSkin.addRegions(new TextureAtlas("uiskin.atlas"));
+
+        assetManager = new AssetManager();
+		Textures.loadTextures(assetManager);
 
 		// Create the stages.
 		startMenuStage = new StartStage(uiSkin, this);
@@ -69,6 +77,7 @@ public class BluffPokerGame extends ApplicationAdapter implements
 		settingsStage.dispose();
 		selectPlayersStage.dispose();
 		gameStage.dispose();
+		assetManager.dispose();
 		uiSkin.dispose();
 	}
 
@@ -108,6 +117,11 @@ public class BluffPokerGame extends ApplicationAdapter implements
 		gameStage.startGame(players, settings);
 		gameStage.setVisible(true);
 		Gdx.input.setInputProcessor(gameStage);
+	}
+
+	@Override
+	public Texture getAsset(Textures texture) {
+		return texture.get(assetManager);
 	}
 
 	@Override

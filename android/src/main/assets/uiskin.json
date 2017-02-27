@@ -1,5 +1,6 @@
 {
 com.badlogic.gdx.graphics.g2d.BitmapFont: { default-font: { file: default.fnt } },
+com.badlogic.gdx.graphics.g2d.BitmapFont: { arial32: { file: arial-32.fnt } },
 com.badlogic.gdx.graphics.g2d.BitmapFont: { arial64: { file: arial-64.fnt } },
 com.badlogic.gdx.graphics.g2d.BitmapFont: { console: { file: console.fnt } },
 com.badlogic.gdx.graphics.g2d.BitmapFont: { console32: { file: console32.fnt } },
