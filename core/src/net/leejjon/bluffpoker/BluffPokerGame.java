@@ -2,9 +2,9 @@ package net.leejjon.bluffpoker;
 
 import java.util.List;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
-import net.leejjon.bluffpoker.assets.Textures;
+import com.badlogic.gdx.utils.ObjectMap;
+import net.leejjon.bluffpoker.assets.TextureKey;
 import net.leejjon.bluffpoker.interfaces.ContactsRequesterInterface;
 import net.leejjon.bluffpoker.listener.StageInterface;
 import net.leejjon.bluffpoker.listener.PhoneInputListener;
@@ -29,7 +29,7 @@ public class BluffPokerGame extends ApplicationAdapter implements
 
 	private ContactsRequesterInterface contactsRequester;
 
-	private AssetManager assetManager;
+	private ObjectMap<TextureKey, Texture> textureMap;
 
 	private static int divideScreenByThis;
 
@@ -44,8 +44,7 @@ public class BluffPokerGame extends ApplicationAdapter implements
 		uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
 		uiSkin.addRegions(new TextureAtlas("uiskin.atlas"));
 
-        assetManager = new AssetManager();
-		Textures.loadTextures(assetManager);
+		textureMap = TextureKey.getAllTextures();
 
 		// Create the stages.
 		startMenuStage = new StartStage(uiSkin, this);
@@ -62,12 +61,10 @@ public class BluffPokerGame extends ApplicationAdapter implements
 		Gdx.gl.glClearColor(0.29f, 0.47f, 0.33f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		// Just validateCall the draw methods of the stages. They will figure out by
-		// themselves if they need to be drawn or not.
+		// The stages will figure out by themselves if they need to be drawn or not.
 		startMenuStage.draw();
 		settingsStage.draw();
 		selectPlayersStage.draw();
-		gameStage.act();
 		gameStage.draw();
 	}
 
@@ -77,8 +74,10 @@ public class BluffPokerGame extends ApplicationAdapter implements
 		settingsStage.dispose();
 		selectPlayersStage.dispose();
 		gameStage.dispose();
-		assetManager.dispose();
 		uiSkin.dispose();
+		for (Texture t : textureMap.values()) {
+			t.dispose();
+		}
 	}
 
 	@Override
@@ -120,8 +119,8 @@ public class BluffPokerGame extends ApplicationAdapter implements
 	}
 
 	@Override
-	public Texture getAsset(Textures texture) {
-		return texture.get(assetManager);
+	public Texture getAsset(TextureKey textureKey) {
+		return textureMap.get(textureKey);
 	}
 
 	@Override

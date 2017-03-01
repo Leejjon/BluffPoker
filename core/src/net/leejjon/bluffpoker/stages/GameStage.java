@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.leejjon.bluffpoker.actors.BlackBoard;
 import net.leejjon.bluffpoker.actors.Cup;
 import net.leejjon.bluffpoker.actors.Dice;
-import net.leejjon.bluffpoker.assets.Textures;
+import net.leejjon.bluffpoker.assets.TextureKey;
 import net.leejjon.bluffpoker.dialogs.*;
 import net.leejjon.bluffpoker.listener.StageInterface;
 import net.leejjon.bluffpoker.listener.UserInterface;
@@ -51,11 +51,11 @@ public class GameStage extends AbstractStage implements UserInterface {
     public GameStage(Skin uiSkin, final StageInterface stageInterface) {
         super(false);
 
-        Texture callBoardTexture = stageInterface.getAsset(Textures.CALL_BOARD);
-        Texture closedCupTexture = stageInterface.getAsset(Textures.CLOSED_CUP);
-        Texture openCupTexture = stageInterface.getAsset(Textures.OPEN_CUP);
-        Texture diceLockTexture = stageInterface.getAsset(Textures.DICE_LOCK);
-        Texture cupLockTexture = stageInterface.getAsset(Textures.CUP_LOCK);
+        Texture callBoardTexture = stageInterface.getAsset(TextureKey.CALL_BOARD);
+        Texture closedCupTexture = stageInterface.getAsset(TextureKey.CLOSED_CUP);
+        Texture openCupTexture = stageInterface.getAsset(TextureKey.OPEN_CUP);
+        Texture diceLockTexture = stageInterface.getAsset(TextureKey.DICE_LOCK);
+        Texture cupLockTexture = stageInterface.getAsset(TextureKey.CUP_LOCK);
 
         batch = new SpriteBatch();
         diceRoll = Gdx.audio.newSound(Gdx.files.internal("sound/diceroll.mp3"));
@@ -136,12 +136,12 @@ public class GameStage extends AbstractStage implements UserInterface {
         cup = new Cup(closedCupTexture, openCupTexture, cupLockTexture, foreGroundActors, backgroundActors);
 
         // Load the textures of the dices.
-        Texture dice1 = stageInterface.getAsset(Textures.DICE1);
-        Texture dice2 = stageInterface.getAsset(Textures.DICE2);
-        Texture dice3 = stageInterface.getAsset(Textures.DICE3);
-        Texture dice4 = stageInterface.getAsset(Textures.DICE4);
-        Texture dice5 = stageInterface.getAsset(Textures.DICE5);
-        Texture dice6 = stageInterface.getAsset(Textures.DICE6);
+        Texture dice1 = stageInterface.getAsset(TextureKey.DICE1);
+        Texture dice2 = stageInterface.getAsset(TextureKey.DICE2);
+        Texture dice3 = stageInterface.getAsset(TextureKey.DICE3);
+        Texture dice4 = stageInterface.getAsset(TextureKey.DICE4);
+        Texture dice5 = stageInterface.getAsset(TextureKey.DICE5);
+        Texture dice6 = stageInterface.getAsset(TextureKey.DICE6);
 
         Texture[] diceTextures = new Texture[] {dice1, dice2, dice3, dice4, dice5, dice6};
 

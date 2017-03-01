@@ -1,18 +1,19 @@
 package net.leejjon.bluffpoker.assets;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.ObjectMap;
 
-public enum Textures {
-    BACKGROUND("blackbackground") {
+public enum TextureKey {
+    BLACK_PIXEL() {
         @Override
-        public void load(AssetManager assetManager) {
+        public Texture get() {
             Pixmap backgroundPixmap = new Pixmap(1, 1, Pixmap.Format.RGB888);
             backgroundPixmap.setColor(0.25f,0.25f,0.25f, 1f);
             backgroundPixmap.fill();
             Texture backgroundTexture = new Texture(backgroundPixmap);
             backgroundPixmap.dispose();
+            return backgroundTexture;
         }
     },
     CALL_BOARD("data/callboard.png"),
@@ -27,25 +28,27 @@ public enum Textures {
     DICE_LOCK("data/dicelock.png"),
     OPEN_CUP("data/openCup.png");
 
-    private final String fileName;
+    private String fileName = null;
 
-    Textures(String fileName) {
+    TextureKey() {}
+
+    TextureKey(String fileName) {
         this.fileName = fileName;
     }
 
-    public Texture get(AssetManager assetManager) {
-        return assetManager.get(fileName);
-    }
-
-    public void load(AssetManager assetManager) {
-        assetManager.load(fileName, Texture.class);
-    }
-
-    public static void loadTextures(AssetManager assetManager) {
-        for (Textures t : Textures.values()) {
-            t.load(assetManager);
+    protected Texture get() {
+        if (fileName != null) {
+            return new Texture(fileName);
+        } else {
+            throw new IllegalAccessError("Texture not found.");
         }
+    }
 
-        assetManager.finishLoading();
+    public static ObjectMap<TextureKey, Texture> getAllTextures() {
+        ObjectMap<TextureKey, Texture> textureMap = new ObjectMap<>();
+        for (TextureKey t : TextureKey.values()) {
+            textureMap.put(t, t.get());
+        }
+        return textureMap;
     }
 }

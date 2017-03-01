@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.actors.BlackBoard;
-import net.leejjon.bluffpoker.assets.Textures;
+import net.leejjon.bluffpoker.assets.TextureKey;
 import net.leejjon.bluffpoker.dialogs.AddNewPlayerDialog;
 import net.leejjon.bluffpoker.dialogs.WarningDialog;
 import net.leejjon.bluffpoker.interfaces.ContactsRequesterInterface;
@@ -46,7 +46,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         playerList = new List<>(ls);
         playerList.setItems(players.toArray(new String[players.size()]));
 
-        Texture callBoardTexture = stageInterface.getAsset(Textures.CALL_BOARD);
+        Texture callBoardTexture = stageInterface.getAsset(TextureKey.CALL_BOARD);
         BlackBoard choosePlayersBackground = new BlackBoard(callBoardTexture);
 
         Label chooseLabel = new Label("Choose", uiSkin, "arial32", Color.WHITE);
