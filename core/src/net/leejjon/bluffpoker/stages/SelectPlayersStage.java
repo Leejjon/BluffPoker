@@ -50,7 +50,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         BlackBoard choosePlayersBackground = new BlackBoard(callBoardTexture);
 
         Label chooseLabel = new Label("Choose", uiSkin, "arial32", Color.WHITE);
-        Label playersLabel = new Label("Players", uiSkin, "arial32", Color.WHITE);
+        Label playersLabel = new Label("players", uiSkin, "arial32", Color.WHITE);
 
         float padding = 10f;
 
@@ -91,8 +91,8 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
                 swapPlayerDown();
             }
         });
-        TextButton delete = new TextButton("Remove", uiSkin);
-        delete.addListener(new ClickListener() {
+        TextButton remove = new TextButton("Remove", uiSkin);
+        remove.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 removeSelectedPlayer();
@@ -126,8 +126,8 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         table.add(down).left().padBottom(padding / 2);
         table.add(phonebook).right().padBottom(padding / 2);
         table.row();
-        table.add(delete).left().width(down.getWidth());
-        table.add(startGame).right().width(phonebook.getWidth());
+        table.add(remove).left().width(down.getWidth()).padBottom(padding);
+        table.add(startGame).right().width(phonebook.getWidth()).padBottom(padding);
 
         addActor(choosePlayersBackground);
         addActor(topTable);

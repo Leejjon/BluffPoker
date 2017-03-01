@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.Point;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
@@ -20,6 +21,7 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 import com.onegravity.contactpicker.contact.Contact;
 import com.onegravity.contactpicker.contact.ContactDescription;
@@ -177,11 +179,16 @@ public class AndroidLauncher extends FragmentActivity implements AndroidFragment
 
         @Override
         public String getDeviceOwnerName() {
+            Integer displayNameColumn = null;
             String deviceOwnerName = null;
+
             if (hasContactPermissions()) {
                 try (Cursor c = getActivity().getApplication().getContentResolver().query(ContactsContract.Profile.CONTENT_URI, null, null, null, null)) {
                     c.moveToFirst();
-                    deviceOwnerName = c.getString(c.getColumnIndex(ContactsContract.Profile.DISPLAY_NAME));
+                    displayNameColumn = c.getColumnIndex(ContactsContract.Profile.DISPLAY_NAME);
+                    deviceOwnerName = c.getString(displayNameColumn);
+                } catch (CursorIndexOutOfBoundsException e) {
+                    Gdx.app.log("bluffpoker", "Can't retrieve the display name of the device owner because your phone sucks. CursorIndexOutOfBoundsException for cursor index  " + displayNameColumn + " " + e.getMessage());
                 }
             }
 
