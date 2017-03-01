@@ -5,9 +5,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.stages.GameStage;
 
-public class CallBoard extends Image {
+public class BlackBoard extends Image {
     private Texture callBoardTexture;
-    public CallBoard(Texture callBoardTexture) {
+    public BlackBoard(Texture callBoardTexture) {
         super(callBoardTexture);
         this.callBoardTexture = callBoardTexture;
 

@@ -9,11 +9,12 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import net.leejjon.bluffpoker.actors.CallBoard;
+import net.leejjon.bluffpoker.actors.BlackBoard;
 import net.leejjon.bluffpoker.actors.Cup;
 import net.leejjon.bluffpoker.actors.Dice;
+import net.leejjon.bluffpoker.assets.TextureKey;
 import net.leejjon.bluffpoker.dialogs.*;
-import net.leejjon.bluffpoker.listener.ChangeStageListener;
+import net.leejjon.bluffpoker.listener.StageInterface;
 import net.leejjon.bluffpoker.listener.UserInterface;
 import net.leejjon.bluffpoker.logic.*;
 import net.leejjon.bluffpoker.ui.ClickableLabel;
@@ -23,22 +24,9 @@ import java.util.List;
 public class GameStage extends AbstractStage implements UserInterface {
     private Game currentGame;
 
-    private Texture callBoardTexture;
-    private Texture closedCupTexture;
-    private Texture openCupTexture;
-    private Texture diceLockTexture;
-    private Texture cupLockTexture;
-    private Texture dice1;
-    private Texture dice2;
-    private Texture dice3;
-    private Texture dice4;
-    private Texture dice5;
-    private Texture dice6;
-
     private SpriteBatch batch;
     private Sound diceRoll;
     private final Cup cup;
-    private final CallBoard callBoard;
     private Dice leftDice;
     private Dice middleDice;
     private Dice rightDice;
@@ -60,14 +48,14 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     private boolean autoButtonPressed = false;
 
-    public GameStage(Skin uiSkin, final ChangeStageListener stageListener) {
+    public GameStage(Skin uiSkin, final StageInterface stageInterface) {
         super(false);
 
-        callBoardTexture = new Texture("data/callboardwithcolor.png");
-        closedCupTexture = new Texture("data/closedCup2.png");
-        openCupTexture = new Texture("data/openCup2.png");
-        diceLockTexture = new Texture("data/dicelock.png");
-        cupLockTexture = new Texture("data/cuplock.png");
+        Texture callBoardTexture = stageInterface.getAsset(TextureKey.CALL_BOARD);
+        Texture closedCupTexture = stageInterface.getAsset(TextureKey.CLOSED_CUP);
+        Texture openCupTexture = stageInterface.getAsset(TextureKey.OPEN_CUP);
+        Texture diceLockTexture = stageInterface.getAsset(TextureKey.DICE_LOCK);
+        Texture cupLockTexture = stageInterface.getAsset(TextureKey.CUP_LOCK);
 
         batch = new SpriteBatch();
         diceRoll = Gdx.audio.newSound(Gdx.files.internal("sound/diceroll.mp3"));
@@ -76,7 +64,7 @@ public class GameStage extends AbstractStage implements UserInterface {
         callNotThreeIdenticalNumbersDialog = new CallNotThreeIdenticalNumbersDialog(uiSkin);
         throwAtLeastOneDice = new WarningDialog("Throw at least one dice!", uiSkin);
         throwAllDices = new WarningDialog("Throw with all dices!", uiSkin);
-        winnerDialog = new WinnerDialog(stageListener, this, uiSkin);
+        winnerDialog = new WinnerDialog(stageInterface, this, uiSkin);
 
         Table topTable = new Table();
         topTable.setFillParent(true);
@@ -143,17 +131,17 @@ public class GameStage extends AbstractStage implements UserInterface {
 
         foreGroundActors.addActor(table);
 
-        callBoard = new CallBoard(callBoardTexture);
+        BlackBoard callBoard = new BlackBoard(callBoardTexture);
 
         cup = new Cup(closedCupTexture, openCupTexture, cupLockTexture, foreGroundActors, backgroundActors);
 
         // Load the textures of the dices.
-        dice1 = new Texture("data/dice1.png");
-        dice2 = new Texture("data/dice2.png");
-        dice3 = new Texture("data/dice3.png");
-        dice4 = new Texture("data/dice4.png");
-        dice5 = new Texture("data/dice5.png");
-        dice6 = new Texture("data/dice6.png");
+        Texture dice1 = stageInterface.getAsset(TextureKey.DICE1);
+        Texture dice2 = stageInterface.getAsset(TextureKey.DICE2);
+        Texture dice3 = stageInterface.getAsset(TextureKey.DICE3);
+        Texture dice4 = stageInterface.getAsset(TextureKey.DICE4);
+        Texture dice5 = stageInterface.getAsset(TextureKey.DICE5);
+        Texture dice6 = stageInterface.getAsset(TextureKey.DICE6);
 
         Texture[] diceTextures = new Texture[] {dice1, dice2, dice3, dice4, dice5, dice6};
 
@@ -301,17 +289,6 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     public void dispose() {
         batch.dispose();
-        callBoardTexture.dispose();
-        closedCupTexture.dispose();
-        openCupTexture.dispose();
-        diceLockTexture.dispose();
-        cupLockTexture.dispose();
-        dice1.dispose();
-        dice2.dispose();
-        dice3.dispose();
-        dice4.dispose();
-        dice5.dispose();
-        dice6.dispose();
         diceRoll.dispose();
         super.dispose();
     }
