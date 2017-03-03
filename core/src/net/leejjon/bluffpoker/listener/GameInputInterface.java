@@ -1,8 +1,5 @@
-package net.leejjon.bluffpoker.stages;
+package net.leejjon.bluffpoker.listener;
 
-/**
- * Created by Leejjon on 11-10-2015.
- */
 public interface GameInputInterface {
     void tapCup();
 

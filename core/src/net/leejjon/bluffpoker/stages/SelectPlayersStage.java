@@ -2,7 +2,6 @@ package net.leejjon.bluffpoker.stages;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -40,11 +39,11 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         players.add(contactsRequester.getDeviceOwnerName());
 
         List.ListStyle ls = uiSkin.get(List.ListStyle.class);
-        ls.background = new Image(stageInterface.getAsset(TextureKey.BLACK_PIXEL)).getDrawable();
+        ls.background = new Image(stageInterface.getTexture(TextureKey.BLACK_PIXEL)).getDrawable();
         playerList = new List<>(ls);
         playerList.setItems(players.toArray(new String[players.size()]));
 
-        Texture callBoardTexture = stageInterface.getAsset(TextureKey.CALL_BOARD);
+        Texture callBoardTexture = stageInterface.getTexture(TextureKey.CALL_BOARD);
         BlackBoard choosePlayersBackground = new BlackBoard(callBoardTexture);
 
         Label chooseLabel = new Label("Choose", uiSkin, "arial32", Color.WHITE);

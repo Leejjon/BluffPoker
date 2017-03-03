@@ -1,6 +1,5 @@
 package net.leejjon.bluffpoker.logic;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import net.leejjon.bluffpoker.actions.LiftCupAction;
 import net.leejjon.bluffpoker.actors.Cup;
@@ -9,7 +8,7 @@ import net.leejjon.bluffpoker.interfaces.Throwable;
 import net.leejjon.bluffpoker.listener.CupListener;
 import net.leejjon.bluffpoker.listener.DiceListener;
 import net.leejjon.bluffpoker.listener.UserInterface;
-import net.leejjon.bluffpoker.stages.GameInputInterface;
+import net.leejjon.bluffpoker.listener.GameInputInterface;
 
 import java.util.List;
 

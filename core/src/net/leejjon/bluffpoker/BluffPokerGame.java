@@ -119,7 +119,7 @@ public class BluffPokerGame extends ApplicationAdapter implements
 	}
 
 	@Override
-	public Texture getAsset(TextureKey textureKey) {
+	public Texture getTexture(TextureKey textureKey) {
 		return textureMap.get(textureKey);
 	}
 

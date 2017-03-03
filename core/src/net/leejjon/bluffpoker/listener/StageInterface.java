@@ -12,5 +12,5 @@ public interface StageInterface {
 	void closeSettingsStage(Settings newSettings);
 	void backToStartStage();
 	void startGame(List<String> players);
-    Texture getAsset(TextureKey texture);
+    Texture getTexture(TextureKey textureKey);
 }
