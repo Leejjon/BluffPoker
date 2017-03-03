@@ -12,7 +12,7 @@ import net.leejjon.bluffpoker.assets.TextureKey;
 import net.leejjon.bluffpoker.dialogs.AddNewPlayerDialog;
 import net.leejjon.bluffpoker.dialogs.WarningDialog;
 import net.leejjon.bluffpoker.interfaces.ContactsRequesterInterface;
-import net.leejjon.bluffpoker.listener.StageInterface;
+import net.leejjon.bluffpoker.interfaces.StageInterface;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
 
 import java.util.ArrayList;

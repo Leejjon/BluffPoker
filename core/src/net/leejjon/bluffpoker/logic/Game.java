@@ -4,15 +4,15 @@ import com.badlogic.gdx.audio.Sound;
 import net.leejjon.bluffpoker.actions.LiftCupAction;
 import net.leejjon.bluffpoker.actors.Cup;
 import net.leejjon.bluffpoker.actors.Dice;
-import net.leejjon.bluffpoker.interfaces.Throwable;
+import net.leejjon.bluffpoker.interfaces.GameStatusInterface;
 import net.leejjon.bluffpoker.listener.CupListener;
 import net.leejjon.bluffpoker.listener.DiceListener;
-import net.leejjon.bluffpoker.listener.UserInterface;
-import net.leejjon.bluffpoker.listener.GameInputInterface;
+import net.leejjon.bluffpoker.interfaces.UserInterface;
+import net.leejjon.bluffpoker.interfaces.GameInputInterface;
 
 import java.util.List;
 
-public class Game implements GameInputInterface, Throwable {
+public class Game implements GameInputInterface, GameStatusInterface {
     private UserInterface userInterface;
     private Settings settings;
     private List<String> originalPlayers;
@@ -36,7 +36,8 @@ public class Game implements GameInputInterface, Throwable {
     private NumberCombination latestCall = null;
 
     private boolean firstThrowSinceDeath = true;
-    private boolean stillHasToThrow = true;
+    private boolean hasToThrow = true;
+    private boolean hasThrown = false;
     private boolean allowedToBelieveOrNotBelieve = false;
     private boolean canViewOwnThrow = false;
     private boolean allowedToCall = false;
@@ -58,7 +59,7 @@ public class Game implements GameInputInterface, Throwable {
     }
 
     private void setGameStatusBooleans() {
-        stillHasToThrow = true;
+        hasToThrow = true;
         allowedToBelieveOrNotBelieve = false;
         canViewOwnThrow = false;
         allowedToCall = false;
@@ -180,7 +181,8 @@ public class Game implements GameInputInterface, Throwable {
                     } else {
                         userInterface.log(currentPlayer.getName() + " believed the call");
                     }
-                    stillHasToThrow = true;
+                    hasToThrow = true;
+                    hasThrown = false;
 
                     if (!leftDice.isUnderCup() && leftDice.getDiceValue() == 6) {
                         leftDice.lock();
@@ -260,33 +262,46 @@ public class Game implements GameInputInterface, Throwable {
             allowedToBelieveOrNotBelieve = false;
             canViewOwnThrow = false;
             believed666 = false;
-            stillHasToThrow = true;
+            hasToThrow = true;
+            hasThrown = false;
 
             userInterface.log("Shake the cup: " + currentPlayer.getName());
         }
     }
 
+    /**
+     * @return If long tapping isn't allowed in this game phase, we return false so it doesn't blocks other events like
+     * swipe or tapping. If it is allowed, we return true to avoid any swipes/taps being activated while attempting a
+     * long tap.
+     */
     @Override
     public boolean longTapOnCup() {
         if (!cup.isMoving()) {
             if (allowedToBelieveOrNotBelieve) {
-                // Start next turn.
+                // Start next turn. We expect the user to want to do a blind pas (while increasing his call).
                 nextPlayer();
                 cup.lock();
+
+                // Lock the dices in case they are lying outside of the cup.
+                leftDice.lock();
+                middleDice.lock();
+                rightDice.lock();
 
                 userInterface.log(currentPlayer.getName() + " believed the call (blind)");
 
                 allowedToBelieveOrNotBelieve = false;
                 allowedToCall = true;
-                stillHasToThrow = false;
+                hasToThrow = false;
+                hasThrown = false;
                 blindPass = true;
                 userInterface.enableCallUserInterface();
+                userInterface.log("Now enter your call or throw ...");
                 // canViewOwnThrow is already false, so let's keep it false.
                 //canViewOwnThrow = false;
                 return true;
-            } else if (!allowedToBelieveOrNotBelieve && blindPass && !stillHasToThrow && !firstThrowSinceDeath) {
+            } else if (!allowedToBelieveOrNotBelieve && blindPass && !hasToThrow && !firstThrowSinceDeath) {
                 cup.unlock();
-                stillHasToThrow = true;
+                hasToThrow = true;
                 userInterface.disableCallUserInterface();
                 allowedToCall = false;
                 canViewOwnThrow = true;
@@ -302,8 +317,8 @@ public class Game implements GameInputInterface, Throwable {
                 }
                 return true;
             } else {
-                // Very important to use stillHasToThrow and not isAllowedToThrow().
-                if (stillHasToThrow && !firstThrowSinceDeath) {
+                // Very important to use hasToThrow and not isAllowedToThrow().
+                if (hasToThrow && !firstThrowSinceDeath) {
                     if (cup.isLocked()) {
                         cup.unlock();
                         if (leftDice.isUnderCup()) {
@@ -403,7 +418,8 @@ public class Game implements GameInputInterface, Throwable {
         cup.reset();
         diceRoll.play(1.0f);
         generateRandomDices();
-        stillHasToThrow = false;
+        hasToThrow = false;
+        hasThrown = true;
         canViewOwnThrow = true;
         allowedToCall = true;
         cup.unlock();
@@ -411,7 +427,9 @@ public class Game implements GameInputInterface, Throwable {
         middleDice.unlock();
         rightDice.unlock();
 
-        userInterface.log("Now enter your call ...");
+        if (!blindPass) {
+            userInterface.log("Now enter your call ...");
+        }
     }
 
     /**
@@ -437,8 +455,9 @@ public class Game implements GameInputInterface, Throwable {
         playerIterator = 0;
     }
 
+    @Override
     public boolean isAllowedToThrow() {
-        if (stillHasToThrow && !cup.isMoving() && !cup.isBelieving() && !cup.isWatchingOwnThrow()) {
+        if ((hasToThrow || (blindPass && !hasThrown)) && !cup.isMoving() && !cup.isBelieving() && !cup.isWatchingOwnThrow()) {
             return true;
         } else {
             return false;
@@ -446,7 +465,11 @@ public class Game implements GameInputInterface, Throwable {
     }
 
     @Override
-    public boolean stillHasToThrow() {
-        return stillHasToThrow;
+    public boolean isAllowedToLock() {
+        if ((hasToThrow || (blindPass && !hasThrown)) && !cup.isMoving()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

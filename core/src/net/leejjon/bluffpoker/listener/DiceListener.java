@@ -3,31 +3,29 @@ package net.leejjon.bluffpoker.listener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import net.leejjon.bluffpoker.actors.Dice;
-import net.leejjon.bluffpoker.interfaces.Throwable;
+import net.leejjon.bluffpoker.interfaces.GameStatusInterface;
 
-/**
- * Created by Leejjon on 23-10-2015.
- */
 public class DiceListener extends ActorGestureListener {
 
     private Dice dice;
-    private Throwable throwable;
+    private GameStatusInterface gameStatusInterface;
 
-    public DiceListener(Dice dice, Throwable throwable) {
+    public DiceListener(Dice dice, GameStatusInterface gameStatusInterface) {
         this.dice = dice;
-        this.throwable = throwable;
+        this.gameStatusInterface = gameStatusInterface;
     }
 
     @Override
-    public void tap (InputEvent event, float x, float y, int count, int button) {
+    public void tap(InputEvent event, float x, float y, int count, int button) {
         if (dice.isUnderCup()) {
             // You've tapped while the dice was under the cup, so you probably meant to swipe it down. We'll do that anyway for you.
             dice.pullAwayFromCup();
-            if (throwable.stillHasToThrow()) {
+            if (gameStatusInterface.isAllowedToLock()) {
                 dice.lock();
             }
         } else {
-            if (throwable.stillHasToThrow()) {
+            if (gameStatusInterface.isAllowedToLock()) {
+                // If it is a blind pass the dices outside of the cup will be locked by default. The hasToThrow boolean is false, but the user is allowed to throw, so it may unlock the dices and throw.
                 if (dice.isLocked()) {
                     dice.unlock();
                 } else {
@@ -47,7 +45,7 @@ public class DiceListener extends ActorGestureListener {
             } else {
                 // You've made a swipe gesture on the dice in the direction: Down
                 dice.pullAwayFromCup();
-                if (throwable.stillHasToThrow()) {
+                if (gameStatusInterface.isAllowedToLock()) {
                     dice.lock();
                 }
             }

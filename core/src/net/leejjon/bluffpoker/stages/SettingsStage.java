@@ -4,7 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import net.leejjon.bluffpoker.logic.Settings;
-import net.leejjon.bluffpoker.listener.StageInterface;
+import net.leejjon.bluffpoker.interfaces.StageInterface;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;

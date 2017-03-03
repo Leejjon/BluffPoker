@@ -4,8 +4,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import net.leejjon.bluffpoker.listener.StageInterface;
-import net.leejjon.bluffpoker.listener.UserInterface;
+import net.leejjon.bluffpoker.interfaces.StageInterface;
+import net.leejjon.bluffpoker.interfaces.UserInterface;
 
 /**
  * Created by Leejjon on 4-12-2015.

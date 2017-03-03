@@ -1,4 +1,4 @@
-package net.leejjon.bluffpoker.listener;
+package net.leejjon.bluffpoker.interfaces;
 
 public interface UserInterface {
     void log(String message);

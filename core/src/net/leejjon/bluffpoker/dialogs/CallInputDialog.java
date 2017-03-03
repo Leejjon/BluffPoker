@@ -1,7 +1,7 @@
 package net.leejjon.bluffpoker.dialogs;
 
 import com.badlogic.gdx.Input.TextInputListener;
-import net.leejjon.bluffpoker.listener.UserInterface;
+import net.leejjon.bluffpoker.interfaces.UserInterface;
 
 public class CallInputDialog implements TextInputListener {
     public final static String ENTER_YOUR_CALL = "Enter your call:";

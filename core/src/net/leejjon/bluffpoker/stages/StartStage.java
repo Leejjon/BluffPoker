@@ -1,6 +1,6 @@
 package net.leejjon.bluffpoker.stages;
 
-import net.leejjon.bluffpoker.listener.StageInterface;
+import net.leejjon.bluffpoker.interfaces.StageInterface;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;

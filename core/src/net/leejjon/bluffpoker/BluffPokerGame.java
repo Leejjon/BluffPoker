@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ObjectMap;
 import net.leejjon.bluffpoker.assets.TextureKey;
 import net.leejjon.bluffpoker.interfaces.ContactsRequesterInterface;
-import net.leejjon.bluffpoker.listener.StageInterface;
+import net.leejjon.bluffpoker.interfaces.StageInterface;
 import net.leejjon.bluffpoker.listener.PhoneInputListener;
 import net.leejjon.bluffpoker.logic.Settings;
 import net.leejjon.bluffpoker.stages.*;

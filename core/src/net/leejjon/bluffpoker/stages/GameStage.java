@@ -14,8 +14,8 @@ import net.leejjon.bluffpoker.actors.Cup;
 import net.leejjon.bluffpoker.actors.Dice;
 import net.leejjon.bluffpoker.assets.TextureKey;
 import net.leejjon.bluffpoker.dialogs.*;
-import net.leejjon.bluffpoker.listener.StageInterface;
-import net.leejjon.bluffpoker.listener.UserInterface;
+import net.leejjon.bluffpoker.interfaces.StageInterface;
+import net.leejjon.bluffpoker.interfaces.UserInterface;
 import net.leejjon.bluffpoker.logic.*;
 import net.leejjon.bluffpoker.ui.ClickableLabel;
 
