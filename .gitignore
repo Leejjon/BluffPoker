@@ -5,3 +5,4 @@ build/
 android/build/
 android/src/main/jniLibs/
 core/build/
+/gradle.properties

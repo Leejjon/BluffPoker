@@ -27,8 +27,6 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
     private WarningDialog playerNameInvalid;
     private WarningDialog minimalTwoPlayersRequired;
 
-    private Texture backgroundTexture;
-
     public SelectPlayersStage(Skin uiSkin, final StageInterface stageInterface, ContactsRequesterInterface contactsRequester) {
         super(false);
 
@@ -42,7 +40,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         players.add(contactsRequester.getDeviceOwnerName());
 
         List.ListStyle ls = uiSkin.get(List.ListStyle.class);
-        ls.background = new Image(getBackground()).getDrawable();
+        ls.background = new Image(stageInterface.getAsset(TextureKey.BLACK_PIXEL)).getDrawable();
         playerList = new List<>(ls);
         playerList.setItems(players.toArray(new String[players.size()]));
 
@@ -134,15 +132,6 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         addActor(table);
     }
 
-    private Texture getBackground() {
-        Pixmap backgroundPixmap = new Pixmap(1, 1, Pixmap.Format.RGB888);
-        backgroundPixmap.setColor(0.25f,0.25f,0.25f, 1f);
-        backgroundPixmap.fill();
-        backgroundTexture = new Texture(backgroundPixmap);
-        backgroundPixmap.dispose();
-        return backgroundTexture;
-    }
-
     protected void startGame(StageInterface changeScreen) {
         if (players.size() < 2) {
             minimalTwoPlayersRequired.show(this);
@@ -201,11 +190,5 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
             players.remove(selectedPlayer);
             playerList.setItems(players.toArray(new String[players.size()]));
         }
-    }
-
-    @Override
-    public void dispose() {
-        backgroundTexture.dispose();
-        super.dispose();
     }
 }
