@@ -37,7 +37,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import net.leejjon.bluffpoker.android.keyboard.NumberCombinationInput;
+import net.leejjon.bluffpoker.android.keyboard.BluffPokerInput;
 import net.leejjon.bluffpoker.interfaces.ContactsRequesterInterface;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
 
@@ -95,7 +95,7 @@ public class AndroidLauncher extends FragmentActivity implements AndroidFragment
 
             View view = initializeForView(game, config);
 
-            input = new NumberCombinationInput(this, getActivity(), graphics.getView(), config);
+            input = new BluffPokerInput(this, getActivity(), graphics.getView(), config);
 
             return view;
         }

@@ -16,12 +16,12 @@ import com.badlogic.gdx.backends.android.AndroidGraphics;
 import com.badlogic.gdx.backends.android.AndroidInputThreePlus;
 import net.leejjon.bluffpoker.dialogs.CallInputDialog;
 
-public class NumberCombinationInput extends AndroidInputThreePlus {
+public class BluffPokerInput extends AndroidInputThreePlus {
     // Cant use the handle of the superclass because they made it private :(
     private Handler handle;
     private final Context context;
 
-    public NumberCombinationInput(Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
+    public BluffPokerInput(Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
         super(activity, context, view, config);
         this.context = context;
         handle = new Handler();
@@ -38,6 +38,8 @@ public class NumberCombinationInput extends AndroidInputThreePlus {
             if (title.equals(CallInputDialog.ENTER_YOUR_CALL)) {
                 input.setFilters(new InputFilter[]{new NumberCombinationInputFilter()});
                 input.setInputType(InputType.TYPE_CLASS_PHONE);
+            } else {
+                input.setFilters(new InputFilter[]{new PlayerNameInputFilter()});
             }
             input.setHint(hint);
 

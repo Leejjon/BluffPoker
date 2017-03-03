@@ -6,7 +6,7 @@ android {
         applicationId "net.leejjon.blufpoker.android"
         minSdkVersion 23
         targetSdkVersion 25
-        versionCode 11
+        versionCode 12
         versionName "2.0"
 
         jackOptions {

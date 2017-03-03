@@ -30,7 +30,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         super(false);
 
         playerAlreadyExistsWarning = new WarningDialog(uiSkin);
-        playerNameInvalid = new WarningDialog("Player name too long!", uiSkin);
+        playerNameInvalid = new WarningDialog("Player name empty or too long!", uiSkin);
         minimalTwoPlayersRequired = new WarningDialog("Select at least two players!", uiSkin);
         final AddNewPlayerDialog addNewPlayerDialog = new AddNewPlayerDialog(this);
 
@@ -151,7 +151,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
                 // TODO: Add first letter of last name maybe? will suck if people have a lot of initials...
             }
 
-            if (playerName.length() > 0 && playerName.length() <= maxNameLength) {
+            if (playerName.length() > 0 && !playerName.isEmpty() && playerName.length() <= maxNameLength) {
                 if (!players.contains(playerName)) {
                     players.add(playerName);
                 } else {

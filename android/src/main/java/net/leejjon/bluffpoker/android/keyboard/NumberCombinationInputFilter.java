@@ -40,6 +40,7 @@ public class NumberCombinationInputFilter implements InputFilter {
             return null; // keep original
         } else {
             keep += start;
+            // No idea what this code does. But it works.
             if (Character.isHighSurrogate(source.charAt(keep - 1))) {
                 --keep;
                 if (keep == start) {
