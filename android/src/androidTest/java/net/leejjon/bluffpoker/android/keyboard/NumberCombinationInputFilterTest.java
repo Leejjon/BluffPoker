@@ -9,7 +9,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 @RunWith(AndroidJUnit4.class)
-public class BluffPokerInputFilterTest {
+public class NumberCombinationInputFilterTest {
     @Test
     public void testFilter() {
         NumberCombinationInputFilter ncif = new NumberCombinationInputFilter();
