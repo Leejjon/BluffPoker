@@ -5,17 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public enum TextureKey {
-    BLACK_PIXEL() {
-        @Override
-        public Texture get() {
-            Pixmap backgroundPixmap = new Pixmap(1, 1, Pixmap.Format.RGB888);
-            backgroundPixmap.setColor(0.25f,0.25f,0.25f, 1f);
-            backgroundPixmap.fill();
-            Texture backgroundTexture = new Texture(backgroundPixmap);
-            backgroundPixmap.dispose();
-            return backgroundTexture;
-        }
-    },
     CALL_BOARD("data/callboard.png"),
     CLOSED_CUP("data/closedCup.png"),
     CUP_LOCK("data/cuplock.png"),
@@ -26,6 +15,18 @@ public enum TextureKey {
     DICE5("data/dice5.png"),
     DICE6("data/dice6.png"),
     DICE_LOCK("data/dicelock.png"),
+    LIST_BACKGROUND() {
+        @Override
+        public Texture get() {
+            return generateOnePixelTexture(0.10f,0.12f,0.09f, 1f);
+        }
+    },
+    LIST_SELECTION() {
+        @Override
+        public Texture get() {
+            return generateOnePixelTexture(0.10f,0.12f,0.09f, 1f);
+        }
+    },
     OPEN_CUP("data/openCup.png");
 
     private String fileName = null;
@@ -42,6 +43,15 @@ public enum TextureKey {
         } else {
             throw new IllegalAccessError("Texture not found.");
         }
+    }
+
+    private static Texture generateOnePixelTexture(float red, float green, float blue, float alpha) {
+        Pixmap onePixelPixmap = new Pixmap(1, 1, Pixmap.Format.RGB888);
+        onePixelPixmap.setColor(red, green, blue, alpha);
+        onePixelPixmap.fill();
+        Texture onePixelTexture = new Texture(onePixelPixmap);
+        onePixelPixmap.dispose();
+        return onePixelTexture;
     }
 
     public static ObjectMap<TextureKey, Texture> getAllTextures() {

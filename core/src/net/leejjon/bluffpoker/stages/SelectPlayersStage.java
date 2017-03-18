@@ -3,6 +3,7 @@ package net.leejjon.bluffpoker.stages;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -39,7 +40,9 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         players.add(contactsRequester.getDeviceOwnerName());
 
         List.ListStyle ls = uiSkin.get(List.ListStyle.class);
-        ls.background = new Image(stageInterface.getTexture(TextureKey.BLACK_PIXEL)).getDrawable();
+        ls.background = new Image(stageInterface.getTexture(TextureKey.LIST_BACKGROUND)).getDrawable();
+//        ls.selection = new Image(stageInterface.getTexture(TextureKey.LIST_SELECTION)).getDrawable();
+        ls.fontColorSelected = new Color(1f, 1f, 1f, 1.0f);
         playerList = new List<>(ls);
         playerList.setItems(players.toArray(new String[players.size()]));
 
@@ -49,7 +52,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         Label chooseLabel = new Label("Choose", uiSkin, "arial32", Color.WHITE);
         Label playersLabel = new Label("players", uiSkin, "arial32", Color.WHITE);
 
-        float padding = 10f;
+        float padding = 7f;
 
         Table topTable = new Table();
         topTable.setFillParent(true);
@@ -69,40 +72,40 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         table.center();
         table.bottom();
         // Take 50% of the screen.
-        table.add(playersScrollPane).colspan(2).width((width * 100) / 170)
+        table.add(playersScrollPane).width((width * 100) / 170)
                 .height((height * 100) / 200)
                 .padBottom(padding);
         table.row();
 
-        TextButton up = new TextButton("Move up", uiSkin);
+        ImageButton up = new ImageButton(uiSkin, "up");
         up.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 swapPlayerUp();
             }
         });
-        TextButton down = new TextButton("Move down", uiSkin);
+        ImageButton down = new ImageButton(uiSkin, "down");
         down.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 swapPlayerDown();
             }
         });
-        TextButton remove = new TextButton("Remove", uiSkin);
+        ImageButton remove = new ImageButton(uiSkin, "minus");
         remove.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 removeSelectedPlayer();
             }
         });
-        TextButton enterNew = new TextButton("Enter new", uiSkin);
-        enterNew.addListener(new ClickListener() {
+        ImageButton addButton = new ImageButton(uiSkin, "plus");
+        addButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.input.getTextInput(addNewPlayerDialog, "Insert new player name", "", "Enter name here.");
             }
         });
-        TextButton phonebook = new TextButton("Phonebook", uiSkin);
+        ImageButton phonebook = new ImageButton(uiSkin, "phonebook");
         phonebook.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -117,14 +120,15 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
             }
         });
 
-        table.add(up).left().width(down.getWidth()).padBottom(padding / 2);
-        table.add(enterNew).right().width(phonebook.getWidth()).padBottom(padding / 2);
+        Table subTable = new Table();
+        subTable.add(up).height(startGame.getHeight()).padRight(padding);
+        subTable.add(down).height(startGame.getHeight()).padRight(padding);
+        subTable.add(addButton).right().height(startGame.getHeight()).padRight(padding);
+        subTable.add(remove).right().height(startGame.getHeight()).padRight(padding);
+        subTable.add(phonebook).right().height(startGame.getHeight());
+        table.add(subTable).left();
         table.row();
-        table.add(down).left().padBottom(padding / 2);
-        table.add(phonebook).right().padBottom(padding / 2);
-        table.row();
-        table.add(remove).left().width(down.getWidth()).padBottom(padding);
-        table.add(startGame).right().width(phonebook.getWidth()).padBottom(padding);
+        table.add(startGame).center().pad(padding * 4);;
 
         addActor(choosePlayersBackground);
         addActor(topTable);

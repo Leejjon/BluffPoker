@@ -207,6 +207,41 @@ tree-plus
   orig: 14, 14
   offset: 0, 0
   index: -1
+big-plus
+  rotate: false
+  xy: 176, 35
+  size: 16, 14
+  orig: 16, 14
+  offset: 0, 0
+  index: -1
+big-minus
+  rotate: false
+  xy: 191, 35
+  size: 16, 14
+  orig: 16, 14
+  offset: 0, 0
+  index: -1
+arrow-up
+  rotate: false
+  xy: 206, 35
+  size: 16, 14
+  orig: 16, 14
+  offset: 0, 0
+  index: -1
+arrow-down
+  rotate: false
+  xy: 221, 35
+  size: 16, 14
+  orig: 16, 14
+  offset: 0, 0
+  index: -1
+phonebook
+  rotate: false
+  xy: 237, 35
+  size: 16, 14
+  orig: 16, 14
+  offset: 0, 0
+  index: -1
 white
   rotate: false
   xy: 129, 31
