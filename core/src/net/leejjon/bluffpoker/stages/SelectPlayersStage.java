@@ -3,10 +3,10 @@ package net.leejjon.bluffpoker.stages;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.actors.BlackBoard;
 import net.leejjon.bluffpoker.assets.TextureKey;
@@ -39,9 +39,11 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
 
         players.add(contactsRequester.getDeviceOwnerName());
 
+        final float padding = 7f;
+
         List.ListStyle ls = uiSkin.get(List.ListStyle.class);
         ls.background = new Image(stageInterface.getTexture(TextureKey.LIST_BACKGROUND)).getDrawable();
-//        ls.selection = new Image(stageInterface.getTexture(TextureKey.LIST_SELECTION)).getDrawable();
+        ls.selection = addBordersToTextArea(ls.selection);
         ls.fontColorSelected = new Color(1f, 1f, 1f, 1.0f);
         playerList = new List<>(ls);
         playerList.setItems(players.toArray(new String[players.size()]));
@@ -51,8 +53,6 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
 
         Label chooseLabel = new Label("Choose", uiSkin, "arial32", Color.WHITE);
         Label playersLabel = new Label("players", uiSkin, "arial32", Color.WHITE);
-
-        float padding = 7f;
 
         Table topTable = new Table();
         topTable.setFillParent(true);
@@ -133,6 +133,13 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         addActor(choosePlayersBackground);
         addActor(topTable);
         addActor(table);
+    }
+
+    private Drawable addBordersToTextArea(Drawable drawable) {
+        drawable.setLeftWidth(2f);
+        drawable.setTopHeight(2f);
+        drawable.setBottomHeight(2f);
+        return drawable;
     }
 
     protected void startGame(StageInterface changeScreen) {
