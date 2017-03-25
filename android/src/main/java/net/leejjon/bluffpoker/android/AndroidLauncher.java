@@ -127,7 +127,7 @@ public class AndroidLauncher extends FragmentActivity implements AndroidFragment
                 // Robert's Samsung Galaxy S6 Edge had DENSITY_XXXHIGH and Michel's Moto X style had DENSITY_560. Both had 2560x1440 resolutions.
                 case DisplayMetrics.DENSITY_XXXHIGH:
                 case DisplayMetrics.DENSITY_560:
-                    zoomfactor = 6;
+                    zoomfactor = 7;
                     break;
             }
             return zoomfactor;
