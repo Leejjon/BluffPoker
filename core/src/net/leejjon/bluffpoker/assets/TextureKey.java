@@ -15,18 +15,6 @@ public enum TextureKey {
     DICE5("data/dice5.png"),
     DICE6("data/dice6.png"),
     DICE_LOCK("data/dicelock.png"),
-    LIST_BACKGROUND() {
-        @Override
-        public Texture get() {
-            return generateOnePixelTexture(0.10f,0.12f,0.09f, 1f);
-        }
-    },
-    LIST_SELECTION() {
-        @Override
-        public Texture get() {
-            return generateOnePixelTexture(0.10f,0.12f,0.09f, 1f);
-        }
-    },
     OPEN_CUP("data/openCup.png");
 
     private String fileName = null;

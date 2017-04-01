@@ -42,7 +42,6 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         final float padding = 7f;
 
         List.ListStyle ls = uiSkin.get(List.ListStyle.class);
-        ls.background = new Image(stageInterface.getTexture(TextureKey.LIST_BACKGROUND)).getDrawable();
         ls.selection = addBordersToTextArea(ls.selection);
         ls.fontColorSelected = new Color(1f, 1f, 1f, 1.0f);
         playerList = new List<>(ls);
@@ -71,8 +70,10 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
 
         table.center();
         table.bottom();
+
         // Take 50% of the screen.
-        table.add(playersScrollPane).width((width * 100) / 170)
+        float fiftyPercentOfScreen = (width * 100) / 170;
+        table.add(playersScrollPane).width(fiftyPercentOfScreen)
                 .height((height * 100) / 200)
                 .padBottom(padding);
         table.row();
@@ -120,13 +121,23 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
             }
         });
 
-        Table subTable = new Table();
-        subTable.add(up).height(startGame.getHeight()).padRight(padding);
-        subTable.add(down).height(startGame.getHeight()).padRight(padding);
-        subTable.add(addButton).right().height(startGame.getHeight()).padRight(padding);
-        subTable.add(remove).right().height(startGame.getHeight()).padRight(padding);
-        subTable.add(phonebook).right().height(startGame.getHeight());
-        table.add(subTable).left();
+        Table buttonTable = new Table();
+        Cell<ImageButton> upCell = buttonTable.add(up).height(startGame.getHeight());
+        Cell<ImageButton> downCell = buttonTable.add(down).height(startGame.getHeight());
+        Cell<ImageButton> addCell = buttonTable.add(addButton).right().height(startGame.getHeight());
+        Cell<ImageButton> removeCell = buttonTable.add(remove).right().height(startGame.getHeight());
+        Cell<ImageButton> phoneBookCell = buttonTable.add(phonebook).right().height(startGame.getHeight());
+
+        // Calculate the padding to make sure the buttons are nicely alligned with the list.
+        float widthOfAllButtons = upCell.getMinWidth() + downCell.getMinWidth() + addCell.getMinWidth() + removeCell.getMinWidth() + phoneBookCell.getMinWidth();
+        float buttonPadding = (fiftyPercentOfScreen - (widthOfAllButtons)) / 8;
+
+        upCell.padRight(buttonPadding);
+        downCell.padRight(buttonPadding * 5);
+        removeCell.padLeft(buttonPadding);
+        phoneBookCell.padLeft(buttonPadding);
+
+        table.add(buttonTable).width(fiftyPercentOfScreen).center();
         table.row();
         table.add(startGame).center().pad(padding * 4);;
 

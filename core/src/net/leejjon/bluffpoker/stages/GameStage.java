@@ -237,7 +237,7 @@ public class GameStage extends AbstractStage implements UserInterface {
                 }
             } else {
                 // You must throw at least one dice.
-                if (numberOfDicesToBeThrown > 0) {
+                if (numberOfDicesToBeThrown > 0 /* or is blind call and you dont need this warning. */) {
                     currentGame.throwDices();
                     enableCallUserInterface();
                 } else {

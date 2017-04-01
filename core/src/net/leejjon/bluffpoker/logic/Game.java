@@ -44,6 +44,16 @@ public class Game implements GameInputInterface, GameStatusInterface {
     private boolean believed666 = false;
     private boolean blindPass = false;
 
+    private static final String BELIEVE_IT_OR_NOT = "Believe it or not, ";
+    private static final String SHAKE_THE_CUP = "Shake the cup: ";
+    private static final String CALL_THREE_IDENTICAL_NUMBERS_HIGHER_THAN = "Call three the identical numbers higher than ";
+    private static final String YOUR_CALL_MUST_BE_HIGHER_THAN = "Your call must be higher than: ";
+    private static final String BLIND_MESSAGE = " (blind)";
+    private static final String CALLED = " called ";
+    private static final String BELIEVED_666 = " believed 666!";
+    private static final String BELIEVED_THE_CALL = " believed the call";
+    private static final String THROW_THREE_OF_THE_SAME_NUMBERS_IN_ONE_THROW = "Throw three of the same numbers in one throw!";
+
     public Game(Cup cup, Dice leftDice, Dice middleDice, Dice rightDice, Sound diceRoll, UserInterface userInterface) {
         this.cup = cup;
         this.leftDice = leftDice;
@@ -66,7 +76,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
         believed666 = false;
         firstThrowSinceDeath = true;
         latestCall = null;
-        blindPass = true;
+        blindPass = false;
     }
 
     private void constructPlayers() {
@@ -87,7 +97,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
         cup.reset();
         setGameStatusBooleans();
         constructPlayers();
-        userInterface.log("Shake the cup: " + currentPlayer.getName());
+        userInterface.log(SHAKE_THE_CUP + currentPlayer.getName());
     }
 
     public void validateCall(NumberCombination newCall) throws InputValidationException {
@@ -95,13 +105,13 @@ public class Game implements GameInputInterface, GameStatusInterface {
             if (newCall.areAllDicesEqual() && (newCall.isGreaterThan(latestCall) || latestCall.equals(NumberCombination.MAX))) {
                 call(newCall);
             } else {
-                throw new InputValidationException("Call three the identical numbers higher than " + latestCall);
+                throw new InputValidationException(CALL_THREE_IDENTICAL_NUMBERS_HIGHER_THAN + latestCall);
             }
         } else {
             if (latestCall == null || newCall.isGreaterThan(latestCall)) {
                 call(newCall);
             } else {
-                throw new InputValidationException("Your call must be higher than: " + latestCall);
+                throw new InputValidationException(YOUR_CALL_MUST_BE_HIGHER_THAN + latestCall);
             }
         }
     }
@@ -116,7 +126,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
         String addBlindToMessage = "";
         // Passing an empty cup doesn't count as a blind pass.
         if (blindPass && wereThereAnyDicesUnderTheCup) {
-            addBlindToMessage = " (blind)";
+            addBlindToMessage = BLIND_MESSAGE;
         }
 
         firstThrowSinceDeath = false;
@@ -128,7 +138,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
         cup.unlock();
 
         latestCall = newCall;
-        userInterface.log(currentPlayer.getName() + " called " + newCall + addBlindToMessage);
+        userInterface.log(currentPlayer.getName() + CALLED + newCall + addBlindToMessage);
         userInterface.log(getMessageToTellNextUserToBelieveOrNot());
     }
 
@@ -148,7 +158,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
             localPlayerIterator++;
         } while (nextPlayer.isDead());
 
-        return "Believe it or not, " + nextPlayer.getName();
+        return BELIEVE_IT_OR_NOT + nextPlayer.getName();
     }
 
     private void generateRandomDices() {
@@ -168,7 +178,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
                 } else {
                     // Start next turn.
                     nextPlayer();
-                    if (latestCall.equals(new NumberCombination(6,6,6, false))) {
+                    if (latestCall.equals(NumberCombination.MAX)) {
                         // TODO: Do we need to make the dices visible here?
                         believed666 = true;
 
@@ -176,10 +186,11 @@ public class Game implements GameInputInterface, GameStatusInterface {
                         leftDice.putBackUnderCup();
                         middleDice.putBackUnderCup();
                         rightDice.putBackUnderCup();
-                        userInterface.log(currentPlayer.getName() + " believed 666!");
-                        userInterface.log("Throw three of the same numbers in one throw!");
+                        userInterface.log(currentPlayer.getName() + BELIEVED_666);
+                        userInterface.log(THROW_THREE_OF_THE_SAME_NUMBERS_IN_ONE_THROW);
                     } else {
-                        userInterface.log(currentPlayer.getName() + " believed the call");
+                        userInterface.log(currentPlayer.getName() + BELIEVED_THE_CALL);
+                        userInterface.log("Throw at least one dice ...");
                     }
                     hasToThrow = true;
                     hasThrown = false;
@@ -202,6 +213,9 @@ public class Game implements GameInputInterface, GameStatusInterface {
                     cup.doneWatchingOwnThrow();
                 } else {
                     cup.watchOwnThrow();
+                    if (hasThrown) {
+                        userInterface.log("Now enter your call ...");
+                    }
                     blindPass = false;
                 }
             }
@@ -277,7 +291,8 @@ public class Game implements GameInputInterface, GameStatusInterface {
     @Override
     public boolean longTapOnCup() {
         if (!cup.isMoving()) {
-            if (allowedToBelieveOrNotBelieve) {
+            // If the player wants to blindly believe and pass it on.
+            if (!blindPass && !hasToThrow) {
                 // Start next turn. We expect the user to want to do a blind pas (while increasing his call).
                 nextPlayer();
                 cup.lock();
@@ -299,7 +314,8 @@ public class Game implements GameInputInterface, GameStatusInterface {
                 // canViewOwnThrow is already false, so let's keep it false.
                 //canViewOwnThrow = false;
                 return true;
-            } else if (!allowedToBelieveOrNotBelieve && blindPass && !hasToThrow && !firstThrowSinceDeath) {
+                // Unlocking halfway the turn.
+            } else if (blindPass && !hasToThrow && !firstThrowSinceDeath) {
                 cup.unlock();
                 hasToThrow = true;
                 userInterface.disableCallUserInterface();
@@ -316,34 +332,34 @@ public class Game implements GameInputInterface, GameStatusInterface {
                     rightDice.lock();
                 }
                 return true;
-            } else {
+            } else if (!blindPass && hasToThrow && !firstThrowSinceDeath) {
                 // Very important to use hasToThrow and not isAllowedToThrow().
-                if (hasToThrow && !firstThrowSinceDeath) {
-                    if (cup.isLocked()) {
-                        cup.unlock();
-                        if (leftDice.isUnderCup()) {
-                            leftDice.unlock();
-                        }
-                        if (middleDice.isUnderCup()) {
-                            middleDice.unlock();
-                        }
-                        if (rightDice.isUnderCup()) {
-                            rightDice.unlock();
-                        }
-                    } else {
-                        cup.lock();
-                        if (leftDice.isUnderCup()) {
-                            leftDice.lock();
-                        }
-                        if (middleDice.isUnderCup()) {
-                            middleDice.lock();
-                        }
-                        if (rightDice.isUnderCup()) {
-                            rightDice.lock();
-                        }
+                if (cup.isLocked()) {
+                    cup.unlock();
+                    if (leftDice.isUnderCup()) {
+                        leftDice.unlock();
                     }
-                    return true;
+                    if (middleDice.isUnderCup()) {
+                        middleDice.unlock();
+                    }
+                    if (rightDice.isUnderCup()) {
+                        rightDice.unlock();
+                    }
+                } else {
+                    cup.lock();
+                    if (leftDice.isUnderCup()) {
+                        leftDice.lock();
+                    }
+                    if (middleDice.isUnderCup()) {
+                        middleDice.lock();
+                    }
+                    if (rightDice.isUnderCup()) {
+                        rightDice.lock();
+                    }
                 }
+                return true;
+            } else {
+                throw new IllegalStateException("Shouldn't be able to come here.");
             }
         }
         return false;
@@ -422,13 +438,14 @@ public class Game implements GameInputInterface, GameStatusInterface {
         hasThrown = true;
         canViewOwnThrow = true;
         allowedToCall = true;
+
         cup.unlock();
         leftDice.unlock();
         middleDice.unlock();
         rightDice.unlock();
 
-        if (!blindPass) {
-            userInterface.log("Now enter your call ...");
+        if (firstThrowSinceDeath) {
+            userInterface.log(BELIEVE_IT_OR_NOT + currentPlayer.getName());
         }
     }
 

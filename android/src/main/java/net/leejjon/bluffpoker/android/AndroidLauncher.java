@@ -1,5 +1,6 @@
 package net.leejjon.bluffpoker.android;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -197,6 +198,11 @@ public class AndroidLauncher extends FragmentActivity implements AndroidFragment
 
         private boolean hasContactPermissions() {
             return ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+        }
+
+        @Override
+        public Collection<String> getAllPhonebookContacts() {
+            return null;
         }
 
         @Override
