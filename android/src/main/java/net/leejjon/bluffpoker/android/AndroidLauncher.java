@@ -120,15 +120,14 @@ public class AndroidLauncher extends FragmentActivity implements AndroidFragment
                     // For BlackBerry Classic, Q10 and Q5
                     zoomfactor = (size.x == size.y) ? 3 : 2;
                     break;
+                // Robert's Galaxy S6 Edge had DENSITY_XXHIGH with 2560x1440
                 case DisplayMetrics.DENSITY_XXHIGH:
+                case DisplayMetrics.DENSITY_XXXHIGH:
+                // Michel's Moto X style had DENSITY_560. With 2560x1440.
+                case DisplayMetrics.DENSITY_560:
                     // If the screen is square, make it smaller.
                     // For BlackBerry Passport.
-                    zoomfactor = (size.x == size.y) ? 5 : 4;
-                    break;
-                // Robert's Samsung Galaxy S6 Edge had DENSITY_XXXHIGH and Michel's Moto X style had DENSITY_560. Both had 2560x1440 resolutions.
-                case DisplayMetrics.DENSITY_XXXHIGH:
-                case DisplayMetrics.DENSITY_560:
-                    zoomfactor = 7;
+                    zoomfactor = (size.x == size.y) ? 5 : 3;
                     break;
             }
             return zoomfactor;
