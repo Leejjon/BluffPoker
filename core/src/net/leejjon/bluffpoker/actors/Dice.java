@@ -24,6 +24,15 @@ public class Dice extends Stack implements Lockable {
     private Image lockImage;
     private boolean lock = false;
 
+    public enum ThrowResult {
+        // Dice was locked, so it was not thrown.
+        LOCKED,
+        // Dice was thrown outside of the cup.
+        OPEN,
+        // Dice was thrown under the cup.
+        UNDER_CUP;
+    }
+
     private SpriteDrawable[] spriteDrawables = new SpriteDrawable[6];
 
     public Dice(Cup cup, Texture[] diceTextures, Texture lockTexture, int initialValue, DiceLocation location, Group dicesBeforeCupActors, Group dicesUnderCupActors) {
@@ -53,13 +62,19 @@ public class Dice extends Stack implements Lockable {
         }
     }
 
-    public void throwDice() {
+    public ThrowResult throwDice() {
         if ((isUnderCup() && !cup.isLocked()) || (!isUnderCup() && !isLocked())) {
             generateRandomNumber();
+            if (isUnderCup()) {
+                return ThrowResult.UNDER_CUP;
+            } else {
+                return ThrowResult.OPEN;
+            }
         } else {
             if (diceValue != 6) {
                 unlock();
             }
+            return ThrowResult.LOCKED;
         }
     }
 

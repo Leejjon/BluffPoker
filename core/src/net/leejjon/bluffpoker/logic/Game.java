@@ -52,7 +52,12 @@ public class Game implements GameInputInterface, GameStatusInterface {
     private static final String CALLED = " called ";
     private static final String BELIEVED_666 = " believed 666!";
     private static final String BELIEVED_THE_CALL = " believed the call";
+    private static final String BELIEVED_THE_CALL_BLIND = " believed the call (blind)";
     private static final String THROW_THREE_OF_THE_SAME_NUMBERS_IN_ONE_THROW = "Throw three of the same numbers in one throw!";
+    private static final String NOW_ENTER_YOUR_CALL = "Now enter your call ...";
+    private static final String NOW_ENTER_YOUR_CALL_OR_THROW = "Now enter your call or throw ...";
+    private static final String RIDING_ON_THE_BOK = " is riding on the bok";
+
 
     public Game(Cup cup, Dice leftDice, Dice middleDice, Dice rightDice, Sound diceRoll, UserInterface userInterface) {
         this.cup = cup;
@@ -127,13 +132,13 @@ public class Game implements GameInputInterface, GameStatusInterface {
         // Passing an empty cup doesn't count as a blind pass.
         if (blindPass && wereThereAnyDicesUnderTheCup) {
             addBlindToMessage = BLIND_MESSAGE;
+            blindPass = false;
         }
 
         firstThrowSinceDeath = false;
         allowedToCall = false;
         canViewOwnThrow = false;
         allowedToBelieveOrNotBelieve = true;
-        blindPass = false;
 
         cup.unlock();
 
@@ -161,11 +166,6 @@ public class Game implements GameInputInterface, GameStatusInterface {
         return BELIEVE_IT_OR_NOT + nextPlayer.getName();
     }
 
-    private void generateRandomDices() {
-        leftDice.throwDice();
-        middleDice.throwDice();
-        rightDice.throwDice();
-    }
 
     @Override
     public void tapCup() {
@@ -213,9 +213,6 @@ public class Game implements GameInputInterface, GameStatusInterface {
                     cup.doneWatchingOwnThrow();
                 } else {
                     cup.watchOwnThrow();
-                    if (hasThrown) {
-                        userInterface.log("Now enter your call ...");
-                    }
                     blindPass = false;
                 }
             }
@@ -247,7 +244,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
 
             // Detect if the current player jumped on the block and check if we should not allow other players to get on the bok too.
             if (bokAvailable && !settings.isAllowSharedBok() && currentPlayer.isRidingOnTheBok()) {
-                userInterface.log(currentPlayer.getName() + " is riding on the bok");
+                userInterface.log(currentPlayer.getName() + RIDING_ON_THE_BOK);
                 bokAvailable = false;
             }
 
@@ -279,7 +276,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
             hasToThrow = true;
             hasThrown = false;
 
-            userInterface.log("Shake the cup: " + currentPlayer.getName());
+            userInterface.log(SHAKE_THE_CUP + currentPlayer.getName());
         }
     }
 
@@ -291,8 +288,8 @@ public class Game implements GameInputInterface, GameStatusInterface {
     @Override
     public boolean longTapOnCup() {
         if (!cup.isMoving()) {
-            // If the player wants to blindly believe and pass it on.
-            if (!blindPass && !hasToThrow) {
+            // If the player wants to blindly believe another players call and pass it on.
+            if (!blindPass && !hasToThrow && allowedToBelieveOrNotBelieve) {
                 // Start next turn. We expect the user to want to do a blind pas (while increasing his call).
                 nextPlayer();
                 cup.lock();
@@ -302,7 +299,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
                 middleDice.lock();
                 rightDice.lock();
 
-                userInterface.log(currentPlayer.getName() + " believed the call (blind)");
+                userInterface.log(currentPlayer.getName() + BELIEVED_THE_CALL_BLIND);
 
                 allowedToBelieveOrNotBelieve = false;
                 allowedToCall = true;
@@ -310,28 +307,51 @@ public class Game implements GameInputInterface, GameStatusInterface {
                 hasThrown = false;
                 blindPass = true;
                 userInterface.enableCallUserInterface();
-                userInterface.log("Now enter your call or throw ...");
+                userInterface.log(NOW_ENTER_YOUR_CALL_OR_THROW);
                 // canViewOwnThrow is already false, so let's keep it false.
                 //canViewOwnThrow = false;
                 return true;
+                // Blindly pass your own throw.
+            } else if (blindPass && hasThrown && firstThrowSinceDeath && !allowedToBelieveOrNotBelieve) {
+                cup.lock();
+
+                // Leave blindPass true on purpose.
+
+                allowedToCall = true;
+                canViewOwnThrow = false;
+
+                userInterface.enableCallUserInterface();
+                userInterface.log(NOW_ENTER_YOUR_CALL);
                 // Unlocking halfway the turn.
             } else if (blindPass && !hasToThrow && !firstThrowSinceDeath) {
                 cup.unlock();
+                cup.believe();
+//                blindPass = false;
                 hasToThrow = true;
                 userInterface.disableCallUserInterface();
+                userInterface.log(currentPlayer.getName() + " wanted to peek after all.");
                 allowedToCall = false;
                 canViewOwnThrow = true;
 
                 if (!leftDice.isUnderCup()) {
                     leftDice.lock();
+                } else {
+                    leftDice.unlock();
                 }
+
                 if (!middleDice.isUnderCup()) {
                     middleDice.lock();
+                } else {
+                    middleDice.unlock();
                 }
+
                 if (!rightDice.isUnderCup()) {
                     rightDice.lock();
+                } else {
+                    rightDice.unlock();
                 }
                 return true;
+                // Just locking / unlocking.
             } else if (!blindPass && hasToThrow && !firstThrowSinceDeath) {
                 // Very important to use hasToThrow and not isAllowedToThrow().
                 if (cup.isLocked()) {
@@ -433,11 +453,19 @@ public class Game implements GameInputInterface, GameStatusInterface {
     public void throwDices() {
         cup.reset();
         diceRoll.play(1.0f);
-        generateRandomDices();
+
+        final Dice.ThrowResult leftResult = leftDice.throwDice();
+        final Dice.ThrowResult middleResult = middleDice.throwDice();
+        final Dice.ThrowResult rightResult = rightDice.throwDice();
+
         hasToThrow = false;
         hasThrown = true;
         canViewOwnThrow = true;
         allowedToCall = true;
+
+        if (leftResult == Dice.ThrowResult.UNDER_CUP || middleResult == Dice.ThrowResult.UNDER_CUP || rightResult == Dice.ThrowResult.UNDER_CUP) {
+            blindPass = true; // Everytime you throw a dice under the cup, it starts out as a blind pass.
+        }
 
         cup.unlock();
         leftDice.unlock();
@@ -446,6 +474,8 @@ public class Game implements GameInputInterface, GameStatusInterface {
 
         if (firstThrowSinceDeath) {
             userInterface.log(BELIEVE_IT_OR_NOT + currentPlayer.getName());
+        } else {
+            userInterface.log(NOW_ENTER_YOUR_CALL);
         }
     }
 
