@@ -2,11 +2,11 @@ package net.leejjon.bluffpoker.logic;
 
 import com.google.common.primitives.Ints;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * Class that defines NumberCombinations as used in Bluff poker.
@@ -29,7 +29,9 @@ public class NumberCombination implements Comparable<NumberCombination> {
      * @param ordered
      */
     public NumberCombination(int firstNumber, int secondNumber, int thirdNumber, boolean ordered) {
-        // TODO: Add preconditions for the ranges of the integers.
+        validateNumber(firstNumber);
+        validateNumber(secondNumber);
+        validateNumber(thirdNumber);
 
         int[] order;
         if (ordered) {
@@ -41,6 +43,11 @@ public class NumberCombination implements Comparable<NumberCombination> {
         highestNumber = order[2];
         middleNumber = order[1];
         lowestNumber = order[0];
+    }
+
+    private void validateNumber(int number) {
+        checkArgument(number > -1);
+        checkArgument(number <= 6);
     }
 
     private static int[] orderNumbersFromLowToHigh(int highestNumber, int middleNumber, int lowestNumber) {
@@ -62,18 +69,6 @@ public class NumberCombination implements Comparable<NumberCombination> {
         } else {
             return false;
         }
-    }
-
-    public int getHighestNumber() {
-        return highestNumber;
-    }
-
-    public int getMiddleNumber() {
-        return middleNumber;
-    }
-
-    public int getLowestNumber() {
-        return lowestNumber;
     }
 
     /**
@@ -163,6 +158,11 @@ public class NumberCombination implements Comparable<NumberCombination> {
         return compareTo((NumberCombination) numberCombination) == 0;
     }
 
+    @Override
+    public int hashCode() {
+        return (highestNumber * 100) + (middleNumber * 10) + lowestNumber;
+    }
+
     /**
      * @param ncToCompare The NumberCombination object to compare.
      * @return
@@ -172,15 +172,7 @@ public class NumberCombination implements Comparable<NumberCombination> {
      */
     @Override
     public int compareTo(NumberCombination ncToCompare) {
-        if (highestNumber != ncToCompare.getHighestNumber()) {
-            return highestNumber - ncToCompare.getHighestNumber();
-        } else {
-            if (middleNumber != ncToCompare.getMiddleNumber()) {
-                return middleNumber - ncToCompare.getMiddleNumber();
-            } else {
-                return lowestNumber - ncToCompare.getLowestNumber();
-            }
-        }
+        return hashCode() - ncToCompare.hashCode();
     }
 
     @Override

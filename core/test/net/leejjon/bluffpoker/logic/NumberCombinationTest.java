@@ -5,7 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class NumberCombinationTest {
-//    @Test
+    @Test
     public void testCompareToCalls() throws net.leejjon.bluffpoker.logic.InputValidationException {
         NumberCombination call643 = NumberCombination.validNumberCombinationFrom("643");
         NumberCombination call634 = NumberCombination.validNumberCombinationFrom("634");
@@ -21,18 +21,29 @@ public class NumberCombinationTest {
         assertFalse(throw643.isGreaterThan(throw634));
 
         try {
-            NumberCombination callAbc = NumberCombination.validNumberCombinationFrom("abc");
+            NumberCombination.validNumberCombinationFrom("abc");
             fail("InputValidationException should have been thrown.");
-        } catch (InputValidationException e) {
-
-        }
+        } catch (InputValidationException e) { }
     }
 
-//    @Test
+    @Test
     public void testValidateNumberCombinationInput() {
         assertTrue(NumberCombination.validateNumberCombinationInput("643"));
         assertFalse(NumberCombination.validateNumberCombinationInput("781"));
         assertFalse(NumberCombination.validateNumberCombinationInput("abc"));
+    }
+
+    @Test
+    public void testValidateNumberCombinationConstructor() {
+        try {
+            new NumberCombination(7, 1, 1, false);
+            fail("Can't have anything higher than 6.");
+        } catch (IllegalArgumentException e) { }
+
+        try {
+            new NumberCombination(-1, 1, 1, false);
+            fail("Can't have numbers lower than 0.");
+        } catch (IllegalArgumentException e) { }
     }
 
     @Test
