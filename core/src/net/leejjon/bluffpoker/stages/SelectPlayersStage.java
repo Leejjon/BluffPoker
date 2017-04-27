@@ -11,6 +11,7 @@ import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.actors.BlackBoard;
 import net.leejjon.bluffpoker.assets.TextureKey;
 import net.leejjon.bluffpoker.dialogs.AddNewPlayerDialog;
+import net.leejjon.bluffpoker.dialogs.PlayersFromPhonebookDialog;
 import net.leejjon.bluffpoker.dialogs.WarningDialog;
 import net.leejjon.bluffpoker.interfaces.ContactsRequesterInterface;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
@@ -34,6 +35,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         playerNameInvalid = new WarningDialog("Player name empty or too long!", uiSkin);
         minimalTwoPlayersRequired = new WarningDialog("Select at least two players!", uiSkin);
         final AddNewPlayerDialog addNewPlayerDialog = new AddNewPlayerDialog(this);
+        final PlayersFromPhonebookDialog playersFromPhonebookDialog = new PlayersFromPhonebookDialog(uiSkin);
 
         players = new ArrayList<>();
 
@@ -110,7 +112,8 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         phonebook.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                contactsRequester.initiateSelectContacts(SelectPlayersStage.this);
+//                contactsRequester.initiateSelectContacts(SelectPlayersStage.this);
+                playersFromPhonebookDialog.show(SelectPlayersStage.this);
             }
         });
         TextButton startGame = new TextButton("Start game", uiSkin);

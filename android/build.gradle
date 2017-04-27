@@ -6,7 +6,7 @@ android {
         applicationId "net.leejjon.blufpoker.android"
         minSdkVersion 23
         targetSdkVersion 25
-        versionCode 15
+        versionCode 16
         versionName "2.0"
 
         jackOptions {
@@ -19,7 +19,7 @@ android {
         }
 
         testOptions {
-            // Currently have no Android speficic unit tests.
+            // Currently have no Android specific unit tests.
             unitTests.returnDefaultValues = true
         }
 

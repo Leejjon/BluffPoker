@@ -11,6 +11,14 @@ check-off
   orig: 14, 14
   offset: 0, 0
   index: -1
+check-off-big
+  rotate: false
+  xy: 77, 29
+  size: 22, 20
+  split: 5, 7, 2, 2
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
 textfield
   rotate: false
   xy: 11, 5
@@ -24,6 +32,14 @@ check-on
   xy: 125, 35
   size: 14, 14
   orig: 14, 14
+  offset: 0, 0
+  index: -1
+check-on-big
+  rotate: false
+  xy: 98, 7
+  size: 22, 20
+  split: 5, 7, 2, 2
+  orig: 20, 20
   offset: 0, 0
   index: -1
 cursor

@@ -7,9 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 import net.leejjon.bluffpoker.interfaces.UserInterface;
 
-/**
- * Created by Leejjon on 4-12-2015.
- */
 public class WinnerDialog extends Dialog {
     public WinnerDialog(final StageInterface stageListener, final UserInterface userInterface, Skin skin) {
         super("We have a winner!", skin);
