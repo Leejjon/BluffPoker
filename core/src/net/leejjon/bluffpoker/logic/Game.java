@@ -57,6 +57,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
     private static final String NOW_ENTER_YOUR_CALL = "Now enter your call ...";
     private static final String NOW_ENTER_YOUR_CALL_OR_THROW = "Now enter your call or throw ...";
     private static final String RIDING_ON_THE_BOK = " is riding on the bok";
+    private static final String WANTED_TO_PEEK_AFTER_ALL = " wanted to peek after all.";
 
 
     public Game(Cup cup, Dice leftDice, Dice middleDice, Dice rightDice, Sound diceRoll, UserInterface userInterface) {
@@ -326,10 +327,11 @@ public class Game implements GameInputInterface, GameStatusInterface {
             } else if (blindPass && !hasToThrow && !firstThrowSinceDeath) {
                 cup.unlock();
                 cup.believe();
-//                blindPass = false;
+
+                // Don't set blindPass to false, the player simply has to throw again and can call without watching and then it will be set to blind again.
                 hasToThrow = true;
                 userInterface.disableCallUserInterface();
-                userInterface.log(currentPlayer.getName() + " wanted to peek after all.");
+                userInterface.log(currentPlayer.getName() + WANTED_TO_PEEK_AFTER_ALL);
                 allowedToCall = false;
                 canViewOwnThrow = true;
 
@@ -379,7 +381,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
                 }
                 return true;
             } else {
-                throw new IllegalStateException("Shouldn't be able to come here.");
+                throw new IllegalStateException(String.format("Illegal state detected: blindPass=%b, hasThrown=%b, hasToThrow=%b, firstThrowSinceDeath=%b, allowedToBelieveOrNotBelieve=%b", blindPass, hasThrown, hasToThrow, firstThrowSinceDeath, allowedToBelieveOrNotBelieve));
             }
         }
         return false;

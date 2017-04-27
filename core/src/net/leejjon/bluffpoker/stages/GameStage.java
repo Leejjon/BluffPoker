@@ -46,6 +46,13 @@ public class GameStage extends AbstractStage implements UserInterface {
     private ClickableLabel autoButton;
     private ClickableLabel callButton;
 
+    private static final String THROW_AT_LEAST_ONE_DICE = "Throw at least one dice!";
+    private static final String THROW_WITH_ALL_DICES = "Throw with all dices!";
+    private static final String AUTO_BUTTON_LABEL = "Auto";
+    private static final String CALL_BUTTON_LABEL = "Call";
+    private static final String TAG = "bluffpoker";
+    private static final String COULD_NOT_THROW_BECAUSE_CUP_IS_MOVING = "Could not throw. Cup moving: '%b Cup is open : %b";
+
     private boolean autoButtonPressed = false;
 
     public GameStage(Skin uiSkin, final StageInterface stageInterface) {
@@ -62,8 +69,8 @@ public class GameStage extends AbstractStage implements UserInterface {
 
         callTooLowDialog = new CallTooLowDialog(uiSkin);
         callNotThreeIdenticalNumbersDialog = new CallNotThreeIdenticalNumbersDialog(uiSkin);
-        throwAtLeastOneDice = new WarningDialog("Throw at least one dice!", uiSkin);
-        throwAllDices = new WarningDialog("Throw with all dices!", uiSkin);
+        throwAtLeastOneDice = new WarningDialog(THROW_AT_LEAST_ONE_DICE, uiSkin);
+        throwAllDices = new WarningDialog(THROW_WITH_ALL_DICES, uiSkin);
         winnerDialog = new WinnerDialog(stageInterface, this, uiSkin);
 
         Table topTable = new Table();
@@ -79,7 +86,7 @@ public class GameStage extends AbstractStage implements UserInterface {
         topTable.add(callInputField).pad(padding).padTop(padding * 2).colspan(2).center();
         topTable.row();
 
-        autoButton = new ClickableLabel("Auto", uiSkin);
+        autoButton = new ClickableLabel(AUTO_BUTTON_LABEL, uiSkin);
         autoButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -88,7 +95,7 @@ public class GameStage extends AbstractStage implements UserInterface {
         });
         autoButton.setDisabled(true);
 
-        callButton = new ClickableLabel("Call", uiSkin);
+        callButton = new ClickableLabel(CALL_BUTTON_LABEL, uiSkin);
         callButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -108,9 +115,10 @@ public class GameStage extends AbstractStage implements UserInterface {
         topTable.add(callButton).width(callButton.getWidth() + (extraClickableSpace*2)).height(callButton.getHeight() + extraClickableSpace).colspan(1).right();
 
         // Font used in console is Microsoft JingHei
-        thirdLatestOutputLabel = new Label("", uiSkin,"console", Color.BLACK);
-        secondLatestOutputLabel = new Label("", uiSkin,"console", Color.BLACK);
-        latestOutputLabel = new Label("", uiSkin,"console", Color.BLACK);
+        final String console = "console";
+        thirdLatestOutputLabel = new Label("", uiSkin, console, Color.BLACK);
+        secondLatestOutputLabel = new Label("", uiSkin, console, Color.BLACK);
+        latestOutputLabel = new Label("", uiSkin, console, Color.BLACK);
 
         table.left();
         table.bottom();
@@ -245,7 +253,7 @@ public class GameStage extends AbstractStage implements UserInterface {
                 }
             }
         } else {
-            Gdx.app.log("bluffpoker", "Could not throw. Cup moving: " + cup.isMoving() + " Cup is open : " + (cup.isWatchingOwnThrow() | cup.isBelieving()));
+            Gdx.app.log(TAG, String.format(COULD_NOT_THROW_BECAUSE_CUP_IS_MOVING, cup.isMoving(), (cup.isWatchingOwnThrow() | cup.isBelieving())));
         }
     }
 
