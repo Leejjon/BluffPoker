@@ -1,8 +1,6 @@
 package net.leejjon.bluffpoker.android;
 
-import java.util.Collection;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -201,7 +199,7 @@ public class AndroidLauncher extends FragmentActivity implements AndroidFragment
 
         @Override
         public Collection<String> getAllPhonebookContacts() {
-            return null;
+            return Arrays.asList("Richard","Jaimy");
         }
 
         @Override

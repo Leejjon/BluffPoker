@@ -35,7 +35,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         playerNameInvalid = new WarningDialog("Player name empty or too long!", uiSkin);
         minimalTwoPlayersRequired = new WarningDialog("Select at least two players!", uiSkin);
         final AddNewPlayerDialog addNewPlayerDialog = new AddNewPlayerDialog(this);
-        final PlayersFromPhonebookDialog playersFromPhonebookDialog = new PlayersFromPhonebookDialog(uiSkin);
+        final PlayersFromPhonebookDialog playersFromPhonebookDialog = new PlayersFromPhonebookDialog(uiSkin, this, contactsRequester);
 
         players = new ArrayList<>();
 
