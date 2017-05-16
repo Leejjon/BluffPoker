@@ -1,5 +1,6 @@
 package net.leejjon.bluffpoker.listener;
 
 public interface ModifyPlayerListener {
-	void addNewPlayer(String ... playerNames);
+	void addContactsToGame(String ... playerNames);
+	void selectFromPhoneBook(String ... phoneBookContactNames);
 }

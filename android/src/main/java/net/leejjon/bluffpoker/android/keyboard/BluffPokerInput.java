@@ -28,68 +28,74 @@ public class BluffPokerInput extends AndroidInputThreePlus {
     }
 
     @Override
-    public void getTextInput(TextInputListener listener, String title, String text, String hint) {
-        handle.post(() -> {
-            AlertDialog.Builder alert = new AlertDialog.Builder(context);
-            alert.setTitle(title);
-            final EditText input = new EditText(context);
+    public void getTextInput(final TextInputListener listener, final String title, final String text, final String hint) {
+        handle.post(new Runnable() {
+            @Override
+            public void run() {
+                AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                alert.setTitle(title);
+                final EditText input = new EditText(context);
 
-            // I abuse the title text to detect if number input is needed.
-            if (title.equals(CallInputDialog.ENTER_YOUR_CALL)) {
-                input.setFilters(new InputFilter[]{new NumberCombinationInputFilter()});
-                input.setInputType(InputType.TYPE_CLASS_PHONE);
-            } else {
-                input.setFilters(new InputFilter[]{new PlayerNameInputFilter()});
+                // I abuse the title text to detect if number input is needed.
+                if (title.equals(CallInputDialog.ENTER_YOUR_CALL)) {
+                    input.setFilters(new InputFilter[]{new NumberCombinationInputFilter()});
+                    input.setInputType(InputType.TYPE_CLASS_PHONE);
+                } else {
+                    input.setFilters(new InputFilter[]{new PlayerNameInputFilter()});
+                }
+                input.setHint(hint);
+
+                // Instead of just setting the text, we first add an empty String.
+                input.setText("");
+
+                // And then we append our value so the cursor will be at the end.
+                input.append(text);
+
+                input.setSingleLine();
+
+                // Open the keyboard when the EditText is finished loading.
+                input.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        InputMethodManager manager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        manager.showSoftInput(input, 0);
+                    }
+                });
+
+                alert.setView(input);
+                alert.setPositiveButton(context.getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                listener.input(input.getText().toString());
+                            }
+                        });
+                    }
+                });
+                alert.setNegativeButton(context.getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                listener.canceled();
+                            }
+                        });
+                    }
+                });
+                alert.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface arg0) {
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                listener.canceled();
+                            }
+                        });
+                    }
+                });
+                alert.show();
             }
-            input.setHint(hint);
-
-            // Instead of just setting the text, we first add an empty String.
-            input.setText("");
-
-            // And then we append our value so the cursor will be at the end.
-            input.append(text);
-
-            input.setSingleLine();
-
-            // Open the keyboard when the EditText is finished loading.
-            input.post(() -> {
-                InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                manager.showSoftInput(input,0);
-            });
-
-            alert.setView(input);
-            alert.setPositiveButton(context.getString(android.R.string.ok), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    Gdx.app.postRunnable(new Runnable() {
-                        @Override
-                        public void run() {
-                            listener.input(input.getText().toString());
-                        }
-                    });
-                }
-            });
-            alert.setNegativeButton(context.getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    Gdx.app.postRunnable(new Runnable() {
-                        @Override
-                        public void run() {
-                            listener.canceled();
-                        }
-                    });
-                }
-            });
-            alert.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface arg0) {
-                    Gdx.app.postRunnable(new Runnable() {
-                        @Override
-                        public void run() {
-                            listener.canceled();
-                        }
-                    });
-                }
-            });
-            alert.show();
         });
     }
 }

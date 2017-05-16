@@ -19,6 +19,7 @@ import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.TreeSet;
 
 public class SelectPlayersStage extends AbstractStage implements ModifyPlayerListener {
     private java.util.List<String> players;
@@ -27,15 +28,16 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
     private WarningDialog playerAlreadyExistsWarning;
     private WarningDialog playerNameInvalid;
     private WarningDialog minimalTwoPlayersRequired;
+    private final PlayersFromPhonebookDialog playersFromPhonebookDialog;
 
-    public SelectPlayersStage(Skin uiSkin, final StageInterface stageInterface, ContactsRequesterInterface contactsRequester) {
+    public SelectPlayersStage(Skin uiSkin, final StageInterface stageInterface, final ContactsRequesterInterface contactsRequester) {
         super(false);
 
         playerAlreadyExistsWarning = new WarningDialog(uiSkin);
         playerNameInvalid = new WarningDialog("Player name empty or too long!", uiSkin);
         minimalTwoPlayersRequired = new WarningDialog("Select at least two players!", uiSkin);
         final AddNewPlayerDialog addNewPlayerDialog = new AddNewPlayerDialog(this);
-        final PlayersFromPhonebookDialog playersFromPhonebookDialog = new PlayersFromPhonebookDialog(uiSkin, this, contactsRequester);
+        playersFromPhonebookDialog = new PlayersFromPhonebookDialog(uiSkin, this);
 
         players = new ArrayList<>();
 
@@ -112,8 +114,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         phonebook.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-//                contactsRequester.initiateSelectContacts(SelectPlayersStage.this);
-                playersFromPhonebookDialog.show(SelectPlayersStage.this);
+                contactsRequester.initiateSelectContacts(SelectPlayersStage.this, new TreeSet<>(players));
             }
         });
         TextButton startGame = new TextButton("Start game", uiSkin);
@@ -164,8 +165,31 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         }
     }
 
-    @Override
-    public void addNewPlayer(String ... playerNames) {
+    private void swapPlayerUp() {
+        int selectedIndex = playerList.getSelectedIndex();
+        if (selectedIndex > 0) {
+            Collections.swap(players, selectedIndex, selectedIndex - 1);
+            playerList.setItems(players.toArray(new String[players.size()]));
+        }
+    }
+
+    private void swapPlayerDown() {
+        int selectedIndex = playerList.getSelectedIndex();
+        if (selectedIndex > -1 && selectedIndex < players.size() - 1 && players.size() > 1) {
+            Collections.swap(players, selectedIndex, selectedIndex + 1);
+            playerList.setItems(players.toArray(new String[players.size()]));
+        }
+    }
+
+    private void removeSelectedPlayer() {
+        String selectedPlayer = playerList.getSelected();
+        if (selectedPlayer != null) {
+            players.remove(selectedPlayer);
+            playerList.setItems(players.toArray(new String[players.size()]));
+        }
+    }
+
+    private void addPlayersToGame(String ... playerNames) {
         final int maxNameLength = 16;
 
         for (String playerName : playerNames) {
@@ -192,27 +216,14 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         playerList.setItems(players.toArray(new String[players.size()]));
     }
 
-    private void swapPlayerUp() {
-        int selectedIndex = playerList.getSelectedIndex();
-        if (selectedIndex > 0) {
-            Collections.swap(players, selectedIndex, selectedIndex - 1);
-            playerList.setItems(players.toArray(new String[players.size()]));
-        }
+    @Override
+    public void addContactsToGame(String... playerNames) {
+        addPlayersToGame(playerNames);
     }
 
-    private void swapPlayerDown() {
-        int selectedIndex = playerList.getSelectedIndex();
-        if (selectedIndex > -1 && selectedIndex < players.size() - 1 && players.size() > 1) {
-            Collections.swap(players, selectedIndex, selectedIndex + 1);
-            playerList.setItems(players.toArray(new String[players.size()]));
-        }
-    }
-
-    private void removeSelectedPlayer() {
-        String selectedPlayer = playerList.getSelected();
-        if (selectedPlayer != null) {
-            players.remove(selectedPlayer);
-            playerList.setItems(players.toArray(new String[players.size()]));
-        }
+    @Override
+    public void selectFromPhoneBook(String... phoneBookContactNames) {
+        playersFromPhonebookDialog.show(this);
+        playersFromPhonebookDialog.addNewPlayer(phoneBookContactNames);
     }
 }

@@ -21,17 +21,17 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name="com.onegravity.contactpicker.core.ContactPickerActivity"
-            android:enabled="true"
-            android:exported="false"
-            android:theme="@style/ContactPicker_Theme_Dark">
+        <!--<activity-->
+            <!--android:name="com.onegravity.contactpicker.core.ContactPickerActivity"-->
+            <!--android:enabled="true"-->
+            <!--android:exported="false"-->
+            <!--android:theme="@style/ContactPicker_Theme_Dark">-->
 
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
-        </activity>
+            <!--<intent-filter>-->
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+                <!--<category android:name="android.intent.category.BROWSABLE" />-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
     </application>
 
 </manifest>

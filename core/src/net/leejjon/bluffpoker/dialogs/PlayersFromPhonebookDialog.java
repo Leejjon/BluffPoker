@@ -5,7 +5,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.leejjon.bluffpoker.BluffPokerGame;
-import net.leejjon.bluffpoker.interfaces.ContactsRequesterInterface;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
 
 import java.util.HashMap;
@@ -15,24 +14,19 @@ import java.util.Set;
 
 public class PlayersFromPhonebookDialog extends Dialog {
     private Map<String, CheckBox> players = new HashMap<>();
+    private Table checkBoxPerPhonebookEntryTable;
+    private Skin uiSkin;
 
-    public PlayersFromPhonebookDialog(Skin uiSkin, ModifyPlayerListener modifyPlayers, ContactsRequesterInterface contactsRequester) {
+    public PlayersFromPhonebookDialog(Skin uiSkin, final ModifyPlayerListener playerListener) {
         super("Select players from phonebook", uiSkin, "dialog");
+        this.uiSkin = uiSkin;
 
         Table contentTable = getContentTable();
         contentTable.center();
 
-        Table checkBoxPerPhonebookEntryTable = new Table();
+        checkBoxPerPhonebookEntryTable = new Table();
         checkBoxPerPhonebookEntryTable.top();
         checkBoxPerPhonebookEntryTable.left();
-
-        for (String contact : contactsRequester.getAllPhonebookContacts()) {
-            CheckBox checkBox = new CheckBox(contact, uiSkin, "big");
-            checkBox.setChecked(false);
-            players.put(contact, checkBox);
-            checkBoxPerPhonebookEntryTable.add(checkBox).left();
-            checkBoxPerPhonebookEntryTable.row();
-        }
 
         ScrollPane playersScrollPane = new ScrollPane(checkBoxPerPhonebookEntryTable, uiSkin);
 
@@ -51,12 +45,29 @@ public class PlayersFromPhonebookDialog extends Dialog {
                         playerNames.add(player.getKey());
                     }
                 }
-                modifyPlayers.addNewPlayer(playerNames.toArray(new String[playerNames.size()]));
+                playerListener.addContactsToGame(playerNames.toArray(new String[playerNames.size()]));
             }
         });
         button(add);
         button(new TextButton("Cancel", uiSkin));
 
         contentTable.row().padBottom(10f);
+    }
+
+    public void addNewPlayer(String... playerNames) {
+        for (CheckBox box : players.values()) {
+            checkBoxPerPhonebookEntryTable.removeActor(box);
+        }
+        players.clear();
+
+        for (String playerName : playerNames) {
+            if (!players.containsKey(playerName)) {
+                CheckBox checkBox = new CheckBox(playerName, uiSkin, "big");
+                checkBox.setChecked(false);
+                players.put(playerName, checkBox);
+                checkBoxPerPhonebookEntryTable.add(checkBox).left();
+                checkBoxPerPhonebookEntryTable.row();
+            }
+        }
     }
 }

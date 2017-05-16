@@ -9,7 +9,5 @@ public interface ContactsRequesterInterface {
     // TODO: Use Optional when everyone uses Android 7 and move default name to core.
     String getDeviceOwnerName();
 
-    Collection<String> getAllPhonebookContacts();
-
-    void initiateSelectContacts(ModifyPlayerListener listener);
+    void initiateSelectContacts(ModifyPlayerListener listener, Set<String> alreadyExistingPlayers);
 }

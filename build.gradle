@@ -35,6 +35,8 @@ project(":android") {
 
     dependencies {
         compile 'com.1gravity:android-contactpicker:1.2.1'
+//        compile "com.android.support:support-v4:+"
+//    compile "com.android.support:appcompat-v7:+"
         compile project(":core")
         compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"

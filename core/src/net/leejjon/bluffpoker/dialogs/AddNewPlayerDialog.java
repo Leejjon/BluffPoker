@@ -13,7 +13,7 @@ public class AddNewPlayerDialog implements TextInputListener {
 	
 	@Override
 	public void input(String playerName) {
-		listener.addNewPlayer(playerName);
+		listener.addContactsToGame(playerName);
 	}
 
 	@Override

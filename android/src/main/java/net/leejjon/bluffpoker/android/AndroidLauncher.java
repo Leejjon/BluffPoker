@@ -5,12 +5,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.Point;
+import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
@@ -22,11 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
-import com.onegravity.contactpicker.contact.Contact;
-import com.onegravity.contactpicker.contact.ContactDescription;
-import com.onegravity.contactpicker.contact.ContactSortOrder;
-import com.onegravity.contactpicker.core.ContactPickerActivity;
-import com.onegravity.contactpicker.picture.ContactPictureType;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -67,6 +61,7 @@ public class AndroidLauncher extends FragmentActivity implements AndroidFragment
 
 
         private ModifyPlayerListener playerModifier = null;
+        private Set<String> alreadyExistingPlayers = new TreeSet<>();
         private AtomicLong lastUpdate;
         private AtomicInteger numberOfTimesShaked = new AtomicInteger(0);
         private volatile float last_x, last_y, last_z;
@@ -198,12 +193,8 @@ public class AndroidLauncher extends FragmentActivity implements AndroidFragment
         }
 
         @Override
-        public Collection<String> getAllPhonebookContacts() {
-            return Arrays.asList("Richard","Jaimy");
-        }
-
-        @Override
-        public void initiateSelectContacts(ModifyPlayerListener playerModifier) {
+        public void initiateSelectContacts(ModifyPlayerListener playerModifier, Set<String> alreadyExistingPlayers) {
+            this.alreadyExistingPlayers = alreadyExistingPlayers;
             if (this.playerModifier == null) {
                 this.playerModifier = playerModifier;
             }
@@ -217,32 +208,26 @@ public class AndroidLauncher extends FragmentActivity implements AndroidFragment
         }
 
         public void startSelectingContacts() {
-            Intent intent = new Intent(getActivity(), ContactPickerActivity.class)
-                    .putExtra(ContactPickerActivity.EXTRA_THEME, R.style.ContactPicker_Theme_Dark)
-                    .putExtra(ContactPickerActivity.EXTRA_CONTACT_BADGE_TYPE, ContactPictureType.ROUND.name())
-                    .putExtra(ContactPickerActivity.EXTRA_SHOW_CHECK_ALL, true)
-                    .putExtra(ContactPickerActivity.EXTRA_CONTACT_DESCRIPTION, ContactDescription.ADDRESS.name())
-                    .putExtra(ContactPickerActivity.EXTRA_CONTACT_DESCRIPTION_TYPE, ContactsContract.CommonDataKinds.Email.TYPE_WORK)
-                    .putExtra(ContactPickerActivity.EXTRA_CONTACT_SORT_ORDER, ContactSortOrder.AUTOMATIC.name());
-            startActivityForResult(intent, SELECT_CONTACTS);
-        }
-
-        @Override
-        public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            super.onActivityResult(requestCode, resultCode, data);
-
+            playerModifier.selectFromPhoneBook();
             if (playerModifier != null) {
-                if (requestCode == SELECT_CONTACTS && resultCode == Activity.RESULT_OK &&
-                        data != null && data.hasExtra(ContactPickerActivity.RESULT_CONTACT_DATA)) {
-                    java.util.List<Contact> contacts = (java.util.List<Contact>) data.getSerializableExtra(ContactPickerActivity.RESULT_CONTACT_DATA);
+                Set<String> players = new TreeSet<>();
 
-                    Set<String> players = new TreeSet<>();
-                    for (Contact contact : contacts) {
-                        // TODO: Figure out if we can trust the first/last name.
-                        players.add(contact.getDisplayName());
+                Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+                String[] projection = new String[] {ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME};
+
+                try (Cursor contacts = getActivity().getApplication().getContentResolver().query(uri, projection, null, null, null)) {
+                    final int indexName = contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+                    if (contacts.moveToFirst()) {
+                        do {
+                            String name = contacts.getString(indexName);
+                            if (!players.contains(name) && !alreadyExistingPlayers.contains(name)) {
+                                players.add(name);
+                            }
+                        } while (contacts.moveToNext());
                     }
-                    playerModifier.addNewPlayer(players.toArray(new String[players.size()]));
                 }
+
+                playerModifier.selectFromPhoneBook(players.toArray(new String[players.size()]));
             }
         }
     }
