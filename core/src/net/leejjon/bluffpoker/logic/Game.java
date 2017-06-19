@@ -13,6 +13,7 @@ import net.leejjon.bluffpoker.interfaces.GameInputInterface;
 import java.util.List;
 
 public class Game implements GameInputInterface, GameStatusInterface {
+    private State state;
     private UserInterface userInterface;
     private Settings settings;
     private List<String> originalPlayers;

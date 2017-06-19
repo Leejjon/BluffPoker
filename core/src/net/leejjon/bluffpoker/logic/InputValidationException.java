@@ -1,8 +1,6 @@
 package net.leejjon.bluffpoker.logic;
 
-import java.io.IOException;
-
-public class InputValidationException extends IOException {
+public class InputValidationException extends Exception {
     private String message;
 
     public InputValidationException(String message) {

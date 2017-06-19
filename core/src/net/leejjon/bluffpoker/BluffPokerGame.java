@@ -9,7 +9,9 @@ import net.leejjon.bluffpoker.assets.TextureKey;
 import net.leejjon.bluffpoker.interfaces.ContactsRequesterInterface;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 import net.leejjon.bluffpoker.listener.PhoneInputListener;
+import net.leejjon.bluffpoker.logic.BluffPokerPreferences;
 import net.leejjon.bluffpoker.logic.Settings;
+import net.leejjon.bluffpoker.logic.State;
 import net.leejjon.bluffpoker.stages.*;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -20,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class BluffPokerGame extends ApplicationAdapter implements
         StageInterface, PhoneInputListener {
+    private State state;
     private Skin uiSkin;
     private Settings settings = new Settings();
 
@@ -34,7 +37,7 @@ public class BluffPokerGame extends ApplicationAdapter implements
 
     private static int divideScreenByThis;
 
-    public BluffPokerGame(ContactsRequesterInterface contactsRequester, int divideScreenByThis) {
+    public BluffPokerGame(ContactsRequesterInterface contactsRequester, int divideScreenByThis, BluffPokerPreferences preferences) {
         this.contactsRequester = contactsRequester;
         this.divideScreenByThis = divideScreenByThis;
     }
