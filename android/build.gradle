@@ -4,19 +4,19 @@ android {
 
     defaultConfig {
         applicationId "net.leejjon.blufpoker.android"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 25
-        versionCode 16
+        versionCode 17
         versionName "2.0"
 
-//        jackOptions {
-//            enabled true
-//        }
-//
-//        compileOptions {
-//            sourceCompatibility JavaVersion.VERSION_1_8
-//            targetCompatibility JavaVersion.VERSION_1_8
-//        }
+        jackOptions {
+            enabled true
+        }
+
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
 
         testOptions {
             // Currently have no Android specific unit tests.

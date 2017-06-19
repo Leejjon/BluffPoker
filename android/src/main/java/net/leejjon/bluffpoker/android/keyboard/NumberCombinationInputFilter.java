@@ -1,10 +1,7 @@
 package net.leejjon.bluffpoker.android.keyboard;
 
 import android.text.InputFilter;
-import android.text.Spannable;
 import android.text.Spanned;
-import android.text.TextUtils;
-import net.leejjon.bluffpoker.logic.NumberCombination;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

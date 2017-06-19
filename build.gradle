@@ -1,11 +1,12 @@
 buildscript {
     repositories {
         mavenCentral()
+        mavenLocal()
         jcenter()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'net.leejjon.gradle:leejjon-gradle-plugin:1.0.0-SNAPSHOT'
     }
 }
 
@@ -23,20 +24,17 @@ allprojects {
 
     repositories {
         mavenCentral()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        mavenLocal()
     }
 }
 
 project(":android") {
     apply plugin: "android"
+    apply plugin: "net.leejjon.gradle.plugin"
 
     configurations { natives }
 
     dependencies {
-        compile 'com.1gravity:android-contactpicker:1.2.1'
-//        compile "com.android.support:support-v4:+"
-//    compile "com.android.support:appcompat-v7:+"
         compile project(":core")
         compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
@@ -66,4 +64,4 @@ project(":core") {
     }
 }
 
-task createWrapper(type: Wrapper) { gradleVersion = "3.3" }
+task createWrapper(type: Wrapper) { gradleVersion = "3.5" }
