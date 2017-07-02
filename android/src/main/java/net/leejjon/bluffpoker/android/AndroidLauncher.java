@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
@@ -54,13 +55,7 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
         sensorManager.registerListener(this, acceleroSensor,
                 SensorManager.SENSOR_DELAY_NORMAL);
 
-        /*
-         * We are not going to ask the user for phonebook permissions on the first run just to load his own name,
-         * as that might scare users off. If during the selection of players clicks the phonebook button,
-         * we will request for contact access. The next time the app is run, we have access and will preload
-         * the device owners name.
-         */
-        game = new BluffPokerGame(this, getZoomFactor(), new BluffPokerAndroidPrerefences(getSharedPreferences("bluffPokerPreferences", Context.MODE_PRIVATE)));
+        game = new BluffPokerGame(this, getZoomFactor());
 
         initialize(game, config);
 
