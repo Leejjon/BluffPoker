@@ -1,9 +1,9 @@
-package net.leejjon.bluffpoker;
+package com.mygdx.game;
 
 import com.badlogic.gdx.backends.iosmoe.IOSApplication;
 import com.badlogic.gdx.backends.iosmoe.IOSApplicationConfiguration;
 import org.moe.natj.general.Pointer;
-import com.mygdx.game.MyGdxGame;
+import net.leejjon.bluffpoker.MyGdxGame;
 
 import apple.uikit.c.UIKit;
 
