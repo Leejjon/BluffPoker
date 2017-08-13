@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import net.leejjon.bluffpoker.MyGdxGame;
 import net.leejjon.bluffpoker.android.keyboard.BluffPokerInput;
 import net.leejjon.bluffpoker.interfaces.ContactsRequesterInterface;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
@@ -58,6 +59,7 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
         game = new BluffPokerGame(this, getZoomFactor());
 
         initialize(game, config);
+//        initialize(new MyGdxGame(), config);
 
         input = new BluffPokerInput(this, this, graphics.getView(), config);
     }

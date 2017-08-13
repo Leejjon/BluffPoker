@@ -8,11 +8,11 @@ import android.text.InputFilter;
 import android.text.InputType;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.badlogic.gdx.backends.android.AndroidGraphics;
 import com.badlogic.gdx.backends.android.AndroidInputThreePlus;
 import net.leejjon.bluffpoker.dialogs.CallInputDialog;
 
@@ -58,11 +58,6 @@ public class BluffPokerInput extends AndroidInputThreePlus {
             });
 
             alert.setView(input);
-            alert.setPositiveButton(context.getString(android.R.string.ok), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    Gdx.app.postRunnable(() -> listener.input(input.getText().toString()));
-                }
-            });
             alert.setNegativeButton(context.getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     Gdx.app.postRunnable(() -> listener.canceled());
@@ -74,7 +69,42 @@ public class BluffPokerInput extends AndroidInputThreePlus {
                     Gdx.app.postRunnable(() -> listener.canceled());
                 }
             });
-            alert.show();
+
+            // Pressing the "ok" button requires some explanation.
+            // Normally you'd create a positive button with a onClick listener like this:
+            // We use this code for entering the player names.
+            alert.setPositiveButton(context.getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    returnInputText(listener, input.getText().toString());
+                }
+            });
+
+            // However, this way the "ok" button always closes the window.
+            // So if you added an EditText input like I did, it will always pass the input.
+            // Character filtering for the inputs should be done in an InputFilter, and I do that in the NumberCombinationInputFilter.java and PlayerNameInputfilter.java filters.
+            // That filtering happens when typing. Since you're typing your input, I cannot start filtering on length yet. That can only happen after "ok" has been pressed.
+
+            // So after creating this dialog....
+            AlertDialog alertDialog = alert.show();
+
+            if (title.equals(CallInputDialog.ENTER_YOUR_CALL)) {
+                // We retrieve the okButton.
+                Button okButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                // And override it's onClickListener and add some validation. In this listener we are able to dismiss the dialog or not.
+                okButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (input.getText().length() == 3) {
+                            returnInputText(listener, input.getText().toString());
+                            alertDialog.dismiss();
+                        }
+                    }
+                });
+            }
         });
+    }
+
+    private void returnInputText(TextInputListener listener, String validatedText) {
+        Gdx.app.postRunnable(() -> listener.input(validatedText));
     }
 }
