@@ -214,7 +214,7 @@
 			dependencies = (
 			);
 			name = "ios-moe";
-			productName = "ios-moe";
+			productName = "Bluff Poker";
 			productReference = 58C6F5241DA66CB600309CB6 /* my-gdx-game.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -526,7 +526,7 @@
 					"$(LIBGDX_NATIVES)",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.leejjon.multi.os.engine.test;
-				PRODUCT_NAME = "my-gdx-game";
+				PRODUCT_NAME = "Bluff Poker";
 				STRIP_STYLE = "non-global";
 			};
 			name = Debug;
@@ -563,7 +563,7 @@
 					"$(LIBGDX_NATIVES)",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.leejjon.multi.os.engine.test;
-				PRODUCT_NAME = "my-gdx-game";
+				PRODUCT_NAME = "Bluff Poker";
 				STRIP_STYLE = "non-global";
 			};
 			name = Release;

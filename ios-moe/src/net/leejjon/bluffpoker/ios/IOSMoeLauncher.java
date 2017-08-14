@@ -1,9 +1,5 @@
-package com.mygdx.game;
+package net.leejjon.bluffpoker.ios;
 
-import apple.coremotion.CMAccelerometerData;
-import apple.coremotion.CMMotionManager;
-import apple.foundation.NSError;
-import apple.foundation.NSOperationQueue;
 import com.badlogic.gdx.backends.iosmoe.IOSApplication;
 import com.badlogic.gdx.backends.iosmoe.IOSApplicationConfiguration;
 import net.leejjon.bluffpoker.BluffPokerGame;
