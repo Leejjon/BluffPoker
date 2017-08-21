@@ -5,8 +5,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import android.Manifest;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
@@ -25,7 +23,6 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import net.leejjon.bluffpoker.MyGdxGame;
 import net.leejjon.bluffpoker.android.keyboard.BluffPokerInput;
 import net.leejjon.bluffpoker.interfaces.ContactsRequesterInterface;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
