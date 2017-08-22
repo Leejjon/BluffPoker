@@ -16,12 +16,12 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidInputThreePlus;
 import net.leejjon.bluffpoker.dialogs.CallInputDialog;
 
-public class BluffPokerInput extends AndroidInputThreePlus {
+public class BluffPokerAndroidInput extends AndroidInputThreePlus {
     // Cant use the handle of the superclass because they made it private :(
     private Handler handle;
     private final Context context;
 
-    public BluffPokerInput(Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
+    public BluffPokerAndroidInput(Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
         super(activity, context, view, config);
         this.context = context;
         handle = new Handler();

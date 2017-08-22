@@ -525,7 +525,7 @@
 					"${MOE_OTHER_LDFLAGS}",
 					"$(LIBGDX_NATIVES)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = net.leejjon.multi.os.engine.test;
+				PRODUCT_BUNDLE_IDENTIFIER = net.leejjon.bluffpoker;
 				PRODUCT_NAME = "Bluff Poker";
 				STRIP_STYLE = "non-global";
 			};
@@ -562,7 +562,7 @@
 					"${MOE_OTHER_LDFLAGS}",
 					"$(LIBGDX_NATIVES)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = net.leejjon.multi.os.engine.test;
+				PRODUCT_BUNDLE_IDENTIFIER = net.leejjon.bluffpoker;
 				PRODUCT_NAME = "Bluff Poker";
 				STRIP_STYLE = "non-global";
 			};

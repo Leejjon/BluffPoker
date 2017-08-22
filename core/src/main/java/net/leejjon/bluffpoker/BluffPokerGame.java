@@ -146,7 +146,7 @@ public class BluffPokerGame extends ApplicationAdapter implements
                 gameStage.shake();
             }
         } catch (NullPointerException e) {
-            Gdx.app.log("BLUFFPOKER", "GameStage is null, why??", e);
+            Gdx.app.log("bluffpoker", "GameStage is null, why??", e);
         }
     }
 
