@@ -32,7 +32,7 @@ task copyNatives << {
 }
 
 sourceSets.main.java.srcDirs = [ "src/" ]
-sourceSets.main.resources.srcDirs = [ file("../android/src/main/assets") ]
+//sourceSets.main.resources.srcDirs = [ file("../android/src/main/assets") ]
 
 // Setup Multi-OS Engine
 moe {

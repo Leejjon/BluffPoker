@@ -33,8 +33,8 @@ public class IOSMoeLauncher extends IOSApplication.Delegate implements ContactsR
         IOSApplicationConfiguration config = new IOSApplicationConfiguration();
         config.useAccelerometer = false; // We put it on false so libgdx thinks it's not used. We actually do use it in the BluffPokerIOSApplication.java.
 
-        bluffPokerGame = new BluffPokerGame(this,2);
-//        MyGdxGame game = new MyGdxGame();
+//        bluffPokerGame = new BluffPokerGame(this,2);
+        MyGdxGame bluffPokerGame = new MyGdxGame();
         bluffPokerIOSApplication = new BluffPokerIOSApplication(bluffPokerGame, config);
         return bluffPokerIOSApplication;
     }
@@ -42,7 +42,7 @@ public class IOSMoeLauncher extends IOSApplication.Delegate implements ContactsR
     @Override
     public boolean applicationDidFinishLaunchingWithOptions (UIApplication application, NSDictionary<?, ?> launchOptions) {
         boolean launch = super.applicationDidFinishLaunchingWithOptions(application, launchOptions);
-        bluffPokerIOSApplication.overwriteInput(bluffPokerGame);
+//        bluffPokerIOSApplication.overwriteInput(bluffPokerGame);
         return launch;
     }
 
