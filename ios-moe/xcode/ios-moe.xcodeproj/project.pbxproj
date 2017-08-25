@@ -29,7 +29,7 @@
 		581773AB1E37A2DB004E28A9 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 581773A41E37A2DB004E28A9 /* OpenGLES.framework */; };
 		581773AC1E37A2DB004E28A9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 581773A51E37A2DB004E28A9 /* QuartzCore.framework */; };
 		581773AE1E37A7EF004E28A9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 581773AD1E37A7EF004E28A9 /* UIKit.framework */; };
-		D08581C81F4E231A00620DB9 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = D08581C71F4E231A00620DB9 /* assets */; };
+		D01BA1EB1F50A8DD0066B137 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = D01BA1EA1F50A8DD0066B137 /* assets */; };
 		FBEA51B59EBAFE3DD6CB65EB /* moe-main-interfaces.m in Sources */ = {isa = PBXBuildFile; fileRef = BF140766C410C641636C918B /* moe-main-interfaces.m */; };
 /* End PBXBuildFile section */
 
@@ -62,7 +62,7 @@
 		58C6F5381DA66CB600309CB6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8084D1F0A307440EC73CBFCA /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		BF140766C410C641636C918B /* moe-main-interfaces.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "moe-main-interfaces.m"; path = "../build/moe/main/ui-headers/moe-main-interfaces.m"; sourceTree = "<group>"; };
-		D08581C71F4E231A00620DB9 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = "<group>"; };
+		D01BA1EA1F50A8DD0066B137 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../../android/src/main/assets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +126,7 @@
 		58C6F51B1DA66CB600309CB6 = {
 			isa = PBXGroup;
 			children = (
+				D01BA1EA1F50A8DD0066B137 /* assets */,
 				58C6F5261DA66CB600309CB6 /* ios-moe */,
 				5863B87C1DA682C800E46B6A /* ios-moe-Test */,
 				58C6F5251DA66CB600309CB6 /* Products */,
@@ -146,7 +147,6 @@
 		58C6F5261DA66CB600309CB6 /* ios-moe */ = {
 			isa = PBXGroup;
 			children = (
-				D08581C71F4E231A00620DB9 /* assets */,
 				58C6F5381DA66CB600309CB6 /* Info.plist */,
 				581773851E37A0F0004E28A9 /* Default-375w-667h@2x.png */,
 				581773861E37A0F0004E28A9 /* Default-414w-736h@3x.png */,
@@ -270,6 +270,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D01BA1EB1F50A8DD0066B137 /* assets in Resources */,
 				581773961E37A0F0004E28A9 /* Default@2x.png in Resources */,
 				5817739C1E37A0F0004E28A9 /* Icon@2x.png in Resources */,
 				581773911E37A0F0004E28A9 /* Default-375w-667h@2x.png in Resources */,
@@ -278,7 +279,6 @@
 				581773971E37A0F0004E28A9 /* Default@2x~ipad.png in Resources */,
 				581773941E37A0F0004E28A9 /* Default-1024w-1366h@2x~ipad.png in Resources */,
 				581773981E37A0F0004E28A9 /* Default~ipad.png in Resources */,
-				D08581C81F4E231A00620DB9 /* assets in Resources */,
 				581773921E37A0F0004E28A9 /* Default-414w-736h@3x.png in Resources */,
 				5817739B1E37A0F0004E28A9 /* Icon.png in Resources */,
 				581773931E37A0F0004E28A9 /* Default-568h@2x.png in Resources */,
