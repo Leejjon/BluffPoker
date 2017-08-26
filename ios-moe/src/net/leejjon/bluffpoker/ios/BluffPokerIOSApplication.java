@@ -9,18 +9,15 @@ import net.leejjon.bluffpoker.BluffPokerGame;
 
 public class BluffPokerIOSApplication extends IOSApplication {
     private BluffPokerIOSInput input;
+    private IOSApplicationConfiguration config;
 
     public BluffPokerIOSApplication(ApplicationListener listener, IOSApplicationConfiguration config) {
         super(listener, config);
+        this.config = config;
     }
 
-//    @Override
-//    public Input getInput () {
-//        return input;
-//    }
-
     public void overwriteInput(BluffPokerGame game) {
-        input = new BluffPokerIOSInput(this, game);
-        input.setupPeripherals();
+        input = new BluffPokerIOSInput(this, config, game);
+        input.setupAccelerometer();
     }
 }

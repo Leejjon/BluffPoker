@@ -8,3 +8,4 @@ core/build/
 /gradle.properties
 ios-moe/build/
 ios-moe/out/
+ios-moe/native/
