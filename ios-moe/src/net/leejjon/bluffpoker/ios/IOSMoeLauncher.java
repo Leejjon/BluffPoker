@@ -19,32 +19,33 @@ import apple.uikit.c.UIKit;
 
 import java.util.Set;
 
-public class IOSMoeLauncher extends IOSApplication.Delegate implements ContactsRequesterInterface {
+public class IOSMoeLauncher extends IOSApplication2.Delegate implements ContactsRequesterInterface {
 
     protected IOSMoeLauncher(Pointer peer) {
         super(peer);
     }
 
-    private BluffPokerIOSApplication bluffPokerIOSApplication;
+//    private BluffPokerIOSApplication bluffPokerIOSApplication;
     public BluffPokerGame bluffPokerGame;
 
     @Override
-    protected IOSApplication createApplication() {
+    protected IOSApplication2 createApplication() {
         IOSApplicationConfiguration config = new IOSApplicationConfiguration();
-        config.useAccelerometer = false; // We put it on false so libgdx thinks it's not used. We actually do use it in the BluffPokerIOSApplication.java.
+        config.useAccelerometer = true; // We put it on false so libgdx thinks it's not used. We actually do use it in the BluffPokerIOSApplication.java.
 
         bluffPokerGame = new BluffPokerGame(this,2);
 //        MyGdxGame bluffPokerGame = new MyGdxGame();
-        bluffPokerIOSApplication = new BluffPokerIOSApplication(bluffPokerGame, config);
-        return bluffPokerIOSApplication;
+//        bluffPokerIOSApplication = new BluffPokerIOSApplication(bluffPokerGame, config);
+
+        return new IOSApplication2(bluffPokerGame, config);
     }
 
-    @Override
-    public boolean applicationDidFinishLaunchingWithOptions (UIApplication application, NSDictionary<?, ?> launchOptions) {
-        boolean launch = super.applicationDidFinishLaunchingWithOptions(application, launchOptions);
-        bluffPokerIOSApplication.overwriteInput(bluffPokerGame);
-        return launch;
-    }
+//    @Override
+//    public boolean applicationDidFinishLaunchingWithOptions (UIApplication application, NSDictionary<?, ?> launchOptions) {
+//        boolean launch = super.applicationDidFinishLaunchingWithOptions(application, launchOptions, );
+//        bluffPokerIOSApplication.overwriteInput(bluffPokerGame);
+//        return launch;
+//    }
 
     public static void main(String[] argv) {
         UIKit.UIApplicationMain(0, null, null, IOSMoeLauncher.class.getName());
