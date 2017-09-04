@@ -1,6 +1,6 @@
 package net.leejjon.bluffpoker.ios;
 
-public enum IOSDevice2 {
+public enum BluffPokerIOSDevice {
     IPHONE_2G("iPhone1,1", 163),
     IPHONE_3G("iPhone1,2", 163),
     IPHONE_3GS("iPhone2,1", 163),
@@ -63,13 +63,13 @@ public enum IOSDevice2 {
     final String machineString;
     final int ppi;
 
-    IOSDevice2(String machineString, int ppi) {
+    BluffPokerIOSDevice(String machineString, int ppi) {
         this.machineString = machineString;
         this.ppi = ppi;
     }
 
-    public static IOSDevice2 getDevice (String machineString) {
-        for (IOSDevice2 device : values()) {
+    public static BluffPokerIOSDevice getDevice (String machineString) {
+        for (BluffPokerIOSDevice device : values()) {
             if (device.machineString.equalsIgnoreCase(machineString)) return device;
         }
         return null;

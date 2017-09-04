@@ -32,15 +32,15 @@ import org.moe.natj.general.Pointer;
 import org.moe.natj.general.ann.ByValue;
 import org.moe.natj.objc.ann.Selector;
 
-public class IOSGraphics2 extends NSObject implements Graphics, GLKViewDelegate, GLKViewControllerDelegate {
-    private static final String tag = "IOSGraphics";
+public class BluffPokerIOSGraphics extends NSObject implements Graphics, GLKViewDelegate, GLKViewControllerDelegate {
+    private static final String tag = "BluffPokerIOSGraphics";
 
     static {
         NatJ.register();
     }
 
-    IOSApplication2 app;
-    IOSInput2 input;
+    BluffPokerIOSApplication app;
+    BluffPokerIOSInput input;
     GL20 gl20;
     GL30 gl30;
     int width;
@@ -67,20 +67,20 @@ public class IOSGraphics2 extends NSObject implements Graphics, GLKViewDelegate,
     IOSApplicationConfiguration config;
     EAGLContext context;
     GLVersion glVersion;
-    IOSGLKView2 view;
-    IOSUIViewController2 viewController;
+    BluffPokerIOSGLKView view;
+    BluffPokerIOSUIViewController viewController;
 
     @Selector("alloc")
-    public static native IOSGraphics2 alloc ();
+    public static native BluffPokerIOSGraphics alloc ();
 
     @Selector("init")
-    public native IOSGraphics2 init ();
+    public native BluffPokerIOSGraphics init ();
 
-    protected IOSGraphics2 (Pointer peer) {
+    protected BluffPokerIOSGraphics(Pointer peer) {
         super(peer);
     }
 
-    public IOSGraphics2 init (float scale, IOSApplication2 app, IOSApplicationConfiguration config, IOSInput2 input, boolean useGLES30) {
+    public BluffPokerIOSGraphics init (float scale, BluffPokerIOSApplication app, IOSApplicationConfiguration config, BluffPokerIOSInput input, boolean useGLES30) {
         init();
         this.config = config;
 
@@ -102,7 +102,7 @@ public class IOSGraphics2 extends NSObject implements Graphics, GLKViewDelegate,
             gl30 = null;
         }
 
-        view = IOSGLKView2.alloc().init(this, new CGRect(new CGPoint(0, 0), new CGSize(bounds.size().width(), bounds.size().height())), context);
+        view = BluffPokerIOSGLKView.alloc().init(this, new CGRect(new CGPoint(0, 0), new CGSize(bounds.size().width(), bounds.size().height())), context);
 
         view.setDelegate(this);
         view.setDrawableColorFormat(config.colorFormat);
@@ -111,7 +111,7 @@ public class IOSGraphics2 extends NSObject implements Graphics, GLKViewDelegate,
         view.setDrawableMultisample(config.multisample);
         view.setMultipleTouchEnabled(true);
 
-        viewController = IOSUIViewController2.alloc().init(app, this);
+        viewController = BluffPokerIOSUIViewController.alloc().init(app, this);
         viewController.setView(view);
         viewController.setDelegate(this);
         viewController.setPreferredFramesPerSecond(config.preferredFramesPerSecond);
@@ -144,7 +144,7 @@ public class IOSGraphics2 extends NSObject implements Graphics, GLKViewDelegate,
         bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
 
         // String machineString = HWMachine.getMachineString();
-        IOSDevice2 device = null; // IOSDevice2.getDevice(machineString);
+        BluffPokerIOSDevice device = null; // BluffPokerIOSDevice.getDevice(machineString);
         // if (device == null)
         // 	app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
         int ppi = device != null ? device.ppi : 163;
@@ -340,13 +340,13 @@ public class IOSGraphics2 extends NSObject implements Graphics, GLKViewDelegate,
 
     @Override
     public DisplayMode getDisplayMode () {
-        return new IOSGraphics2.IOSDisplayMode(getWidth(), getHeight(), config.preferredFramesPerSecond,
+        return new BluffPokerIOSGraphics.IOSDisplayMode(getWidth(), getHeight(), config.preferredFramesPerSecond,
                 bufferFormat.r + bufferFormat.g + bufferFormat.b + bufferFormat.a);
     }
 
     @Override
     public Monitor getPrimaryMonitor () {
-        return new IOSGraphics2.IOSMonitor(0, 0, "Primary Monitor");
+        return new BluffPokerIOSGraphics.IOSMonitor(0, 0, "Primary Monitor");
     }
 
     @Override

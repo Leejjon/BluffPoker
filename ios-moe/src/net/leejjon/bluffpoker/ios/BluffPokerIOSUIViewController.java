@@ -7,24 +7,25 @@ import org.moe.natj.general.NatJ;
 import org.moe.natj.general.Pointer;
 import org.moe.natj.objc.ann.Selector;
 
-public class IOSUIViewController2 extends GLKViewController {
-    private IOSApplication2 app;
-    private IOSGraphics2 graphics;
+public class BluffPokerIOSUIViewController extends GLKViewController {
+    private BluffPokerIOSApplication app;
+    private BluffPokerIOSGraphics graphics;
 
     static {
         NatJ.register();
     }
 
     @Selector("alloc")
-    public static native IOSUIViewController2 alloc ();
+    public static native BluffPokerIOSUIViewController alloc ();
 
     @Selector("init")
-    public native IOSUIViewController2 init ();
+    public native BluffPokerIOSUIViewController init ();
 
-    protected IOSUIViewController2 (Pointer peer) {
+    protected BluffPokerIOSUIViewController(Pointer peer) {
         super(peer);
     }
-    public IOSUIViewController2 init (IOSApplication2 app, IOSGraphics2 graphics) {
+    
+    public BluffPokerIOSUIViewController init (BluffPokerIOSApplication app, BluffPokerIOSGraphics graphics) {
         init();
         this.app = app;
         this.graphics = graphics;

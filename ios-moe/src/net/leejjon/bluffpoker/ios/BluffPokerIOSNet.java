@@ -3,15 +3,14 @@ package net.leejjon.bluffpoker.ios;
 import apple.foundation.NSURL;
 import apple.uikit.UIApplication;
 import com.badlogic.gdx.Net;
-import com.badlogic.gdx.backends.iosmoe.IOSApplication;
 import com.badlogic.gdx.net.*;
 
-public class IOSNet2 implements Net {
+public class BluffPokerIOSNet implements Net {
 
     NetJavaImpl netJavaImpl = new NetJavaImpl();
     final UIApplication uiApp;
 
-    public IOSNet2 (IOSApplication2 app) {
+    public BluffPokerIOSNet(BluffPokerIOSApplication app) {
         uiApp = app.uiApp;
     }
 

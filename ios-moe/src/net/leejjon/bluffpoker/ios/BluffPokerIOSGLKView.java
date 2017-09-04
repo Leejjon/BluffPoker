@@ -11,24 +11,24 @@ import org.moe.natj.general.Pointer;
 import org.moe.natj.general.ann.ByValue;
 import org.moe.natj.objc.ann.Selector;
 
-public class IOSGLKView2 extends GLKView {
-    private IOSGraphics2 graphics;
+public class BluffPokerIOSGLKView extends GLKView {
+    private BluffPokerIOSGraphics graphics;
 
     static {
         NatJ.register();
     }
 
     @Selector("alloc")
-    public static native IOSGLKView2 alloc ();
+    public static native BluffPokerIOSGLKView alloc ();
 
     @Selector("init")
-    public native IOSGLKView2 init ();
+    public native BluffPokerIOSGLKView init ();
 
-    protected IOSGLKView2(Pointer peer) {
+    protected BluffPokerIOSGLKView(Pointer peer) {
         super(peer);
     }
 
-    public IOSGLKView2 init (IOSGraphics2 graphics, CGRect bounds, EAGLContext context) {
+    public BluffPokerIOSGLKView init (BluffPokerIOSGraphics graphics, CGRect bounds, EAGLContext context) {
         initWithFrameContext(bounds, context);
         this.graphics = graphics;
         return this;
