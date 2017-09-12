@@ -24,7 +24,7 @@ public class BluffPokerIOSUIViewController extends GLKViewController {
     protected BluffPokerIOSUIViewController(Pointer peer) {
         super(peer);
     }
-    
+
     public BluffPokerIOSUIViewController init (BluffPokerIOSApplication app, BluffPokerIOSGraphics graphics) {
         init();
         this.app = app;

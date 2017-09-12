@@ -1,6 +1,7 @@
 package net.leejjon.bluffpoker.ios;
 
 import apple.NSObject;
+import apple.contacts.CNContactStore;
 import apple.coregraphics.struct.CGPoint;
 import apple.coregraphics.struct.CGRect;
 import apple.coregraphics.struct.CGSize;
@@ -83,6 +84,7 @@ public class BluffPokerIOSApplication implements Application {
     BluffPokerIOSNet net;
     int logLevel = Application.LOG_DEBUG;
     ApplicationLogger applicationLogger;
+    CNContactStore contactStore;
 
     /** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
     float displayScaleFactor;
@@ -139,6 +141,7 @@ public class BluffPokerIOSApplication implements Application {
         this.files = new IOSFiles();
         this.audio = new IOSAudio(config);
         this.net = new BluffPokerIOSNet(this);
+        this.contactStore = CNContactStore.alloc().init();
 
         Gdx.files = this.files;
         Gdx.graphics = this.graphics;
@@ -447,4 +450,8 @@ public class BluffPokerIOSApplication implements Application {
     public void addViewControllerListener (IOSViewControllerListener listener) {
         viewControllerListener = listener;
     }
+
+	 public CNContactStore getContactStore () {
+		  return contactStore;
+	 }
 }
