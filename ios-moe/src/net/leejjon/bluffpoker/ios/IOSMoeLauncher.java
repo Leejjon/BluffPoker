@@ -4,6 +4,7 @@ import apple.contacts.CNContact;
 import apple.contacts.CNContactFetchRequest;
 import apple.contacts.CNContactStore;
 import apple.contacts.c.Contacts;
+import apple.contacts.enums.CNEntityType;
 import apple.foundation.NSArray;
 import apple.foundation.NSError;
 import com.badlogic.gdx.Gdx;
@@ -19,6 +20,8 @@ import org.moe.natj.general.ptr.Ptr;
 import org.moe.natj.general.ptr.impl.PtrFactory;
 
 import java.util.Set;
+
+import static apple.contacts.enums.CNEntityType.CNEntityTypeContacts;
 
 public class IOSMoeLauncher extends BluffPokerIOSApplication.Delegate implements ContactsRequesterInterface {
 
@@ -60,19 +63,34 @@ public class IOSMoeLauncher extends BluffPokerIOSApplication.Delegate implements
     public void initiateSelectContacts(ModifyPlayerListener listener, Set<String> alreadyExistingPlayers) {
 		  CNContactStore contactStore = bluffPokerIOSApplication.getContactStore();
 
-		  Gdx.app.log("bluffpoker", Contacts.CNContactGivenNameKey());
-
-		  NSArray<?> keysToFetch = NSArray.arrayWithObject(Contacts.CNContactGivenNameKey());
-		  CNContactFetchRequest request = CNContactFetchRequest.alloc().initWithKeysToFetch(keysToFetch);
-		  Ptr<NSError> error = PtrFactory.newObjectReference(NSError.class);
-		  contactStore.enumerateContactsWithFetchRequestErrorUsingBlock(request, error, new CNContactStore.Block_enumerateContactsWithFetchRequestErrorUsingBlock() {
+		  contactStore.requestAccessForEntityTypeCompletionHandler(CNEntityTypeContacts, new CNContactStore.Block_requestAccessForEntityTypeCompletionHandler() {
 				@Override
-				public void call_enumerateContactsWithFetchRequestErrorUsingBlock (CNContact arg0, BoolPtr arg1) {
+				public void call_requestAccessForEntityTypeCompletionHandler (boolean success, NSError error) {
+					 if (success) {
+					 	 Gdx.app.log("bluffpoker", "access granted");
+					 } else {
+						 Gdx.app.log("bluffpoker", "error code: " + error.code());
+					 }
 
-					Gdx.app.log("bluffpoker", "we got a contact");
 				}
 		  });
 
-		  Gdx.app.log("bluffpoker", error.get().localizedDescription());
+
+
+
+//		  Gdx.app.log("bluffpoker", Contacts.CNContactGivenNameKey());
+//
+//		  NSArray<?> keysToFetch = NSArray.arrayWithObject(Contacts.CNContactGivenNameKey());
+//		  CNContactFetchRequest request = CNContactFetchRequest.alloc().initWithKeysToFetch(keysToFetch);
+//		  Ptr<NSError> error = PtrFactory.newObjectReference(NSError.class);
+//		  contactStore.enumerateContactsWithFetchRequestErrorUsingBlock(request, error, new CNContactStore.Block_enumerateContactsWithFetchRequestErrorUsingBlock() {
+//				@Override
+//				public void call_enumerateContactsWithFetchRequestErrorUsingBlock (CNContact arg0, BoolPtr arg1) {
+//
+//					Gdx.app.log("bluffpoker", "we got a contact");
+//				}
+//		  });
+//
+//		  Gdx.app.log("bluffpoker", error.get().localizedDescription());
     }
 }
