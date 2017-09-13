@@ -20,6 +20,7 @@ import net.leejjon.bluffpoker.state.Settings;
 
 public class BluffPokerGame extends ApplicationAdapter implements
         StageInterface, PhoneInputListener {
+    public static final String TAG = "bluffpoker";
     private GameState state;
     private Settings settings;
     private Skin uiSkin;
