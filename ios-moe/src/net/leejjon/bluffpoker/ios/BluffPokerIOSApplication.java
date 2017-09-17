@@ -141,7 +141,7 @@ public class BluffPokerIOSApplication implements Application {
         this.files = new IOSFiles();
         this.audio = new IOSAudio(config);
         this.net = new BluffPokerIOSNet(this);
-        this.contactStore = CNContactStore.alloc().init();
+//        this.contactStore = CNContactStore.alloc().init();
 
         Gdx.files = this.files;
         Gdx.graphics = this.graphics;

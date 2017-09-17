@@ -8,6 +8,7 @@ import apple.foundation.NSArray;
 import apple.foundation.NSError;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.iosmoe.IOSApplicationConfiguration;
+import com.badlogic.gdx.utils.Array;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.interfaces.ContactsRequesterInterface;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
@@ -57,6 +58,8 @@ public class IOSMoeLauncher extends BluffPokerIOSApplication.Delegate implements
         return "Player 1";
     }
 
+    private Array<String> contacts = null;
+
     /**
      * Code ripped from: https://gist.github.com/willthink/024f1394474e70904728
      * <p>
@@ -68,45 +71,42 @@ public class IOSMoeLauncher extends BluffPokerIOSApplication.Delegate implements
      */
     @Override
     public void initiateSelectContacts(ModifyPlayerListener listener, Set<String> alreadyExistingPlayers) {
-        CNContactStore contactStore = bluffPokerIOSApplication.getContactStore();
-
-        contactStore.requestAccessForEntityTypeCompletionHandler(apple.contacts.enums.CNEntityType.CNEntityTypeContacts, new CNContactStore.Block_requestAccessForEntityTypeCompletionHandler() {
-            @Override
-            public void call_requestAccessForEntityTypeCompletionHandler(boolean success, NSError error) {
-                if (success) {
-                    Gdx.app.log("bluffpoker", "The user gave us access to the contacts in the phonebook.");
-                    selectContacts(listener, alreadyExistingPlayers, contactStore);
-                } else {
-                    Gdx.app.log("bluffpoker", "Did not have access to contacts. Error code: " + error.code());
-                }
-            }
-        });
-    }
-
-    private void selectContacts(ModifyPlayerListener listener, Set<String> alreadyExistingPlayers, CNContactStore contactStore) {
-        Ptr<NSError> error = PtrFactory.newObjectReference(NSError.class);
-        try {
-            NSArray<?> keysToFetch = NSArray.arrayWithObjects(Contacts.CNContactGivenNameKey(), Contacts.CNContactFamilyNameKey());
-            CNContactFetchRequest request = CNContactFetchRequest.alloc().initWithKeysToFetch(keysToFetch);
-            Set<String> players = new TreeSet<>();
-
-            // Seems to retrieve all contacts synchronous before continuing. Weird since anonymous classes are mainly used for asynchronous calls.
-            contactStore.enumerateContactsWithFetchRequestErrorUsingBlock(request, error, new CNContactStore.Block_enumerateContactsWithFetchRequestErrorUsingBlock() {
+        if (contacts == null) {
+            contacts = new Array<>();
+            CNContactStore contactStore = CNContactStore.alloc().init();
+            Gdx.app.log(BluffPokerGame.TAG, "Succesful alloc");
+            contactStore.requestAccessForEntityTypeCompletionHandler(apple.contacts.enums.CNEntityType.CNEntityTypeContacts, new CNContactStore.Block_requestAccessForEntityTypeCompletionHandler() {
                 @Override
-                public void call_enumerateContactsWithFetchRequestErrorUsingBlock(CNContact contact, BoolPtr arg1) {
-                    String name = contact.givenName() + contact.familyName();
-                    if (!(name.length() == 0) && !players.contains(name) && !alreadyExistingPlayers.contains(name)) {
-                        players.add(name);
+                public void call_requestAccessForEntityTypeCompletionHandler(boolean success, NSError error) {
+                    if (success) {
+                        Gdx.app.log("bluffpoker", "The user gave us access to the contacts in the phonebook.");
+                        selectContacts(listener, alreadyExistingPlayers, contactStore);
+                    } else {
+                        Gdx.app.log("bluffpoker", "Did not have access to contacts. Error code: " + error.code());
                     }
                 }
             });
-            listener.selectFromPhoneBook(players.toArray(new String[players.size()]));
-        } catch (ObjCException e) {
-            e.printStackTrace();
-            Gdx.app.log(BluffPokerGame.TAG, e.getMessage());
-            if (error != null && error.get() != null) {
-                Gdx.app.log(BluffPokerGame.TAG, "Error code: " + error.get().code());
-            }
+        } else {
+            Gdx.app.log(BluffPokerGame.TAG, "Contacts loaded: " + contacts.size);
+            listener.selectFromPhoneBook(contacts.toArray());
         }
+    }
+
+    private void selectContacts(ModifyPlayerListener listener, Set<String> alreadyExistingPlayers, CNContactStore contactStore) {
+        // TODO: Handle the error. Currently everything I tried to do with the error object didn't work though...
+        Ptr<NSError> error = PtrFactory.newObjectReference(NSError.class);
+        // TODO: Also retrieve the last name. But for some reason that results in an ObjCException...
+        NSArray<?> keysToFetch = NSArray.arrayWithObject(Contacts.CNContactGivenNameKey());//, Contacts.CNContactFamilyNameKey());
+        CNContactFetchRequest request = CNContactFetchRequest.alloc().initWithKeysToFetch(keysToFetch);
+        // Seems to retrieve all contacts synchronous before continuing. Weird since anonymous classes are mainly used for asynchronous calls.
+        contactStore.enumerateContactsWithFetchRequestErrorUsingBlock(request, error, new CNContactStore.Block_enumerateContactsWithFetchRequestErrorUsingBlock() {
+            @Override
+            public void call_enumerateContactsWithFetchRequestErrorUsingBlock(CNContact contact, BoolPtr stop) {
+                String name = contact.givenName(); // + contact.familyName();
+                if (!(name.length() == 0) && !alreadyExistingPlayers.contains(name)) {
+                    contacts.add(name);
+                }
+            }
+        });
     }
 }
