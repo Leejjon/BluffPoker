@@ -20,6 +20,7 @@ import org.moe.natj.general.ptr.Ptr;
 import org.moe.natj.general.ptr.impl.PtrFactory;
 import org.moe.natj.objc.ObjCException;
 
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -87,8 +88,7 @@ public class IOSMoeLauncher extends BluffPokerIOSApplication.Delegate implements
                 }
             });
         } else {
-            Gdx.app.log(BluffPokerGame.TAG, "Contacts loaded: " + contacts.size);
-            listener.selectFromPhoneBook(contacts.toArray());
+            listener.selectFromPhoneBook(contacts);
         }
     }
 

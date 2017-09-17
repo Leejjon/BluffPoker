@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
 
@@ -54,11 +55,13 @@ public class PlayersFromPhonebookDialog extends Dialog {
         contentTable.row().padBottom(10f);
     }
 
-    public void addNewPlayer(String... playerNames) {
-        for (CheckBox box : players.values()) {
-            checkBoxPerPhonebookEntryTable.removeActor(box);
-        }
-        players.clear();
+    public void addNewPlayer(Array<String> playerNames) {
+        // This code seemed to be the culprit for the "libc++abi.dylib: terminating with uncaught exception of type ObjCException"....
+        // TODO: Isolate it in a separate project.
+//        for (CheckBox box : players.values()) {
+//            checkBoxPerPhonebookEntryTable.removeActor(box);
+//        }
+//        players.clear();
 
         for (String playerName : playerNames) {
             if (!players.containsKey(playerName)) {
@@ -67,6 +70,9 @@ public class PlayersFromPhonebookDialog extends Dialog {
                 players.put(playerName, checkBox);
                 checkBoxPerPhonebookEntryTable.add(checkBox).left();
                 checkBoxPerPhonebookEntryTable.row();
+            } else {
+                CheckBox checkBox = players.get(playerName);
+                checkBox.setChecked(false);
             }
         }
     }
