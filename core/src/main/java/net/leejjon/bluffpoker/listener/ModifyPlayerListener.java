@@ -4,5 +4,6 @@ import com.badlogic.gdx.utils.Array;
 
 public interface ModifyPlayerListener {
 	void addContactsToGame(String ... playerNames);
-	void selectFromPhoneBook(Array<String> phoneBookContactNames);
+	void loadFromPhonebook(Array<String> phoneBookContactNames);
+	void showAndReset();
 }

@@ -198,7 +198,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
                 final String[] split = playerName.split("\\s+");
                 playerName = split[0];
 
-                // TODO: Add first letter of last name maybe? will suck if people have a lot of initials...
+                // TODO: Add first letter of last name maybe? will suck if people have a lot of initials... Also, for some reaon I cannot retrieve the last names on iOS.
             }
 
             if (playerName.length() > 0 && !playerName.isEmpty() && playerName.length() <= maxNameLength) {
@@ -223,8 +223,13 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
     }
 
     @Override
-    public void selectFromPhoneBook(Array<String> phoneBookContactNames) {
-        playersFromPhonebookDialog.show(this);
+    public void loadFromPhonebook(Array<String> phoneBookContactNames) {
         playersFromPhonebookDialog.addNewPlayer(phoneBookContactNames);
+    }
+
+    @Override
+    public void showAndReset() {
+        playersFromPhonebookDialog.show(this);
+//        playersFromPhonebookDialog.uncheckAll();
     }
 }

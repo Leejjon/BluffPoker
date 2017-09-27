@@ -62,6 +62,7 @@ public class PlayersFromPhonebookDialog extends Dialog {
 //            checkBoxPerPhonebookEntryTable.removeActor(box);
 //        }
 //        players.clear();
+        Gdx.app.log(BluffPokerGame.TAG, "adding " + playerNames.size);
 
         for (String playerName : playerNames) {
             if (!players.containsKey(playerName)) {

@@ -14,6 +14,7 @@ import android.provider.ContactsContract;
 import android.view.Display;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.utils.Array;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -178,7 +179,6 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
     }
 
     public void startSelectingContacts() {
-        playerModifier.selectFromPhoneBook();
         if (playerModifier != null) {
             Set<String> players = new TreeSet<>();
 
@@ -197,7 +197,9 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
                 }
             }
 
-            playerModifier.selectFromPhoneBook(players.toArray(new String[players.size()]));
+            Array<String> playersArray = new Array<>();
+            playersArray.addAll(players.toArray(new String[players.size()]));
+            playerModifier.loadFromPhonebook(playersArray);
         }
     }
 }
