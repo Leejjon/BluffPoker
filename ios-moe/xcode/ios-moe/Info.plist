@@ -20,6 +20,8 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSContactsUsageDescription</key>
+	<string>In this local offline multiplayer game (you typically sit around a table and pass the phone around) you have to enter names for the different players. Names can be entered manually or selected from the phonebook to save time. This last option is totally optional. This application does not use contact information for anything else (and we cannot do anything with it anyway since our application does not need permission for internet access).</string>
 	<key>MOE.Main.Class</key>
 	<string>net.leejjon.bluffpoker.ios.IOSMoeLauncher</string>
 	<key>UIApplicationExitsOnSuspend</key>

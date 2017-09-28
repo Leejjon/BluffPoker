@@ -178,7 +178,6 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
     }
 
     public void startSelectingContacts() {
-        playerModifier.selectFromPhoneBook();
         if (playerModifier != null) {
             Set<String> players = new TreeSet<>();
 
@@ -197,7 +196,8 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
                 }
             }
 
-            playerModifier.selectFromPhoneBook(players.toArray(new String[players.size()]));
+            playerModifier.showPhonebookDialog();
+            playerModifier.loadFromPhonebook(players.toArray(new String[players.size()]));
         }
     }
 }

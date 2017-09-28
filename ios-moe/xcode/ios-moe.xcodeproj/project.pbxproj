@@ -58,7 +58,7 @@
 		581773AD1E37A7EF004E28A9 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		5863B87B1DA682C800E46B6A /* ios-moe-Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-moe-Test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5863B88E1DA682C800E46B6A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		58C6F5241DA66CB600309CB6 /* my-gdx-game.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "my-gdx-game.app"; path = "Bluff Poker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		58C6F5241DA66CB600309CB6 /* Bluff Poker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bluff Poker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		58C6F5381DA66CB600309CB6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8084D1F0A307440EC73CBFCA /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		BF140766C410C641636C918B /* moe-main-interfaces.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "moe-main-interfaces.m"; path = "../build/moe/main/ui-headers/moe-main-interfaces.m"; sourceTree = "<group>"; };
@@ -138,7 +138,7 @@
 		58C6F5251DA66CB600309CB6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				58C6F5241DA66CB600309CB6 /* my-gdx-game.app */,
+				58C6F5241DA66CB600309CB6 /* Bluff Poker.app */,
 				5863B87B1DA682C800E46B6A /* ios-moe-Test.app */,
 			);
 			name = Products;
@@ -218,7 +218,7 @@
 			);
 			name = "ios-moe";
 			productName = "Bluff Poker";
-			productReference = 58C6F5241DA66CB600309CB6 /* my-gdx-game.app */;
+			productReference = 58C6F5241DA66CB600309CB6 /* Bluff Poker.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */

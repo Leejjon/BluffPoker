@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.actors.BlackBoard;
 import net.leejjon.bluffpoker.actors.Cup;
 import net.leejjon.bluffpoker.actors.Dice;
@@ -53,7 +54,6 @@ public class GameStage extends AbstractStage implements UserInterface {
     private static final String THROW_WITH_ALL_DICES = "Throw with all dices!";
     private static final String AUTO_BUTTON_LABEL = "Auto";
     private static final String CALL_BUTTON_LABEL = "Call";
-    private static final String TAG = "bluffpoker";
     private static final String COULD_NOT_THROW_BECAUSE_CUP_IS_MOVING = "Could not throw. Cup moving: '%b Cup is open : %b";
 
     private boolean autoButtonPressed = false;
@@ -257,7 +257,7 @@ public class GameStage extends AbstractStage implements UserInterface {
                 }
             }
         } else {
-            Gdx.app.log(TAG, String.format(COULD_NOT_THROW_BECAUSE_CUP_IS_MOVING, cup.isMoving(), (cup.isWatchingOwnThrow() | cup.isBelieving())));
+            Gdx.app.log(BluffPokerGame.TAG, String.format(COULD_NOT_THROW_BECAUSE_CUP_IS_MOVING, cup.isMoving(), (cup.isWatchingOwnThrow() | cup.isBelieving())));
         }
     }
 
