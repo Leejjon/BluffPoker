@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Array;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.actors.BlackBoard;
 import net.leejjon.bluffpoker.assets.TextureKey;
@@ -223,13 +222,12 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
     }
 
     @Override
-    public void loadFromPhonebook(Array<String> phoneBookContactNames) {
+    public void loadFromPhonebook(String ... phoneBookContactNames) {
         playersFromPhonebookDialog.addNewPlayer(phoneBookContactNames);
     }
 
     @Override
-    public void showAndReset() {
+    public void showPhonebookDialog() {
         playersFromPhonebookDialog.show(this);
-//        playersFromPhonebookDialog.uncheckAll();
     }
 }

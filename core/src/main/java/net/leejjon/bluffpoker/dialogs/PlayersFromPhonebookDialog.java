@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
 
@@ -34,19 +33,20 @@ public class PlayersFromPhonebookDialog extends Dialog {
         // Take 50% of the screen.
         int width = Gdx.graphics.getWidth() / BluffPokerGame.getDivideScreenByThis();
         int height = Gdx.graphics.getHeight() / BluffPokerGame.getDivideScreenByThis();
-        contentTable.add(playersScrollPane).width((width * 100) / 155).height((height * 100) / 200).padTop(3f).padRight(1f);
+
+        contentTable.add(playersScrollPane).width((width * 100) / 140).height((height * 100) / 200).padTop(3f).padRight(1f);
 
         final TextButton add = new TextButton("Add", uiSkin);
         add.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Set<String> playerNames = new HashSet<>();
-                for (Map.Entry<String, CheckBox> player : players.entrySet()) {
-                    if (player.getValue().isChecked() && !playerNames.contains(player.getKey())) {
-                        playerNames.add(player.getKey());
-                    }
+            Set<String> playerNames = new HashSet<>();
+            for (Map.Entry<String, CheckBox> player : players.entrySet()) {
+                if (player.getValue().isChecked() && !playerNames.contains(player.getKey())) {
+                    playerNames.add(player.getKey());
                 }
-                playerListener.addContactsToGame(playerNames.toArray(new String[playerNames.size()]));
+            }
+            playerListener.addContactsToGame(playerNames.toArray(new String[playerNames.size()]));
             }
         });
         button(add);
@@ -55,15 +55,7 @@ public class PlayersFromPhonebookDialog extends Dialog {
         contentTable.row().padBottom(10f);
     }
 
-    public void addNewPlayer(Array<String> playerNames) {
-        // This code seemed to be the culprit for the "libc++abi.dylib: terminating with uncaught exception of type ObjCException"....
-        // TODO: Isolate it in a separate project.
-//        for (CheckBox box : players.values()) {
-//            checkBoxPerPhonebookEntryTable.removeActor(box);
-//        }
-//        players.clear();
-        Gdx.app.log(BluffPokerGame.TAG, "adding " + playerNames.size);
-
+    public void addNewPlayer(String ... playerNames) {
         for (String playerName : playerNames) {
             if (!players.containsKey(playerName)) {
                 CheckBox checkBox = new CheckBox(playerName, uiSkin, "big");
