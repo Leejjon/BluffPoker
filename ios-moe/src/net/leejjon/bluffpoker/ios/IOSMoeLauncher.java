@@ -52,7 +52,7 @@ public class IOSMoeLauncher extends BluffPokerIOSApplication.Delegate implements
 
     @Override
     public String getDeviceOwnerName() {
-        return DeviceOwnerNameResolver.resolveDeviceOwnerName("iPhone van Dirk"/*UIDevice.currentDevice().name()*/, "nl");//Locale.getDefault().getLanguage());
+        return DeviceOwnerNameResolver.resolveDeviceOwnerName(UIDevice.currentDevice().name(), Locale.getDefault().getLanguage());
     }
 
     /**
