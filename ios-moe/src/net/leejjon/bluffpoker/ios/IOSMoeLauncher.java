@@ -7,6 +7,8 @@ import apple.contacts.CNContactStore;
 import apple.contacts.c.Contacts;
 import apple.foundation.NSArray;
 import apple.foundation.NSError;
+import apple.foundation.NSLocale;
+import apple.uikit.UIDevice;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.iosmoe.IOSApplicationConfiguration;
 import net.leejjon.bluffpoker.BluffPokerGame;
@@ -19,6 +21,7 @@ import org.moe.natj.general.ptr.BoolPtr;
 import org.moe.natj.general.ptr.Ptr;
 import org.moe.natj.general.ptr.impl.PtrFactory;
 
+import java.util.Locale;
 import java.util.Set;
 
 public class IOSMoeLauncher extends BluffPokerIOSApplication.Delegate implements ContactsRequesterInterface {
@@ -49,11 +52,7 @@ public class IOSMoeLauncher extends BluffPokerIOSApplication.Delegate implements
 
     @Override
     public String getDeviceOwnerName() {
-//        func unifiedMeContactWithKeys(toFetch: [CNKeyDescriptor])
-//
-//        Fetches the unified contact that is the "me" card.
-
-        return "Player 1";
+        return DeviceOwnerNameResolver.resolveDeviceOwnerName("iPhone van Dirk"/*UIDevice.currentDevice().name()*/, "nl");//Locale.getDefault().getLanguage());
     }
 
     /**
