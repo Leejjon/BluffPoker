@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 public class SettingsStage extends AbstractStage {
 	private final CheckBox allowBokCheckBox;
 	private final CheckBox allowSharedBokCheckbox;
+	private final CheckBox tutorialModeCheckbox;
 	private final Slider numberOfLivesSlider;
 	private final Label actualNumberOfLivesDisplayLabel;
 
@@ -34,6 +35,7 @@ public class SettingsStage extends AbstractStage {
 
 		allowBokCheckBox = new CheckBox("Allow bok", uiSkin);
 		allowSharedBokCheckbox = new CheckBox("Allow shared bok", uiSkin);
+		tutorialModeCheckbox = new CheckBox("Tutorial mode", uiSkin);
 		numberOfLivesSlider = new Slider(1f, 10f, 1f, false, uiSkin);
 		numberOfLivesSlider.addListener(new ChangeListener() {
 			@Override
@@ -48,6 +50,7 @@ public class SettingsStage extends AbstractStage {
 			public void clicked(InputEvent event, float x, float y) {
 				settings.setAllowBok(allowBokCheckBox.isChecked());
 				settings.setAllowSharedBok(allowSharedBokCheckbox.isChecked());
+				settings.setTutorialMode(tutorialModeCheckbox.isChecked());
 				settings.setNumberOfLives(new Float(numberOfLivesSlider.getValue()).intValue());
 				stageInterface.closeSettingsStage();
 			}
@@ -65,6 +68,8 @@ public class SettingsStage extends AbstractStage {
 		innerTable.row();
 		innerTable.add(allowSharedBokCheckbox).colspan(2).left();
 		innerTable.row();
+		innerTable.add(tutorialModeCheckbox).colspan(2).left();
+		innerTable.row();
 		innerTable.add(numberOfLivesLabel).left();
 		innerTable.add(actualNumberOfLivesDisplayLabel).left();
 		innerTable.row();
@@ -81,6 +86,7 @@ public class SettingsStage extends AbstractStage {
 	public void loadLatestSettings() {
 		allowBokCheckBox.setChecked(settings.isAllowBok());
 		allowSharedBokCheckbox.setChecked(settings.isAllowSharedBok());
+		tutorialModeCheckbox.setChecked(settings.isTutorialMode());
 		numberOfLivesSlider.setValue(settings.getNumberOfLives());
         actualNumberOfLivesDisplayLabel.setText(new Float(numberOfLivesSlider.getValue()).intValue() + "");
 	}

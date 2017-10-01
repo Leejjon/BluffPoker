@@ -13,6 +13,7 @@ public class Settings {
 	@Getter	private int numberOfLives = 3;
 	@Getter private boolean allowBok = true;
 	@Getter private boolean allowSharedBok = false;
+	@Getter private boolean tutorialMode = true;
 
     private Settings() {}
 
@@ -33,6 +34,13 @@ public class Settings {
     public void setAllowSharedBok(boolean allowSharedBok) {
         if (this.allowSharedBok != allowSharedBok) {
             this.allowSharedBok = allowSharedBok;
+            saveSettings();
+        }
+    }
+
+    public void setTutorialMode(boolean tutorialMode) {
+        if (this.tutorialMode != tutorialMode) {
+            this.tutorialMode = tutorialMode;
             saveSettings();
         }
     }
