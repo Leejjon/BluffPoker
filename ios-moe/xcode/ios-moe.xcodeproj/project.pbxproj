@@ -235,7 +235,7 @@
 					};
 					58C6F5231DA66CB600309CB6 = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = AME4MPX4WN;
+						DevelopmentTeam = 5S86CNU3S6;
 					};
 				};
 			};
@@ -476,7 +476,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: leejjon@gmail.com (JFL8M9MVJ7)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -503,7 +503,7 @@
 			baseConfigurationReference = 5817739D1E37A10D004E28A9 /* custom.xcconfig */;
 			buildSettings = {
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = AME4MPX4WN;
+				DEVELOPMENT_TEAM = 5S86CNU3S6;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -529,7 +529,7 @@
 					"${MOE_OTHER_LDFLAGS}",
 					"$(LIBGDX_NATIVES)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = net.leejjon.bluffpoker;
+				PRODUCT_BUNDLE_IDENTIFIER = net.leejjon.bluff.poker;
 				PRODUCT_NAME = "Bluff Poker";
 				STRIP_STYLE = "non-global";
 			};
@@ -540,7 +540,7 @@
 			baseConfigurationReference = 5817739D1E37A10D004E28A9 /* custom.xcconfig */;
 			buildSettings = {
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = AME4MPX4WN;
+				DEVELOPMENT_TEAM = 5S86CNU3S6;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -566,7 +566,7 @@
 					"${MOE_OTHER_LDFLAGS}",
 					"$(LIBGDX_NATIVES)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = net.leejjon.bluffpoker;
+				PRODUCT_BUNDLE_IDENTIFIER = net.leejjon.bluff.poker;
 				PRODUCT_NAME = "Bluff Poker";
 				STRIP_STYLE = "non-global";
 			};
