@@ -428,6 +428,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -476,7 +477,8 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: leejjon@gmail.com (JFL8M9MVJ7)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -531,6 +533,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.leejjon.bluff.poker;
 				PRODUCT_NAME = "Bluff Poker";
+				PROVISIONING_PROFILE = "6ee514c2-8aa7-4d3c-95ff-36571c81b106";
+				PROVISIONING_PROFILE_SPECIFIER = BluffPokerDevelopment;
 				STRIP_STYLE = "non-global";
 			};
 			name = Debug;
@@ -568,6 +572,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.leejjon.bluff.poker;
 				PRODUCT_NAME = "Bluff Poker";
+				PROVISIONING_PROFILE = "6ee514c2-8aa7-4d3c-95ff-36571c81b106";
+				PROVISIONING_PROFILE_SPECIFIER = BluffPokerDevelopment;
 				STRIP_STYLE = "non-global";
 			};
 			name = Release;
