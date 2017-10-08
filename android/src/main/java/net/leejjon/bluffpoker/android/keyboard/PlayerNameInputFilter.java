@@ -2,10 +2,9 @@ package net.leejjon.bluffpoker.android.keyboard;
 
 import android.text.InputFilter;
 import android.text.Spanned;
+import net.leejjon.bluffpoker.stages.SelectPlayersStage;
 
 public class PlayerNameInputFilter implements InputFilter {
-    final int maxNameLength = 16;
-
     /**
      *
      * @param source The input that is trying to get added to the textfield.
@@ -19,7 +18,7 @@ public class PlayerNameInputFilter implements InputFilter {
 
     @Override
     public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-        int keep = maxNameLength - (dest.length() - (dend - dstart));
+        int keep = SelectPlayersStage.MAX_PLAYER_NAME_LENGTH - (dest.length() - (dend - dstart));
 
         boolean containsInvalidCharacters = false;
 

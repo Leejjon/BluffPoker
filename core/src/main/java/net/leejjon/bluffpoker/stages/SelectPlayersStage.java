@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.TreeSet;
 
 public class SelectPlayersStage extends AbstractStage implements ModifyPlayerListener {
+    public static final int MAX_PLAYER_NAME_LENGTH = 10;
+
     private java.util.List<String> players;
     private List<String> playerList;
 
@@ -190,17 +192,15 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
     }
 
     private void addPlayersToGame(String ... playerNames) {
-        final int maxNameLength = 16;
-
         for (String playerName : playerNames) {
-            if (playerName.length() > maxNameLength && playerName.contains(" ")) {
+            if (playerName.length() > MAX_PLAYER_NAME_LENGTH && playerName.contains(" ")) {
                 final String[] split = playerName.split("\\s+");
                 playerName = split[0];
 
                 // TODO: Add first letter of last name maybe? will suck if people have a lot of initials... Also, for some reaon I cannot retrieve the last names on iOS.
             }
 
-            if (playerName.length() > 0 && !playerName.isEmpty() && playerName.length() <= maxNameLength) {
+            if (playerName.length() > 0 && !playerName.isEmpty() && playerName.length() <= MAX_PLAYER_NAME_LENGTH) {
                 if (!players.contains(playerName)) {
                     players.add(playerName);
                 } else {
