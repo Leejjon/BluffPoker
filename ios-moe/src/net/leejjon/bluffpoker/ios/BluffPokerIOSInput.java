@@ -28,6 +28,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.dialogs.CallInputDialog;
+import net.leejjon.bluffpoker.ios.keyboard.NumberCombinationTextFieldValidator;
+import net.leejjon.bluffpoker.ios.keyboard.PlayerNameTextFieldValidator;
 import org.moe.natj.general.ann.NInt;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -439,8 +441,12 @@ public class BluffPokerIOSInput implements Input {
         UITextField textField = uiAlertView.textFieldAtIndex(0);
         textField.setPlaceholder(placeholder);
         textField.setText(text);
+
         if (title.equals(CallInputDialog.ENTER_YOUR_CALL)) {
             textField.setKeyboardType(UIKeyboardType.NumberPad);
+            textField.setDelegate(new NumberCombinationTextFieldValidator());
+        } else {
+            textField.setDelegate(new PlayerNameTextFieldValidator());
         }
 
         return uiAlertView;

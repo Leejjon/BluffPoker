@@ -54,7 +54,7 @@ public class GameStage extends AbstractStage implements UserInterface {
     private static final String THROW_WITH_ALL_DICES = "Throw with all dices!";
     private static final String AUTO_BUTTON_LABEL = "Auto";
     private static final String CALL_BUTTON_LABEL = "Call";
-    private static final String COULD_NOT_THROW_BECAUSE_CUP_IS_MOVING = "Could not throw. Cup moving: '%b Cup is open : %b";
+    private static final String COULD_NOT_THROW_BECAUSE_CUP_IS_MOVING = "Could not throw. Cup moving: %b Cup is open : %b";
 
     private boolean autoButtonPressed = false;
 
