@@ -9,3 +9,4 @@ core/build/
 ios-moe/build/
 ios-moe/out/
 ios-moe/native/
+local.properties
