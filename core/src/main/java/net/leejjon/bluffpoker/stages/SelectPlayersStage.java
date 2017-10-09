@@ -24,6 +24,7 @@ import java.util.TreeSet;
 public class SelectPlayersStage extends AbstractStage implements ModifyPlayerListener {
     public static final int MAX_PLAYER_NAME_LENGTH = 10;
 
+    // TODO: Make this list thread safe?
     private java.util.List<String> players;
     private List<String> playerList;
 
@@ -193,18 +194,19 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
 
     private void addPlayersToGame(String ... playerNames) {
         for (String playerName : playerNames) {
-            if (playerName.length() > MAX_PLAYER_NAME_LENGTH && playerName.contains(" ")) {
-                final String[] split = playerName.split("\\s+");
-                playerName = split[0];
-
-                // TODO: Add first letter of last name maybe? will suck if people have a lot of initials... Also, for some reaon I cannot retrieve the last names on iOS.
+            String trimmedPlayerName = playerName.trim();
+            // If a playername is to long and contains spaces split it up.
+            if (trimmedPlayerName.length() > MAX_PLAYER_NAME_LENGTH && trimmedPlayerName.substring(0,10).contains(" ")) {
+                trimmedPlayerName = cutOffPlayerName(trimmedPlayerName, players);
+            } else if (trimmedPlayerName.length() > MAX_PLAYER_NAME_LENGTH && !trimmedPlayerName.substring(0,10).contains(" ")) {
+                trimmedPlayerName = trimmedPlayerName.substring(0,10);
             }
 
-            if (playerName.length() > 0 && !playerName.isEmpty() && playerName.length() <= MAX_PLAYER_NAME_LENGTH) {
-                if (!players.contains(playerName)) {
-                    players.add(playerName);
+            if (!trimmedPlayerName.isEmpty() && trimmedPlayerName.length() <= MAX_PLAYER_NAME_LENGTH) {
+                if (!players.contains(trimmedPlayerName)) {
+                    players.add(trimmedPlayerName);
                 } else {
-                    playerAlreadyExistsWarning.setRuntimeSpecificWarning("Player " + playerName + " already exists.");
+                    playerAlreadyExistsWarning.setRuntimeSpecificWarning("Player " + trimmedPlayerName + " already exists.");
                     playerAlreadyExistsWarning.show(this);
                 }
             } else {
@@ -214,6 +216,30 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
 
         // Update the actual UI list with the new players.
         playerList.setItems(players.toArray(new String[players.size()]));
+    }
+
+    static String cutOffPlayerName(final String playerName, java.util.List<String> players) {
+        final String[] parts = playerName.split("\\s+");
+
+        String shorterPlayerName = "";
+        // Why < MAX_PLAYER_NAME_LENGTH - 1? Because if the name is "12345678 X Y", the name will become "12345678 X".
+        // If I didn't put the -1, the last character will always be a space and is not worth adding.
+        for (int i = 0; i < parts.length && shorterPlayerName.length() < MAX_PLAYER_NAME_LENGTH - 1 && (i == 0 || players.contains(shorterPlayerName)); i++) {
+            // If it's not the first part, add a space.
+            if (i > 0) {
+                shorterPlayerName += " ";
+            }
+
+            String potentialPlayerName = shorterPlayerName + parts[i];
+            String potentialPlayerNameCutOff = shorterPlayerName + parts[i].charAt(0);
+
+            if (potentialPlayerName.length() <= MAX_PLAYER_NAME_LENGTH) { // If the potentialPlayerName fits within the limit, use that.
+                shorterPlayerName = potentialPlayerName;
+            } else { // If the potentialPlayerName doesn't fit, use the cut off version.
+                shorterPlayerName = potentialPlayerNameCutOff;
+            }
+        }
+        return shorterPlayerName;
     }
 
     @Override
