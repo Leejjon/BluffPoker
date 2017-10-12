@@ -11,6 +11,7 @@ import apple.foundation.NSLocale;
 import apple.uikit.UIDevice;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.iosmoe.IOSApplicationConfiguration;
+import com.badlogic.gdx.backends.iosmoe.custom.HWMachine;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.interfaces.ContactsRequesterInterface;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
@@ -38,6 +39,10 @@ public class IOSMoeLauncher extends BluffPokerIOSApplication.Delegate implements
     protected BluffPokerIOSApplication createApplication() {
         IOSApplicationConfiguration config = new IOSApplicationConfiguration();
         config.useAccelerometer = true;
+
+        String machineString = HWMachine.getMachineString();
+        BluffPokerIOSDevice device = BluffPokerIOSDevice.getDevice(machineString);
+        Gdx.app.log(BluffPokerGame.TAG, device.machineString);
 
         bluffPokerGame = new BluffPokerGame(this, 2);
 //        MyGdxGame bluffPokerGame = new MyGdxGame();

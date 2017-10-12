@@ -19,6 +19,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.backends.iosmoe.*;
+import com.badlogic.gdx.backends.iosmoe.custom.HWMachine;
 import com.badlogic.gdx.backends.iosrobovm.IOSGLES20;
 import com.badlogic.gdx.backends.iosrobovm.IOSGLES30;
 import com.badlogic.gdx.graphics.Cursor;
@@ -71,26 +72,27 @@ public class BluffPokerIOSGraphics extends NSObject implements Graphics, GLKView
     BluffPokerIOSUIViewController viewController;
 
     @Selector("alloc")
-    public static native BluffPokerIOSGraphics alloc ();
+    public static native BluffPokerIOSGraphics alloc();
 
     @Selector("init")
-    public native BluffPokerIOSGraphics init ();
+    public native BluffPokerIOSGraphics init();
 
     protected BluffPokerIOSGraphics(Pointer peer) {
         super(peer);
     }
 
-    public BluffPokerIOSGraphics init (float scale, BluffPokerIOSApplication app, IOSApplicationConfiguration config, BluffPokerIOSInput input, boolean useGLES30) {
+    public BluffPokerIOSGraphics init(float scale, BluffPokerIOSApplication app, IOSApplicationConfiguration config, BluffPokerIOSInput input, boolean useGLES30) {
         init();
         this.config = config;
 
         final CGRect bounds = app.getBounds();
         // setup view and OpenGL
-        width = (int)bounds.size().width();
-        height = (int)bounds.size().height();
+        width = (int) bounds.size().width();
+        height = (int) bounds.size().height();
 
         if (useGLES30) {
-            context = EAGLContext.alloc().initWithAPI(EAGLRenderingAPI.GLES3);;
+            context = EAGLContext.alloc().initWithAPI(EAGLRenderingAPI.GLES3);
+            ;
             if (context != null)
                 gl20 = gl30 = new IOSGLES30();
             else
@@ -143,10 +145,11 @@ public class BluffPokerIOSGraphics extends NSObject implements Graphics, GLKView
         }
         bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
 
-        // String machineString = HWMachine.getMachineString();
-        BluffPokerIOSDevice device = null; // BluffPokerIOSDevice.getDevice(machineString);
-        // if (device == null)
-        // 	app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
+        String machineString = HWMachine.getMachineString();
+        BluffPokerIOSDevice device = BluffPokerIOSDevice.getDevice(machineString);
+        if (device == null) {
+            app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
+        }
         int ppi = device != null ? device.ppi : 163;
         density = device != null ? device.ppi / 160f : scale;
         ppiX = ppi;
@@ -163,7 +166,7 @@ public class BluffPokerIOSGraphics extends NSObject implements Graphics, GLKView
         return this;
     }
 
-    public void resume () {
+    public void resume() {
         if (!appPaused)
             return;
         appPaused = false;
@@ -177,7 +180,7 @@ public class BluffPokerIOSGraphics extends NSObject implements Graphics, GLKView
         app.listener.resume();
     }
 
-    public void pause () {
+    public void pause() {
         if (appPaused)
             return;
         appPaused = true;
@@ -194,7 +197,7 @@ public class BluffPokerIOSGraphics extends NSObject implements Graphics, GLKView
     boolean created = false;
 
     @Override
-    public void glkViewDrawInRect (GLKView view, @ByValue CGRect rect) {
+    public void glkViewDrawInRect(GLKView view, @ByValue CGRect rect) {
         makeCurrent();
         // massive hack, GLKView resets the viewport on each draw call, so IOSGLES20
         // stores the last known viewport and we reset it here...
@@ -232,12 +235,12 @@ public class BluffPokerIOSGraphics extends NSObject implements Graphics, GLKView
         app.listener.render();
     }
 
-    void makeCurrent () {
+    void makeCurrent() {
         EAGLContext.setCurrentContext(context);
     }
 
     @Override
-    public void glkViewControllerUpdate (GLKViewController glkViewController) {
+    public void glkViewControllerUpdate(GLKViewController glkViewController) {
         makeCurrent();
         app.processRunnables();
         // pause the GLKViewController render loop if we are no longer continuous
@@ -249,158 +252,158 @@ public class BluffPokerIOSGraphics extends NSObject implements Graphics, GLKView
     }
 
     @Override
-    public void glkViewControllerWillPause (GLKViewController controller, boolean pause) {
+    public void glkViewControllerWillPause(GLKViewController controller, boolean pause) {
 
     }
 
     @Override
-    public GL20 getGL20 () {
+    public GL20 getGL20() {
         return gl20;
     }
 
     @Override
-    public int getWidth () {
+    public int getWidth() {
         return width;
     }
 
     @Override
-    public int getHeight () {
+    public int getHeight() {
         return height;
     }
 
     @Override
-    public int getBackBufferWidth () {
+    public int getBackBufferWidth() {
         return width;
     }
 
     @Override
-    public int getBackBufferHeight () {
+    public int getBackBufferHeight() {
         return height;
     }
 
     @Override
-    public float getDeltaTime () {
+    public float getDeltaTime() {
         return deltaTime;
     }
 
     @Override
-    public float getRawDeltaTime () {
+    public float getRawDeltaTime() {
         return deltaTime;
     }
 
     @Override
-    public int getFramesPerSecond () {
+    public int getFramesPerSecond() {
         return fps;
     }
 
     @Override
-    public GraphicsType getType () {
+    public GraphicsType getType() {
         return GraphicsType.iOSGL;
     }
 
     @Override
-    public GLVersion getGLVersion () {
+    public GLVersion getGLVersion() {
         return glVersion;
     }
 
     @Override
-    public float getPpiX () {
+    public float getPpiX() {
         return ppiX;
     }
 
     @Override
-    public float getPpiY () {
+    public float getPpiY() {
         return ppiY;
     }
 
     @Override
-    public float getPpcX () {
+    public float getPpcX() {
         return ppcX;
     }
 
     @Override
-    public float getPpcY () {
+    public float getPpcY() {
         return ppcY;
     }
 
     @Override
-    public float getDensity () {
+    public float getDensity() {
         return density;
     }
 
     @Override
-    public boolean supportsDisplayModeChange () {
+    public boolean supportsDisplayModeChange() {
         return false;
     }
 
     @Override
-    public DisplayMode[] getDisplayModes () {
-        return new DisplayMode[] {getDisplayMode()};
+    public DisplayMode[] getDisplayModes() {
+        return new DisplayMode[]{getDisplayMode()};
     }
 
     @Override
-    public DisplayMode getDisplayMode () {
+    public DisplayMode getDisplayMode() {
         return new BluffPokerIOSGraphics.IOSDisplayMode(getWidth(), getHeight(), config.preferredFramesPerSecond,
                 bufferFormat.r + bufferFormat.g + bufferFormat.b + bufferFormat.a);
     }
 
     @Override
-    public Monitor getPrimaryMonitor () {
+    public Monitor getPrimaryMonitor() {
         return new BluffPokerIOSGraphics.IOSMonitor(0, 0, "Primary Monitor");
     }
 
     @Override
-    public Monitor getMonitor () {
+    public Monitor getMonitor() {
         return getPrimaryMonitor();
     }
 
     @Override
-    public Monitor[] getMonitors () {
-        return new Monitor[] {getPrimaryMonitor()};
+    public Monitor[] getMonitors() {
+        return new Monitor[]{getPrimaryMonitor()};
     }
 
     @Override
-    public DisplayMode[] getDisplayModes (Monitor monitor) {
+    public DisplayMode[] getDisplayModes(Monitor monitor) {
         return getDisplayModes();
     }
 
     @Override
-    public DisplayMode getDisplayMode (Monitor monitor) {
+    public DisplayMode getDisplayMode(Monitor monitor) {
         return getDisplayMode();
     }
 
     @Override
-    public boolean setFullscreenMode (DisplayMode displayMode) {
+    public boolean setFullscreenMode(DisplayMode displayMode) {
         return false;
     }
 
     @Override
-    public boolean setWindowedMode (int width, int height) {
+    public boolean setWindowedMode(int width, int height) {
         return false;
     }
 
     @Override
-    public void setTitle (String title) {
+    public void setTitle(String title) {
     }
 
     @Override
-    public void setVSync (boolean vsync) {
+    public void setVSync(boolean vsync) {
     }
 
     @Override
-    public BufferFormat getBufferFormat () {
+    public BufferFormat getBufferFormat() {
         return bufferFormat;
     }
 
     @Override
-    public boolean supportsExtension (String extension) {
+    public boolean supportsExtension(String extension) {
         if (extensions == null)
             extensions = Gdx.gl.glGetString(GL20.GL_EXTENSIONS);
         return extensions.contains(extension);
     }
 
     @Override
-    public void setContinuousRendering (boolean isContinuous) {
+    public void setContinuousRendering(boolean isContinuous) {
         if (isContinuous != this.isContinuous) {
             this.isContinuous = isContinuous;
             // start the GLKViewController if we go from non-continuous -> continuous
@@ -410,12 +413,12 @@ public class BluffPokerIOSGraphics extends NSObject implements Graphics, GLKView
     }
 
     @Override
-    public boolean isContinuousRendering () {
+    public boolean isContinuousRendering() {
         return isContinuous;
     }
 
     @Override
-    public void requestRendering () {
+    public void requestRendering() {
         isFrameRequested = true;
         // start the GLKViewController if we are in non-continuous mode
         // (we should already be started in continuous mode)
@@ -424,36 +427,36 @@ public class BluffPokerIOSGraphics extends NSObject implements Graphics, GLKView
     }
 
     @Override
-    public boolean isFullscreen () {
+    public boolean isFullscreen() {
         return true;
     }
 
     @Override
-    public boolean isGL30Available () {
+    public boolean isGL30Available() {
         return false;
     }
 
     @Override
-    public GL30 getGL30 () {
+    public GL30 getGL30() {
         return null;
     }
 
     @Override
-    public long getFrameId () {
+    public long getFrameId() {
         return frameId;
     }
 
     @Override
-    public Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot) {
+    public Cursor newCursor(Pixmap pixmap, int xHotspot, int yHotspot) {
         return null;
     }
 
     @Override
-    public void setCursor (Cursor cursor) {
+    public void setCursor(Cursor cursor) {
     }
 
     @Override
-    public void setSystemCursor (Cursor.SystemCursor systemCursor) {
+    public void setSystemCursor(Cursor.SystemCursor systemCursor) {
     }
 
     @Override
@@ -465,13 +468,13 @@ public class BluffPokerIOSGraphics extends NSObject implements Graphics, GLKView
     }
 
     private class IOSDisplayMode extends DisplayMode {
-        protected IOSDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
+        protected IOSDisplayMode(int width, int height, int refreshRate, int bitsPerPixel) {
             super(width, height, refreshRate, bitsPerPixel);
         }
     }
 
     private class IOSMonitor extends Monitor {
-        protected IOSMonitor (int virtualX, int virtualY, String name) {
+        protected IOSMonitor(int virtualX, int virtualY, String name) {
             super(virtualX, virtualY, name);
         }
     }
