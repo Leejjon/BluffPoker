@@ -40,10 +40,6 @@ public class IOSMoeLauncher extends BluffPokerIOSApplication.Delegate implements
         IOSApplicationConfiguration config = new IOSApplicationConfiguration();
         config.useAccelerometer = true;
 
-        String machineString = HWMachine.getMachineString();
-        BluffPokerIOSDevice device = BluffPokerIOSDevice.getDevice(machineString);
-        Gdx.app.log(BluffPokerGame.TAG, device.machineString);
-
         bluffPokerGame = new BluffPokerGame(this, 2);
 //        MyGdxGame bluffPokerGame = new MyGdxGame();
 

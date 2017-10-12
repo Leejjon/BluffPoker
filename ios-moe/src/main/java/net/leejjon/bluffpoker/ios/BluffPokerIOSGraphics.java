@@ -145,11 +145,11 @@ public class BluffPokerIOSGraphics extends NSObject implements Graphics, GLKView
         }
         bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
 
-        String machineString = HWMachine.getMachineString();
-        BluffPokerIOSDevice device = BluffPokerIOSDevice.getDevice(machineString);
-        if (device == null) {
-            app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
-        }
+        //String machineString = HWMachine.getMachineString();
+        BluffPokerIOSDevice device = null; //BluffPokerIOSDevice.getDevice(machineString);
+        //if (device == null) {
+            //app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
+        //}
         int ppi = device != null ? device.ppi : 163;
         density = device != null ? device.ppi / 160f : scale;
         ppiX = ppi;
