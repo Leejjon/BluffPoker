@@ -8,5 +8,6 @@ core/build/
 /gradle.properties
 ios-moe/build/
 ios-moe/out/
-ios-moe/native/
+ios-moe/xcode/native/
+ios-moe/xcode/ios-moe/custom.xconfig
 local.properties

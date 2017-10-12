@@ -7,13 +7,11 @@ import apple.contacts.CNContactStore;
 import apple.contacts.c.Contacts;
 import apple.foundation.NSArray;
 import apple.foundation.NSError;
-import apple.foundation.NSLocale;
 import apple.uikit.UIDevice;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.iosmoe.IOSApplicationConfiguration;
-import com.badlogic.gdx.backends.iosmoe.custom.HWMachine;
 import net.leejjon.bluffpoker.BluffPokerGame;
-import net.leejjon.bluffpoker.interfaces.ContactsRequesterInterface;
+import net.leejjon.bluffpoker.interfaces.PlatformSpecificInterface;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
 import org.moe.natj.general.Pointer;
 
@@ -22,10 +20,9 @@ import org.moe.natj.general.ptr.BoolPtr;
 import org.moe.natj.general.ptr.Ptr;
 import org.moe.natj.general.ptr.impl.PtrFactory;
 
-import java.util.Locale;
 import java.util.Set;
 
-public class IOSMoeLauncher extends BluffPokerIOSApplication.Delegate implements ContactsRequesterInterface {
+public class IOSMoeLauncher extends BluffPokerIOSApplication.Delegate implements PlatformSpecificInterface {
 
     protected IOSMoeLauncher(Pointer peer) {
         super(peer);
@@ -40,7 +37,7 @@ public class IOSMoeLauncher extends BluffPokerIOSApplication.Delegate implements
         IOSApplicationConfiguration config = new IOSApplicationConfiguration();
         config.useAccelerometer = true;
 
-        bluffPokerGame = new BluffPokerGame(this, 2);
+        bluffPokerGame = new BluffPokerGame(this);
 //        MyGdxGame bluffPokerGame = new MyGdxGame();
 
         bluffPokerIOSApplication = new BluffPokerIOSApplication(bluffPokerGame, config);
@@ -107,5 +104,36 @@ public class IOSMoeLauncher extends BluffPokerIOSApplication.Delegate implements
                 }
             }
         });
+    }
+
+    @Override
+    public int getZoomFactor() {
+        return IPhones.getZoomFactorForResolution(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    }
+
+    private enum IPhones {
+        IPHONE_5S_SE(640, 1136, 2),
+        IPHONE_6_6S_7_8(750, 1334, 2),
+        IPHONE_6PLUS_7PLUS_8PLUS(1242, 2208, 3),
+        IPHONE_X(1125, 2436, 3);
+
+        private final int width;
+        private final int height;
+        private final int zoomfactor;
+
+        IPhones(int width, int height, int zoomfactor) {
+            this.width = width;
+            this.height = height;
+            this.zoomfactor = zoomfactor;
+        }
+
+        public static int getZoomFactorForResolution(int width, int height) {
+            for (IPhones iPhones : IPhones.values()) {
+                if (iPhones.width == width && iPhones.height == height) {
+                    return iPhones.zoomfactor;
+                }
+            }
+            return 2;
+        }
     }
 }

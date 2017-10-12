@@ -13,7 +13,7 @@ import net.leejjon.bluffpoker.assets.TextureKey;
 import net.leejjon.bluffpoker.dialogs.AddNewPlayerDialog;
 import net.leejjon.bluffpoker.dialogs.PlayersFromPhonebookDialog;
 import net.leejjon.bluffpoker.dialogs.WarningDialog;
-import net.leejjon.bluffpoker.interfaces.ContactsRequesterInterface;
+import net.leejjon.bluffpoker.interfaces.PlatformSpecificInterface;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
 
@@ -33,7 +33,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
     private WarningDialog minimalTwoPlayersRequired;
     private final PlayersFromPhonebookDialog playersFromPhonebookDialog;
 
-    public SelectPlayersStage(Skin uiSkin, final StageInterface stageInterface, final ContactsRequesterInterface contactsRequester) {
+    public SelectPlayersStage(Skin uiSkin, final StageInterface stageInterface, final PlatformSpecificInterface contactsRequester) {
         super(false);
 
         playerAlreadyExistsWarning = new WarningDialog(uiSkin);

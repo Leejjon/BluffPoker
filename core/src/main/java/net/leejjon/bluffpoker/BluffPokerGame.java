@@ -5,7 +5,7 @@ import java.util.List;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ObjectMap;
 import net.leejjon.bluffpoker.assets.TextureKey;
-import net.leejjon.bluffpoker.interfaces.ContactsRequesterInterface;
+import net.leejjon.bluffpoker.interfaces.PlatformSpecificInterface;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 import net.leejjon.bluffpoker.listener.PhoneInputListener;
 import net.leejjon.bluffpoker.state.GameState;
@@ -30,15 +30,12 @@ public class BluffPokerGame extends ApplicationAdapter implements
     private SettingsStage settingsStage;
     private GameStage gameStage;
 
-    private ContactsRequesterInterface contactsRequester;
+    private static PlatformSpecificInterface platformSpecificInterface;
 
     private ObjectMap<TextureKey, Texture> textureMap;
 
-    private static int divideScreenByThis;
-
-    public BluffPokerGame(ContactsRequesterInterface contactsRequester, int divideScreenByThis) {
-        this.contactsRequester = contactsRequester;
-        this.divideScreenByThis = divideScreenByThis;
+    public BluffPokerGame(PlatformSpecificInterface platformSpecificInterface) {
+        this.platformSpecificInterface = platformSpecificInterface;
     }
 
     @Override
@@ -55,7 +52,7 @@ public class BluffPokerGame extends ApplicationAdapter implements
         // Create the stages.
         startMenuStage = new StartStage(uiSkin, this);
         settingsStage = new SettingsStage(uiSkin, this, settings);
-        selectPlayersStage = new SelectPlayersStage(uiSkin, this, contactsRequester);
+        selectPlayersStage = new SelectPlayersStage(uiSkin, this, platformSpecificInterface);
         gameStage = new GameStage(uiSkin, this);
 
         // Make sure touch input goes to the startStage.
@@ -152,6 +149,6 @@ public class BluffPokerGame extends ApplicationAdapter implements
     }
 
     public static int getDivideScreenByThis() {
-        return divideScreenByThis;
+        return platformSpecificInterface.getZoomFactor();
     }
 }

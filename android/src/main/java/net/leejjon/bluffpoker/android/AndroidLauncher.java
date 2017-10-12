@@ -24,10 +24,11 @@ import android.util.DisplayMetrics;
 
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import net.leejjon.bluffpoker.android.keyboard.BluffPokerAndroidInput;
-import net.leejjon.bluffpoker.interfaces.ContactsRequesterInterface;
+import net.leejjon.bluffpoker.interfaces.PlatformSpecificInterface;
+import net.leejjon.bluffpoker.interfaces.ZoomFactorInterface;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
 
-public class AndroidLauncher extends AndroidApplication implements SensorEventListener, ContactsRequesterInterface {
+public class AndroidLauncher extends AndroidApplication implements SensorEventListener, PlatformSpecificInterface {
     private BluffPokerGame game;
 
     private static final int READ_CONTACTS_FOR_PLAYER_NAME = 1;
@@ -53,7 +54,7 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
         sensorManager.registerListener(this, acceleroSensor,
                 SensorManager.SENSOR_DELAY_NORMAL);
 
-        game = new BluffPokerGame(this, getZoomFactor());
+        game = new BluffPokerGame(this);
 
         initialize(game, config);
 //        initialize(new MyGdxGame(), config);
@@ -61,24 +62,25 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
         input = new BluffPokerAndroidInput(this, this, graphics.getView(), config);
     }
 
-    private int getZoomFactor() {
+    @Override
+    public int getZoomFactor() {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
 
         // 2 Is a nice default isn't it?
-        int zoomfactor = 2;
+        int zoomFactor = 2;
         switch (getResources().getDisplayMetrics().densityDpi) {
             case DisplayMetrics.DENSITY_MEDIUM:
-                zoomfactor = 1;
+                zoomFactor = 1;
                 break;
             case DisplayMetrics.DENSITY_HIGH:
-                zoomfactor = 2;
+                zoomFactor = 2;
                 break;
             case DisplayMetrics.DENSITY_XHIGH:
                 // If the screen is square, make it a smaller.
                 // For BlackBerry Classic, Q10 and Q5
-                zoomfactor = (size.x == size.y) ? 3 : 2;
+                zoomFactor = (size.x == size.y) ? 3 : 2;
                 break;
             // Robert's Galaxy S6 Edge had DENSITY_XXHIGH with 2560x1440
             case DisplayMetrics.DENSITY_XXHIGH:
@@ -87,10 +89,10 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
             case DisplayMetrics.DENSITY_560:
                 // If the screen is square, make it smaller.
                 // For BlackBerry Passport.
-                zoomfactor = (size.x == size.y) ? 5 : 3;
+                zoomFactor = (size.x == size.y) ? 5 : 3;
                 break;
         }
-        return zoomfactor;
+        return zoomFactor;
     }
 
     @Override
