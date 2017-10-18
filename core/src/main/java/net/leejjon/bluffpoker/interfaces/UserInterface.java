@@ -1,19 +1,23 @@
 package net.leejjon.bluffpoker.interfaces;
 
+import net.leejjon.bluffpoker.enums.TutorialMessage;
+
 public interface UserInterface {
-    void log(String message);
-
-    void finishGame(String winner);
-
-    void restart();
+    void call();
 
     void enableCallUserInterface();
 
     void disableCallUserInterface();
 
-    void setCallField(String call);
+    void finishGame(String winner);
 
-    void call();
+    void log(String message);
 
     void resetCall();
+
+    void restart();
+
+    void setCallField(String call);
+
+    void showTutorialMessage(TutorialMessage message, String ... arguments);
 }

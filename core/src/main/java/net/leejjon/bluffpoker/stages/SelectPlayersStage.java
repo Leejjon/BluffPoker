@@ -22,6 +22,7 @@ import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SelectPlayersStage extends AbstractStage implements ModifyPlayerListener {
     public static final int MAX_PLAYER_NAME_LENGTH = 10;
@@ -35,12 +36,12 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
     private final WarningDialog playerNameInvalid;
     private final WarningDialog minimalTwoPlayersRequired;
     private final PlayersFromPhonebookDialog playersFromPhonebookDialog;
-    private final StageInterface stageInterface;
+
+    private AtomicBoolean orderingHintShown = new AtomicBoolean(false);
 
     public SelectPlayersStage(Skin uiSkin, TutorialDialog tutorialDialog, final StageInterface stageInterface, final PlatformSpecificInterface contactsRequester) {
         super(false);
         this.tutorialDialog = tutorialDialog;
-        this.stageInterface = stageInterface;
 
         playerAlreadyExistsWarning = new WarningDialog(uiSkin);
         playerNameInvalid = new WarningDialog("Player name empty or too long!", uiSkin);
@@ -168,16 +169,14 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
     public void startSelectingPlayers() {
         setVisible(true);
         Gdx.input.setInputProcessor(this);
-
-        if (stageInterface.getSettings().isTutorialMode()) {
-            tutorialDialog.showTutorialMessage(this, TutorialMessage.PLAYER_EXPLANATION);
-        }
+        tutorialDialog.showTutorialMessage(this, TutorialMessage.PLAYER_EXPLANATION);
     }
 
     private void startGame(StageInterface changeScreen) {
         if (players.size() < 2) {
             minimalTwoPlayersRequired.show(this);
         } else {
+            orderingHintShown.set(false);
             changeScreen.startGame(players);
         }
     }
@@ -209,7 +208,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
     private void addPlayersToGame(String ... playerNames) {
         for (String playerName : playerNames) {
             String trimmedPlayerName = playerName.trim();
-            // If a playername is to long and contains spaces split it up.
+            // If a playerName is to long and contains spaces split it up.
             if (trimmedPlayerName.length() > MAX_PLAYER_NAME_LENGTH && trimmedPlayerName.substring(0,10).contains(" ")) {
                 trimmedPlayerName = cutOffPlayerName(trimmedPlayerName, players);
             } else if (trimmedPlayerName.length() > MAX_PLAYER_NAME_LENGTH && !trimmedPlayerName.substring(0,10).contains(" ")) {
@@ -218,6 +217,9 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
 
             if (!trimmedPlayerName.isEmpty() && trimmedPlayerName.length() <= MAX_PLAYER_NAME_LENGTH) {
                 if (!players.contains(trimmedPlayerName)) {
+                    if (players.size() == 2 && orderingHintShown.weakCompareAndSet(false, true)) {
+                        tutorialDialog.showTutorialMessage(this, TutorialMessage.ORDERING_PLAYERS);
+                    }
                     players.add(trimmedPlayerName);
                 } else {
                     playerAlreadyExistsWarning.setRuntimeSpecificWarning("Player " + trimmedPlayerName + " already exists.");

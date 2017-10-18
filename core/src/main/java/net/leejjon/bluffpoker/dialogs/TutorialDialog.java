@@ -48,7 +48,7 @@ public class TutorialDialog extends Dialog {
         });
     }
 
-    public void showTutorialMessage(Stage stage, TutorialMessage message) {
+    public void showTutorialMessage(Stage stage, TutorialMessage message, String ... parameters) {
         this.lastStage = stage;
 
         if (settings.isTutorialMode()) {
@@ -62,7 +62,7 @@ public class TutorialDialog extends Dialog {
             getContentTable().clearChildren();
             getContentTable().padTop(padding);
 
-            label.setText(message.getMessage());
+            label.setText(String.format(message.getMessage(), parameters));
 
             getContentTable().add(label).width(getFiftyPercentOfScreen());
             show(stage);

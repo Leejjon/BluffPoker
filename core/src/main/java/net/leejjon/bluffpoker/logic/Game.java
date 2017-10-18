@@ -4,6 +4,7 @@ import com.badlogic.gdx.audio.Sound;
 import net.leejjon.bluffpoker.actions.LiftCupAction;
 import net.leejjon.bluffpoker.actors.Cup;
 import net.leejjon.bluffpoker.actors.Dice;
+import net.leejjon.bluffpoker.enums.TutorialMessage;
 import net.leejjon.bluffpoker.interfaces.GameStatusInterface;
 import net.leejjon.bluffpoker.listener.CupListener;
 import net.leejjon.bluffpoker.listener.DiceListener;
@@ -49,7 +50,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
 
     private static final String BELIEVE_IT_OR_NOT = "Believe it or not, ";
     private static final String WATCH_OWN_THROW = "You can watch your own throw, ";
-    private static final String SHAKE_THE_CUP = "Shake the cup: ";
+    private static final String SHAKE_THE_CUP = "Shake the cup: %s";
     private static final String CALL_THREE_IDENTICAL_NUMBERS_HIGHER_THAN = "Call three the identical numbers higher than ";
     private static final String YOUR_CALL_MUST_BE_HIGHER_THAN = "Your call must be higher than: ";
     private static final String BLIND_MESSAGE = " (blind)";
@@ -107,7 +108,8 @@ public class Game implements GameInputInterface, GameStatusInterface {
         cup.reset();
         setGameStatusBooleans();
         constructPlayers();
-        userInterface.log(SHAKE_THE_CUP + currentPlayer.getName());
+        userInterface.log(String.format(SHAKE_THE_CUP, currentPlayer.getName()));
+        userInterface.showTutorialMessage(TutorialMessage.GAME_START, currentPlayer.getName());
     }
 
     public void validateCall(NumberCombination newCall) throws InputValidationException {
@@ -281,7 +283,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
             hasToThrow = true;
             hasThrown = false;
 
-            userInterface.log(SHAKE_THE_CUP + currentPlayer.getName());
+            userInterface.log(String.format(SHAKE_THE_CUP, currentPlayer.getName()));
         }
     }
 

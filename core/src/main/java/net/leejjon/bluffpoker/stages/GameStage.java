@@ -15,6 +15,7 @@ import net.leejjon.bluffpoker.actors.Cup;
 import net.leejjon.bluffpoker.actors.Dice;
 import net.leejjon.bluffpoker.enums.TextureKey;
 import net.leejjon.bluffpoker.dialogs.*;
+import net.leejjon.bluffpoker.enums.TutorialMessage;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 import net.leejjon.bluffpoker.interfaces.UserInterface;
 import net.leejjon.bluffpoker.logic.*;
@@ -43,6 +44,7 @@ public class GameStage extends AbstractStage implements UserInterface {
     private WarningDialog throwAtLeastOneDice;
     private WarningDialog throwAllDices;
     private WinnerDialog winnerDialog;
+    private TutorialDialog tutorialDialog;
 
     private Label callInputField;
 
@@ -57,9 +59,10 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     private boolean autoButtonPressed = false;
 
-    public GameStage(Skin uiSkin, final StageInterface stageInterface) {
+    public GameStage(Skin uiSkin, TutorialDialog tutorialDialog, final StageInterface stageInterface) {
         super(false);
         this.stageInterface = stageInterface;
+        this.tutorialDialog = tutorialDialog;
 
         Texture callBoardTexture = stageInterface.getTexture(TextureKey.CALL_BOARD);
         Texture closedCupTexture = stageInterface.getTexture(TextureKey.CLOSED_CUP);
@@ -270,6 +273,11 @@ public class GameStage extends AbstractStage implements UserInterface {
     @Override
     public void setCallField(String call) {
         callInputField.setText(call);
+    }
+
+    @Override
+    public void showTutorialMessage(TutorialMessage message, String... arguments) {
+        tutorialDialog.showTutorialMessage(this, message, arguments);
     }
 
     @Override
