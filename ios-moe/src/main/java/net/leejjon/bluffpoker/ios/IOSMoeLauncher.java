@@ -114,8 +114,8 @@ public class IOSMoeLauncher extends BluffPokerIOSApplication.Delegate implements
     private enum IPhones {
         IPHONE_5S_SE(640, 1136, 2),
         IPHONE_6_6S_7_8(750, 1334, 2),
-        IPHONE_6PLUS_7PLUS_8PLUS(1242, 2208, 3),
-        IPHONE_X(1125, 2436, 3);
+        IPHONE_6PLUS_7PLUS_8PLUS(1242, 2208, 4),
+        IPHONE_X(1125, 2001, 3);
 
         private final int width;
         private final int height;
