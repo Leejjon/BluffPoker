@@ -4,7 +4,8 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ObjectMap;
-import net.leejjon.bluffpoker.assets.TextureKey;
+import net.leejjon.bluffpoker.enums.TextureKey;
+import net.leejjon.bluffpoker.dialogs.TutorialDialog;
 import net.leejjon.bluffpoker.interfaces.PlatformSpecificInterface;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 import net.leejjon.bluffpoker.listener.PhoneInputListener;
@@ -25,12 +26,19 @@ public class BluffPokerGame extends ApplicationAdapter implements
     private Settings settings;
     private Skin uiSkin;
 
+    private TutorialDialog tutorialDialog;
+
     private StartStage startMenuStage;
     private SelectPlayersStage selectPlayersStage;
     private SettingsStage settingsStage;
     private GameStage gameStage;
 
+    // Made it static because on iOS the zoomfactor cannot be calculated before the create method is initiated.
     private static PlatformSpecificInterface platformSpecificInterface;
+
+    public static int getDivideScreenByThis() {
+        return platformSpecificInterface.getZoomFactor();
+    }
 
     private ObjectMap<TextureKey, Texture> textureMap;
 
@@ -49,10 +57,12 @@ public class BluffPokerGame extends ApplicationAdapter implements
 
         textureMap = TextureKey.getAllTextures();
 
+        tutorialDialog = new TutorialDialog(uiSkin, getSettings());
+
         // Create the stages.
         startMenuStage = new StartStage(uiSkin, this);
         settingsStage = new SettingsStage(uiSkin, this, settings);
-        selectPlayersStage = new SelectPlayersStage(uiSkin, this, platformSpecificInterface);
+        selectPlayersStage = new SelectPlayersStage(uiSkin, tutorialDialog,this, platformSpecificInterface);
         gameStage = new GameStage(uiSkin, this);
 
         // Make sure touch input goes to the startStage.
@@ -86,14 +96,12 @@ public class BluffPokerGame extends ApplicationAdapter implements
     @Override
     public void startSelectingPlayersToPlayWith() {
         startMenuStage.setVisible(false);
-        selectPlayersStage.setVisible(true);
-        Gdx.input.setInputProcessor(selectPlayersStage);
+        selectPlayersStage.startSelectingPlayers();
     }
 
     @Override
     public void continuePlaying() {
         startMenuStage.setVisible(false);
-
         gameStage.setVisible(true);
     }
 
@@ -138,6 +146,11 @@ public class BluffPokerGame extends ApplicationAdapter implements
     }
 
     @Override
+    public Settings getSettings() {
+        return settings;
+    }
+
+    @Override
     public void shakePhone() {
         try {
             if (gameStage.isVisible()) {
@@ -146,9 +159,5 @@ public class BluffPokerGame extends ApplicationAdapter implements
         } catch (NullPointerException e) {
             Gdx.app.log("bluffpoker", "GameStage is null, why??", e);
         }
-    }
-
-    public static int getDivideScreenByThis() {
-        return platformSpecificInterface.getZoomFactor();
     }
 }

@@ -3,8 +3,9 @@ package net.leejjon.bluffpoker.interfaces;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Texture;
-import net.leejjon.bluffpoker.assets.TextureKey;
+import net.leejjon.bluffpoker.enums.TextureKey;
 import net.leejjon.bluffpoker.state.GameState;
+import net.leejjon.bluffpoker.state.Settings;
 
 public interface StageInterface {
 	void startSelectingPlayersToPlayWith();
@@ -15,5 +16,6 @@ public interface StageInterface {
 	void startGame(List<String> players);
 	GameState getState();
     Texture getTexture(TextureKey textureKey);
+    Settings getSettings();
     // TODO: add getUISkin method.
 }

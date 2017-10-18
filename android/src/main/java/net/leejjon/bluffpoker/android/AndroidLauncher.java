@@ -25,7 +25,6 @@ import android.util.DisplayMetrics;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import net.leejjon.bluffpoker.android.keyboard.BluffPokerAndroidInput;
 import net.leejjon.bluffpoker.interfaces.PlatformSpecificInterface;
-import net.leejjon.bluffpoker.interfaces.ZoomFactorInterface;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
 
 public class AndroidLauncher extends AndroidApplication implements SensorEventListener, PlatformSpecificInterface {

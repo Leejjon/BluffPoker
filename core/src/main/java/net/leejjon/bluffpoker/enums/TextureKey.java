@@ -1,4 +1,4 @@
-package net.leejjon.bluffpoker.assets;
+package net.leejjon.bluffpoker.enums;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -17,20 +17,14 @@ public enum TextureKey {
     DICE_LOCK("data/dicelock.png"),
     OPEN_CUP("data/openCup.png");
 
-    private String fileName = null;
-
-    TextureKey() {}
+    private String fileName;
 
     TextureKey(String fileName) {
         this.fileName = fileName;
     }
 
     protected Texture get() {
-        if (fileName != null) {
-            return new Texture(fileName);
-        } else {
-            throw new IllegalAccessError("Texture not found.");
-        }
+        return new Texture(fileName);
     }
 
     private static Texture generateOnePixelTexture(float red, float green, float blue, float alpha) {

@@ -9,10 +9,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.actors.BlackBoard;
-import net.leejjon.bluffpoker.assets.TextureKey;
+import net.leejjon.bluffpoker.enums.TextureKey;
 import net.leejjon.bluffpoker.dialogs.AddNewPlayerDialog;
 import net.leejjon.bluffpoker.dialogs.PlayersFromPhonebookDialog;
+import net.leejjon.bluffpoker.dialogs.TutorialDialog;
 import net.leejjon.bluffpoker.dialogs.WarningDialog;
+import net.leejjon.bluffpoker.enums.TutorialMessage;
 import net.leejjon.bluffpoker.interfaces.PlatformSpecificInterface;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
@@ -28,13 +30,17 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
     private java.util.List<String> players;
     private List<String> playerList;
 
-    private WarningDialog playerAlreadyExistsWarning;
-    private WarningDialog playerNameInvalid;
-    private WarningDialog minimalTwoPlayersRequired;
+    private final TutorialDialog tutorialDialog;
+    private final WarningDialog playerAlreadyExistsWarning;
+    private final WarningDialog playerNameInvalid;
+    private final WarningDialog minimalTwoPlayersRequired;
     private final PlayersFromPhonebookDialog playersFromPhonebookDialog;
+    private final StageInterface stageInterface;
 
-    public SelectPlayersStage(Skin uiSkin, final StageInterface stageInterface, final PlatformSpecificInterface contactsRequester) {
+    public SelectPlayersStage(Skin uiSkin, TutorialDialog tutorialDialog, final StageInterface stageInterface, final PlatformSpecificInterface contactsRequester) {
         super(false);
+        this.tutorialDialog = tutorialDialog;
+        this.stageInterface = stageInterface;
 
         playerAlreadyExistsWarning = new WarningDialog(uiSkin);
         playerNameInvalid = new WarningDialog("Player name empty or too long!", uiSkin);
@@ -43,7 +49,6 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         playersFromPhonebookDialog = new PlayersFromPhonebookDialog(uiSkin, this);
 
         players = new ArrayList<>();
-
         players.add(contactsRequester.getDeviceOwnerName());
 
         final float padding = 7f;
@@ -160,7 +165,16 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         return drawable;
     }
 
-    protected void startGame(StageInterface changeScreen) {
+    public void startSelectingPlayers() {
+        setVisible(true);
+        Gdx.input.setInputProcessor(this);
+
+        if (stageInterface.getSettings().isTutorialMode()) {
+            tutorialDialog.showTutorialMessage(this, TutorialMessage.PLAYER_EXPLANATION);
+        }
+    }
+
+    private void startGame(StageInterface changeScreen) {
         if (players.size() < 2) {
             minimalTwoPlayersRequired.show(this);
         } else {
