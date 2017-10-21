@@ -277,7 +277,7 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     @Override
     public void showTutorialMessage(TutorialMessage message, String... arguments) {
-        tutorialDialog.showTutorialMessage(this, message, arguments);
+        tutorialDialog.addToTutorialMessageQueue(this, message, arguments);
     }
 
     @Override

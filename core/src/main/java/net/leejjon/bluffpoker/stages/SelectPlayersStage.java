@@ -169,7 +169,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
     public void startSelectingPlayers() {
         setVisible(true);
         Gdx.input.setInputProcessor(this);
-        tutorialDialog.showTutorialMessage(this, TutorialMessage.PLAYER_EXPLANATION);
+        tutorialDialog.addToTutorialMessageQueue(this, TutorialMessage.PLAYER_EXPLANATION);
     }
 
     private void startGame(StageInterface changeScreen) {
@@ -217,8 +217,8 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
 
             if (!trimmedPlayerName.isEmpty() && trimmedPlayerName.length() <= MAX_PLAYER_NAME_LENGTH) {
                 if (!players.contains(trimmedPlayerName)) {
-                    if (players.size() == 2 && orderingHintShown.weakCompareAndSet(false, true)) {
-                        tutorialDialog.showTutorialMessage(this, TutorialMessage.ORDERING_PLAYERS);
+                    if (players.size() == 2 && orderingHintShown.compareAndSet(false, true)) {
+                        tutorialDialog.addToTutorialMessageQueue(this, TutorialMessage.ORDERING_PLAYERS);
                     }
                     players.add(trimmedPlayerName);
                 } else {

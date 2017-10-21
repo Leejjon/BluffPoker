@@ -49,7 +49,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
     private boolean blindPass = false;
 
     private static final String BELIEVE_IT_OR_NOT = "Believe it or not, ";
-    private static final String WATCH_OWN_THROW = "You can watch your own throw, ";
+    private static final String WATCH_OWN_THROW = "You can watch your own throw, %s";
     private static final String SHAKE_THE_CUP = "Shake the cup: %s";
     private static final String CALL_THREE_IDENTICAL_NUMBERS_HIGHER_THAN = "Call three the identical numbers higher than ";
     private static final String YOUR_CALL_MUST_BE_HIGHER_THAN = "Your call must be higher than: ";
@@ -481,7 +481,8 @@ public class Game implements GameInputInterface, GameStatusInterface {
         rightDice.unlock();
 
         if (firstThrowSinceDeath) {
-            userInterface.log(WATCH_OWN_THROW + currentPlayer.getName());
+            userInterface.log(String.format(WATCH_OWN_THROW, currentPlayer.getName()));
+            userInterface.showTutorialMessage(TutorialMessage.TEST);
         } else {
             userInterface.log(NOW_ENTER_YOUR_CALL);
         }
