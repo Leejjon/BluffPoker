@@ -189,23 +189,25 @@ public class GameStage extends AbstractStage implements UserInterface {
     }
 
     @Override
-    public void call() {
+    public void call(String call) {
         if (currentGame.isAllowedToCall()) {
             boolean validCall = false;
             try {
-                currentGame.validateCall(getNewCall());
+                currentGame.validateCall(getNewCall(call));
                 validCall = true;
             } catch (InputValidationException e) {
                 if (currentGame.hasBelieved666()) {
-                    callNotThreeIdenticalNumbersDialog.setInvalidCallMessage(currentGame.getLatestCall());
+                    callNotThreeIdenticalNumbersDialog.setInvalidCallMessage(currentGame.getLatestCall().getNumberCombination());
                     callNotThreeIdenticalNumbersDialog.show(this);
                 } else {
-                    callTooLowDialog.callTooLow(currentGame.getLatestCall());
+                    callTooLowDialog.callTooLow(currentGame.getLatestCall().getNumberCombination());
                     callTooLowDialog.show(this);
                 }
             }
 
             if (validCall) {
+                lockMessageAlreadyShowed = false;
+                setCallField(call);
                 disableCallUserInterface();
             }
         } else {
@@ -280,6 +282,16 @@ public class GameStage extends AbstractStage implements UserInterface {
         tutorialDialog.addToTutorialMessageQueue(this, message, arguments);
     }
 
+    private boolean lockMessageAlreadyShowed = false;
+
+    @Override
+    public void showLockMessage() {
+        if (!lockMessageAlreadyShowed) {
+            lockMessageAlreadyShowed = true;
+            showTutorialMessage(TutorialMessage.EXPLAIN_LOCK);
+        }
+    }
+
     @Override
     public void enableCallUserInterface() {
         callButton.setDisabled(false);
@@ -338,13 +350,12 @@ public class GameStage extends AbstractStage implements UserInterface {
         latestOutputLabel.setText("");
     }
 
-    private NumberCombination getNewCall() throws InputValidationException {
-        return NumberCombination.validNumberCombinationFrom(callInputField.getText().toString());
+    private NumberCombination getNewCall(String call) throws InputValidationException {
+        return NumberCombination.validNumberCombinationFrom(call.toString());
     }
 
     @Override
     public void resetCall() {
-        autoButton.setDisabled(true);
-        callInputField.setText(NumberCombination.MIN.toString());
+        setCallField(NumberCombination.MIN.toString());
     }
 }

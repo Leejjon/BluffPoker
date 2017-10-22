@@ -44,7 +44,7 @@ public class BluffPokerAndroidInput extends AndroidInputThreePlus {
             input.setHint(hint);
 
             // Instead of just setting the text, we first add an empty String.
-            input.setText("");
+            input.getText().clear();
 
             // And then we append our value so the cursor will be at the end.
             input.append(text);

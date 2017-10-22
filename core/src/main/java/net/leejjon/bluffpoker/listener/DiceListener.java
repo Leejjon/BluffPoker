@@ -4,15 +4,18 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import net.leejjon.bluffpoker.actors.Dice;
 import net.leejjon.bluffpoker.interfaces.GameStatusInterface;
+import net.leejjon.bluffpoker.interfaces.UserInterface;
 
 public class DiceListener extends ActorGestureListener {
 
-    private Dice dice;
-    private GameStatusInterface gameStatusInterface;
+    private final Dice dice;
+    private final GameStatusInterface gameStatusInterface;
+    private final UserInterface userInterface;
 
-    public DiceListener(Dice dice, GameStatusInterface gameStatusInterface) {
+    public DiceListener(Dice dice, GameStatusInterface gameStatusInterface, UserInterface userInterface) {
         this.dice = dice;
         this.gameStatusInterface = gameStatusInterface;
+        this.userInterface = userInterface;
     }
 
     @Override
@@ -22,6 +25,7 @@ public class DiceListener extends ActorGestureListener {
             dice.pullAwayFromCup();
             if (gameStatusInterface.isAllowedToLock()) {
                 dice.lock();
+                userInterface.showLockMessage();
             }
         } else {
             if (gameStatusInterface.isAllowedToLock()) {
@@ -47,6 +51,7 @@ public class DiceListener extends ActorGestureListener {
                 dice.pullAwayFromCup();
                 if (gameStatusInterface.isAllowedToLock()) {
                     dice.lock();
+                    userInterface.showLockMessage();
                 }
             }
         }

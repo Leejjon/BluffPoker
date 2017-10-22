@@ -7,6 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import net.leejjon.bluffpoker.BluffPokerGame;
+import net.leejjon.bluffpoker.enums.TutorialMessage;
+import net.leejjon.bluffpoker.interfaces.UserInterface;
 import net.leejjon.bluffpoker.logic.DiceLocation;
 import net.leejjon.bluffpoker.interfaces.Lockable;
 import net.leejjon.bluffpoker.stages.GameStage;
@@ -47,7 +49,6 @@ public class Dice extends Stack implements Lockable {
         this.location = location;
         this.dicesBeforeCupActors = dicesBeforeCupActors;
         this.dicesUnderCupActors = dicesUnderCupActors;
-
         dicesUnderCupActors.addActor(this);
 
         setWidth(getDiceWidth() / 2);

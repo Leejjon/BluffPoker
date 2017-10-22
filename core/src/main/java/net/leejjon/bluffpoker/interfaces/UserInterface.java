@@ -3,7 +3,7 @@ package net.leejjon.bluffpoker.interfaces;
 import net.leejjon.bluffpoker.enums.TutorialMessage;
 
 public interface UserInterface {
-    void call();
+    void call(String call);
 
     void enableCallUserInterface();
 
@@ -20,4 +20,6 @@ public interface UserInterface {
     void setCallField(String call);
 
     void showTutorialMessage(TutorialMessage message, String ... arguments);
+
+    void showLockMessage();
 }

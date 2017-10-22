@@ -93,7 +93,7 @@ public class TutorialDialog extends Dialog {
         getContentTable().clearChildren();
         getContentTable().padTop(padding);
 
-        label.setText(String.format(nextTutorialMessage.getTutorialMessage().getMessage(), nextTutorialMessage.getParameters()));
+        label.setText(String.format(nextTutorialMessage.getTutorialMessage().getMessage(), (Object[]) nextTutorialMessage.getParameters()));
 
         getContentTable().add(label).width(getFiftyPercentOfScreen());
         show(nextTutorialMessage.getStage());

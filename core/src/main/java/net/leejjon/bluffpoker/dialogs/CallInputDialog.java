@@ -15,8 +15,7 @@ public class CallInputDialog implements TextInputListener {
 
     @Override
     public void input(String text) {
-        ui.setCallField(text);
-        ui.call();
+        ui.call(text);
     }
 
     @Override

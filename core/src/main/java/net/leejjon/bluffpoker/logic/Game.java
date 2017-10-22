@@ -10,7 +10,6 @@ import net.leejjon.bluffpoker.listener.CupListener;
 import net.leejjon.bluffpoker.listener.DiceListener;
 import net.leejjon.bluffpoker.interfaces.UserInterface;
 import net.leejjon.bluffpoker.interfaces.GameInputInterface;
-import net.leejjon.bluffpoker.state.GameState;
 import net.leejjon.bluffpoker.state.Settings;
 
 import java.util.List;
@@ -37,8 +36,9 @@ public class Game implements GameInputInterface, GameStatusInterface {
      */
     private Player currentPlayer;
 
-    private NumberCombination latestCall = null;
+    private Call latestCall = null;
 
+    //
     private boolean firstThrowSinceDeath = true;
     private boolean hasToThrow = true;
     private boolean hasThrown = false;
@@ -48,9 +48,12 @@ public class Game implements GameInputInterface, GameStatusInterface {
     private boolean believed666 = false;
     private boolean blindPass = false;
 
-    private static final String BELIEVE_IT_OR_NOT = "Believe it or not, ";
+    // Booleans to remember whether a tutorial message already has been shown to avoid duplicate message spamming.
+    private boolean lookAtOwnThrowMessageHasBeenShown = false;
+
+    private static final String BELIEVE_IT_OR_NOT = "Believe it or not, %1$s";
     private static final String WATCH_OWN_THROW = "You can watch your own throw, %s";
-    private static final String SHAKE_THE_CUP = "Shake the cup: %s";
+    public static final String SHAKE_THE_CUP = "Shake the cup: %1$s";
     private static final String CALL_THREE_IDENTICAL_NUMBERS_HIGHER_THAN = "Call three the identical numbers higher than ";
     private static final String YOUR_CALL_MUST_BE_HIGHER_THAN = "Your call must be higher than: ";
     private static final String BLIND_MESSAGE = " (blind)";
@@ -62,7 +65,10 @@ public class Game implements GameInputInterface, GameStatusInterface {
     private static final String NOW_ENTER_YOUR_CALL = "Now enter your call ...";
     private static final String NOW_ENTER_YOUR_CALL_OR_THROW = "Now enter your call or throw ...";
     private static final String RIDING_ON_THE_BOK = " is riding on the bok";
-    private static final String WANTED_TO_PEEK_AFTER_ALL = " wanted to peek after all.";
+    private static final String WANTED_TO_PEEK_AFTER_ALL = " wanted to peek after all";
+    private static final String LOST_A_LIFE = "%1$s lost a life and has %2$d left";
+    private static final String WON_THE_GAME = "%1$s has won the game!";
+    private static final String HAS_NO_MORE_LIVES_LEFT = "%1$s has no more lives left";
 
 
     public Game(Cup cup, Dice leftDice, Dice middleDice, Dice rightDice, Sound diceRoll, UserInterface userInterface, Settings settings) {
@@ -75,9 +81,9 @@ public class Game implements GameInputInterface, GameStatusInterface {
         this.settings = settings;
 
         cup.addListener(new CupListener(this));
-        leftDice.addListener(new DiceListener(leftDice, this));
-        middleDice.addListener(new DiceListener(middleDice, this));
-        rightDice.addListener(new DiceListener(rightDice, this));
+        leftDice.addListener(new DiceListener(leftDice, this, userInterface));
+        middleDice.addListener(new DiceListener(middleDice, this, userInterface));
+        rightDice.addListener(new DiceListener(rightDice, this, userInterface));
     }
 
     private void setGameStatusBooleans() {
@@ -114,16 +120,16 @@ public class Game implements GameInputInterface, GameStatusInterface {
 
     public void validateCall(NumberCombination newCall) throws InputValidationException {
         if (believed666) {
-            if (newCall.areAllDicesEqual() && (newCall.isGreaterThan(latestCall) || latestCall.equals(NumberCombination.MAX))) {
+            if (newCall.areAllDicesEqual() && (newCall.isGreaterThan(latestCall.getNumberCombination()) || latestCall.getNumberCombination().equals(NumberCombination.MAX))) {
                 call(newCall);
             } else {
-                throw new InputValidationException(CALL_THREE_IDENTICAL_NUMBERS_HIGHER_THAN + latestCall);
+                throw new InputValidationException(CALL_THREE_IDENTICAL_NUMBERS_HIGHER_THAN + latestCall.getNumberCombination());
             }
         } else {
-            if (latestCall == null || newCall.isGreaterThan(latestCall)) {
+            if (latestCall == null || newCall.isGreaterThan(latestCall.getNumberCombination())) {
                 call(newCall);
             } else {
-                throw new InputValidationException(YOUR_CALL_MUST_BE_HIGHER_THAN + latestCall);
+                throw new InputValidationException(YOUR_CALL_MUST_BE_HIGHER_THAN + latestCall.getNumberCombination());
             }
         }
     }
@@ -149,16 +155,26 @@ public class Game implements GameInputInterface, GameStatusInterface {
 
         cup.unlock();
 
-        latestCall = newCall;
+        latestCall = new Call(currentPlayer, newCall);
         userInterface.log(currentPlayer.getName() + CALLED + newCall + addBlindToMessage);
         userInterface.log(getMessageToTellNextUserToBelieveOrNot());
+
+        userInterface.showTutorialMessage(TutorialMessage.BELIEVE_OR_NOT_BELIEVE,
+                getLatestCall().getPlayer().getName(),
+                getNextPlayer().getName(),
+                getLatestCall().getNumberCombination().toString());
     }
 
     private String getMessageToTellNextUserToBelieveOrNot() {
+        return String.format(BELIEVE_IT_OR_NOT, getNextPlayer().getName());
+    }
+
+    private Player getNextPlayer() {
         Player nextPlayer;
 
         int localPlayerIterator = playerIterator + 1;
 
+        // Fingers crossed: At this point (during placing a call) not all players should be dead.
         do {
             // If the localPlayerIterator runs out of the arrays bounds, we reset it to 0.
             if (localPlayerIterator == players.length) {
@@ -169,8 +185,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
 
             localPlayerIterator++;
         } while (nextPlayer.isDead());
-
-        return BELIEVE_IT_OR_NOT + nextPlayer.getName();
+        return nextPlayer;
     }
 
 
@@ -185,7 +200,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
                 } else {
                     // Start next turn.
                     nextPlayer();
-                    if (latestCall.equals(NumberCombination.MAX)) {
+                    if (latestCall.getNumberCombination().equals(NumberCombination.MAX)) {
                         // TODO: Do we need to make the dices visible here?
                         believed666 = true;
 
@@ -198,6 +213,12 @@ public class Game implements GameInputInterface, GameStatusInterface {
                     } else {
                         userInterface.log(currentPlayer.getName() + BELIEVED_THE_CALL);
                         userInterface.log("Throw at least one dice ...");
+
+                        if (getNumberCombinationFromDices().isGreaterThan(new NumberCombination(6,0,0, true))) {
+                            userInterface.showTutorialMessage(TutorialMessage.MOVE_SIX_OUT, latestCall.getPlayer().getName(), latestCall.getNumberCombination().toString());
+                        } else {
+                            userInterface.showTutorialMessage(TutorialMessage.RETHROW_ALL_DICES, latestCall.getPlayer().getName(), latestCall.getNumberCombination().toString());
+                        }
                     }
                     hasToThrow = true;
                     hasThrown = false;
@@ -214,6 +235,8 @@ public class Game implements GameInputInterface, GameStatusInterface {
 
                     cup.believe();
                     blindPass = false;
+
+                    lookAtOwnThrowMessageHasBeenShown = false;
                 }
             } else if (canViewOwnThrow) {
                 if (cup.isWatchingOwnThrow()) {
@@ -221,6 +244,28 @@ public class Game implements GameInputInterface, GameStatusInterface {
                 } else {
                     cup.watchOwnThrow();
                     blindPass = false;
+                    if (!lookAtOwnThrowMessageHasBeenShown) {
+                        if (latestCall == null) {
+                            userInterface.showTutorialMessage(TutorialMessage.LOOKING_AT_OWN_THROW_FIRST_TURN_SINCE_DEATH,
+                                    String.valueOf(leftDice.getDiceValue()),
+                                    String.valueOf(middleDice.getDiceValue()),
+                                    String.valueOf(rightDice.getDiceValue()),
+                                    getNumberCombinationFromDices().toString());
+                        } else {
+                            if (getNumberCombinationFromDices().isGreaterThan(latestCall.getNumberCombination())) {
+                                userInterface.showTutorialMessage(TutorialMessage.LOOK_AT_OWN_THROW_THAT_IS_HIGHER,
+                                        getNumberCombinationFromDices().toString(),
+                                        latestCall.getPlayer().getName(),
+                                        latestCall.getNumberCombination().toString());
+                            } else {
+                                userInterface.showTutorialMessage(TutorialMessage.LOOK_AT_OWN_THROW_THAT_IS_LOWER,
+                                        getNumberCombinationFromDices().toString(),
+                                        latestCall.getPlayer().getName(),
+                                        latestCall.getNumberCombination().toString());
+                            }
+                        }
+                        lookAtOwnThrowMessageHasBeenShown = true;
+                    }
                 }
             }
         }
@@ -232,15 +277,23 @@ public class Game implements GameInputInterface, GameStatusInterface {
         if (!cup.isBelieving() && !cup.isWatchingOwnThrow() && allowedToBelieveOrNotBelieve) {
             cup.addAction(new LiftCupAction());
 
+            // Variables for the tutorial mode.
+            boolean wasBluffing = true;
+            final String callingPlayer = currentPlayer.getName();
+            final NumberCombination whatWasCalled = latestCall.getNumberCombination();
+
             if (believed666) {
-                // If the latestCall is smaller or equal to the throw and the throw consists of three identical dices, the player who swiped up loses a life.
-                if (!latestCall.isGreaterThan(getNumberCombinationFromDices()) && getNumberCombinationFromDices().areAllDicesEqual()) {
+                // If the latestCall is smaller or equal to the throw and the throw consists of three identical dices, the player
+                // who swiped up loses a life and it becomes his turn.
+                if (!latestCall.getNumberCombination().isGreaterThan(getNumberCombinationFromDices()) && getNumberCombinationFromDices().areAllDicesEqual()) {
                     nextPlayer();
+                    wasBluffing = false;
                 }
             } else {
                 // If the one who did not believed loses, it becomes his turn (the one who made the call was still the currentPlayer).
-                if (!latestCall.isGreaterThan(getNumberCombinationFromDices())) {
+                if (!latestCall.getNumberCombination().isGreaterThan(getNumberCombinationFromDices())) {
                     nextPlayer();
+                    wasBluffing = false;
                 }
             }
 
@@ -256,20 +309,17 @@ public class Game implements GameInputInterface, GameStatusInterface {
             }
 
             if (currentPlayer.isDead()) {
-                userInterface.log(currentPlayer.getName() + " has no more lives left");
+                userInterface.log(String.format(HAS_NO_MORE_LIVES_LEFT, currentPlayer.getName()));
 
                 if (!nextPlayer()) {
                     Player winner = getWinner();
-                    userInterface.log(winner.getName() + " has won the game!");
+                    userInterface.log(String.format(WON_THE_GAME, winner.getName()));
                     userInterface.finishGame(winner.getName());
                     return;
                 }
             } else {
-                userInterface.log(currentPlayer.getName() + " lost a life and has " + currentPlayer.getLives() + " left");
+                userInterface.log(String.format(LOST_A_LIFE, currentPlayer.getName(), currentPlayer.getLives()));
             }
-
-            // TODO: Make sure the following code is being executed after the LiftCupAction...
-            userInterface.resetCall();
 
             // The cup should not be locked at this point.
             leftDice.reset();
@@ -284,6 +334,15 @@ public class Game implements GameInputInterface, GameStatusInterface {
             hasThrown = false;
 
             userInterface.log(String.format(SHAKE_THE_CUP, currentPlayer.getName()));
+
+            lookAtOwnThrowMessageHasBeenShown = false;
+            if (wasBluffing) {
+                // You saw through callingPlayer's bluff (latestCall) and didn't believe it! Now callingPlayer lost a life and must shake the phone and try again.
+                userInterface.showTutorialMessage(TutorialMessage.DID_NOT_BELIEVE_BLUFF, callingPlayer, whatWasCalled.toString());
+            } else {
+                userInterface.showTutorialMessage(TutorialMessage.DID_NOT_BELIEVE_THRUTH, callingPlayer, whatWasCalled.toString());
+                // You didn't believe callingPlayer had thrown at least latestCall, but he actually did and now you lost a life! Now shake the phone to throw and start a new turn.
+            }
         }
     }
 
@@ -481,8 +540,9 @@ public class Game implements GameInputInterface, GameStatusInterface {
         rightDice.unlock();
 
         if (firstThrowSinceDeath) {
+            userInterface.resetCall();
             userInterface.log(String.format(WATCH_OWN_THROW, currentPlayer.getName()));
-            userInterface.showTutorialMessage(TutorialMessage.TEST);
+            userInterface.showTutorialMessage(TutorialMessage.FIRST_THROWN_SINCE_DEATH);
         } else {
             userInterface.log(NOW_ENTER_YOUR_CALL);
         }
@@ -491,7 +551,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
     /**
      * @return A NumberCombination object based on the values of the dices.
      */
-    private NumberCombination getNumberCombinationFromDices() {
+    public NumberCombination getNumberCombinationFromDices() {
         return new NumberCombination(leftDice.getDiceValue(), middleDice.getDiceValue(), rightDice.getDiceValue(), true);
     }
 
@@ -503,7 +563,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
         return believed666;
     }
 
-    public NumberCombination getLatestCall() {
+    public Call getLatestCall() {
         return latestCall;
     }
 
