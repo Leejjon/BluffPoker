@@ -244,7 +244,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
                 } else {
                     cup.watchOwnThrow();
                     blindPass = false;
-                    if (!lookAtOwnThrowMessageHasBeenShown) {
+                    if (!lookAtOwnThrowMessageHasBeenShown && hasThrown) {
                         if (latestCall == null) {
                             userInterface.showTutorialMessage(TutorialMessage.LOOKING_AT_OWN_THROW_FIRST_TURN_SINCE_DEATH,
                                     String.valueOf(leftDice.getDiceValue()),
@@ -337,11 +337,9 @@ public class Game implements GameInputInterface, GameStatusInterface {
 
             lookAtOwnThrowMessageHasBeenShown = false;
             if (wasBluffing) {
-                // You saw through callingPlayer's bluff (latestCall) and didn't believe it! Now callingPlayer lost a life and must shake the phone and try again.
                 userInterface.showTutorialMessage(TutorialMessage.DID_NOT_BELIEVE_BLUFF, callingPlayer, whatWasCalled.toString());
             } else {
                 userInterface.showTutorialMessage(TutorialMessage.DID_NOT_BELIEVE_THRUTH, callingPlayer, whatWasCalled.toString());
-                // You didn't believe callingPlayer had thrown at least latestCall, but he actually did and now you lost a life! Now shake the phone to throw and start a new turn.
             }
         }
     }

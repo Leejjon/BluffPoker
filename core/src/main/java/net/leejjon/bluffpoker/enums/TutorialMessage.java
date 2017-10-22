@@ -8,7 +8,7 @@ public enum TutorialMessage {
     DID_NOT_BELIEVE_BLUFF("You saw through %1$s's bluff (%2$s) and didn't believe it! Now %1$s lost a life and must shake the phone to try again (if not out of lives)."),
     DID_NOT_BELIEVE_THRUTH("You didn't believe %1$s had thrown at least %2$s, but %1$s actually did and now you lost a life! Shake the phone to throw and start a new turn (if not out of lives)."),
     DISABLED_TUTORIAL("You have disabled the tutorial. You can always turn it back on again from the settings screen."),
-    EXPLAIN_LOCK("The lock icon on the dice means it won't be thrown. You can toggle the lock on/off by tapping on the dice. You can move the dice back under the cup by swiping it up. Now close the cup and shake the phone to throw the dices under the cup."),
+    EXPLAIN_LOCK("The lock icon on the dice means it won't be thrown. You can toggle the lock on/off by tapping on the dice. Close the cup and shake the phone to throw the dices under the cup."),
     FIRST_THROWN_SINCE_DEATH("You threw all dices under the cup. Tap on the cup to take a look at your throw. \nPS: Don't show the other players!"),
     GAME_START("Read the console messages at the bottom for the main game information. Right now it says, \"" + Game.SHAKE_THE_CUP  + "\", which means %1$s has to shake this actual phone! You should hear a dice sound confirming the throw."),
     LOOKING_AT_OWN_THROW_FIRST_TURN_SINCE_DEATH("You have thrown %s, %s and %s. That is worth %4$s (when counting the throw value always put the highest number left and the lowest number right). Press the \"Call\" button to enter your call. Either enter %4$s to be safe or something higher if you think you can fool the next player to believe you."),
