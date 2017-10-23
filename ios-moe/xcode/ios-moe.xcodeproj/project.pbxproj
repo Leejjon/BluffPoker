@@ -29,6 +29,8 @@
 		581773AC1E37A2DB004E28A9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 581773A51E37A2DB004E28A9 /* QuartzCore.framework */; };
 		581773AE1E37A7EF004E28A9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 581773AD1E37A7EF004E28A9 /* UIKit.framework */; };
 		D01BA1EB1F50A8DD0066B137 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = D01BA1EA1F50A8DD0066B137 /* assets */; };
+		D0AF46361F9E5A8A00BC4CF0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D0AF46351F9E5A8900BC4CF0 /* Assets.xcassets */; };
+		D0AF46371F9E5D4900BC4CF0 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 58C6F5381DA66CB600309CB6 /* Info.plist */; };
 		FBEA51B59EBAFE3DD6CB65EB /* moe-main-interfaces.m in Sources */ = {isa = PBXBuildFile; fileRef = BF140766C410C641636C918B /* moe-main-interfaces.m */; };
 /* End PBXBuildFile section */
 
@@ -61,6 +63,7 @@
 		8084D1F0A307440EC73CBFCA /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		BF140766C410C641636C918B /* moe-main-interfaces.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "moe-main-interfaces.m"; path = "../build/moe/main/ui-headers/moe-main-interfaces.m"; sourceTree = "<group>"; };
 		D01BA1EA1F50A8DD0066B137 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../../android/src/main/assets; sourceTree = "<group>"; };
+		D0AF46351F9E5A8900BC4CF0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +140,7 @@
 		58C6F5261DA66CB600309CB6 /* ios-moe */ = {
 			isa = PBXGroup;
 			children = (
+				D0AF46351F9E5A8900BC4CF0 /* Assets.xcassets */,
 				58C6F5381DA66CB600309CB6 /* Info.plist */,
 				581773851E37A0F0004E28A9 /* Default-375w-667h@2x.png */,
 				581773861E37A0F0004E28A9 /* Default-414w-736h@3x.png */,
@@ -236,9 +240,11 @@
 				581773961E37A0F0004E28A9 /* Default@2x.png in Resources */,
 				5817739C1E37A0F0004E28A9 /* Icon@2x.png in Resources */,
 				581773911E37A0F0004E28A9 /* Default-375w-667h@2x.png in Resources */,
+				D0AF46361F9E5A8A00BC4CF0 /* Assets.xcassets in Resources */,
 				5817739A1E37A0F0004E28A9 /* Icon-72@2x.png in Resources */,
 				581773991E37A0F0004E28A9 /* Icon-72.png in Resources */,
 				581773971E37A0F0004E28A9 /* Default@2x~ipad.png in Resources */,
+				D0AF46371F9E5D4900BC4CF0 /* Info.plist in Resources */,
 				581773941E37A0F0004E28A9 /* Default-1024w-1366h@2x~ipad.png in Resources */,
 				581773981E37A0F0004E28A9 /* Default~ipad.png in Resources */,
 				581773921E37A0F0004E28A9 /* Default-414w-736h@3x.png in Resources */,
@@ -388,6 +394,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5817739D1E37A10D004E28A9 /* custom.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = NO;
@@ -429,6 +437,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5817739D1E37A10D004E28A9 /* custom.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = NO;
