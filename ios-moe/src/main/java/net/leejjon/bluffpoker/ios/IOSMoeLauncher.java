@@ -59,15 +59,18 @@ public class IOSMoeLauncher extends BluffPokerIOSApplication.Delegate implements
      * Contact permissions needed to be added to the Info.plist for this code to work.
      * https://github.com/yonahforst/react-native-permissions/issues/38
      * <p>
-     * One in that selectContacts method, somehow the thread that executes these methods goes insane. When I try to
-     * modify UI from these threads
      *
      * @param listener
      * @param alreadyExistingPlayers
      */
     @Override
     public void initiateSelectContacts(ModifyPlayerListener listener, Set<String> alreadyExistingPlayers) {
-        listener.showPhonebookDialog();
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                listener.showPhonebookDialog();
+            }
+        });
         CNContactStore contactStore = CNContactStore.alloc().init();
         contactStore.requestAccessForEntityTypeCompletionHandler(apple.contacts.enums.CNEntityType.CNEntityTypeContacts, new CNContactStore.Block_requestAccessForEntityTypeCompletionHandler() {
             @Override
@@ -94,10 +97,9 @@ public class IOSMoeLauncher extends BluffPokerIOSApplication.Delegate implements
             public void call_enumerateContactsWithFetchRequestErrorUsingBlock(CNContact contact, BoolPtr stop) {
                 String name = contact.givenName(); // + contact.familyName();
                 if (!(name.length() == 0) && !alreadyExistingPlayers.contains(name)) {
-                    // Do the UI changes
-                    Globals.dispatch_async(Globals.dispatch_get_main_queue(), new Globals.Block_dispatch_async() {
+                    Gdx.app.postRunnable(new Runnable() {
                         @Override
-                        public void call_dispatch_async() {
+                        public void run() {
                             listener.loadFromPhonebook(name);
                         }
                     });

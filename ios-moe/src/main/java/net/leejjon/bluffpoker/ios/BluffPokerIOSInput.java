@@ -124,7 +124,12 @@ public class BluffPokerIOSInput implements Input {
                         if (speed > SHAKE_THRESHOLD) {
                             if (numberOfTimesShaked.incrementAndGet() == 3) {
                                 Gdx.app.log("bluffpoker", "shake detected: ");
-                                game.shakePhone();
+                                Gdx.app.postRunnable(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        game.shakePhone();
+                                    }
+                                });
                                 numberOfTimesShaked.set(0);
                                 return;
                             }

@@ -75,7 +75,12 @@ public class BluffPokerAndroidInput extends AndroidInputThreePlus {
             // We use this code for entering the player names.
             alert.setPositiveButton(context.getString(android.R.string.ok), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
-                    returnInputText(listener, input.getText().toString());
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            listener.input(input.getText().toString());
+                        }
+                    });
                 }
             });
 
@@ -95,16 +100,17 @@ public class BluffPokerAndroidInput extends AndroidInputThreePlus {
                     @Override
                     public void onClick(View v) {
                         if (input.getText().length() == 3) {
-                            returnInputText(listener, input.getText().toString());
-                            alertDialog.dismiss();
+                            Gdx.app.postRunnable(new Runnable() {
+                                @Override
+                                public void run() {
+                                    listener.input(input.getText().toString());
+                                    alertDialog.dismiss();
+                                }
+                            });
                         }
                     }
                 });
             }
         });
-    }
-
-    private void returnInputText(TextInputListener listener, String validatedText) {
-        Gdx.app.postRunnable(() -> listener.input(validatedText));
     }
 }
