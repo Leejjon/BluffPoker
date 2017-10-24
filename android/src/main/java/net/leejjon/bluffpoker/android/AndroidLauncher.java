@@ -123,7 +123,12 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
 
                 if (speed > SHAKE_THRESHOLD) {
                     if (numberOfTimesShaked.incrementAndGet() == 3) {
-                        game.shakePhone();
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                game.shakePhone();
+                            }
+                        });
 
                         numberOfTimesShaked.set(0);
                         return;
@@ -175,7 +180,12 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        startSelectingContacts();
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                startSelectingContacts();
+            }
+        });
     }
 
     public void startSelectingContacts() {
