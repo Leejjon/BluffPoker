@@ -1,5 +1,6 @@
 package net.leejjon.bluffpoker.dialogs;
 
+import com.badlogic.gdx.Gdx;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
 
 import com.badlogic.gdx.Input.TextInputListener;
@@ -13,7 +14,12 @@ public class AddNewPlayerDialog implements TextInputListener {
 	
 	@Override
 	public void input(String playerName) {
-		listener.addContactsToGame(playerName);
+		Gdx.app.postRunnable(new Runnable() {
+			@Override
+			public void run() {
+				listener.addContactsToGame(playerName);
+			}
+		});
 	}
 
 	@Override
