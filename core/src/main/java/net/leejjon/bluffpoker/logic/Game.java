@@ -126,7 +126,9 @@ public class Game implements GameInputInterface, GameStatusInterface {
                 throw new InputValidationException(CALL_THREE_IDENTICAL_NUMBERS_HIGHER_THAN + latestCall.getNumberCombination());
             }
         } else {
-            if (latestCall == null || newCall.isGreaterThan(latestCall.getNumberCombination())) {
+            if (latestCall == null) {
+                throw new InputValidationException("Enter something valid.");
+            } else if (newCall.isGreaterThan(latestCall.getNumberCombination())) {
                 call(newCall);
             } else {
                 throw new InputValidationException(YOUR_CALL_MUST_BE_HIGHER_THAN + latestCall.getNumberCombination());

@@ -416,6 +416,7 @@ public class BluffPokerIOSInput implements Input {
      * @param text Text for text field
      * @return UiAlertView */
     private UIAlertView buildUIAlertView (final TextInputListener listener, String title, String text, String placeholder) {
+        boolean callInput = title.equals(CallInputDialog.ENTER_YOUR_CALL);
         UIAlertViewDelegate delegate = new UIAlertViewDelegate() {
             @Override
             public void alertViewClickedButtonAtIndex (UIAlertView alertView, @NInt long buttonIndex) {
@@ -425,6 +426,19 @@ public class BluffPokerIOSInput implements Input {
                 } else if (buttonIndex == 1) {
                     // user clicked "Ok" button
                     UITextField textField = alertView.textFieldAtIndex(0);
+
+                    if (callInput) {
+                        if (textField.text().length() != 3) {
+                            Gdx.app.postRunnable(new Runnable() {
+                                @Override
+                                public void run() {
+                                    buildUIAlertView(listener, title, textField.text(), placeholder).show();
+                                }
+                            });
+                            return;
+                        }
+                    }
+
                     listener.input(textField.text());
                 }
             }
@@ -447,7 +461,7 @@ public class BluffPokerIOSInput implements Input {
         textField.setPlaceholder(placeholder);
         textField.setText(text);
 
-        if (title.equals(CallInputDialog.ENTER_YOUR_CALL)) {
+        if (callInput) {
             textField.setKeyboardType(UIKeyboardType.NumberPad);
             textField.setDelegate(new NumberCombinationTextFieldValidator());
         } else {

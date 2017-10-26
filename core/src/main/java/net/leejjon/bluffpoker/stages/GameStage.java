@@ -26,7 +26,6 @@ import java.util.List;
 
 public class GameStage extends AbstractStage implements UserInterface {
     private Game currentGame;
-    private StageInterface stageInterface;
 
     private SpriteBatch batch;
     private Sound diceRoll;
@@ -61,7 +60,6 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     public GameStage(Skin uiSkin, TutorialDialog tutorialDialog, final StageInterface stageInterface) {
         super(false);
-        this.stageInterface = stageInterface;
         this.tutorialDialog = tutorialDialog;
 
         Texture callBoardTexture = stageInterface.getTexture(TextureKey.CALL_BOARD);
@@ -200,8 +198,12 @@ public class GameStage extends AbstractStage implements UserInterface {
                     callNotThreeIdenticalNumbersDialog.setInvalidCallMessage(currentGame.getLatestCall().getNumberCombination());
                     callNotThreeIdenticalNumbersDialog.show(this);
                 } else {
-                    callTooLowDialog.callTooLow(currentGame.getLatestCall().getNumberCombination());
-                    callTooLowDialog.show(this);
+                    if (currentGame.getLatestCall() != null) {
+                        callTooLowDialog.callTooLow(currentGame.getLatestCall().getNumberCombination());
+                        callTooLowDialog.show(this);
+                    } else {
+                        Gdx.app.log(BluffPokerGame.TAG, String.format("Invalid call received from on screen keyboard: %s", call));
+                    }
                 }
             }
 
