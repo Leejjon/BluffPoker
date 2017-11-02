@@ -152,7 +152,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
 
         table.add(buttonTable).width(fiftyPercentOfScreen).center();
         table.row();
-        table.add(startGame).center().pad(padding * 4);;
+        table.add(startGame).center().pad(padding * 4);
 
         addActor(choosePlayersBackground);
         addActor(topTable);

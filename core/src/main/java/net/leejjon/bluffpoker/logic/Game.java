@@ -115,6 +115,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
         setGameStatusBooleans();
         constructPlayers();
         userInterface.log(String.format(SHAKE_THE_CUP, currentPlayer.getName()));
+
         userInterface.showTutorialMessage(TutorialMessage.GAME_START, currentPlayer.getName());
     }
 
@@ -126,9 +127,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
                 throw new InputValidationException(CALL_THREE_IDENTICAL_NUMBERS_HIGHER_THAN + latestCall.getNumberCombination());
             }
         } else {
-            if (latestCall == null) {
-                throw new InputValidationException("Enter something valid.");
-            } else if (newCall.isGreaterThan(latestCall.getNumberCombination())) {
+            if (latestCall == null || newCall.isGreaterThan(latestCall.getNumberCombination())) {
                 call(newCall);
             } else {
                 throw new InputValidationException(YOUR_CALL_MUST_BE_HIGHER_THAN + latestCall.getNumberCombination());

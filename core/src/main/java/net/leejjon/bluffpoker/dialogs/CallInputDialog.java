@@ -1,6 +1,5 @@
 package net.leejjon.bluffpoker.dialogs;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import net.leejjon.bluffpoker.interfaces.UserInterface;
 
@@ -16,12 +15,7 @@ public class CallInputDialog implements TextInputListener {
 
     @Override
     public void input(String text) {
-        Gdx.app.postRunnable(new Runnable() {
-            @Override
-            public void run() {
-                ui.call(text);
-            }
-        });
+        ui.call(text);
     }
 
     @Override

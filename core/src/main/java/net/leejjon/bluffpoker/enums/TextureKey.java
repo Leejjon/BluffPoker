@@ -15,6 +15,7 @@ public enum TextureKey {
     DICE5("data/dice5.png"),
     DICE6("data/dice6.png"),
     DICE_LOCK("data/dicelock.png"),
+    LOGO("data/logo.png"),
     OPEN_CUP("data/openCup.png");
 
     private String fileName;

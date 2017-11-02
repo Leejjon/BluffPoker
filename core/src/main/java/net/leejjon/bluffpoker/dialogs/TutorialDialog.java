@@ -95,11 +95,11 @@ public class TutorialDialog extends Dialog {
 
         label.setText(String.format(nextTutorialMessage.getTutorialMessage().getMessage(), (Object[]) nextTutorialMessage.getParameters()));
 
-        getContentTable().add(label).width(getFiftyPercentOfScreen());
+        getContentTable().add(label).width(get80PercentOfScreen());
         show(nextTutorialMessage.getStage());
     }
 
-    private float getFiftyPercentOfScreen() {
+    private float get80PercentOfScreen() {
         return ((Gdx.graphics.getWidth() / BluffPokerGame.getDivideScreenByThis()) * 100) / 120;
     }
 
