@@ -439,7 +439,12 @@ public class BluffPokerIOSInput implements Input {
                         }
                     }
 
-                    listener.input(textField.text());
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            listener.input(textField.text());
+                        }
+                    });
                 }
             }
 
