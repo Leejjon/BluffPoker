@@ -8,7 +8,9 @@ import apple.foundation.NSArray;
 import apple.foundation.NSError;
 import apple.uikit.UIDevice;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.iosmoe.IOSApplication;
 import com.badlogic.gdx.backends.iosmoe.IOSApplicationConfiguration;
+import com.badlogic.gdx.backends.iosmoe.IOSInput;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.interfaces.PlatformSpecificInterface;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
@@ -21,7 +23,7 @@ import org.moe.natj.general.ptr.impl.PtrFactory;
 
 import java.util.Set;
 
-public class IOSMoeLauncher extends BluffPokerIOSApplication.Delegate implements PlatformSpecificInterface {
+public class IOSMoeLauncher extends IOSApplication.Delegate implements PlatformSpecificInterface {
 
     protected IOSMoeLauncher(Pointer peer) {
         super(peer);
@@ -29,17 +31,20 @@ public class IOSMoeLauncher extends BluffPokerIOSApplication.Delegate implements
 
     private BluffPokerGame bluffPokerGame;
 
-    private BluffPokerIOSApplication bluffPokerIOSApplication;
+    private IOSApplication bluffPokerIOSApplication;
 
     @Override
-    protected BluffPokerIOSApplication createApplication() {
+    protected IOSApplication createApplication() {
         IOSApplicationConfiguration config = new IOSApplicationConfiguration();
         config.useAccelerometer = true;
 
         bluffPokerGame = new BluffPokerGame(this);
-//        MyGdxGame bluffPokerGame = new MyGdxGame();
-
-        bluffPokerIOSApplication = new BluffPokerIOSApplication(bluffPokerGame, config);
+        bluffPokerIOSApplication = new IOSApplication(bluffPokerGame, config) {
+            @Override
+            protected IOSInput createInput() {
+                return new BluffPokerIOSInput(this, bluffPokerGame, config);
+            }
+        };
         return bluffPokerIOSApplication;
     }
 
