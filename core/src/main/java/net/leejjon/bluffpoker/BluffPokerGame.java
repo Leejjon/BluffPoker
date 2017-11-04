@@ -60,7 +60,7 @@ public class BluffPokerGame extends ApplicationAdapter implements
         tutorialDialog = new TutorialDialog(uiSkin, getSettings());
 
         // Create the stages.
-        startMenuStage = new StartStage(uiSkin, this);
+        startMenuStage = new StartStage(uiSkin, this, platformSpecificInterface.isTablet());
         settingsStage = new SettingsStage(uiSkin, this, settings);
         selectPlayersStage = new SelectPlayersStage(uiSkin, tutorialDialog,this, platformSpecificInterface);
         gameStage = new GameStage(uiSkin, tutorialDialog, this);

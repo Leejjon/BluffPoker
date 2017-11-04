@@ -1,6 +1,5 @@
 package net.leejjon.bluffpoker.ios;
 
-import apple.c.Globals;
 import apple.contacts.CNContact;
 import apple.contacts.CNContactFetchRequest;
 import apple.contacts.CNContactStore;
@@ -110,32 +109,55 @@ public class IOSMoeLauncher extends BluffPokerIOSApplication.Delegate implements
 
     @Override
     public int getZoomFactor() {
-        return IPhones.getZoomFactorForResolution(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        int zoomfactor = IOSDevices.getZoomFactorForResolution(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        return zoomfactor;
     }
 
-    private enum IPhones {
+    @Override
+    public boolean isTablet() {
+        return IOSDevices.isTablet(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    }
+
+    private enum IOSDevices {
         IPHONE_5S_SE(640, 1136, 2),
         IPHONE_6_6S_7_8(750, 1334, 2),
-        IPHONE_6PLUS_7PLUS_8PLUS(1242, 2208, 4),
-        IPHONE_X(1125, 2001, 3);
+        IPHONE_6PLUS_7PLUS(960, 1704, 3),
+        IPHONE_8PLUS(1242, 2208, 4),
+        IPHONE_X(1125, 2001, 3),
+        IPAD_AIR(1536, 2048, 3, true);
 
         private final int width;
         private final int height;
         private final int zoomfactor;
+        private final boolean tablet;
 
-        IPhones(int width, int height, int zoomfactor) {
+        IOSDevices(int width, int height, int zoomfactor) {
+            this(width, height, zoomfactor, false);
+        }
+
+        IOSDevices(int width, int height, int zoomfactor, boolean tablet) {
             this.width = width;
             this.height = height;
             this.zoomfactor = zoomfactor;
+            this.tablet = tablet;
         }
 
         public static int getZoomFactorForResolution(int width, int height) {
-            for (IPhones iPhones : IPhones.values()) {
-                if (iPhones.width == width && iPhones.height == height) {
-                    return iPhones.zoomfactor;
+            for (IOSDevices IOSDevices : IOSDevices.values()) {
+                if (IOSDevices.width == width && IOSDevices.height == height) {
+                    return IOSDevices.zoomfactor;
                 }
             }
-            return 2;
+            return 3;
+        }
+
+        public static boolean isTablet(int width, int height) {
+            for (IOSDevices IOSDevices : IOSDevices.values()) {
+                if (IOSDevices.width == width && IOSDevices.height == height) {
+                    return IOSDevices.tablet;
+                }
+            }
+            return false;
         }
     }
 }

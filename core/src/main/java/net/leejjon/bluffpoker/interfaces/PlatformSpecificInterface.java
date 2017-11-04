@@ -12,4 +12,6 @@ public interface PlatformSpecificInterface {
     void initiateSelectContacts(ModifyPlayerListener listener, Set<String> alreadyExistingPlayers);
 
     int getZoomFactor();
+
+    boolean isTablet();
 }

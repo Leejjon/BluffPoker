@@ -2,6 +2,7 @@ package net.leejjon.bluffpoker.stages;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.actors.Logo;
@@ -19,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import javax.xml.soap.Text;
 
 public class StartStage extends AbstractStage {
-	public StartStage(Skin uiSkin, final StageInterface stageInterface) {
+	public StartStage(Skin uiSkin, final StageInterface stageInterface, boolean tablet) {
 		super(true);
 
         Texture logoTexture = stageInterface.getTexture(TextureKey.LOGO);
@@ -30,7 +31,7 @@ public class StartStage extends AbstractStage {
         float thirdQuarter = (GameStage.getMiddleY() / BluffPokerGame.getDivideScreenByThis()) - (((logoTexture.getHeight()) / 4) * 1.4f);
         logo.setPosition(middleX, firstQuarter);
 		
-		Label titleLabel = new Label("Bluff Poker", uiSkin);
+		Label titleLabel = new Label("Bluff Poker" + BluffPokerGame.getDivideScreenByThis() + " " + Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight(), uiSkin);
 		titleLabel.setColor(Color.WHITE);
 
 		TextButton continueButton = new TextButton("Continue", uiSkin);
@@ -69,7 +70,11 @@ public class StartStage extends AbstractStage {
 		// Create a table and add the ui components to it.
 		table.center();
 
-        table.add(titleLabel).padBottom(10f);
+		Cell<Label> labelCell = table.add(titleLabel).padBottom(10f);
+		if (tablet) {
+			labelCell.padTop(15f * BluffPokerGame.getDivideScreenByThis());
+		}
+
 		table.row();
 		table.add(playButton).padBottom(10f);
 		table.row();
