@@ -31,7 +31,7 @@ public class StartStage extends AbstractStage {
         float thirdQuarter = (GameStage.getMiddleY() / BluffPokerGame.getDivideScreenByThis()) - (((logoTexture.getHeight()) / 4) * 1.4f);
         logo.setPosition(middleX, firstQuarter);
 		
-		Label titleLabel = new Label("Bluff Poker" + BluffPokerGame.getDivideScreenByThis() + " " + Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight(), uiSkin);
+		Label titleLabel = new Label("Bluff Poker", uiSkin);
 		titleLabel.setColor(Color.WHITE);
 
 		TextButton continueButton = new TextButton("Continue", uiSkin);
