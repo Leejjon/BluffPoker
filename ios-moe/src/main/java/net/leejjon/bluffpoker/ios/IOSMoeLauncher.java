@@ -126,8 +126,8 @@ public class IOSMoeLauncher extends IOSApplication.Delegate implements PlatformS
     private enum IOSDevices {
         IPHONE_5S_SE(640, 1136, 2),
         IPHONE_6_6S_7_8(750, 1334, 2),
-        IPHONE_6PLUS_7PLUS(960, 1704, 3),
-        IPHONE_8PLUS(1242, 2208, 4),
+        IPHONE_6PLUS(960, 1704, 3),
+        IPHONE_7PLUS_8PLUS(1242, 2208, 3),
         IPHONE_X(1125, 2001, 3),
         IPAD_AIR(1536, 2048, 3, true);
 
