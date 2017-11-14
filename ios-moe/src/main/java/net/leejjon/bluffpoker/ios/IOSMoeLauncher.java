@@ -115,17 +115,22 @@ public class IOSMoeLauncher extends IOSApplication.Delegate implements PlatformS
 
     @Override
     public int getZoomFactor() {
-        return IOSDevices.getZoomFactorForResolution(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        return IOSDevices.getIosDevice(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()).getZoomfactor();
     }
 
     @Override
     public int getTop(int expectedTop) {
-
-        return expectedTop;
+        if (IOSDevices.getIosDevice(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) == IOSDevices.IPHONE_X) {
+            return expectedTop - 36;
+        }
+        return expectedTop ;
     }
 
     @Override
     public int getBottom(int expectedBottom) {
+        if (IOSDevices.getIosDevice(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) == IOSDevices.IPHONE_X) {
+            return expectedBottom + 36;
+        }
         return expectedBottom;
     }
 
@@ -134,7 +139,7 @@ public class IOSMoeLauncher extends IOSApplication.Delegate implements PlatformS
         IPHONE_6_6S_7_8(750, 1334, 2),
         IPHONE_6PLUS(960, 1704, 3),
         IPHONE_7PLUS_8PLUS(1242, 2208, 3),
-        IPHONE_X(1125, 2001, 3),
+        IPHONE_X(1125, 2436, 3),
         IPAD_AIR(1536, 2048, 3);
 
         private final int width;
@@ -161,7 +166,7 @@ public class IOSMoeLauncher extends IOSApplication.Delegate implements PlatformS
                     return iOSDevices;
                 }
             }
-            return IPHONE_6PLUS_7PLUS;
+            return IPHONE_6PLUS;
         }
     }
 }
