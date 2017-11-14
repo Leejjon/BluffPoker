@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ObjectMap;
+import lombok.Getter;
 import net.leejjon.bluffpoker.enums.TextureKey;
 import net.leejjon.bluffpoker.dialogs.TutorialDialog;
 import net.leejjon.bluffpoker.interfaces.PlatformSpecificInterface;
@@ -34,11 +35,8 @@ public class BluffPokerGame extends ApplicationAdapter implements
     private GameStage gameStage;
 
     // Made it static because on iOS the zoomfactor cannot be calculated before the create method is initiated.
+    @Getter
     private static PlatformSpecificInterface platformSpecificInterface;
-
-    public static int getDivideScreenByThis() {
-        return platformSpecificInterface.getZoomFactor();
-    }
 
     private ObjectMap<TextureKey, Texture> textureMap;
 
@@ -60,9 +58,9 @@ public class BluffPokerGame extends ApplicationAdapter implements
         tutorialDialog = new TutorialDialog(uiSkin, getSettings());
 
         // Create the stages.
-        startMenuStage = new StartStage(uiSkin, this, platformSpecificInterface.isTablet());
+        startMenuStage = new StartStage(uiSkin, this);
         settingsStage = new SettingsStage(uiSkin, this, settings);
-        selectPlayersStage = new SelectPlayersStage(uiSkin, tutorialDialog,this, platformSpecificInterface);
+        selectPlayersStage = new SelectPlayersStage(uiSkin, tutorialDialog,this);
         gameStage = new GameStage(uiSkin, tutorialDialog, this);
 
         // Make sure touch input goes to the startStage.

@@ -74,6 +74,7 @@ project(":ios-moe") {
     dependencies {
         compile project(":core")
         compile "com.badlogicgames.gdx:gdx-backend-moe:$gdxVersion"
+        compileOnly "org.projectlombok:lombok:1.16.16"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
     }
 }

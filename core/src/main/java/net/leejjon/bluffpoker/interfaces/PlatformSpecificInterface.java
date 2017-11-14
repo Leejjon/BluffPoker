@@ -13,5 +13,17 @@ public interface PlatformSpecificInterface {
 
     int getZoomFactor();
 
-    boolean isTablet();
+    /**
+     * This method will probably only ever return something else than the expectedTop for the iPhone X.
+     */
+    default int getTop(int expectedTop) {
+        return expectedTop;
+    }
+
+    /**
+     * This method will probably only ever return something else than the expectedBottom for the iPhone X.
+     */
+    default int getBottom(int expectedBottom) {
+        return expectedBottom;
+    }
 }

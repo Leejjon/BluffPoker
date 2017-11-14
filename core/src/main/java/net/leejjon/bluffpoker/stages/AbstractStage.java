@@ -12,8 +12,8 @@ public abstract class AbstractStage extends Stage {
 	protected Table table;
 
 	public AbstractStage(boolean defaultVisibility) {
-		super(new StretchViewport(BluffPokerGame.getDivideScreenByThis() > 0 ?  Gdx.graphics.getWidth() / BluffPokerGame.getDivideScreenByThis() :  Gdx.graphics.getWidth(),
-				BluffPokerGame.getDivideScreenByThis() > 0 ? Gdx.graphics.getHeight()/ BluffPokerGame.getDivideScreenByThis() : Gdx.graphics.getHeight()));
+		super(new StretchViewport(BluffPokerGame.getPlatformSpecificInterface().getZoomFactor() > 0 ?  Gdx.graphics.getWidth() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor() :  Gdx.graphics.getWidth(),
+				BluffPokerGame.getPlatformSpecificInterface().getZoomFactor() > 0 ? Gdx.graphics.getHeight()/ BluffPokerGame.getPlatformSpecificInterface().getZoomFactor() : Gdx.graphics.getHeight()));
 		visible = defaultVisibility;
 		
 		table = new Table();

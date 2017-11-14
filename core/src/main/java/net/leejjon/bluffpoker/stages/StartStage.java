@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class StartStage extends AbstractStage {
-	public StartStage(Skin uiSkin, final StageInterface stageInterface, boolean tablet) {
+	public StartStage(Skin uiSkin, final StageInterface stageInterface) {
 		super(true);
 
 		Logo logo = new Logo(stageInterface.getTexture(TextureKey.LOGO));

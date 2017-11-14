@@ -39,7 +39,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
 
     private AtomicBoolean orderingHintShown = new AtomicBoolean(false);
 
-    public SelectPlayersStage(Skin uiSkin, TutorialDialog tutorialDialog, final StageInterface stageInterface, final PlatformSpecificInterface contactsRequester) {
+    public SelectPlayersStage(Skin uiSkin, TutorialDialog tutorialDialog, final StageInterface stageInterface) {
         super(false);
         this.tutorialDialog = tutorialDialog;
 
@@ -50,7 +50,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         playersFromPhonebookDialog = new PlayersFromPhonebookDialog(uiSkin, this);
 
         players = new ArrayList<>();
-        players.add(contactsRequester.getDeviceOwnerName());
+        players.add(BluffPokerGame.getPlatformSpecificInterface().getDeviceOwnerName());
 
         final float padding = 7f;
 
@@ -78,8 +78,8 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         ScrollPane playersScrollPane = new ScrollPane(playerList, uiSkin);
         playersScrollPane.setScrollingDisabled(true, false);
 
-        int width = Gdx.graphics.getWidth() / BluffPokerGame.getDivideScreenByThis();
-        int height = Gdx.graphics.getHeight() / BluffPokerGame.getDivideScreenByThis();
+        int width = Gdx.graphics.getWidth() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor();
+        int height = Gdx.graphics.getHeight() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor();
 
         table.center();
         table.bottom();
@@ -123,7 +123,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         phonebook.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                contactsRequester.initiateSelectContacts(SelectPlayersStage.this, new TreeSet<>(players));
+                BluffPokerGame.getPlatformSpecificInterface().initiateSelectContacts(SelectPlayersStage.this, new TreeSet<>(players));
             }
         });
         TextButton startGame = new TextButton("Start game", uiSkin);

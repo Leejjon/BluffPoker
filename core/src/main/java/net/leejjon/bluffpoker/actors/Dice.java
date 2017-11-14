@@ -7,8 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import net.leejjon.bluffpoker.BluffPokerGame;
-import net.leejjon.bluffpoker.enums.TutorialMessage;
-import net.leejjon.bluffpoker.interfaces.UserInterface;
 import net.leejjon.bluffpoker.logic.DiceLocation;
 import net.leejjon.bluffpoker.interfaces.Lockable;
 import net.leejjon.bluffpoker.stages.GameStage;
@@ -88,7 +86,7 @@ public class Dice extends Stack implements Lockable {
     }
 
     public void calculateAndSetPosition() {
-        float x = (GameStage.getMiddleX() / BluffPokerGame.getDivideScreenByThis()) - ((getDiceWidth() / 2) / 2);
+        float x = (GameStage.getMiddleX() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((getDiceWidth() / 2) / 2);
         switch (location) {
             case LEFT:
                 // This is the left dice, so we place it slightly left of the middle at the same height as the cup (with a little dynamic padding based on the dice size).
@@ -102,7 +100,7 @@ public class Dice extends Stack implements Lockable {
                 break;
         }
 
-        float y = cup.getMiddleYForCup() + (getDiceHeight() / (3 + BluffPokerGame.getDivideScreenByThis()));
+        float y = cup.getMiddleYForCup() + (getDiceHeight() / (3 + BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()));
         setPosition(x, y);
     }
 

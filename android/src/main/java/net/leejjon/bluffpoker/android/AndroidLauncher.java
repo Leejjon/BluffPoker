@@ -95,11 +95,6 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
     }
 
     @Override
-    public boolean isTablet() {
-        return false;
-    }
-
-    @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
     @Override

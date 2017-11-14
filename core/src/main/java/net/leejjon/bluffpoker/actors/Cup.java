@@ -47,8 +47,8 @@ public class Cup extends Stack implements Lockable {
         this.backgroundActors = backgroundActors;
 
         // Calculate the position for the Cup.
-        this.middleXForCup = (GameStage.getMiddleX() / BluffPokerGame.getDivideScreenByThis()) - ((getCupWidth() / 2) / 2);
-        this.middleYForCup = (GameStage.getMiddleY() / BluffPokerGame.getDivideScreenByThis()) - ((getCupHeight() / 2) / 2);
+        this.middleXForCup = (GameStage.getMiddleX() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((getCupWidth() / 2) / 2);
+        this.middleYForCup = (GameStage.getMiddleY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((getCupHeight() / 2) / 2);
 
         // Yeah, everything is shown bigger because of the divideScreenByThisValue to prevent buttons and labels from being too small.
         // Because of this the picture itself is also too big, so we divide it by the same number again to end up with a satisfying result.

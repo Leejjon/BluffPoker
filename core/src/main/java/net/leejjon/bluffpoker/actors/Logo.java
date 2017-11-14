@@ -13,8 +13,8 @@ public class Logo extends Table {
         setFillParent(false);
         logo = new Image(logoTexture);
 
-        int middleX = (GameStage.getMiddleX() / BluffPokerGame.getDivideScreenByThis());
-        int firstQuarter = (GameStage.getMiddleY() / BluffPokerGame.getDivideScreenByThis());// - ((logoTexture.getHeight()) / 4) / 2;
+        int middleX = (GameStage.getMiddleX() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor());
+        int firstQuarter = (GameStage.getMiddleY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor());
         setPosition(middleX, firstQuarter);
 
         add(logo).width(logoTexture.getWidth() / 4).height(logoTexture.getHeight() / 4).padBottom(10f);
