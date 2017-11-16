@@ -119,19 +119,19 @@ public class IOSMoeLauncher extends IOSApplication.Delegate implements PlatformS
     }
 
     @Override
-    public int getTop(int expectedTop) {
+    public int getTopPadding() {
         if (IOSDevices.getIosDevice(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) == IOSDevices.IPHONE_X) {
-            return expectedTop - 36;
+            return IOSDevices.IPHONE_X.getTopPadding();
         }
-        return expectedTop ;
+        return 0;
     }
 
     @Override
-    public int getBottom(int expectedBottom) {
+    public int getBottomPadding() {
         if (IOSDevices.getIosDevice(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) == IOSDevices.IPHONE_X) {
-            return expectedBottom + 36;
+            return IOSDevices.IPHONE_X.getBottomPadding();
         }
-        return expectedBottom;
+        return 0;
     }
 
     private enum IOSDevices {
@@ -139,7 +139,7 @@ public class IOSMoeLauncher extends IOSApplication.Delegate implements PlatformS
         IPHONE_6_6S_7_8(750, 1334, 2),
         IPHONE_6PLUS(960, 1704, 3),
         IPHONE_7PLUS_8PLUS(1242, 2208, 3),
-        IPHONE_X(1125, 2436, 3),
+        IPHONE_X(1125, 2436, 3, 84, 84),
         IPAD_AIR(1536, 2048, 3);
 
         private final int width;

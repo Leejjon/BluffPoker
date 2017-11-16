@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.Set;
 
 public interface PlatformSpecificInterface {
-    // TODO: Use Optional when everyone uses Android 7 and move default name to core.
+    // TODO: Use Optional when multi os engine uses Android 7 and move default name to core.
     String getDeviceOwnerName();
 
     void initiateSelectContacts(ModifyPlayerListener listener, Set<String> alreadyExistingPlayers);
@@ -14,16 +14,14 @@ public interface PlatformSpecificInterface {
     int getZoomFactor();
 
     /**
-     * This method will probably only ever return something else than the expectedTop for the iPhone X.
+     * This method will probably only ever return something else than the 0 for the iPhone X.
      */
-    default int getTop(int expectedTop) {
-        return expectedTop;
+    default int getTopPadding() {
+        return 0;
     }
 
     /**
-     * This method will probably only ever return something else than the expectedBottom for the iPhone X.
+     * This method will probably only ever return something else than 0 for the iPhone X.
      */
-    default int getBottom(int expectedBottom) {
-        return expectedBottom;
-    }
+    default int getBottomPadding() { return 0; }
 }

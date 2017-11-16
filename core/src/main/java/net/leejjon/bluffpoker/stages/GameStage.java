@@ -226,7 +226,7 @@ public class GameStage extends AbstractStage implements UserInterface {
     }
 
     public static int getTopY() {
-        return BluffPokerGame.getPlatformSpecificInterface().getTop(Gdx.graphics.getHeight());
+        return Gdx.graphics.getHeight() - BluffPokerGame.getPlatformSpecificInterface().getTopPadding();
     }
 
     public void shake() {
