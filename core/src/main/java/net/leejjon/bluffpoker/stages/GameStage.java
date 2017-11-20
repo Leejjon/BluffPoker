@@ -78,7 +78,6 @@ public class GameStage extends AbstractStage implements UserInterface {
         winnerDialog = new WinnerDialog(stageInterface, this, uiSkin);
 
         Table topTable = new Table();
-        topTable.setFillParent(true);
         topTable.top();
 
         callInputField = new Label(NumberCombination.JUNK.toString(), uiSkin, "arial64", Color.WHITE);
@@ -118,11 +117,19 @@ public class GameStage extends AbstractStage implements UserInterface {
         topTable.add(autoButton).width(autoButton.getWidth() + (extraClickableSpace*2)).height(autoButton.getHeight() + extraClickableSpace).colspan(1).left();
         topTable.add(callButton).width(callButton.getWidth() + (extraClickableSpace*2)).height(callButton.getHeight() + extraClickableSpace).colspan(1).right();
 
+        float middleX = (GameStage.getMiddleX() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((topTable.getWidth() / 2) / 2);
+        float topY = (GameStage.getTopY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((topTable.getHeight()) / 2);
+
+        topTable.setPosition(middleX, topY);
+
         // Font used in console is Microsoft JingHei
         final String console = "console";
         thirdLatestOutputLabel = new Label("", uiSkin, console, Color.BLACK);
+        thirdLatestOutputLabel.setWrap(true);
         secondLatestOutputLabel = new Label("", uiSkin, console, Color.BLACK);
+        secondLatestOutputLabel.setWrap(true);
         latestOutputLabel = new Label("", uiSkin, console, Color.BLACK);
+        secondLatestOutputLabel.setWrap(true);
 
         table.left();
         table.bottom();

@@ -65,13 +65,17 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         Label playersLabel = new Label("players", uiSkin, "arial32", Color.WHITE);
 
         Table topTable = new Table();
-        topTable.setFillParent(true);
         topTable.center();
         topTable.top();
 
+        float middleX = (GameStage.getMiddleX() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((topTable.getWidth() / 2) / 2);
+        float topY = (GameStage.getTopY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((topTable.getHeight()) / 2);
+
+        topTable.setPosition(middleX, topY);
+
         final float padding = 7f;
 
-        topTable.add(chooseLabel).colspan(2).padTop(chooseLabel.getHeight() - getTopPadding(padding)).padBottom(padding);
+        topTable.add(chooseLabel).colspan(2).padTop(chooseLabel.getHeight() - padding).padBottom(padding);
         topTable.row();
         topTable.add(playersLabel).colspan(2);
 
@@ -157,15 +161,6 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         addActor(choosePlayersBackground);
         addActor(topTable);
         addActor(table);
-    }
-
-    private float getTopPadding(float normalPadding) {
-        final float extraTopPadding = BluffPokerGame.getPlatformSpecificInterface().getTopPadding();
-        if (extraTopPadding != 0) {
-            return normalPadding + (extraTopPadding / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor());
-        } else {
-            return normalPadding;
-        }
     }
 
     private Drawable addBordersToTextArea(Drawable drawable) {
