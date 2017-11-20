@@ -52,8 +52,6 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         players = new ArrayList<>();
         players.add(BluffPokerGame.getPlatformSpecificInterface().getDeviceOwnerName());
 
-        final float padding = 7f;
-
         List.ListStyle ls = uiSkin.get(List.ListStyle.class);
         ls.selection = addBordersToTextArea(ls.selection);
         ls.fontColorSelected = new Color(1f, 1f, 1f, 1.0f);
@@ -70,10 +68,12 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         topTable.setFillParent(true);
         topTable.center();
         topTable.top();
-        topTable.add(chooseLabel).colspan(2).padTop(chooseLabel.getHeight() - padding).padBottom(padding);
+
+        final float padding = 7f;
+
+        topTable.add(chooseLabel).colspan(2).padTop(chooseLabel.getHeight() - getTopPadding(padding)).padBottom(padding);
         topTable.row();
         topTable.add(playersLabel).colspan(2);
-        topTable.row();
 
         ScrollPane playersScrollPane = new ScrollPane(playerList, uiSkin);
         playersScrollPane.setScrollingDisabled(true, false);
@@ -157,6 +157,15 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         addActor(choosePlayersBackground);
         addActor(topTable);
         addActor(table);
+    }
+
+    private float getTopPadding(float normalPadding) {
+        final float extraTopPadding = BluffPokerGame.getPlatformSpecificInterface().getTopPadding();
+        if (extraTopPadding != 0) {
+            return normalPadding + (extraTopPadding / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor());
+        } else {
+            return normalPadding;
+        }
     }
 
     private Drawable addBordersToTextArea(Drawable drawable) {
