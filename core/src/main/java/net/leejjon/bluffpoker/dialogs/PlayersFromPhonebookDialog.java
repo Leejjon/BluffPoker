@@ -31,8 +31,8 @@ public class PlayersFromPhonebookDialog extends Dialog {
         ScrollPane playersScrollPane = new ScrollPane(checkBoxPerPhonebookEntryTable, uiSkin);
 
         // Take 50% of the screen.
-        int width = Gdx.graphics.getWidth() / BluffPokerGame.getDivideScreenByThis();
-        int height = Gdx.graphics.getHeight() / BluffPokerGame.getDivideScreenByThis();
+        int width = Gdx.graphics.getWidth() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor();
+        int height = Gdx.graphics.getHeight() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor();
 
         contentTable.add(playersScrollPane).width((width * 100) / 140).height((height * 100) / 200).padTop(3f).padRight(1f);
 

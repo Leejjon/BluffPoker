@@ -6,8 +6,8 @@ import net.leejjon.bluffpoker.state.GameState;
 /**
  * Extended the libGDX preferences class to be able to store the state in json.
  */
-public interface BluffPokerPreferences extends Preferences {
-    public static final String KEY = "bluffpoker";
+public interface BluffPokerPreferences {
+    String KEY = "bluffpoker";
 
     Preferences putState(String key, GameState val);
 

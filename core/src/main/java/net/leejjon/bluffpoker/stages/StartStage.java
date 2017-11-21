@@ -1,10 +1,5 @@
 package net.leejjon.bluffpoker.stages;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.actors.Logo;
 import net.leejjon.bluffpoker.dialogs.CreditsDialog;
 import net.leejjon.bluffpoker.enums.TextureKey;
@@ -17,20 +12,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import javax.xml.soap.Text;
-
 public class StartStage extends AbstractStage {
-	public StartStage(Skin uiSkin, final StageInterface stageInterface, boolean tablet) {
+	public StartStage(Skin uiSkin, final StageInterface stageInterface) {
 		super(true);
 
-        Texture logoTexture = stageInterface.getTexture(TextureKey.LOGO);
-        Logo logo = new Logo(logoTexture);
-        // Calculate the positions for the logo and the table.
-        int middleX = (GameStage.getMiddleX() / BluffPokerGame.getDivideScreenByThis() - ((logoTexture.getWidth() / 4) / 2));
-        int firstQuarter = (GameStage.getMiddleY() / BluffPokerGame.getDivideScreenByThis()) - ((logoTexture.getHeight()) / 4) / 4;
-        float thirdQuarter = (GameStage.getMiddleY() / BluffPokerGame.getDivideScreenByThis()) - (((logoTexture.getHeight()) / 4) * 1.4f);
-        logo.setPosition(middleX, firstQuarter);
-		
+		Logo logo = new Logo(stageInterface.getTexture(TextureKey.LOGO));
+
 		Label titleLabel = new Label("Bluff Poker", uiSkin);
 		titleLabel.setColor(Color.WHITE);
 
@@ -67,28 +54,19 @@ public class StartStage extends AbstractStage {
             }
         });
 
-		// Create a table and add the ui components to it.
-		table.center();
-
-		Cell<Label> labelCell = table.add(titleLabel).padBottom(10f);
-		if (tablet) {
-			labelCell.padTop(15f * BluffPokerGame.getDivideScreenByThis());
-		}
-
-		table.row();
-		table.add(playButton).padBottom(10f);
-		table.row();
+		logo.add(titleLabel).padBottom(5f);
+        logo.row();
+        logo.add(playButton).padBottom(10f);
+        logo.row();
 
 		if (!stageInterface.getState().isNewGameState()) {
-            table.add(continueButton).padBottom(10f);
-            table.row();
+            logo.add(continueButton).padBottom(10f);
+            logo.row();
         }
-		table.add(settingsButton).padBottom(10f);
-		table.row();
-		table.add(creditsButton);
-        table.setY(thirdQuarter);
+        logo.add(settingsButton).padBottom(10f);
+        logo.row();
+        logo.add(creditsButton);
 
 		addActor(logo);
-		addActor(table);
 	}
 }

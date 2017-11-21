@@ -100,7 +100,7 @@ public class TutorialDialog extends Dialog {
     }
 
     private float get80PercentOfScreen() {
-        return ((Gdx.graphics.getWidth() / BluffPokerGame.getDivideScreenByThis()) * 100) / 120;
+        return ((Gdx.graphics.getWidth() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) * 100) / 120;
     }
 
     private void showDisableTutorialCheckBox() {

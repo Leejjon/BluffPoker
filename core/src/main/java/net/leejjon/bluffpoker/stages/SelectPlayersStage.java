@@ -15,7 +15,6 @@ import net.leejjon.bluffpoker.dialogs.PlayersFromPhonebookDialog;
 import net.leejjon.bluffpoker.dialogs.TutorialDialog;
 import net.leejjon.bluffpoker.dialogs.WarningDialog;
 import net.leejjon.bluffpoker.enums.TutorialMessage;
-import net.leejjon.bluffpoker.interfaces.PlatformSpecificInterface;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
 
@@ -39,7 +38,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
 
     private AtomicBoolean orderingHintShown = new AtomicBoolean(false);
 
-    public SelectPlayersStage(Skin uiSkin, TutorialDialog tutorialDialog, final StageInterface stageInterface, final PlatformSpecificInterface contactsRequester) {
+    public SelectPlayersStage(Skin uiSkin, TutorialDialog tutorialDialog, final StageInterface stageInterface) {
         super(false);
         this.tutorialDialog = tutorialDialog;
 
@@ -50,9 +49,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         playersFromPhonebookDialog = new PlayersFromPhonebookDialog(uiSkin, this);
 
         players = new ArrayList<>();
-        players.add(contactsRequester.getDeviceOwnerName());
-
-        final float padding = 7f;
+        players.add(BluffPokerGame.getPlatformSpecificInterface().getDeviceOwnerName());
 
         List.ListStyle ls = uiSkin.get(List.ListStyle.class);
         ls.selection = addBordersToTextArea(ls.selection);
@@ -67,19 +64,25 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         Label playersLabel = new Label("players", uiSkin, "arial32", Color.WHITE);
 
         Table topTable = new Table();
-        topTable.setFillParent(true);
         topTable.center();
         topTable.top();
+
+        float middleX = (GameStage.getMiddleX() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((topTable.getWidth() / 2) / 2);
+        float topY = (GameStage.getTopY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - (topTable.getHeight() / 2);
+
+        topTable.setPosition(middleX, topY);
+
+        final float padding = 7f;
+
         topTable.add(chooseLabel).colspan(2).padTop(chooseLabel.getHeight() - padding).padBottom(padding);
         topTable.row();
         topTable.add(playersLabel).colspan(2);
-        topTable.row();
 
         ScrollPane playersScrollPane = new ScrollPane(playerList, uiSkin);
         playersScrollPane.setScrollingDisabled(true, false);
 
-        int width = Gdx.graphics.getWidth() / BluffPokerGame.getDivideScreenByThis();
-        int height = Gdx.graphics.getHeight() / BluffPokerGame.getDivideScreenByThis();
+        int width = Gdx.graphics.getWidth() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor();
+        int height = Gdx.graphics.getHeight() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor();
 
         table.center();
         table.bottom();
@@ -123,7 +126,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         phonebook.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                contactsRequester.initiateSelectContacts(SelectPlayersStage.this, new TreeSet<>(players));
+                BluffPokerGame.getPlatformSpecificInterface().initiateSelectContacts(SelectPlayersStage.this, new TreeSet<>(players));
             }
         });
         TextButton startGame = new TextButton("Start game", uiSkin);

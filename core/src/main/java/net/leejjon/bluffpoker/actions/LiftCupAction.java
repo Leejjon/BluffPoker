@@ -17,7 +17,7 @@ public class LiftCupAction extends Action {
          * I don't care about this being slow on phones who display less than 30 frames per second and this
          * being faster on phones with more frames per second.
          */
-        if (actor.getY() < (Gdx.graphics.getHeight() / BluffPokerGame.getDivideScreenByThis())) {
+        if (actor.getY() < (Gdx.graphics.getHeight() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor())) {
             actor.moveBy(0f, 2f);
         } else {
             done.set(true);

@@ -11,9 +11,9 @@ public class BlackBoard extends Image {
         super(callBoardTexture);
         this.callBoardTexture = callBoardTexture;
 
-        // Calculate the position for the Cup.
-        int middleX = (GameStage.getMiddleX() / BluffPokerGame.getDivideScreenByThis()) - ((getCallBoardWidth() / 2) / 2);
-        int topY = (GameStage.getTopY() / BluffPokerGame.getDivideScreenByThis()) - ((getCallBoardHeight()) / 2);
+        // Calculate the position for the BlackBoard.
+        int middleX = (GameStage.getMiddleX() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((getCallBoardWidth() / 2) / 2);
+        int topY = (GameStage.getTopY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - (getCallBoardHeight() / 2);
 
         setPosition(middleX, topY);
         setWidth(getCallBoardWidth() / 2);

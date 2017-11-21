@@ -11,6 +11,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.iosmoe.IOSApplication;
 import com.badlogic.gdx.backends.iosmoe.IOSApplicationConfiguration;
 import com.badlogic.gdx.backends.iosmoe.IOSInput;
+import lombok.Getter;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.interfaces.PlatformSpecificInterface;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
@@ -114,55 +115,58 @@ public class IOSMoeLauncher extends IOSApplication.Delegate implements PlatformS
 
     @Override
     public int getZoomFactor() {
-        int zoomfactor = IOSDevices.getZoomFactorForResolution(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        return zoomfactor;
+        return IOSDevices.getIosDevice(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()).getZoomfactor();
     }
 
     @Override
-    public boolean isTablet() {
-        return IOSDevices.isTablet(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    public int getTopPadding() {
+        if (IOSDevices.getIosDevice(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) == IOSDevices.IPHONE_X) {
+            return IOSDevices.IPHONE_X.getTopPadding();
+        }
+        return 0;
+    }
+
+    @Override
+    public int getBottomPadding() {
+        if (IOSDevices.getIosDevice(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) == IOSDevices.IPHONE_X) {
+            return IOSDevices.IPHONE_X.getBottomPadding();
+        }
+        return 0;
     }
 
     private enum IOSDevices {
         IPHONE_5S_SE(640, 1136, 2),
         IPHONE_6_6S_7_8(750, 1334, 2),
-        IPHONE_6PLUS_7PLUS(960, 1704, 3),
-        IPHONE_8PLUS(1242, 2208, 4),
-        IPHONE_X(1125, 2001, 3),
-        IPAD_AIR(1536, 2048, 3, true);
+        IPHONE_6PLUS(960, 1704, 3),
+        IPHONE_7PLUS_8PLUS(1242, 2208, 3),
+        IPHONE_X(1125, 2436, 3, 84, 84),
+        IPAD_AIR(1536, 2048, 3);
 
         private final int width;
         private final int height;
-        private final int zoomfactor;
-        private final boolean tablet;
+        @Getter private final int zoomfactor;
+        @Getter private final int topPadding;
+        @Getter private final int bottomPadding;
 
         IOSDevices(int width, int height, int zoomfactor) {
-            this(width, height, zoomfactor, false);
+            this(width, height, zoomfactor, 0, 0);
         }
 
-        IOSDevices(int width, int height, int zoomfactor, boolean tablet) {
+        IOSDevices(int width, int height, int zoomfactor, int topPadding, int bottomPadding) {
             this.width = width;
             this.height = height;
             this.zoomfactor = zoomfactor;
-            this.tablet = tablet;
+            this.topPadding = topPadding;
+            this.bottomPadding = bottomPadding;
         }
 
-        public static int getZoomFactorForResolution(int width, int height) {
-            for (IOSDevices IOSDevices : IOSDevices.values()) {
-                if (IOSDevices.width == width && IOSDevices.height == height) {
-                    return IOSDevices.zoomfactor;
+        public static IOSDevices getIosDevice(int width, int height) {
+            for (IOSDevices iOSDevices : IOSDevices.values()) {
+                if (iOSDevices.width == width && iOSDevices.height == height) {
+                    return iOSDevices;
                 }
             }
-            return 3;
-        }
-
-        public static boolean isTablet(int width, int height) {
-            for (IOSDevices IOSDevices : IOSDevices.values()) {
-                if (IOSDevices.width == width && IOSDevices.height == height) {
-                    return IOSDevices.tablet;
-                }
-            }
-            return false;
+            return IPHONE_6PLUS;
         }
     }
 }
