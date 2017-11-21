@@ -15,7 +15,6 @@ import net.leejjon.bluffpoker.dialogs.PlayersFromPhonebookDialog;
 import net.leejjon.bluffpoker.dialogs.TutorialDialog;
 import net.leejjon.bluffpoker.dialogs.WarningDialog;
 import net.leejjon.bluffpoker.enums.TutorialMessage;
-import net.leejjon.bluffpoker.interfaces.PlatformSpecificInterface;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
 
@@ -69,7 +68,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         topTable.top();
 
         float middleX = (GameStage.getMiddleX() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((topTable.getWidth() / 2) / 2);
-        float topY = (GameStage.getTopY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((topTable.getHeight()) / 2);
+        float topY = (GameStage.getTopY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - (topTable.getHeight() / 2);
 
         topTable.setPosition(middleX, topY);
 

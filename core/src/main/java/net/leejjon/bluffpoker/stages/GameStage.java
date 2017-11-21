@@ -117,10 +117,10 @@ public class GameStage extends AbstractStage implements UserInterface {
         topTable.add(autoButton).width(autoButton.getWidth() + (extraClickableSpace*2)).height(autoButton.getHeight() + extraClickableSpace).colspan(1).left();
         topTable.add(callButton).width(callButton.getWidth() + (extraClickableSpace*2)).height(callButton.getHeight() + extraClickableSpace).colspan(1).right();
 
-        float middleX = (GameStage.getMiddleX() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((topTable.getWidth() / 2) / 2);
-        float topY = (GameStage.getTopY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((topTable.getHeight()) / 2);
+        float middleXForTopTable = (GameStage.getMiddleX() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((topTable.getWidth() / 2) / 2);
+        float topY = (GameStage.getTopY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - (topTable.getHeight() / 2);
 
-        topTable.setPosition(middleX, topY);
+        topTable.setPosition(middleXForTopTable, topY);
 
         // Font used in console is Microsoft JingHei
         final String console = "console";
@@ -131,6 +131,7 @@ public class GameStage extends AbstractStage implements UserInterface {
         latestOutputLabel = new Label("", uiSkin, console, Color.BLACK);
         secondLatestOutputLabel.setWrap(true);
 
+        table.setFillParent(false);
         table.left();
         table.bottom();
         float bottomPadding = 3f;
@@ -139,6 +140,10 @@ public class GameStage extends AbstractStage implements UserInterface {
         table.add(secondLatestOutputLabel).left().padLeft(padding).padBottom(bottomPadding);
         table.row();
         table.add(latestOutputLabel).left().padLeft(padding).padBottom(bottomPadding);
+
+        float bottomY = (GameStage.getBottomY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) + (table.getHeight() / 2);
+
+        table.setPosition(0, bottomY);
 
         // Putting certain images at the foreground or background usually goes via z index. However the z index seems broken
         // unless I pull off crazy hacks. What Actor is painted first is simply decided by the order you add them to the stage.
@@ -234,6 +239,10 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     public static int getTopY() {
         return Gdx.graphics.getHeight() - BluffPokerGame.getPlatformSpecificInterface().getTopPadding();
+    }
+
+    public static int getBottomY() {
+        return 0 + BluffPokerGame.getPlatformSpecificInterface().getBottomPadding();
     }
 
     public void shake() {
