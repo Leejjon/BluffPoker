@@ -136,15 +136,14 @@ public class GameStage extends AbstractStage implements UserInterface {
         table.setFillParent(false);
         table.left();
         table.bottom();
+
         float bottomPadding = 3f;
-        table.add(thirdLatestOutputLabel).left().padLeft(padding).padBottom(bottomPadding);
-        table.row();
-        table.add(secondLatestOutputLabel).left().padLeft(padding).padBottom(bottomPadding);
-        table.row();
-
         float maxLabelWidth = Gdx.graphics.getWidth() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor();
-        Gdx.app.log(BluffPokerGame.TAG, "MaxLabelWidth: " + maxLabelWidth + ", NormalLabelWidth: " + secondLatestOutputLabel.getWidth());
 
+        table.add(thirdLatestOutputLabel).left().width(maxLabelWidth).padLeft(padding).padBottom(bottomPadding);
+        table.row();
+        table.add(secondLatestOutputLabel).left().width(maxLabelWidth).padLeft(padding).padBottom(bottomPadding);
+        table.row();
         table.add(latestOutputLabel).left().width(maxLabelWidth).padLeft(padding).padBottom(bottomPadding);
 
         float bottomY = (GameStage.getBottomY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) + (table.getHeight() / 2);
