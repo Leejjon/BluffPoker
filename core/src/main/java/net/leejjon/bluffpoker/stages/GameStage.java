@@ -144,6 +144,7 @@ public class GameStage extends AbstractStage implements UserInterface {
         float bottomY = (GameStage.getBottomY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) + (table.getHeight() / 2);
 
         table.setPosition(0, bottomY);
+        table.setWidth(Gdx.graphics.getWidth() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor());
 
         // Putting certain images at the foreground or background usually goes via z index. However the z index seems broken
         // unless I pull off crazy hacks. What Actor is painted first is simply decided by the order you add them to the stage.
