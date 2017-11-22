@@ -4,11 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.actors.BlackBoard;
 import net.leejjon.bluffpoker.actors.Cup;
@@ -129,7 +131,7 @@ public class GameStage extends AbstractStage implements UserInterface {
         secondLatestOutputLabel = new Label("", uiSkin, console, Color.BLACK);
         secondLatestOutputLabel.setWrap(true);
         latestOutputLabel = new Label("", uiSkin, console, Color.BLACK);
-        secondLatestOutputLabel.setWrap(true);
+        latestOutputLabel.setWrap(true);
 
         table.setFillParent(false);
         table.left();
@@ -139,12 +141,15 @@ public class GameStage extends AbstractStage implements UserInterface {
         table.row();
         table.add(secondLatestOutputLabel).left().padLeft(padding).padBottom(bottomPadding);
         table.row();
-        table.add(latestOutputLabel).left().padLeft(padding).padBottom(bottomPadding);
+
+        float maxLabelWidth = Gdx.graphics.getWidth() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor();
+        Gdx.app.log(BluffPokerGame.TAG, "MaxLabelWidth: " + maxLabelWidth + ", NormalLabelWidth: " + secondLatestOutputLabel.getWidth());
+
+        table.add(latestOutputLabel).left().width(maxLabelWidth).padLeft(padding).padBottom(bottomPadding);
 
         float bottomY = (GameStage.getBottomY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) + (table.getHeight() / 2);
 
         table.setPosition(0, bottomY);
-        table.setWidth(Gdx.graphics.getWidth() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor());
 
         // Putting certain images at the foreground or background usually goes via z index. However the z index seems broken
         // unless I pull off crazy hacks. What Actor is painted first is simply decided by the order you add them to the stage.

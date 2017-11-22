@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import lombok.Getter;
+import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.logic.BluffPokerPreferences;
 
 public class Settings {
@@ -47,23 +49,28 @@ public class Settings {
 
     private void saveSettings() {
         Gson gson = new Gson();
-        Preferences preferences = Gdx.app.getPreferences(BluffPokerPreferences.KEY);
         String json = gson.toJson(this);
+        Preferences preferences = Gdx.app.getPreferences(BluffPokerPreferences.KEY);
         preferences.putString(KEY, json);
         preferences.flush();
     }
 
     public static Settings getSettings() {
-        // Load game state if a previous state exists.
-        Preferences bluffPokerPreferences = Gdx.app.getPreferences(BluffPokerPreferences.KEY);
-
         Gson gson = new Gson();
         Settings settings;
+
+        // Load game state if a previous state exists.
+        Preferences bluffPokerPreferences = Gdx.app.getPreferences(BluffPokerPreferences.KEY);
         String stateString = bluffPokerPreferences.getString(KEY);
         if (Strings.isNullOrEmpty(stateString)) {
             settings = new Settings();
         } else {
-            settings = gson.fromJson(bluffPokerPreferences.getString(KEY), Settings.class);
+            try {
+                settings = gson.fromJson(bluffPokerPreferences.getString(KEY), Settings.class);
+            } catch (JsonSyntaxException e) {
+                Gdx.app.log(BluffPokerGame.TAG, "String that contained save was invalid.", e);
+                settings = new Settings();
+            }
         }
         return settings;
     }
