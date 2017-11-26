@@ -1,8 +1,5 @@
 package net.leejjon.bluffpoker.state;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.google.common.base.Strings;
@@ -16,17 +13,7 @@ public class GameState {
     @Getter
     private transient boolean newGameState = true;
 
-    private List<String> players = new ArrayList<>();
-
     private GameState() {}
-
-    public List<String> getPlayers() {
-        return new ArrayList<>(players);
-    }
-
-    public void setPlayers(List<String> players) {
-       players.addAll(players);
-    }
 
     private void saveGame() {
         newGameState = false;
@@ -42,21 +29,28 @@ public class GameState {
     }
 
     /**
-     * Turn this class into a proper Singleton.
-     * @return
+     * Singleton with lazy initialization.
      */
-    public static GameState getGameState() {
-        // Load game state if a previous state exists.
-        Preferences bluffPokerState = Gdx.app.getPreferences(BluffPokerPreferences.KEY);
+    private static GameState instance;
 
-        GameState state;
-        Gson gson = new Gson();
-        String stateString = bluffPokerState.getString(GameState.KEY);
-        if (Strings.isNullOrEmpty(stateString)) {
-            state = new GameState();
+    /**
+     * @return The only instantiation of the GameState within the app.
+     */
+    public static synchronized GameState getGameState() {
+        if (instance != null) {
+            return instance;
         } else {
-            state = gson.fromJson(bluffPokerState.getString(GameState.KEY), GameState.class);
+            // Load game state if a previous state exists.
+            Preferences bluffPokerState = Gdx.app.getPreferences(BluffPokerPreferences.KEY);
+
+            Gson gson = new Gson();
+            String stateString = bluffPokerState.getString(GameState.KEY);
+            if (Strings.isNullOrEmpty(stateString)) {
+                instance = new GameState();
+            } else {
+                instance = gson.fromJson(bluffPokerState.getString(GameState.KEY), GameState.class);
+            }
+            return instance;
         }
-        return state;
     }
 }
