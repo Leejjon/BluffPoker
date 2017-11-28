@@ -10,7 +10,7 @@ import net.leejjon.bluffpoker.listener.CupListener;
 import net.leejjon.bluffpoker.listener.DiceListener;
 import net.leejjon.bluffpoker.interfaces.UserInterface;
 import net.leejjon.bluffpoker.interfaces.GameInputInterface;
-import net.leejjon.bluffpoker.state.Settings;
+import net.leejjon.bluffpoker.state.SettingsState;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
     private Dice rightDice;
     private Sound diceRoll;
 
-    private Settings settings;
+    private SettingsState settingsState;
 
     private boolean bokAvailable = true;
 
@@ -71,14 +71,14 @@ public class Game implements GameInputInterface, GameStatusInterface {
     private static final String HAS_NO_MORE_LIVES_LEFT = "%1$s has no more lives left";
 
 
-    public Game(Cup cup, Dice leftDice, Dice middleDice, Dice rightDice, Sound diceRoll, UserInterface userInterface, Settings settings) {
+    public Game(Cup cup, Dice leftDice, Dice middleDice, Dice rightDice, Sound diceRoll, UserInterface userInterface) {
         this.cup = cup;
         this.leftDice = leftDice;
         this.middleDice = middleDice;
         this.rightDice = rightDice;
         this.diceRoll = diceRoll;
         this.userInterface = userInterface;
-        this.settings = settings;
+        this.settingsState = SettingsState.getInstance();
 
         cup.addListener(new CupListener(this));
         leftDice.addListener(new DiceListener(leftDice, this, userInterface));
@@ -100,7 +100,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
     private void constructPlayers() {
         players = new Player[originalPlayers.size()];
         for (int i = 0; i < originalPlayers.size(); i++) {
-            players[i] = new Player(originalPlayers.get(i), settings.getNumberOfLives());
+            players[i] = new Player(originalPlayers.get(i), settingsState.getNumberOfLives());
         }
         currentPlayer = players[playerIterator];
     }
@@ -304,7 +304,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
             // TODO: make sure all people on the bok die when the shared bok is allowed.
 
             // Detect if the current player jumped on the block and check if we should not allow other players to get on the bok too.
-            if (bokAvailable && !settings.isAllowSharedBok() && currentPlayer.isRidingOnTheBok()) {
+            if (bokAvailable && !settingsState.isAllowSharedBok() && currentPlayer.isRidingOnTheBok()) {
                 userInterface.log(currentPlayer.getName() + RIDING_ON_THE_BOK);
                 bokAvailable = false;
             }
@@ -501,11 +501,11 @@ public class Game implements GameInputInterface, GameStatusInterface {
     }
 
     private boolean canUseBok() {
-        if (settings.isAllowBok()) {
+        if (settingsState.isAllowBok()) {
             if (bokAvailable) {
                 return true;
             } else {
-                if (settings.isAllowSharedBok()) {
+                if (settingsState.isAllowSharedBok()) {
                     return true;
                 } else {
                     return false;

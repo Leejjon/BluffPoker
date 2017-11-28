@@ -4,13 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.actors.BlackBoard;
 import net.leejjon.bluffpoker.actors.Cup;
@@ -21,7 +19,6 @@ import net.leejjon.bluffpoker.enums.TutorialMessage;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 import net.leejjon.bluffpoker.interfaces.UserInterface;
 import net.leejjon.bluffpoker.logic.*;
-import net.leejjon.bluffpoker.state.Settings;
 import net.leejjon.bluffpoker.ui.ClickableLabel;
 
 import java.util.List;
@@ -191,12 +188,12 @@ public class GameStage extends AbstractStage implements UserInterface {
         addActor(topTable);
     }
 
-    public void startGame(List<String> players, Settings settings) {
+    public void startGame(List<String> players) {
         resetCall();
         resetLog();
 
         if (currentGame == null) {
-            currentGame = new Game(cup, leftDice, middleDice, rightDice, diceRoll, this, settings);
+            currentGame = new Game(cup, leftDice, middleDice, rightDice, diceRoll, this);
         }
 
         currentGame.resetPlayerIterator();
@@ -374,7 +371,7 @@ public class GameStage extends AbstractStage implements UserInterface {
     }
 
     private NumberCombination getNewCall(String call) throws InputValidationException {
-        return NumberCombination.validNumberCombinationFrom(call.toString());
+        return NumberCombination.validNumberCombinationFrom(call);
     }
 
     @Override

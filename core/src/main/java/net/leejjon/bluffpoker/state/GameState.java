@@ -36,7 +36,7 @@ public class GameState {
     /**
      * @return The only instantiation of the GameState within the app.
      */
-    public static synchronized GameState getGameState() {
+    public static synchronized GameState getInstance() {
         if (instance != null) {
             return instance;
         } else {

@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.enums.TutorialMessage;
-import net.leejjon.bluffpoker.state.Settings;
+import net.leejjon.bluffpoker.state.SettingsState;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -20,16 +20,16 @@ public class TutorialDialog extends Dialog {
     private Label label;
     private CheckBox disableTutorialCheckbox;
     private TextButton okButton;
-    private Settings settings;
+    private SettingsState settingsState;
     private Stage lastStage = null;
 
     private Queue<TutorialMessageWithArguments> tutorialMessageQueue = new ConcurrentLinkedQueue<>();
     private AtomicBoolean displayingTutorialMessage = new AtomicBoolean(false);
 
     private final float padding = 5f;
-    public TutorialDialog(Skin uiSkin, Settings settings) {
+    public TutorialDialog(Skin uiSkin) {
         super("Tutorial", uiSkin);
-        this.settings = settings;
+        this.settingsState = SettingsState.getInstance();
 
         label = new Label("", uiSkin, "consoleLabel");
         label.setAlignment(Align.center);
@@ -45,11 +45,11 @@ public class TutorialDialog extends Dialog {
                 boolean comesFromOkButton = actor == okButton;
 
                 if (comesFromOkButton) {
-                    if (disableTutorialCheckbox.isChecked() && settings.isTutorialMode()) {
+                    if (disableTutorialCheckbox.isChecked() && settingsState.isTutorialMode()) {
                         tutorialMessageQueue.clear();
                         displayingTutorialMessage.set(false);
 
-                        settings.setTutorialMode(false);
+                        settingsState.setTutorialMode(false);
                         hideDisableTutorialCheckBox();
                         showTutorialMessage(new TutorialMessageWithArguments(lastStage, TutorialMessage.DISABLED_TUTORIAL, new String[]{}));
                     } else {
@@ -63,7 +63,7 @@ public class TutorialDialog extends Dialog {
     }
 
     public void addToTutorialMessageQueue(Stage stage, TutorialMessage message, String ... parameters) {
-        if (settings.isTutorialMode()) {
+        if (settingsState.isTutorialMode()) {
             tutorialMessageQueue.add(new TutorialMessageWithArguments(stage, message, parameters));
 
             if (displayingTutorialMessage.compareAndSet(false, true)) {

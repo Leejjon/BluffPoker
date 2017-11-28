@@ -56,12 +56,11 @@ public class SelectPlayersStageState {
         } else {
             // Load game state if a previous state exists.
             Preferences bluffPokerState = Gdx.app.getPreferences(BluffPokerPreferences.KEY);
-
-            Gson gson = new Gson();
             String stateString = bluffPokerState.getString(SelectPlayersStageState.KEY);
             if (Strings.isNullOrEmpty(stateString)) {
                 instance = new SelectPlayersStageState();
             } else {
+                Gson gson = new Gson();
                 instance = gson.fromJson(bluffPokerState.getString(SelectPlayersStageState.KEY), SelectPlayersStageState.class);
             }
             return instance;

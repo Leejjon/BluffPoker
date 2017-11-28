@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import net.leejjon.bluffpoker.state.GameState;
 
 public class StartStage extends AbstractStage {
 	public StartStage(Skin uiSkin, final StageInterface stageInterface) {
@@ -37,7 +38,7 @@ public class StartStage extends AbstractStage {
 			}
 		});
 		
-		TextButton settingsButton = new TextButton("Settings", uiSkin);
+		TextButton settingsButton = new TextButton("SettingsState", uiSkin);
 		settingsButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -59,7 +60,7 @@ public class StartStage extends AbstractStage {
         logo.add(playButton).padBottom(10f);
         logo.row();
 
-		if (!stageInterface.getState().isNewGameState()) {
+		if (!GameState.getInstance().isNewGameState()) {
             logo.add(continueButton).padBottom(10f);
             logo.row();
         }
