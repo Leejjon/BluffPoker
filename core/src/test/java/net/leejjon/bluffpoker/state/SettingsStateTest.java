@@ -3,6 +3,7 @@ package net.leejjon.bluffpoker.state;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,14 +11,16 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SettingsStateTest {
+    private static final String DEFAULT_SETTINGS_TUTORIAL_MODE_OFF = "{\"allowBok\":true,\"allowSharedBok\":false,\"numberOfLives\":3,\"tutorialMode\":false}";
+
     @Mock
     private Application app;
 
@@ -32,9 +35,8 @@ public class SettingsStateTest {
 
     @Test
     public void testRetrievingSettings_validJson_parseSuccesful() {
-        String sampleSettings = "{\"allowBok\":true,\"allowSharedBok\":false,\"numberOfLives\":3,\"tutorialMode\":false}";
         when(app.getPreferences(BluffPokerGame.TAG)).thenReturn(preferences);
-        when(preferences.getString(SettingsState.KEY)).thenReturn(sampleSettings);
+        when(preferences.getString(SettingsState.KEY)).thenReturn(DEFAULT_SETTINGS_TUTORIAL_MODE_OFF);
 
         SettingsState settings = SettingsState.getInstance();
 
@@ -53,17 +55,41 @@ public class SettingsStateTest {
         assertDefaultSettings(settings);
     }
 
+    @Test
+    public void testEnablingTutorialModeInDefaultSingletonWith_success() {
+        when(app.getPreferences(BluffPokerGame.TAG)).thenReturn(preferences);
+        when(preferences.getString(SettingsState.KEY)).thenReturn(DEFAULT_SETTINGS_TUTORIAL_MODE_OFF);
+
+        CheckBox tutorialMode = mock(CheckBox.class);
+        SettingsState settings = SettingsState.getInstance();
+        settings.setTutorialModeCheckbox(tutorialMode);
+
+        verify(tutorialMode, times(1)).setChecked(false);
+        verify(tutorialMode, times(0)).setChecked(true);
+        verify(tutorialMode, times(1)).addListener(any());
+        assertFalse(settings.getTutorialModeCheckbox().isChecked());
+
+        // Enabling tutorial mode (as happens during the game).
+        settings.setTutorialMode(true);
+
+        // Verify that the change is being put through the UI, state and stored in the preferences.
+        verify(tutorialMode, times(1)).setChecked(true);
+        verify(preferences, times(1)).putString(any(), any());
+        verify(preferences, times(1)).flush();
+        assertTrue(settings.isTutorialMode());
+    }
+
     private void assertDefaultSettings(SettingsState settings) {
         assertEquals(3, settings.getNumberOfLives());
-        assertEquals(true, settings.isAllowBok());
-        assertEquals(false, settings.isAllowSharedBok());
-        assertEquals(true, settings.isTutorialMode());
+        assertTrue(settings.isAllowBok());
+        assertFalse(settings.isAllowSharedBok());
+        assertTrue(settings.isTutorialMode());
     }
 
     private void assertDefaultSettingsWithTutorialModeOff(SettingsState settings) {
         assertEquals(3, settings.getNumberOfLives());
-        assertEquals(true, settings.isAllowBok());
-        assertEquals(false, settings.isAllowSharedBok());
-        assertEquals(false, settings.isTutorialMode());
+        assertTrue(settings.isAllowBok());
+        assertFalse(settings.isAllowSharedBok());
+        assertFalse(settings.isTutorialMode());
     }
 }

@@ -88,7 +88,7 @@ public class SettingsState {
 	@Getter	private int numberOfLives = 3;
 	@Getter private boolean tutorialMode = true;
 
-    public void setNumberOfLives(int numberOfLives) {
+    private void setNumberOfLives(int numberOfLives) {
         if (this.numberOfLives != numberOfLives) {
             this.numberOfLives = numberOfLives;
             saveSettings();
@@ -101,7 +101,7 @@ public class SettingsState {
      */
     public void setTutorialMode(boolean tutorialMode) {
         this.tutorialMode = tutorialMode;
-        if (tutorialModeCheckbox.isChecked() != tutorialMode) {
+        if (tutorialModeCheckbox != null && tutorialModeCheckbox.isChecked() != tutorialMode) {
             tutorialModeCheckbox.setChecked(tutorialMode);
         }
         saveSettings();
