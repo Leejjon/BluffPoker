@@ -101,6 +101,9 @@ public class SettingsState {
      */
     public void setTutorialMode(boolean tutorialMode) {
         this.tutorialMode = tutorialMode;
+        if (tutorialModeCheckbox.isChecked() != tutorialMode) {
+            tutorialModeCheckbox.setChecked(tutorialMode);
+        }
         saveSettings();
     }
 
@@ -124,6 +127,7 @@ public class SettingsState {
             // Load game state if a previous state exists.
             Preferences bluffPokerPreferences = Gdx.app.getPreferences(BluffPokerPreferences.KEY);
             String stateString = bluffPokerPreferences.getString(KEY);
+            Gdx.app.log(BluffPokerGame.TAG, stateString);
             if (Strings.isNullOrEmpty(stateString)) {
                 instance = new SettingsState();
             } else {
@@ -137,5 +141,12 @@ public class SettingsState {
             }
         }
         return instance;
+    }
+
+    /**
+     * TEST PURPOSES ONLY.
+     */
+    static void resetSingletonInstance() {
+        instance = null;
     }
 }

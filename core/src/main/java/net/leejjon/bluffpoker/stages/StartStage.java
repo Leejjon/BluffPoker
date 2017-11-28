@@ -38,7 +38,7 @@ public class StartStage extends AbstractStage {
 			}
 		});
 		
-		TextButton settingsButton = new TextButton("SettingsState", uiSkin);
+		TextButton settingsButton = new TextButton("Settings", uiSkin);
 		settingsButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
