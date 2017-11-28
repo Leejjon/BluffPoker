@@ -15,7 +15,7 @@ import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.logic.BluffPokerPreferences;
 
 public class SettingsState {
-	static final String KEY = "settings";
+	public static final String KEY = "settings";
 
     @Getter private transient CheckBox allowBokCheckBox;
 
@@ -121,26 +121,19 @@ public class SettingsState {
 
     public static synchronized SettingsState getInstance() {
         if (instance == null) {
-            getInstance(Gdx.app.getPreferences(BluffPokerPreferences.KEY));
-        }
-        return instance;
-    }
-
-    /**
-     * Split up the getInstance() method in a public one and a package protected one to use in tests with a mockable Preferences.
-     */
-    static synchronized SettingsState getInstance(Preferences bluffPokerPreferences) {
-        // Load game state if a previous state exists.
-        String stateString = bluffPokerPreferences.getString(KEY);
-        if (Strings.isNullOrEmpty(stateString)) {
-            instance = new SettingsState();
-        } else {
-            try {
-                Gson gson = new Gson();
-                instance = gson.fromJson(bluffPokerPreferences.getString(KEY), SettingsState.class);
-            } catch (JsonSyntaxException e) {
-                Gdx.app.log(BluffPokerGame.TAG, "String that contained save was invalid.", e);
+            // Load game state if a previous state exists.
+            Preferences bluffPokerPreferences = Gdx.app.getPreferences(BluffPokerPreferences.KEY);
+            String stateString = bluffPokerPreferences.getString(KEY);
+            if (Strings.isNullOrEmpty(stateString)) {
                 instance = new SettingsState();
+            } else {
+                try {
+                    Gson gson = new Gson();
+                    instance = gson.fromJson(bluffPokerPreferences.getString(KEY), SettingsState.class);
+                } catch (JsonSyntaxException e) {
+                    Gdx.app.log(BluffPokerGame.TAG, "String that contained save was invalid.", e);
+                    instance = new SettingsState();
+                }
             }
         }
         return instance;

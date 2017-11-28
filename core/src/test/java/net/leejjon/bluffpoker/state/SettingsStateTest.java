@@ -32,8 +32,9 @@ public class SettingsStateTest {
 
     @Test
     public void testRetrievingSettings_invalidJson_logExceptionAndReturnDefaultSettings() {
+        when(app.getPreferences(BluffPokerGame.TAG)).thenReturn(preferences);
         when(preferences.getString(SettingsState.KEY)).thenReturn("somestuff");
-        SettingsState settings = SettingsState.getInstance(preferences);
+        SettingsState settings = SettingsState.getInstance();
 
         verify(app, times(1)).log(any(), any(), any());
 
