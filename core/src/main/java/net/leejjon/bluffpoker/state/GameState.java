@@ -2,6 +2,7 @@ package net.leejjon.bluffpoker.state;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import lombok.Getter;
@@ -12,6 +13,48 @@ public class GameState {
 
     @Getter
     private transient boolean newGameState = true;
+
+    @Getter
+    private transient Label thirdLatestOutputLabel;
+
+    public Label setThirdLatestOutputLabel(Label thirdLatestOutputLabel) {
+        this.thirdLatestOutputLabel = thirdLatestOutputLabel;
+        this.thirdLatestOutputLabel.setText(thirdLatestOutput);
+        return thirdLatestOutputLabel;
+    }
+
+    private String thirdLatestOutput = "";
+
+    @Getter
+    private transient Label secondLatestOutputLabel;
+
+    public Label setSecondLatestOutputLabel(Label secondLatestOutputLabel) {
+        this.secondLatestOutputLabel = secondLatestOutputLabel;
+        this.secondLatestOutputLabel.setText(secondLatestOutput);
+        return this.secondLatestOutputLabel;
+    }
+
+    private String secondLatestOutput = "";
+
+    @Getter
+    private transient Label latestOutputLabel;
+
+    public Label setLatestOutputLabel(Label latestOutputLabel) {
+        this.latestOutputLabel = latestOutputLabel;
+        this.latestOutputLabel.setText(latestOutput);
+        return latestOutputLabel;
+    }
+
+    private String latestOutput = "";
+
+    public void logGameConsoleMessage(String consoleMessage) {
+        thirdLatestOutput = secondLatestOutput;
+        secondLatestOutput = latestOutput;
+        latestOutput = consoleMessage;
+        thirdLatestOutputLabel.setText(thirdLatestOutput);
+        secondLatestOutputLabel.setText(secondLatestOutput);
+        latestOutputLabel.setText(latestOutput);
+    }
 
     private GameState() {}
 

@@ -11,7 +11,7 @@ public interface UserInterface {
 
     void finishGame(String winner);
 
-    void log(String message);
+    void logConsoleMessage(String message);
 
     void resetCall();
 

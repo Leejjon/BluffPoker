@@ -19,12 +19,14 @@ import net.leejjon.bluffpoker.enums.TutorialMessage;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 import net.leejjon.bluffpoker.interfaces.UserInterface;
 import net.leejjon.bluffpoker.logic.*;
+import net.leejjon.bluffpoker.state.GameState;
 import net.leejjon.bluffpoker.ui.ClickableLabel;
 
 import java.util.List;
 
 public class GameStage extends AbstractStage implements UserInterface {
     private Game currentGame;
+    private GameState gameState;
 
     private SpriteBatch batch;
     private Sound diceRoll;
@@ -32,10 +34,6 @@ public class GameStage extends AbstractStage implements UserInterface {
     private Dice leftDice;
     private Dice middleDice;
     private Dice rightDice;
-
-    private final Label thirdLatestOutputLabel;
-    private final Label secondLatestOutputLabel;
-    private final Label latestOutputLabel;
 
     private CallTooLowDialog callTooLowDialog;
     private CallNotThreeIdenticalNumbersDialog callNotThreeIdenticalNumbersDialog;
@@ -60,6 +58,8 @@ public class GameStage extends AbstractStage implements UserInterface {
     public GameStage(Skin uiSkin, TutorialDialog tutorialDialog, final StageInterface stageInterface) {
         super(false);
         this.tutorialDialog = tutorialDialog;
+
+        gameState = GameState.getInstance();
 
         Texture callBoardTexture = stageInterface.getTexture(TextureKey.CALL_BOARD);
         Texture closedCupTexture = stageInterface.getTexture(TextureKey.CLOSED_CUP);
@@ -123,11 +123,11 @@ public class GameStage extends AbstractStage implements UserInterface {
 
         // Font used in console is Microsoft JingHei
         final String console = "console";
-        thirdLatestOutputLabel = new Label("", uiSkin, console, Color.BLACK);
+        Label thirdLatestOutputLabel = gameState.setThirdLatestOutputLabel(new Label("", uiSkin, console, Color.BLACK));
         thirdLatestOutputLabel.setWrap(true);
-        secondLatestOutputLabel = new Label("", uiSkin, console, Color.BLACK);
+        Label secondLatestOutputLabel = gameState.setSecondLatestOutputLabel(new Label("", uiSkin, console, Color.BLACK));
         secondLatestOutputLabel.setWrap(true);
-        latestOutputLabel = new Label("", uiSkin, console, Color.BLACK);
+        Label latestOutputLabel = gameState.setLatestOutputLabel(new Label("", uiSkin, console, Color.BLACK));
         latestOutputLabel.setWrap(true);
 
         table.setFillParent(false);
@@ -190,7 +190,7 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     public void startGame(List<String> players) {
         resetCall();
-        resetLog();
+        // TODO: Reset the gamestate (including log).
 
         if (currentGame == null) {
             currentGame = new Game(cup, leftDice, middleDice, rightDice, diceRoll, this);
@@ -243,7 +243,7 @@ public class GameStage extends AbstractStage implements UserInterface {
         return Gdx.graphics.getHeight() - BluffPokerGame.getPlatformSpecificInterface().getTopPadding();
     }
 
-    public static int getBottomY() {
+    private static int getBottomY() {
         return 0 + BluffPokerGame.getPlatformSpecificInterface().getBottomPadding();
     }
 
@@ -345,10 +345,8 @@ public class GameStage extends AbstractStage implements UserInterface {
     }
 
     @Override
-    public void log(String message) {
-        thirdLatestOutputLabel.setText(secondLatestOutputLabel.getText());
-        secondLatestOutputLabel.setText(latestOutputLabel.getText());
-        latestOutputLabel.setText(message);
+    public void logConsoleMessage(String message) {
+        gameState.logGameConsoleMessage(message);
     }
 
     @Override
@@ -360,14 +358,8 @@ public class GameStage extends AbstractStage implements UserInterface {
     @Override
     public void restart() {
         resetCall();
-        resetLog();
+        // TODO: Reset the gamestate (including log).
         currentGame.restart();
-    }
-
-    private void resetLog() {
-        thirdLatestOutputLabel.setText("");
-        secondLatestOutputLabel.setText("");
-        latestOutputLabel.setText("");
     }
 
     private NumberCombination getNewCall(String call) throws InputValidationException {

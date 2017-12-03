@@ -114,7 +114,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
         cup.reset();
         setGameStatusBooleans();
         constructPlayers();
-        userInterface.log(String.format(SHAKE_THE_CUP, currentPlayer.getName()));
+        userInterface.logConsoleMessage(String.format(SHAKE_THE_CUP, currentPlayer.getName()));
 
         userInterface.showTutorialMessage(TutorialMessage.GAME_START, currentPlayer.getName());
     }
@@ -157,8 +157,8 @@ public class Game implements GameInputInterface, GameStatusInterface {
         cup.unlock();
 
         latestCall = new Call(currentPlayer, newCall);
-        userInterface.log(currentPlayer.getName() + CALLED + newCall + addBlindToMessage);
-        userInterface.log(getMessageToTellNextUserToBelieveOrNot());
+        userInterface.logConsoleMessage(currentPlayer.getName() + CALLED + newCall + addBlindToMessage);
+        userInterface.logConsoleMessage(getMessageToTellNextUserToBelieveOrNot());
 
         userInterface.showTutorialMessage(TutorialMessage.BELIEVE_OR_NOT_BELIEVE,
                 getLatestCall().getPlayer().getName(),
@@ -209,11 +209,11 @@ public class Game implements GameInputInterface, GameStatusInterface {
                         leftDice.putBackUnderCup();
                         middleDice.putBackUnderCup();
                         rightDice.putBackUnderCup();
-                        userInterface.log(currentPlayer.getName() + BELIEVED_666);
-                        userInterface.log(THROW_THREE_OF_THE_SAME_NUMBERS_IN_ONE_THROW);
+                        userInterface.logConsoleMessage(currentPlayer.getName() + BELIEVED_666);
+                        userInterface.logConsoleMessage(THROW_THREE_OF_THE_SAME_NUMBERS_IN_ONE_THROW);
                     } else {
-                        userInterface.log(currentPlayer.getName() + BELIEVED_THE_CALL);
-                        userInterface.log("Throw at least one dice ...");
+                        userInterface.logConsoleMessage(currentPlayer.getName() + BELIEVED_THE_CALL);
+                        userInterface.logConsoleMessage("Throw at least one dice ...");
 
                         if (getNumberCombinationFromDices().isGreaterThan(new NumberCombination(6,0,0, true))) {
                             userInterface.showTutorialMessage(TutorialMessage.MOVE_SIX_OUT, latestCall.getPlayer().getName(), latestCall.getNumberCombination().toString());
@@ -305,21 +305,21 @@ public class Game implements GameInputInterface, GameStatusInterface {
 
             // Detect if the current player jumped on the block and check if we should not allow other players to get on the bok too.
             if (bokAvailable && !settingsState.isAllowSharedBok() && currentPlayer.isRidingOnTheBok()) {
-                userInterface.log(currentPlayer.getName() + RIDING_ON_THE_BOK);
+                userInterface.logConsoleMessage(currentPlayer.getName() + RIDING_ON_THE_BOK);
                 bokAvailable = false;
             }
 
             if (currentPlayer.isDead()) {
-                userInterface.log(String.format(HAS_NO_MORE_LIVES_LEFT, currentPlayer.getName()));
+                userInterface.logConsoleMessage(String.format(HAS_NO_MORE_LIVES_LEFT, currentPlayer.getName()));
 
                 if (!nextPlayer()) {
                     Player winner = getWinner();
-                    userInterface.log(String.format(WON_THE_GAME, winner.getName()));
+                    userInterface.logConsoleMessage(String.format(WON_THE_GAME, winner.getName()));
                     userInterface.finishGame(winner.getName());
                     return;
                 }
             } else {
-                userInterface.log(String.format(LOST_A_LIFE, currentPlayer.getName(), currentPlayer.getLives()));
+                userInterface.logConsoleMessage(String.format(LOST_A_LIFE, currentPlayer.getName(), currentPlayer.getLives()));
             }
 
             // The cup should not be locked at this point.
@@ -334,7 +334,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
             hasToThrow = true;
             hasThrown = false;
 
-            userInterface.log(String.format(SHAKE_THE_CUP, currentPlayer.getName()));
+            userInterface.logConsoleMessage(String.format(SHAKE_THE_CUP, currentPlayer.getName()));
 
             lookAtOwnThrowMessageHasBeenShown = false;
             if (wasBluffing) {
@@ -364,7 +364,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
                 middleDice.lock();
                 rightDice.lock();
 
-                userInterface.log(currentPlayer.getName() + BELIEVED_THE_CALL_BLIND);
+                userInterface.logConsoleMessage(currentPlayer.getName() + BELIEVED_THE_CALL_BLIND);
 
                 allowedToBelieveOrNotBelieve = false;
                 allowedToCall = true;
@@ -372,7 +372,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
                 hasThrown = false;
                 blindPass = true;
                 userInterface.enableCallUserInterface();
-                userInterface.log(NOW_ENTER_YOUR_CALL_OR_THROW);
+                userInterface.logConsoleMessage(NOW_ENTER_YOUR_CALL_OR_THROW);
                 // canViewOwnThrow is already false, so let's keep it false.
                 //canViewOwnThrow = false;
                 return true;
@@ -386,7 +386,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
                 canViewOwnThrow = false;
 
                 userInterface.enableCallUserInterface();
-                userInterface.log(NOW_ENTER_YOUR_CALL);
+                userInterface.logConsoleMessage(NOW_ENTER_YOUR_CALL);
                 // Unlocking halfway the turn.
             } else if (blindPass && !hasToThrow && !firstThrowSinceDeath) {
                 cup.unlock();
@@ -395,7 +395,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
                 // Don't set blindPass to false, the player simply has to throw again and can call without watching and then it will be set to blind again.
                 hasToThrow = true;
                 userInterface.disableCallUserInterface();
-                userInterface.log(currentPlayer.getName() + WANTED_TO_PEEK_AFTER_ALL);
+                userInterface.logConsoleMessage(currentPlayer.getName() + WANTED_TO_PEEK_AFTER_ALL);
                 allowedToCall = false;
                 canViewOwnThrow = true;
 
@@ -540,10 +540,10 @@ public class Game implements GameInputInterface, GameStatusInterface {
 
         if (firstThrowSinceDeath) {
             userInterface.resetCall();
-            userInterface.log(String.format(WATCH_OWN_THROW, currentPlayer.getName()));
+            userInterface.logConsoleMessage(String.format(WATCH_OWN_THROW, currentPlayer.getName()));
             userInterface.showTutorialMessage(TutorialMessage.FIRST_THROWN_SINCE_DEATH);
         } else {
-            userInterface.log(NOW_ENTER_YOUR_CALL);
+            userInterface.logConsoleMessage(NOW_ENTER_YOUR_CALL);
         }
     }
 

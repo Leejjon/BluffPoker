@@ -1,8 +1,6 @@
 package net.leejjon.bluffpoker.stages;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import net.leejjon.bluffpoker.state.SettingsState;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 
@@ -23,13 +21,6 @@ public class SettingsStage extends AbstractStage {
 		Label numberOfLivesLabel = new Label("Number of lives: ", uiSkin);
 		numberOfLivesLabel.setColor(Color.WHITE);
 
-		settingsState.setAllowBokCheckBox(new CheckBox("Allow bok", uiSkin));
-		settingsState.setAllowSharedBokCheckbox(new CheckBox("Allow shared bok", uiSkin));
-        settingsState.setTutorialModeCheckbox(new CheckBox("Tutorial mode", uiSkin));
-		settingsState.setNumberOfLivesSlider(new Slider(1f, 10f, 1f, false, uiSkin));
-		settingsState.setActualNumberOfLivesDisplayLabel(new Label("", uiSkin));
-		settingsState.getActualNumberOfLivesDisplayLabel().setColor(Color.WHITE);
-
 		TextButton backButton = new TextButton("Back", uiSkin);
 		backButton.addListener(new ClickListener() {
 			@Override
@@ -46,16 +37,16 @@ public class SettingsStage extends AbstractStage {
 		Table innerTable = new Table(uiSkin);
 		innerTable.setFillParent(false);
 		innerTable.row();
-		innerTable.add(settingsState.getAllowBokCheckBox()).colspan(2).left();
+		innerTable.add(settingsState.createAllowBokCheckBox(uiSkin)).colspan(2).left();
 		innerTable.row();
-		innerTable.add(settingsState.getAllowSharedBokCheckbox()).colspan(2).left();
+		innerTable.add(settingsState.createAllowSharedBokCheckbox(uiSkin)).colspan(2).left();
 		innerTable.row();
-		innerTable.add(settingsState.getTutorialModeCheckbox()).colspan(2).left();
+		innerTable.add(settingsState.createTutorialModeCheckbox(uiSkin)).colspan(2).left();
 		innerTable.row();
 		innerTable.add(numberOfLivesLabel).left();
-		innerTable.add(settingsState.getActualNumberOfLivesDisplayLabel()).left();
+		innerTable.add(settingsState.createActualNumberOfLivesDisplayLabel(uiSkin)).left();
 		innerTable.row();
-		innerTable.add(settingsState.getNumberOfLivesSlider()).colspan(2).left().padBottom(5f);
+		innerTable.add(settingsState.createNumberOfLivesSlider(uiSkin)).colspan(2).left().padBottom(5f);
 		innerTable.row();
 
 		table.add(innerTable).padBottom(5f);

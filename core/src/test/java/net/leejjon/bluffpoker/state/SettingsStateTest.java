@@ -3,13 +3,22 @@ package net.leejjon.bluffpoker.state;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import net.leejjon.bluffpoker.BluffPokerGame;
+import net.leejjon.bluffpoker.test.GdxTest;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Scanner;
 
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
@@ -18,64 +27,50 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SettingsStateTest {
+public class SettingsStateTest extends GdxTest {
     private static final String DEFAULT_SETTINGS_TUTORIAL_MODE_OFF = "{\"allowBok\":true,\"allowSharedBok\":false,\"numberOfLives\":3,\"tutorialMode\":false}";
-
-    @Mock
-    private Application app;
-
-    @Mock
-    private Preferences preferences;
 
     @Before
     public void setUp() {
         SettingsState.resetSingletonInstance();
-        Gdx.app = app;
     }
 
     @Test
     public void testRetrievingSettings_validJson_parseSuccesful() {
-        when(app.getPreferences(BluffPokerGame.TAG)).thenReturn(preferences);
         when(preferences.getString(SettingsState.KEY)).thenReturn(DEFAULT_SETTINGS_TUTORIAL_MODE_OFF);
 
         SettingsState settings = SettingsState.getInstance();
 
-        verify(app, times(0)).log(any(), any(), any());
+        assertEquals(0, logMessages.size);
         assertDefaultSettingsWithTutorialModeOff(settings);
     }
 
     @Test
     public void testRetrievingSettings_invalidJson_logExceptionAndReturnDefaultSettings() {
-        when(app.getPreferences(BluffPokerGame.TAG)).thenReturn(preferences);
         when(preferences.getString(SettingsState.KEY)).thenReturn("some invalid state");
 
         SettingsState settings = SettingsState.getInstance();
 
-        verify(app, times(1)).log(any(), any(), any());
+        assertEquals(1, logMessages.size);
+        assertEquals(SettingsState.INVALID_SETTINGS, logMessages.get(0));
         assertDefaultSettings(settings);
     }
 
     @Test
     public void testEnablingTutorialModeInDefaultSingletonWith_success() {
-        when(app.getPreferences(BluffPokerGame.TAG)).thenReturn(preferences);
         when(preferences.getString(SettingsState.KEY)).thenReturn(DEFAULT_SETTINGS_TUTORIAL_MODE_OFF);
 
-        CheckBox tutorialMode = mock(CheckBox.class);
         SettingsState settings = SettingsState.getInstance();
-        settings.setTutorialModeCheckbox(tutorialMode);
-
-        verify(tutorialMode, times(1)).setChecked(false);
-        verify(tutorialMode, times(0)).setChecked(true);
-        verify(tutorialMode, times(1)).addListener(any());
-        assertFalse(settings.getTutorialModeCheckbox().isChecked());
+        CheckBox tutorialModeCheckbox = settings.createTutorialModeCheckbox(uiSkin);
+        assertFalse(tutorialModeCheckbox.isChecked());
 
         // Enabling tutorial mode (as happens during the game).
         settings.setTutorialMode(true);
 
         // Verify that the change is being put through the UI, state and stored in the preferences.
-        verify(tutorialMode, times(1)).setChecked(true);
-        verify(preferences, times(1)).putString(any(), any());
-        verify(preferences, times(1)).flush();
+        verify(preferences, times(2)).putString(any(), any());
+        verify(preferences, times(2)).flush();
+        assertTrue(tutorialModeCheckbox.isChecked());
         assertTrue(settings.isTutorialMode());
     }
 

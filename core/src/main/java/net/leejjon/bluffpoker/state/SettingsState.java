@@ -2,9 +2,11 @@ package net.leejjon.bluffpoker.state;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.google.common.base.Strings;
@@ -15,55 +17,55 @@ import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.logic.BluffPokerPreferences;
 
 public class SettingsState {
+    static final String INVALID_SETTINGS = "String that contained save was invalid.";
 	public static final String KEY = "settings";
 
-    @Getter private transient CheckBox allowBokCheckBox;
-
-    public void setAllowBokCheckBox(CheckBox allowBokCheckBox) {
-        this.allowBokCheckBox = allowBokCheckBox;
-        this.allowBokCheckBox.setChecked(allowBok);
-        this.allowBokCheckBox.addListener(new ChangeListener() {
+    public CheckBox createAllowBokCheckBox(Skin uiSkin) {
+        CheckBox allowBokCheckBox = new CheckBox("Allow bok", uiSkin);
+        allowBokCheckBox.setChecked(allowBok);
+        allowBokCheckBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 allowBok = allowBokCheckBox.isChecked();
                 saveSettings();
             }
         });
+        return allowBokCheckBox;
     }
 
-    @Getter private transient CheckBox allowSharedBokCheckbox;
-
-    public void setAllowSharedBokCheckbox(CheckBox allowSharedBokCheckbox) {
-        this.allowSharedBokCheckbox = allowSharedBokCheckbox;
-        this.allowSharedBokCheckbox.setChecked(allowSharedBok);
-        this.allowSharedBokCheckbox.addListener(new ChangeListener() {
+    public CheckBox createAllowSharedBokCheckbox(Skin uiSkin) {
+        CheckBox allowSharedBokCheckbox = new CheckBox("Allow shared bok", uiSkin);
+        allowSharedBokCheckbox.setChecked(allowSharedBok);
+        allowSharedBokCheckbox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 allowSharedBok = allowSharedBokCheckbox.isChecked();
                 saveSettings();
             }
         });
+        return allowSharedBokCheckbox;
     }
 
-    @Getter private transient Slider numberOfLivesSlider;
-
-    public void setNumberOfLivesSlider(Slider numberOfLivesSlider) {
-        this.numberOfLivesSlider = numberOfLivesSlider;
-        this.numberOfLivesSlider.setValue(numberOfLives);
-        this.numberOfLivesSlider.addListener(new ChangeListener() {
+    public Slider createNumberOfLivesSlider(Skin uiSkin) {
+        Slider numberOfLivesSlider = new Slider(1f, 10f, 1f, false, uiSkin);
+        numberOfLivesSlider.setValue(numberOfLives);
+        numberOfLivesSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 setNumberOfLives((int) numberOfLivesSlider.getValue());
                 updateActualNumberOfLivesLabel();
             }
         });
+        return numberOfLivesSlider;
     }
 
-    @Getter private transient Label actualNumberOfLivesDisplayLabel;
+    private transient Label actualNumberOfLivesDisplayLabel;
 
-    public void setActualNumberOfLivesDisplayLabel(Label actualNumberOfLivesDisplayLabel) {
-        this.actualNumberOfLivesDisplayLabel = actualNumberOfLivesDisplayLabel;
+    public Label createActualNumberOfLivesDisplayLabel(Skin uiSkin) {
+        actualNumberOfLivesDisplayLabel = new Label("", uiSkin);
+        actualNumberOfLivesDisplayLabel.setColor(Color.WHITE);
         updateActualNumberOfLivesLabel();
+        return actualNumberOfLivesDisplayLabel;
     }
 
     private void updateActualNumberOfLivesLabel() {
@@ -72,15 +74,16 @@ public class SettingsState {
 
     @Getter private transient CheckBox tutorialModeCheckbox;
 
-    public void setTutorialModeCheckbox(CheckBox tutorialModeCheckbox) {
-        this.tutorialModeCheckbox = tutorialModeCheckbox;
-        this.tutorialModeCheckbox.setChecked(tutorialMode);
-        this.tutorialModeCheckbox.addListener(new ChangeListener() {
+    public CheckBox createTutorialModeCheckbox(Skin uiSkin) {
+        tutorialModeCheckbox = new CheckBox("Tutorial mode", uiSkin);
+        tutorialModeCheckbox.setChecked(tutorialMode);
+        tutorialModeCheckbox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 setTutorialMode(tutorialModeCheckbox.isChecked());
             }
         });
+        return tutorialModeCheckbox;
     }
 
 	@Getter private boolean allowBok = true;
@@ -127,7 +130,6 @@ public class SettingsState {
             // Load game state if a previous state exists.
             Preferences bluffPokerPreferences = Gdx.app.getPreferences(BluffPokerPreferences.KEY);
             String stateString = bluffPokerPreferences.getString(KEY);
-            Gdx.app.log(BluffPokerGame.TAG, stateString);
             if (Strings.isNullOrEmpty(stateString)) {
                 instance = new SettingsState();
             } else {
@@ -135,7 +137,7 @@ public class SettingsState {
                     Gson gson = new Gson();
                     instance = gson.fromJson(bluffPokerPreferences.getString(KEY), SettingsState.class);
                 } catch (JsonSyntaxException e) {
-                    Gdx.app.log(BluffPokerGame.TAG, "String that contained save was invalid.", e);
+                    Gdx.app.log(BluffPokerGame.TAG, INVALID_SETTINGS, e);
                     instance = new SettingsState();
                 }
             }

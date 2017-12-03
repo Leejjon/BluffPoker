@@ -63,6 +63,11 @@ project(":core") {
         compileOnly "org.projectlombok:lombok:1.16.16"
         testCompile "junit:junit:4.12"
         testCompile "org.mockito:mockito-core:2.10.0"
+        testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        testCompile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        testCompile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        testCompile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
     }
 }
 
