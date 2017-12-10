@@ -1,6 +1,6 @@
 android {
-    buildToolsVersion "25.0.2"
-    compileSdkVersion 25
+    buildToolsVersion "26.0.2"
+    compileSdkVersion 26
 
     defaultConfig {
         applicationId "net.leejjon.blufpoker.android"
@@ -8,10 +8,6 @@ android {
         targetSdkVersion 26
         versionCode 19
         versionName "3.0"
-
-        jackOptions {
-            enabled true
-        }
 
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
