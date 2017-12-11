@@ -78,11 +78,11 @@ project(":ios-moe") {
     configurations { natives }
 
     dependencies {
-        compile project(":core")
-        compile "com.badlogicgames.gdx:gdx-backend-moe:$gdxVersion"
+        implementation project(":core")
+        implementation "com.badlogicgames.gdx:gdx-backend-moe:$gdxVersion"
         compileOnly "org.projectlombok:lombok:1.16.16"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
     }
 }
 
-task createWrapper(type: Wrapper) { gradleVersion = "3.5" }
+task createWrapper(type: Wrapper) { gradleVersion = "4.3.1" }

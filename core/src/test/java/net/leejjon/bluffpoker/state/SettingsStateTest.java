@@ -1,24 +1,11 @@
 package net.leejjon.bluffpoker.state;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import net.leejjon.bluffpoker.BluffPokerGame;
-import net.leejjon.bluffpoker.test.GdxTest;
-import org.junit.After;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Scanner;
 
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
@@ -36,7 +23,7 @@ public class SettingsStateTest extends GdxTest {
     }
 
     @Test
-    public void testRetrievingSettings_validJson_parseSuccesful() {
+    public void testRetrievingSettings_validJson_parseSuccessful() {
         when(preferences.getString(SettingsState.KEY)).thenReturn(DEFAULT_SETTINGS_TUTORIAL_MODE_OFF);
 
         SettingsState settings = SettingsState.getInstance();

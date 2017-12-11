@@ -5,19 +5,24 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
-import lombok.Getter;
+
+import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.logic.BluffPokerPreferences;
 
 import java.util.ArrayList;
 
+import lombok.Getter;
+
 public class SelectPlayersStageState {
-    private static final String KEY = "selectPlayersStageState";
+    public static final String KEY = "selectPlayersStageState";
 
-    @Getter private transient List<String> playerList;
+    @Getter
+    private transient List<String> playerList;
 
-    public void setPlayerList(List<String> playerList) {
-        this.playerList = playerList;
+    public List<String> createPlayerList(List.ListStyle listStyle) {
+        playerList = new List<>(listStyle);
         playerList.setItems(players.toArray(new String[players.size()]));
+        return playerList;
     }
 
     private ArrayList<String> players = new ArrayList<>();
@@ -57,6 +62,7 @@ public class SelectPlayersStageState {
             // Load game state if a previous state exists.
             Preferences bluffPokerState = Gdx.app.getPreferences(BluffPokerPreferences.KEY);
             String stateString = bluffPokerState.getString(SelectPlayersStageState.KEY);
+            Gdx.app.log(BluffPokerGame.TAG, stateString);
             if (Strings.isNullOrEmpty(stateString)) {
                 instance = new SelectPlayersStageState();
             } else {
@@ -65,5 +71,12 @@ public class SelectPlayersStageState {
             }
             return instance;
         }
+    }
+
+    /**
+     * TEST PURPOSES ONLY.
+     */
+    static void resetSingletonInstance() {
+        instance = null;
     }
 }

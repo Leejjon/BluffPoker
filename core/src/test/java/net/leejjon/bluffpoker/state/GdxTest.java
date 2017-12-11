@@ -1,4 +1,4 @@
-package net.leejjon.bluffpoker.test;
+package net.leejjon.bluffpoker.state;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -71,6 +71,8 @@ public class GdxTest {
         // Use the default libgdx UI skin.
         uiSkin = new Skin(Gdx.files.internal(relativePath + "uiskin.json"));
         uiSkin.addRegions(new TextureAtlas(relativePath + "uiskin.atlas"));
+
+        SelectPlayersStageState.resetSingletonInstance();
     }
 
 

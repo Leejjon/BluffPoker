@@ -2,7 +2,7 @@ package net.leejjon.bluffpoker.state;
 
 import com.badlogic.gdx.Gdx;
 import net.leejjon.bluffpoker.BluffPokerGame;
-import net.leejjon.bluffpoker.test.GdxTest;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;

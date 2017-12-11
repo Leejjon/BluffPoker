@@ -47,12 +47,6 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         final AddNewPlayerDialog addNewPlayerDialog = new AddNewPlayerDialog(this);
         playersFromPhonebookDialog = new PlayersFromPhonebookDialog(uiSkin, this);
 
-        List.ListStyle ls = uiSkin.get(List.ListStyle.class);
-        ls.selection = addBordersToTextArea(ls.selection);
-        ls.fontColorSelected = new Color(1f, 1f, 1f, 1.0f);
-        List<String> playerList = new List<>(ls);
-        state.setPlayerList(playerList);
-
         if (state.getPlayers().isEmpty()) {
             ArrayList<String> players = new ArrayList<>();
             players.add(BluffPokerGame.getPlatformSpecificInterface().getDeviceOwnerName());
@@ -80,7 +74,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         topTable.row();
         topTable.add(playersLabel).colspan(2);
 
-        ScrollPane playersScrollPane = new ScrollPane(playerList, uiSkin);
+        ScrollPane playersScrollPane = new ScrollPane(state.createPlayerList(getCustomListStyle(uiSkin)), uiSkin);
         playersScrollPane.setScrollingDisabled(true, false);
 
         int width = Gdx.graphics.getWidth() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor();
@@ -164,7 +158,14 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         addActor(table);
     }
 
-    private Drawable addBordersToTextArea(Drawable drawable) {
+    static List.ListStyle getCustomListStyle(Skin uiSkin) {
+        List.ListStyle ls = uiSkin.get(List.ListStyle.class);
+        ls.selection = addBordersToTextArea(ls.selection);
+        ls.fontColorSelected = new Color(1f, 1f, 1f, 1.0f);
+        return ls;
+    }
+
+    private static Drawable addBordersToTextArea(Drawable drawable) {
         drawable.setLeftWidth(2f);
         drawable.setTopHeight(2f);
         drawable.setBottomHeight(2f);

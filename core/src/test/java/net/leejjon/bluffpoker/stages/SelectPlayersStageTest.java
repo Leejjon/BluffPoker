@@ -1,19 +1,56 @@
 package net.leejjon.bluffpoker.stages;
 
+import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.utils.Array;
+
+import net.leejjon.bluffpoker.state.SelectPlayersStageState;
+import net.leejjon.bluffpoker.state.GdxTest;
+
 import org.junit.Test;
-import java.util.List;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
-public class SelectPlayersStageTest {
+@RunWith(MockitoJUnitRunner.class)
+public class SelectPlayersStageTest extends GdxTest {
+    private static final String DEFAULT_PLAYERS = "{\"players\":[\"Leon\",\"Pya\"]}";
+
+    @Test
+    public void testRetrievingPlayers_validJson_parseSuccessful() {
+        when(preferences.getString(SelectPlayersStageState.KEY)).thenReturn(DEFAULT_PLAYERS);
+
+        SelectPlayersStageState selectPlayersStageState = SelectPlayersStageState.getInstance();
+        assertEquals(2, selectPlayersStageState.getPlayers().size());
+    }
+
+    @Test
+    public void testCreatingPlayerListInUi_constructAndUpdate_success() {
+        when(preferences.getString(SelectPlayersStageState.KEY)).thenReturn(DEFAULT_PLAYERS);
+
+        SelectPlayersStageState selectPlayersStageState = SelectPlayersStageState.getInstance();
+        List<String> playerList = selectPlayersStageState.createPlayerList(SelectPlayersStage.getCustomListStyle(uiSkin));
+        Array<String> items = playerList.getItems();
+
+        assertEquals(2, items.size);
+
+        ArrayList<String> players = selectPlayersStageState.getPlayers();
+        players.add("Dirk");
+
+        selectPlayersStageState.setPlayers(players);
+
+        assertEquals(3, playerList.getItems().size);
+    }
+
     @Test
     public void testCutOffShortName() {
-        List<String> emptyList = new ArrayList<>();
+        ArrayList<String> emptyList = new ArrayList<>();
         assertEquals("Leon", SelectPlayersStage.cutOffPlayerName("Leon De", emptyList));
 
-        List<String> listWithExistingUsers = new ArrayList<>();
+        ArrayList<String> listWithExistingUsers = new ArrayList<>();
         listWithExistingUsers.add("Leon");
         listWithExistingUsers.add("Leon Ded");
         assertEquals("Leon Ded D", SelectPlayersStage.cutOffPlayerName("Leon Ded D", listWithExistingUsers));
