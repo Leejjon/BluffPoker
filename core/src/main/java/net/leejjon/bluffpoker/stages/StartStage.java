@@ -1,6 +1,7 @@
 package net.leejjon.bluffpoker.stages;
 
 import net.leejjon.bluffpoker.actors.Logo;
+import net.leejjon.bluffpoker.dialogs.ContinueGameDialog;
 import net.leejjon.bluffpoker.dialogs.CreditsDialog;
 import net.leejjon.bluffpoker.enums.TextureKey;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
@@ -22,22 +23,15 @@ public class StartStage extends AbstractStage {
 		Label titleLabel = new Label("Bluff Poker", uiSkin);
 		titleLabel.setColor(Color.WHITE);
 
-		TextButton continueButton = new TextButton("Continue", uiSkin);
-        continueButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                stageInterface.continuePlaying();
-            }
-        });
-
 		TextButton playButton = new TextButton("Start", uiSkin);
 		playButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+                GameState.resetInstance();
 				stageInterface.startSelectingPlayersToPlayWith();
 			}
 		});
-		
+
 		TextButton settingsButton = new TextButton("Settings", uiSkin);
 		settingsButton.addListener(new ClickListener() {
 			@Override
@@ -60,14 +54,15 @@ public class StartStage extends AbstractStage {
         logo.add(playButton).padBottom(10f);
         logo.row();
 
-		if (!GameState.getInstance().isNewGameState()) {
-            logo.add(continueButton).padBottom(10f);
-            logo.row();
-        }
         logo.add(settingsButton).padBottom(10f);
         logo.row();
         logo.add(creditsButton);
 
 		addActor(logo);
+
+        if (!GameState.getInstance().isNewGameState()) {
+            ContinueGameDialog continueGameDialog = new ContinueGameDialog(uiSkin, stageInterface);
+            continueGameDialog.show(this);
+        }
 	}
 }

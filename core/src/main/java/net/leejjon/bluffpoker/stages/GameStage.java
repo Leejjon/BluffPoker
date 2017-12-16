@@ -22,7 +22,7 @@ import net.leejjon.bluffpoker.logic.*;
 import net.leejjon.bluffpoker.state.GameState;
 import net.leejjon.bluffpoker.ui.ClickableLabel;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class GameStage extends AbstractStage implements UserInterface {
     private Game currentGame;
@@ -179,7 +179,7 @@ public class GameStage extends AbstractStage implements UserInterface {
         addActor(topTable);
     }
 
-    public void startGame(List<String> players) {
+    public void startGame(ArrayList<String> players) {
         resetCall();
         // TODO: Reset the gamestate (including log).
 
@@ -187,7 +187,7 @@ public class GameStage extends AbstractStage implements UserInterface {
             currentGame = new Game(cup, leftDice, middleDice, rightDice, diceRoll, this);
         }
 
-        currentGame.resetPlayerIterator();
+        gameState.updatePlayerIterator(0);
         currentGame.startGame(players);
     }
 

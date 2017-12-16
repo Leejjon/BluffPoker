@@ -9,15 +9,24 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import lombok.Getter;
-import net.leejjon.bluffpoker.logic.BluffPokerPreferences;
+import lombok.Setter;
 
+import net.leejjon.bluffpoker.logic.BluffPokerPreferences;
+import net.leejjon.bluffpoker.logic.Player;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * A singleton to contain all the state in the game, designed with testability in mind.
+ */
 public class GameState {
     public static final String KEY = "gameState";
     // Font used in console is Microsoft JingHei
     public static final String console = "console";
 
     @Getter
-    private transient boolean newGameState = true;
+    private boolean newGameState = true;
 
     private void checkUiInitializedPreconditions() {
         Preconditions.checkNotNull(thirdLatestOutputLabel);
@@ -25,15 +34,25 @@ public class GameState {
         Preconditions.checkNotNull(latestOutputLabel);
     }
 
-    // Stateful UI elements
+    // Actual state
+    @Getter
+    private Player[] players;
+
+    @Getter
+    private int playerIterator = 0;
 
     String thirdLatestOutput = "";
-    private transient Label thirdLatestOutputLabel;
-
     String secondLatestOutput = "";
-    private transient Label secondLatestOutputLabel;
-
     String latestOutput = "";
+
+    // Custom state getter methods
+    public Player getCurrentPlayer() {
+        return players[playerIterator];
+    }
+
+    // Stateful UI elements
+    private transient Label thirdLatestOutputLabel;
+    private transient Label secondLatestOutputLabel;
     private transient Label latestOutputLabel;
 
     // UI element initialization methods
@@ -57,6 +76,23 @@ public class GameState {
     }
 
     // UI element update methods.
+    public void constructPlayers(ArrayList<String> originalPlayers, int numberOfLives) {
+        players = new Player[originalPlayers.size()];
+        for (int i = 0; i < originalPlayers.size(); i++) {
+            players[i] = new Player(originalPlayers.get(i), numberOfLives);
+        }
+        saveGame();
+    }
+
+    public void updatePlayerIterator(int newPlayerIteratorValue) {
+        playerIterator = newPlayerIteratorValue;
+        saveGame();
+    }
+
+    public void currentPlayerLosesLife(boolean canUseBok) {
+        getCurrentPlayer().loseLife(canUseBok);
+        saveGame();
+    }
 
     public void logGameConsoleMessage(String consoleMessage) {
         checkUiInitializedPreconditions();
@@ -64,13 +100,25 @@ public class GameState {
         thirdLatestOutput = secondLatestOutput;
         secondLatestOutput = latestOutput;
         latestOutput = consoleMessage;
-        thirdLatestOutputLabel.setText(thirdLatestOutput);
-        secondLatestOutputLabel.setText(secondLatestOutput);
-        latestOutputLabel.setText(latestOutput);
+        updateOutputLabels();
         saveGame();
     }
 
+    private void updateOutputLabels() {
+        thirdLatestOutputLabel.setText(thirdLatestOutput);
+        secondLatestOutputLabel.setText(secondLatestOutput);
+        latestOutputLabel.setText(latestOutput);
+    }
+
     private GameState() {}
+
+    private GameState(Label thirdLatestOutputLabel, Label secondLatestOutputLabel, Label latestOutputLabel) {
+        this.thirdLatestOutputLabel = thirdLatestOutputLabel;
+        this.secondLatestOutputLabel = secondLatestOutputLabel;
+        this.latestOutputLabel = latestOutputLabel;
+        updateOutputLabels();
+        save();
+    }
 
     private void saveGame() {
         newGameState = false;
@@ -109,5 +157,9 @@ public class GameState {
             }
             return instance;
         }
+    }
+
+    public static synchronized void resetInstance() {
+        instance = new GameState(instance.thirdLatestOutputLabel, instance.secondLatestOutputLabel, instance.latestOutputLabel);
     }
 }

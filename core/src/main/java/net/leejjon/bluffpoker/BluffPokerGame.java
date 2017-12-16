@@ -1,6 +1,6 @@
 package net.leejjon.bluffpoker;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -118,7 +118,7 @@ public class BluffPokerGame extends ApplicationAdapter implements
     }
 
     @Override
-    public void startGame(List<String> players) {
+    public void startGame(ArrayList<String> players) {
         selectPlayersStage.setVisible(false);
         gameStage.startGame(players);
         gameStage.setVisible(true);
