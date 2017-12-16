@@ -121,15 +121,6 @@ public class GameStage extends AbstractStage implements UserInterface {
 
         topTable.setPosition(middleXForTopTable, topY);
 
-        // Font used in console is Microsoft JingHei
-        final String console = "console";
-        Label thirdLatestOutputLabel = gameState.setThirdLatestOutputLabel(new Label("", uiSkin, console, Color.BLACK));
-        thirdLatestOutputLabel.setWrap(true);
-        Label secondLatestOutputLabel = gameState.setSecondLatestOutputLabel(new Label("", uiSkin, console, Color.BLACK));
-        secondLatestOutputLabel.setWrap(true);
-        Label latestOutputLabel = gameState.setLatestOutputLabel(new Label("", uiSkin, console, Color.BLACK));
-        latestOutputLabel.setWrap(true);
-
         table.setFillParent(false);
         table.left();
         table.bottom();
@@ -137,11 +128,11 @@ public class GameStage extends AbstractStage implements UserInterface {
         float bottomPadding = 3f;
         float maxLabelWidth = Gdx.graphics.getWidth() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor();
 
-        table.add(thirdLatestOutputLabel).left().width(maxLabelWidth).padLeft(padding).padBottom(bottomPadding);
+        table.add(gameState.createThirdLatestOutputLabel(uiSkin)).left().width(maxLabelWidth).padLeft(padding).padBottom(bottomPadding);
         table.row();
-        table.add(secondLatestOutputLabel).left().width(maxLabelWidth).padLeft(padding).padBottom(bottomPadding);
+        table.add(gameState.createSecondLatestOutputLabel(uiSkin)).left().width(maxLabelWidth).padLeft(padding).padBottom(bottomPadding);
         table.row();
-        table.add(latestOutputLabel).left().width(maxLabelWidth).padLeft(padding).padBottom(bottomPadding);
+        table.add(gameState.createLatestOutputLabel(uiSkin)).left().width(maxLabelWidth).padLeft(padding).padBottom(bottomPadding);
 
         float bottomY = (GameStage.getBottomY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) + (table.getHeight() / 2);
 
