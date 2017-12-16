@@ -26,8 +26,6 @@ import java.util.ArrayList;
 
 public class GameStage extends AbstractStage implements UserInterface {
     private Game currentGame;
-    private GameState gameState;
-
     private SpriteBatch batch;
     private Sound diceRoll;
     private final Cup cup;
@@ -59,8 +57,6 @@ public class GameStage extends AbstractStage implements UserInterface {
         super(false);
         this.tutorialDialog = tutorialDialog;
 
-        gameState = GameState.getInstance();
-
         Texture callBoardTexture = stageInterface.getTexture(TextureKey.CALL_BOARD);
         Texture closedCupTexture = stageInterface.getTexture(TextureKey.CLOSED_CUP);
         Texture openCupTexture = stageInterface.getTexture(TextureKey.OPEN_CUP);
@@ -79,7 +75,7 @@ public class GameStage extends AbstractStage implements UserInterface {
         Table topTable = new Table();
         topTable.top();
 
-        callInputField = new Label(NumberCombination.JUNK.toString(), uiSkin, "arial64", Color.WHITE);
+        callInputField = new Label(NumberCombination.MIN.toString(), uiSkin, "arial64", Color.WHITE);
 
         final CallInputDialog callInputDialog = new CallInputDialog(this);
 
@@ -128,11 +124,11 @@ public class GameStage extends AbstractStage implements UserInterface {
         float bottomPadding = 3f;
         float maxLabelWidth = Gdx.graphics.getWidth() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor();
 
-        table.add(gameState.createThirdLatestOutputLabel(uiSkin)).left().width(maxLabelWidth).padLeft(padding).padBottom(bottomPadding);
+        table.add(state().createThirdLatestOutputLabel(uiSkin)).left().width(maxLabelWidth).padLeft(padding).padBottom(bottomPadding);
         table.row();
-        table.add(gameState.createSecondLatestOutputLabel(uiSkin)).left().width(maxLabelWidth).padLeft(padding).padBottom(bottomPadding);
+        table.add(state().createSecondLatestOutputLabel(uiSkin)).left().width(maxLabelWidth).padLeft(padding).padBottom(bottomPadding);
         table.row();
-        table.add(gameState.createLatestOutputLabel(uiSkin)).left().width(maxLabelWidth).padLeft(padding).padBottom(bottomPadding);
+        table.add(state().createLatestOutputLabel(uiSkin)).left().width(maxLabelWidth).padLeft(padding).padBottom(bottomPadding);
 
         float bottomY = (GameStage.getBottomY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) + (table.getHeight() / 2);
 
@@ -187,7 +183,7 @@ public class GameStage extends AbstractStage implements UserInterface {
             currentGame = new Game(cup, leftDice, middleDice, rightDice, diceRoll, this);
         }
 
-        gameState.updatePlayerIterator(0);
+        state().updatePlayerIterator(0);
         currentGame.startGame(players);
     }
 
@@ -235,7 +231,7 @@ public class GameStage extends AbstractStage implements UserInterface {
     }
 
     private static int getBottomY() {
-        return 0 + BluffPokerGame.getPlatformSpecificInterface().getBottomPadding();
+        return BluffPokerGame.getPlatformSpecificInterface().getBottomPadding();
     }
 
     public void shake() {
@@ -337,7 +333,7 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     @Override
     public void logConsoleMessage(String message) {
-        gameState.logGameConsoleMessage(message);
+        state().logGameConsoleMessage(message);
     }
 
     @Override
@@ -360,5 +356,9 @@ public class GameStage extends AbstractStage implements UserInterface {
     @Override
     public void resetCall() {
         setCallField(NumberCombination.MIN.toString());
+    }
+
+    public GameState state() {
+        return GameState.getInstance();
     }
 }

@@ -24,7 +24,6 @@ public class Game implements GameInputInterface, GameStatusInterface {
     private Dice rightDice;
     private Sound diceRoll;
 
-    private GameState gameState;
     private SettingsState settingsState;
 
     private boolean bokAvailable = true;
@@ -72,7 +71,6 @@ public class Game implements GameInputInterface, GameStatusInterface {
         this.diceRoll = diceRoll;
         this.userInterface = userInterface;
         this.settingsState = SettingsState.getInstance();
-        this.gameState = GameState.getInstance();
 
         cup.addListener(new CupListener(this));
         leftDice.addListener(new DiceListener(leftDice, this, userInterface));
@@ -99,10 +97,10 @@ public class Game implements GameInputInterface, GameStatusInterface {
     public void startGame(ArrayList<String> originalPlayers) {
         cup.reset();
         setGameStatusBooleans();
-        gameState.constructPlayers(originalPlayers, settingsState.getNumberOfLives());
-        userInterface.logConsoleMessage(String.format(SHAKE_THE_CUP, gameState.getCurrentPlayer().getName()));
+        state().constructPlayers(originalPlayers, settingsState.getNumberOfLives());
+        userInterface.logConsoleMessage(String.format(SHAKE_THE_CUP, state().getCurrentPlayer().getName()));
 
-        userInterface.showTutorialMessage(TutorialMessage.GAME_START, gameState.getCurrentPlayer().getName());
+        userInterface.showTutorialMessage(TutorialMessage.GAME_START, state().getCurrentPlayer().getName());
     }
 
     public void validateCall(NumberCombination newCall) throws InputValidationException {
@@ -142,8 +140,8 @@ public class Game implements GameInputInterface, GameStatusInterface {
 
         cup.unlock();
 
-        latestCall = new Call(gameState.getCurrentPlayer().getName(), newCall);
-        userInterface.logConsoleMessage(gameState.getCurrentPlayer().getName() + CALLED + newCall + addBlindToMessage);
+        latestCall = new Call(state().getCurrentPlayer().getName(), newCall);
+        userInterface.logConsoleMessage(state().getCurrentPlayer().getName() + CALLED + newCall + addBlindToMessage);
         userInterface.logConsoleMessage(getMessageToTellNextUserToBelieveOrNot());
 
         userInterface.showTutorialMessage(TutorialMessage.BELIEVE_OR_NOT_BELIEVE,
@@ -159,16 +157,16 @@ public class Game implements GameInputInterface, GameStatusInterface {
     private Player getNextPlayer() {
         Player nextPlayer;
 
-        int localPlayerIterator = gameState.getPlayerIterator() + 1;
+        int localPlayerIterator = state().getPlayerIterator() + 1;
 
         // At this point (during placing a call) not all players should be dead.
         do {
             // If the localPlayerIterator runs out of the arrays bounds, we reset it to 0.
-            if (localPlayerIterator == gameState.getPlayers().length) {
+            if (localPlayerIterator == state().getPlayers().length) {
                 localPlayerIterator = 0;
             }
 
-            nextPlayer = gameState.getPlayers()[localPlayerIterator];
+            nextPlayer = state().getPlayers()[localPlayerIterator];
 
             localPlayerIterator++;
         } while (nextPlayer.isDead());
@@ -195,10 +193,10 @@ public class Game implements GameInputInterface, GameStatusInterface {
                         leftDice.putBackUnderCup();
                         middleDice.putBackUnderCup();
                         rightDice.putBackUnderCup();
-                        userInterface.logConsoleMessage(gameState.getCurrentPlayer().getName() + BELIEVED_666);
+                        userInterface.logConsoleMessage(state().getCurrentPlayer().getName() + BELIEVED_666);
                         userInterface.logConsoleMessage(THROW_THREE_OF_THE_SAME_NUMBERS_IN_ONE_THROW);
                     } else {
-                        userInterface.logConsoleMessage(gameState.getCurrentPlayer().getName() + BELIEVED_THE_CALL);
+                        userInterface.logConsoleMessage(state().getCurrentPlayer().getName() + BELIEVED_THE_CALL);
                         userInterface.logConsoleMessage("Throw at least one dice ...");
 
                         if (getNumberCombinationFromDices().isGreaterThan(new NumberCombination(6,0,0, true))) {
@@ -266,7 +264,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
 
             // Variables for the tutorial mode.
             boolean wasBluffing = true;
-            final String callingPlayer = gameState.getCurrentPlayer().getName();
+            final String callingPlayer = state().getCurrentPlayer().getName();
             final NumberCombination whatWasCalled = latestCall.getNumberCombination();
 
             if (believed666) {
@@ -284,19 +282,19 @@ public class Game implements GameInputInterface, GameStatusInterface {
                 }
             }
 
-            gameState.currentPlayerLosesLife(canUseBok());
+            state().currentPlayerLosesLife(canUseBok());
             firstThrowSinceDeath = true;
             blindPass = true;
             // TODO: make sure all people on the bok die when the shared bok is allowed.
 
             // Detect if the current player jumped on the block and check if we should not allow other players to get on the bok too.
-            if (bokAvailable && !settingsState.isAllowSharedBok() && gameState.getCurrentPlayer().isRidingOnTheBok()) {
-                userInterface.logConsoleMessage(gameState.getCurrentPlayer().getName() + RIDING_ON_THE_BOK);
+            if (bokAvailable && !settingsState.isAllowSharedBok() && state().getCurrentPlayer().isRidingOnTheBok()) {
+                userInterface.logConsoleMessage(state().getCurrentPlayer().getName() + RIDING_ON_THE_BOK);
                 bokAvailable = false;
             }
 
-            if (gameState.getCurrentPlayer().isDead()) {
-                userInterface.logConsoleMessage(String.format(HAS_NO_MORE_LIVES_LEFT, gameState.getCurrentPlayer().getName()));
+            if (state().getCurrentPlayer().isDead()) {
+                userInterface.logConsoleMessage(String.format(HAS_NO_MORE_LIVES_LEFT, state().getCurrentPlayer().getName()));
 
                 if (!nextPlayer()) {
                     Player winner = getWinner();
@@ -305,7 +303,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
                     return;
                 }
             } else {
-                userInterface.logConsoleMessage(String.format(LOST_A_LIFE, gameState.getCurrentPlayer().getName(), gameState.getCurrentPlayer().getLives()));
+                userInterface.logConsoleMessage(String.format(LOST_A_LIFE, state().getCurrentPlayer().getName(), state().getCurrentPlayer().getLives()));
             }
 
             // The cup should not be locked at this point.
@@ -320,7 +318,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
             hasToThrow = true;
             hasThrown = false;
 
-            userInterface.logConsoleMessage(String.format(SHAKE_THE_CUP, gameState.getCurrentPlayer().getName()));
+            userInterface.logConsoleMessage(String.format(SHAKE_THE_CUP, state().getCurrentPlayer().getName()));
 
             lookAtOwnThrowMessageHasBeenShown = false;
             if (wasBluffing) {
@@ -350,7 +348,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
                 middleDice.lock();
                 rightDice.lock();
 
-                userInterface.logConsoleMessage(gameState.getCurrentPlayer().getName() + BELIEVED_THE_CALL_BLIND);
+                userInterface.logConsoleMessage(state().getCurrentPlayer().getName() + BELIEVED_THE_CALL_BLIND);
 
                 allowedToBelieveOrNotBelieve = false;
                 allowedToCall = true;
@@ -381,7 +379,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
                 // Don't set blindPass to false, the player simply has to throw again and can call without watching and then it will be set to blind again.
                 hasToThrow = true;
                 userInterface.disableCallUserInterface();
-                userInterface.logConsoleMessage(gameState.getCurrentPlayer().getName() + WANTED_TO_PEEK_AFTER_ALL);
+                userInterface.logConsoleMessage(state().getCurrentPlayer().getName() + WANTED_TO_PEEK_AFTER_ALL);
                 allowedToCall = false;
                 canViewOwnThrow = true;
 
@@ -449,7 +447,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
 
         updatePlayerIterator();
 
-        if (gameState.getPlayers()[gameState.getPlayerIterator()].isDead()) {
+        if (state().getPlayers()[state().getPlayerIterator()].isDead()) {
             nextPlayer();
         }
 
@@ -458,10 +456,10 @@ public class Game implements GameInputInterface, GameStatusInterface {
     }
 
     public void updatePlayerIterator() {
-        if (gameState.getPlayerIterator() + 1 < gameState.getPlayers().length) {
-            gameState.updatePlayerIterator(gameState.getPlayerIterator() + 1);
+        if (state().getPlayerIterator() + 1 < state().getPlayers().length) {
+            state().updatePlayerIterator(state().getPlayerIterator() + 1);
         } else {
-            gameState.updatePlayerIterator(0);
+            state().updatePlayerIterator(0);
         }
     }
 
@@ -470,8 +468,8 @@ public class Game implements GameInputInterface, GameStatusInterface {
 
         // Check if there are still more than two players alive.
         int indexOfLastLivingPlayer = 0;
-        for (int i = 0; i < gameState.getPlayers().length; i++) {
-            Player p = gameState.getPlayers()[i];
+        for (int i = 0; i < state().getPlayers().length; i++) {
+            Player p = state().getPlayers()[i];
             if (!p.isDead()) {
                 numberOfPlayersStillAlive++;
                 indexOfLastLivingPlayer = i;
@@ -480,9 +478,9 @@ public class Game implements GameInputInterface, GameStatusInterface {
 
         if (numberOfPlayersStillAlive < 2) {
             // Set the winning player as the one to start next game.
-            gameState.updatePlayerIterator(indexOfLastLivingPlayer);
+            state().updatePlayerIterator(indexOfLastLivingPlayer);
 
-            return gameState.getCurrentPlayer();
+            return state().getCurrentPlayer();
         } else {
             return null;
         }
@@ -528,7 +526,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
 
         if (firstThrowSinceDeath) {
             userInterface.resetCall();
-            userInterface.logConsoleMessage(String.format(WATCH_OWN_THROW, gameState.getCurrentPlayer().getName()));
+            userInterface.logConsoleMessage(String.format(WATCH_OWN_THROW, state().getCurrentPlayer().getName()));
             userInterface.showTutorialMessage(TutorialMessage.FIRST_THROWN_SINCE_DEATH);
         } else {
             userInterface.logConsoleMessage(NOW_ENTER_YOUR_CALL);
@@ -570,5 +568,9 @@ public class Game implements GameInputInterface, GameStatusInterface {
         } else {
             return false;
         }
+    }
+
+    public GameState state() {
+        return GameState.getInstance();
     }
 }
