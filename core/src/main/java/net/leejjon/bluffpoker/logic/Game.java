@@ -2,10 +2,8 @@ package net.leejjon.bluffpoker.logic;
 
 import com.badlogic.gdx.audio.Sound;
 import net.leejjon.bluffpoker.actions.LiftCupAction;
-import net.leejjon.bluffpoker.actors.Cup;
-import net.leejjon.bluffpoker.actors.Dice;
+import net.leejjon.bluffpoker.actors.DiceActor;
 import net.leejjon.bluffpoker.enums.TutorialMessage;
-import net.leejjon.bluffpoker.interfaces.GameStatusInterface;
 import net.leejjon.bluffpoker.listener.CupListener;
 import net.leejjon.bluffpoker.listener.DiceListener;
 import net.leejjon.bluffpoker.interfaces.UserInterface;
@@ -15,30 +13,15 @@ import net.leejjon.bluffpoker.state.SettingsState;
 
 import java.util.ArrayList;
 
-public class Game implements GameInputInterface, GameStatusInterface {
-    private UserInterface userInterface;
-
-    private Cup cup;
-    private Dice leftDice;
-    private Dice middleDice;
-    private Dice rightDice;
+public class Game implements GameInputInterface {
+    private DiceActor leftDiceActor;
+    private DiceActor middleDiceActor;
+    private DiceActor rightDiceActor;
     private Sound diceRoll;
 
     private SettingsState settingsState;
 
-    private boolean bokAvailable = true;
-
-    private Call latestCall = null;
-
-    //
-    private boolean firstThrowSinceDeath = true;
-    private boolean hasToThrow = true;
-    private boolean hasThrown = false;
-    private boolean allowedToBelieveOrNotBelieve = false;
-    private boolean canViewOwnThrow = false;
-    private boolean allowedToCall = false;
-    private boolean believed666 = false;
-    private boolean blindPass = false;
+    private UserInterface userInterface;
 
     // Booleans to remember whether a tutorial message already has been shown to avoid duplicate message spamming.
     private boolean lookAtOwnThrowMessageHasBeenShown = false;
@@ -63,91 +46,69 @@ public class Game implements GameInputInterface, GameStatusInterface {
     private static final String HAS_NO_MORE_LIVES_LEFT = "%1$s has no more lives left";
 
 
-    public Game(Cup cup, Dice leftDice, Dice middleDice, Dice rightDice, Sound diceRoll, UserInterface userInterface) {
-        this.cup = cup;
-        this.leftDice = leftDice;
-        this.middleDice = middleDice;
-        this.rightDice = rightDice;
+    public Game(DiceActor leftDiceActor, DiceActor middleDiceActor, DiceActor rightDiceActor, Sound diceRoll, UserInterface userInterface) {
+        this.leftDiceActor = leftDiceActor;
+        this.middleDiceActor = middleDiceActor;
+        this.rightDiceActor = rightDiceActor;
         this.diceRoll = diceRoll;
         this.userInterface = userInterface;
         this.settingsState = SettingsState.getInstance();
 
-        cup.addListener(new CupListener(this));
-        leftDice.addListener(new DiceListener(leftDice, this, userInterface));
-        middleDice.addListener(new DiceListener(middleDice, this, userInterface));
-        rightDice.addListener(new DiceListener(rightDice, this, userInterface));
-    }
-
-    private void setGameStatusBooleans() {
-        hasToThrow = true;
-        allowedToBelieveOrNotBelieve = false;
-        canViewOwnThrow = false;
-        allowedToCall = false;
-        believed666 = false;
-        firstThrowSinceDeath = true;
-        latestCall = null;
-        blindPass = false;
-    }
-
-    public void restart() {
-        // TODO:
-//        startGame(originalPlayers);
+        state().getCup().getCupActor().addListener(new CupListener(this));
+        leftDiceActor.addListener(new DiceListener(leftDiceActor, userInterface));
+        middleDiceActor.addListener(new DiceListener(middleDiceActor, userInterface));
+        rightDiceActor.addListener(new DiceListener(rightDiceActor, userInterface));
     }
 
     public void startGame(ArrayList<String> originalPlayers) {
-        cup.reset();
-        setGameStatusBooleans();
+        state().getCup().getCupActor().reset();
         state().constructPlayers(originalPlayers, settingsState.getNumberOfLives());
-        userInterface.logConsoleMessage(String.format(SHAKE_THE_CUP, state().getCurrentPlayer().getName()));
-
+        state().logGameConsoleMessage(String.format(SHAKE_THE_CUP, state().getCurrentPlayer().getName()));
         userInterface.showTutorialMessage(TutorialMessage.GAME_START, state().getCurrentPlayer().getName());
     }
 
     public void validateCall(NumberCombination newCall) throws InputValidationException {
-        if (believed666) {
-            if (newCall.areAllDicesEqual() && (newCall.isGreaterThan(latestCall.getNumberCombination()) || latestCall.getNumberCombination().equals(NumberCombination.MAX))) {
+        if (state().isBelieved666()) {
+            if (newCall.areAllDicesEqual() && (newCall.isGreaterThan(state().getLatestCall().getNumberCombination()) || state().getLatestCall().getNumberCombination().equals(NumberCombination.MAX))) {
                 call(newCall);
             } else {
-                throw new InputValidationException(CALL_THREE_IDENTICAL_NUMBERS_HIGHER_THAN + latestCall.getNumberCombination());
+                throw new InputValidationException(CALL_THREE_IDENTICAL_NUMBERS_HIGHER_THAN + state().getLatestCall().getNumberCombination());
             }
         } else {
-            if (latestCall == null || newCall.isGreaterThan(latestCall.getNumberCombination())) {
+            if (state().getLatestCall() == null || newCall.isGreaterThan(state().getLatestCall().getNumberCombination())) {
                 call(newCall);
             } else {
-                throw new InputValidationException(YOUR_CALL_MUST_BE_HIGHER_THAN + latestCall.getNumberCombination());
+                throw new InputValidationException(YOUR_CALL_MUST_BE_HIGHER_THAN + state().getLatestCall().getNumberCombination());
             }
         }
     }
 
     private void call(NumberCombination newCall) {
-        if (cup.isWatchingOwnThrow()) {
-            cup.doneWatchingOwnThrow();
+        if (state().getCup().isWatchingOwnThrow()) {
+            state().getCup().getCupActor().doneWatchingOwnThrow();
         }
 
-        boolean wereThereAnyDicesUnderTheCup = leftDice.isUnderCup() || middleDice.isUnderCup() || rightDice.isUnderCup();
+        boolean wereThereAnyDicesUnderTheCup = leftDiceActor.isUnderCup() || middleDiceActor.isUnderCup() || rightDiceActor.isUnderCup();
 
         String addBlindToMessage = "";
         // Passing an empty cup doesn't count as a blind pass.
-        if (blindPass && wereThereAnyDicesUnderTheCup) {
+        if (state().isBlindPass() && wereThereAnyDicesUnderTheCup) {
             addBlindToMessage = BLIND_MESSAGE;
-            blindPass = false;
+            state().setBlindPass(false);
         }
 
-        firstThrowSinceDeath = false;
-        allowedToCall = false;
-        canViewOwnThrow = false;
-        allowedToBelieveOrNotBelieve = true;
+        state().getCup().unlock();
+        state().allowPlayerToCall(false);
+        state().updateLatestCall(new Call(state().getCurrentPlayer().getName(), newCall));
+        state().setCallInput(newCall.toString());
 
-        cup.unlock();
-
-        latestCall = new Call(state().getCurrentPlayer().getName(), newCall);
-        userInterface.logConsoleMessage(state().getCurrentPlayer().getName() + CALLED + newCall + addBlindToMessage);
-        userInterface.logConsoleMessage(getMessageToTellNextUserToBelieveOrNot());
+        state().logGameConsoleMessage(state().getCurrentPlayer().getName() + CALLED + newCall + addBlindToMessage);
+        state().logGameConsoleMessage(getMessageToTellNextUserToBelieveOrNot());
 
         userInterface.showTutorialMessage(TutorialMessage.BELIEVE_OR_NOT_BELIEVE,
-                getLatestCall().getPlayerName(),
+                state().getLatestCall().getPlayerName(),
                 getNextPlayer().getName(),
-                getLatestCall().getNumberCombination().toString());
+                state().getLatestCall().getNumberCombination().toString());
     }
 
     private String getMessageToTellNextUserToBelieveOrNot() {
@@ -173,80 +134,47 @@ public class Game implements GameInputInterface, GameStatusInterface {
         return nextPlayer;
     }
 
-
     @Override
     public void tapCup() {
-        if (!cup.isMoving()) {
-            if (allowedToBelieveOrNotBelieve) {
-                if (cup.isBelieving()) {
-                    cup.doneBelieving();
-                    allowedToBelieveOrNotBelieve = false;
-                    canViewOwnThrow = true;
+        if (!state().getCup().getCupActor().isMoving()) {
+            if (state().isAllowedToBelieveOrNotBelieve()) {
+                if (state().getCup().isBelieving()) {
+                    state().getCup().getCupActor().doneBelieving();
+                    state().setAllowedToBelieveOrNotBelieve(false);
+                    state().setCanViewOwnThrow(true);
                 } else {
                     // Start next turn.
                     nextPlayer();
-                    if (latestCall.getNumberCombination().equals(NumberCombination.MAX)) {
-                        // TODO: Do we need to make the dices visible here?
-                        believed666 = true;
-
-                        // TODO: Do we really need to put them back under the cup?
-                        leftDice.putBackUnderCup();
-                        middleDice.putBackUnderCup();
-                        rightDice.putBackUnderCup();
-                        userInterface.logConsoleMessage(state().getCurrentPlayer().getName() + BELIEVED_666);
-                        userInterface.logConsoleMessage(THROW_THREE_OF_THE_SAME_NUMBERS_IN_ONE_THROW);
+                    if (state().getLatestCall().getNumberCombination().equals(NumberCombination.MAX)) {
+                        believe666();
                     } else {
-                        userInterface.logConsoleMessage(state().getCurrentPlayer().getName() + BELIEVED_THE_CALL);
-                        userInterface.logConsoleMessage("Throw at least one dice ...");
-
-                        if (getNumberCombinationFromDices().isGreaterThan(new NumberCombination(6,0,0, true))) {
-                            userInterface.showTutorialMessage(TutorialMessage.MOVE_SIX_OUT, latestCall.getPlayerName(), latestCall.getNumberCombination().toString());
-                        } else {
-                            userInterface.showTutorialMessage(TutorialMessage.RETHROW_ALL_DICES, latestCall.getPlayerName(), latestCall.getNumberCombination().toString());
-                        }
+                        believe();
                     }
-                    hasToThrow = true;
-                    hasThrown = false;
-
-                    if (!leftDice.isUnderCup() && leftDice.getDiceValue() == 6) {
-                        leftDice.lock();
-                    }
-                    if (!middleDice.isUnderCup() && middleDice.getDiceValue() == 6) {
-                        middleDice.lock();
-                    }
-                    if (!rightDice.isUnderCup() && rightDice.getDiceValue() == 6) {
-                        rightDice.lock();
-                    }
-
-                    cup.believe();
-                    blindPass = false;
-
-                    lookAtOwnThrowMessageHasBeenShown = false;
                 }
-            } else if (canViewOwnThrow) {
-                if (cup.isWatchingOwnThrow()) {
-                    cup.doneWatchingOwnThrow();
+            } else if (state().isCanViewOwnThrow()) {
+                if (state().getCup().isWatchingOwnThrow()) {
+                    state().getCup().getCupActor().doneWatchingOwnThrow();
                 } else {
-                    cup.watchOwnThrow();
-                    blindPass = false;
-                    if (!lookAtOwnThrowMessageHasBeenShown && hasThrown) {
-                        if (latestCall == null) {
+                    state().getCup().getCupActor().watchOwnThrow();
+                    state().setBlindPass(false);
+                    if (!lookAtOwnThrowMessageHasBeenShown && state().isHasThrown()) {
+                        if (state().getLatestCall() == null) {
                             userInterface.showTutorialMessage(TutorialMessage.LOOKING_AT_OWN_THROW_FIRST_TURN_SINCE_DEATH,
-                                    String.valueOf(leftDice.getDiceValue()),
-                                    String.valueOf(middleDice.getDiceValue()),
-                                    String.valueOf(rightDice.getDiceValue()),
+                                    String.valueOf(leftDiceActor.getDiceValue()),
+                                    String.valueOf(middleDiceActor.getDiceValue()),
+                                    String.valueOf(rightDiceActor.getDiceValue()),
                                     getNumberCombinationFromDices().toString());
                         } else {
-                            if (getNumberCombinationFromDices().isGreaterThan(latestCall.getNumberCombination())) {
+                            if (getNumberCombinationFromDices().isGreaterThan(state().getLatestCall().getNumberCombination())) {
                                 userInterface.showTutorialMessage(TutorialMessage.LOOK_AT_OWN_THROW_THAT_IS_HIGHER,
                                         getNumberCombinationFromDices().toString(),
-                                        latestCall.getPlayerName(),
-                                        latestCall.getNumberCombination().toString());
+                                        state().getLatestCall().getPlayerName(),
+                                        state().getLatestCall().getNumberCombination().toString());
                             } else {
                                 userInterface.showTutorialMessage(TutorialMessage.LOOK_AT_OWN_THROW_THAT_IS_LOWER,
                                         getNumberCombinationFromDices().toString(),
-                                        latestCall.getPlayerName(),
-                                        latestCall.getNumberCombination().toString());
+                                        state().getLatestCall().getPlayerName(),
+                                        state().getLatestCall().getNumberCombination().toString());
                             }
                         }
                         lookAtOwnThrowMessageHasBeenShown = true;
@@ -259,66 +187,60 @@ public class Game implements GameInputInterface, GameStatusInterface {
     @Override
     public void swipeCupUp() {
         // Obviously, you can not "not believe" something after you've first believed it, or if you have just made a throw yourself.
-        if (!cup.isBelieving() && !cup.isWatchingOwnThrow() && allowedToBelieveOrNotBelieve) {
-            cup.addAction(new LiftCupAction());
+        if (!state().getCup().isBelieving() && !state().getCup().isWatchingOwnThrow() && state().isAllowedToBelieveOrNotBelieve()) {
+            state().getCup().getCupActor().addAction(new LiftCupAction());
 
             // Variables for the tutorial mode.
             boolean wasBluffing = true;
             final String callingPlayer = state().getCurrentPlayer().getName();
-            final NumberCombination whatWasCalled = latestCall.getNumberCombination();
+            final NumberCombination whatWasCalled = state().getLatestCall().getNumberCombination();
 
-            if (believed666) {
+            if (state().isBelieved666()) {
                 // If the latestCall is smaller or equal to the throw and the throw consists of three identical dices, the player
                 // who swiped up loses a life and it becomes his turn.
-                if (!latestCall.getNumberCombination().isGreaterThan(getNumberCombinationFromDices()) && getNumberCombinationFromDices().areAllDicesEqual()) {
+                if (!state().getLatestCall().getNumberCombination().isGreaterThan(getNumberCombinationFromDices()) && getNumberCombinationFromDices().areAllDicesEqual()) {
                     nextPlayer();
                     wasBluffing = false;
                 }
             } else {
                 // If the one who did not believed loses, it becomes his turn (the one who made the call was still the currentPlayer).
-                if (!latestCall.getNumberCombination().isGreaterThan(getNumberCombinationFromDices())) {
+                if (!state().getLatestCall().getNumberCombination().isGreaterThan(getNumberCombinationFromDices())) {
                     nextPlayer();
                     wasBluffing = false;
                 }
             }
 
             state().currentPlayerLosesLife(canUseBok());
-            firstThrowSinceDeath = true;
-            blindPass = true;
+            state().setFirstThrowSinceDeath(true);
+            state().setBlindPass(true);
             // TODO: make sure all people on the bok die when the shared bok is allowed.
 
             // Detect if the current player jumped on the block and check if we should not allow other players to get on the bok too.
-            if (bokAvailable && !settingsState.isAllowSharedBok() && state().getCurrentPlayer().isRidingOnTheBok()) {
-                userInterface.logConsoleMessage(state().getCurrentPlayer().getName() + RIDING_ON_THE_BOK);
-                bokAvailable = false;
+            if (state().isBokAvailable() && !settingsState.isAllowSharedBok() && state().getCurrentPlayer().isRidingOnTheBok()) {
+                state().logGameConsoleMessage(state().getCurrentPlayer().getName() + RIDING_ON_THE_BOK);
+                state().setBokAvailable(false);
             }
 
             if (state().getCurrentPlayer().isDead()) {
-                userInterface.logConsoleMessage(String.format(HAS_NO_MORE_LIVES_LEFT, state().getCurrentPlayer().getName()));
+                state().logGameConsoleMessage(String.format(HAS_NO_MORE_LIVES_LEFT, state().getCurrentPlayer().getName()));
 
                 if (!nextPlayer()) {
                     Player winner = getWinner();
-                    userInterface.logConsoleMessage(String.format(WON_THE_GAME, winner.getName()));
+                    state().logGameConsoleMessage(String.format(WON_THE_GAME, winner.getName()));
                     userInterface.finishGame(winner.getName());
                     return;
                 }
             } else {
-                userInterface.logConsoleMessage(String.format(LOST_A_LIFE, state().getCurrentPlayer().getName(), state().getCurrentPlayer().getLives()));
+                state().logGameConsoleMessage(String.format(LOST_A_LIFE, state().getCurrentPlayer().getName(), state().getCurrentPlayer().getLives()));
             }
 
             // The cup should not be locked at this point.
-            leftDice.reset();
-            middleDice.reset();
-            rightDice.reset();
+            leftDiceActor.reset();
+            middleDiceActor.reset();
+            rightDiceActor.reset();
 
-            latestCall = null;
-            allowedToBelieveOrNotBelieve = false;
-            canViewOwnThrow = false;
-            believed666 = false;
-            hasToThrow = true;
-            hasThrown = false;
-
-            userInterface.logConsoleMessage(String.format(SHAKE_THE_CUP, state().getCurrentPlayer().getName()));
+            state().resetLatestCall();
+            state().logGameConsoleMessage(String.format(SHAKE_THE_CUP, state().getCurrentPlayer().getName()));
 
             lookAtOwnThrowMessageHasBeenShown = false;
             if (wasBluffing) {
@@ -336,103 +258,154 @@ public class Game implements GameInputInterface, GameStatusInterface {
      */
     @Override
     public boolean longTapOnCup() {
-        if (!cup.isMoving()) {
+        if (!state().getCup().getCupActor().isMoving()) {
             // If the player wants to blindly believe another players call and pass it on.
-            if (!blindPass && !hasToThrow && allowedToBelieveOrNotBelieve) {
+            if (state().isBelievingBlind()) {
                 // Start next turn. We expect the user to want to do a blind pas (while increasing his call).
                 nextPlayer();
-                cup.lock();
 
-                // Lock the dices in case they are lying outside of the cup.
-                leftDice.lock();
-                middleDice.lock();
-                rightDice.lock();
-
-                userInterface.logConsoleMessage(state().getCurrentPlayer().getName() + BELIEVED_THE_CALL_BLIND);
-
-                allowedToBelieveOrNotBelieve = false;
-                allowedToCall = true;
-                hasToThrow = false;
-                hasThrown = false;
-                blindPass = true;
-                userInterface.enableCallUserInterface();
-                userInterface.logConsoleMessage(NOW_ENTER_YOUR_CALL_OR_THROW);
-                // canViewOwnThrow is already false, so let's keep it false.
-                //canViewOwnThrow = false;
-                return true;
+                if (state().getLatestCall().getNumberCombination().equals(NumberCombination.MAX)) {
+                    believe666();
+                    return true;
+                } else {
+                    blindBelieve();
+                    return true;
+                }
                 // Blindly pass your own throw.
-            } else if (blindPass && hasThrown && firstThrowSinceDeath && !allowedToBelieveOrNotBelieve) {
-                cup.lock();
+            } else if (state().isInitiatingBlindPass()) {
+                state().getCup().lock();
 
                 // Leave blindPass true on purpose.
-
-                allowedToCall = true;
-                canViewOwnThrow = false;
-
-                userInterface.enableCallUserInterface();
-                userInterface.logConsoleMessage(NOW_ENTER_YOUR_CALL);
+                state().setCanViewOwnThrow(false);
+                state().allowPlayerToCall(true);
+                state().logGameConsoleMessage(NOW_ENTER_YOUR_CALL);
+                return true;
                 // Unlocking halfway the turn.
-            } else if (blindPass && !hasToThrow && !firstThrowSinceDeath) {
-                cup.unlock();
-                cup.believe();
+            } else if (state().bailedOutOfBlindBelieving()) {
+                state().getCup().unlock();
+                state().getCup().believe();
 
                 // Don't set blindPass to false, the player simply has to throw again and can call without watching and then it will be set to blind again.
-                hasToThrow = true;
-                userInterface.disableCallUserInterface();
-                userInterface.logConsoleMessage(state().getCurrentPlayer().getName() + WANTED_TO_PEEK_AFTER_ALL);
-                allowedToCall = false;
-                canViewOwnThrow = true;
+                state().setHasToThrow(true);
+                state().setCanViewOwnThrow(true);
+                state().allowPlayerToCall(false);
+                state().logGameConsoleMessage(state().getCurrentPlayer().getName() + WANTED_TO_PEEK_AFTER_ALL);
 
-                if (!leftDice.isUnderCup()) {
-                    leftDice.lock();
+                if (!leftDiceActor.isUnderCup()) {
+                    leftDiceActor.lock();
                 } else {
-                    leftDice.unlock();
+                    leftDiceActor.unlock();
                 }
 
-                if (!middleDice.isUnderCup()) {
-                    middleDice.lock();
+                if (!middleDiceActor.isUnderCup()) {
+                    middleDiceActor.lock();
                 } else {
-                    middleDice.unlock();
+                    middleDiceActor.unlock();
                 }
 
-                if (!rightDice.isUnderCup()) {
-                    rightDice.lock();
+                if (!rightDiceActor.isUnderCup()) {
+                    rightDiceActor.lock();
                 } else {
-                    rightDice.unlock();
+                    rightDiceActor.unlock();
                 }
                 return true;
                 // Just locking / unlocking.
-            } else if (!blindPass && hasToThrow && !firstThrowSinceDeath) {
+            } else if (state().userTriesToLockOrUnlock()) {
                 // Very important to use hasToThrow and not isAllowedToThrow().
-                if (cup.isLocked()) {
-                    cup.unlock();
-                    if (leftDice.isUnderCup()) {
-                        leftDice.unlock();
+                if (state().getCup().isLocked()) {
+                    state().getCup().unlock();
+                    if (leftDiceActor.isUnderCup()) {
+                        leftDiceActor.unlock();
                     }
-                    if (middleDice.isUnderCup()) {
-                        middleDice.unlock();
+                    if (middleDiceActor.isUnderCup()) {
+                        middleDiceActor.unlock();
                     }
-                    if (rightDice.isUnderCup()) {
-                        rightDice.unlock();
+                    if (rightDiceActor.isUnderCup()) {
+                        rightDiceActor.unlock();
                     }
                 } else {
-                    cup.lock();
-                    if (leftDice.isUnderCup()) {
-                        leftDice.lock();
+                    state().getCup().lock();
+                    if (leftDiceActor.isUnderCup()) {
+                        leftDiceActor.lock();
                     }
-                    if (middleDice.isUnderCup()) {
-                        middleDice.lock();
+                    if (middleDiceActor.isUnderCup()) {
+                        middleDiceActor.lock();
                     }
-                    if (rightDice.isUnderCup()) {
-                        rightDice.lock();
+                    if (rightDiceActor.isUnderCup()) {
+                        rightDiceActor.lock();
                     }
                 }
                 return true;
             } else {
-                throw new IllegalStateException(String.format("Illegal appState detected: blindPass=%b, hasThrown=%b, hasToThrow=%b, firstThrowSinceDeath=%b, allowedToBelieveOrNotBelieve=%b", blindPass, hasThrown, hasToThrow, firstThrowSinceDeath, allowedToBelieveOrNotBelieve));
+                throw new IllegalStateException(String.format("Illegal appState detected: blindPass=%b, hasThrown=%b, hasToThrow=%b, firstThrowSinceDeath=%b, allowedToBelieveOrNotBelieve=%b",
+                                state().isBlindPass(), state().isHasThrown(), state().isHasThrown(), state().isFirstThrowSinceDeath(), state().isAllowedToBelieveOrNotBelieve()));
             }
         }
         return false;
+    }
+
+    private void believe() {
+        state().logGameConsoleMessage(state().getCurrentPlayer().getName() + BELIEVED_THE_CALL);
+        state().logGameConsoleMessage("Throw at least one dice ...");
+
+        if (getNumberCombinationFromDices().isGreaterThan(new NumberCombination(6,0,0, true))) {
+            userInterface.showTutorialMessage(TutorialMessage.MOVE_SIX_OUT, state().getLatestCall().getPlayerName(), state().getLatestCall().getNumberCombination().toString());
+        } else {
+            userInterface.showTutorialMessage(TutorialMessage.RETHROW_ALL_DICES, state().getLatestCall().getPlayerName(), state().getLatestCall().getNumberCombination().toString());
+        }
+
+        postBelieveUiUpdate();
+    }
+
+    private void believe666() {
+        // TODO: Do we need to make the dices visible here?
+        state().setBelieved666(true);
+
+        // TODO: Do we really need to put them back under the cup?
+        leftDiceActor.putBackUnderCup();
+        middleDiceActor.putBackUnderCup();
+        rightDiceActor.putBackUnderCup();
+        state().logGameConsoleMessage(state().getCurrentPlayer().getName() + BELIEVED_666);
+        state().logGameConsoleMessage(THROW_THREE_OF_THE_SAME_NUMBERS_IN_ONE_THROW);
+
+        postBelieveUiUpdate();
+    }
+
+    private void blindBelieve() {
+        state().logGameConsoleMessage(state().getCurrentPlayer().getName() + BELIEVED_THE_CALL_BLIND);
+        state().getCup().lock();
+
+        // Lock the dices in case they are lying outside of the cup.
+        leftDiceActor.lock();
+        middleDiceActor.lock();
+        rightDiceActor.lock();
+
+        state().setAllowedToBelieveOrNotBelieve(false);
+        state().setHasToThrow(false);
+        state().setHasThrown(false);
+        state().setBlindPass(true);
+        state().allowPlayerToCall(true);
+        state().logGameConsoleMessage(NOW_ENTER_YOUR_CALL_OR_THROW);
+    }
+
+    private void postBelieveUiUpdate() {
+        state().setHasToThrow(true);
+        state().setHasThrown(false);
+
+        if (!leftDiceActor.isUnderCup() && leftDiceActor.getDiceValue() == 6) {
+            leftDiceActor.lock();
+        }
+        if (!middleDiceActor.isUnderCup() && middleDiceActor.getDiceValue() == 6) {
+            middleDiceActor.lock();
+        }
+        if (!rightDiceActor.isUnderCup() && rightDiceActor.getDiceValue() == 6) {
+            rightDiceActor.lock();
+        }
+
+        state().getCup().believe();
+        state().setBlindPass(false);
+
+        lookAtOwnThrowMessageHasBeenShown = false;
     }
 
     /**
@@ -488,7 +461,7 @@ public class Game implements GameInputInterface, GameStatusInterface {
 
     private boolean canUseBok() {
         if (settingsState.isAllowBok()) {
-            if (bokAvailable) {
+            if (state().isBokAvailable()) {
                 return true;
             } else {
                 if (settingsState.isAllowSharedBok()) {
@@ -503,33 +476,34 @@ public class Game implements GameInputInterface, GameStatusInterface {
     }
 
     public void throwDices() {
-        cup.reset();
+        state().getCup().getCupActor().reset();
         diceRoll.play(1.0f);
 
-        final Dice.ThrowResult leftResult = leftDice.throwDice();
-        final Dice.ThrowResult middleResult = middleDice.throwDice();
-        final Dice.ThrowResult rightResult = rightDice.throwDice();
+        final DiceActor.ThrowResult leftResult = leftDiceActor.throwDice();
+        final DiceActor.ThrowResult middleResult = middleDiceActor.throwDice();
+        final DiceActor.ThrowResult rightResult = rightDiceActor.throwDice();
 
         hasToThrow = false;
         hasThrown = true;
         canViewOwnThrow = true;
-        allowedToCall = true;
 
-        if (leftResult == Dice.ThrowResult.UNDER_CUP || middleResult == Dice.ThrowResult.UNDER_CUP || rightResult == Dice.ThrowResult.UNDER_CUP) {
-            blindPass = true; // Everytime you throw a dice under the cup, it starts out as a blind pass.
+        state().allowPlayerToCall(true);
+
+        if (leftResult == DiceActor.ThrowResult.UNDER_CUP || middleResult == DiceActor.ThrowResult.UNDER_CUP || rightResult == DiceActor.ThrowResult.UNDER_CUP) {
+            state().setBlindPass(true); // Everytime you throw a dice under the cup, it starts out as a blind pass.
         }
 
-        cup.unlock();
-        leftDice.unlock();
-        middleDice.unlock();
-        rightDice.unlock();
+        state().getCup().unlock();
+        leftDiceActor.unlock();
+        middleDiceActor.unlock();
+        rightDiceActor.unlock();
 
-        if (firstThrowSinceDeath) {
-            userInterface.resetCall();
-            userInterface.logConsoleMessage(String.format(WATCH_OWN_THROW, state().getCurrentPlayer().getName()));
+        if (state().isFirstThrowSinceDeath()) {
+            state().setCallInput(NumberCombination.MIN.toString());
+            state().logGameConsoleMessage(String.format(WATCH_OWN_THROW, state().getCurrentPlayer().getName()));
             userInterface.showTutorialMessage(TutorialMessage.FIRST_THROWN_SINCE_DEATH);
         } else {
-            userInterface.logConsoleMessage(NOW_ENTER_YOUR_CALL);
+            state().logGameConsoleMessage(NOW_ENTER_YOUR_CALL);
         }
     }
 
@@ -537,40 +511,10 @@ public class Game implements GameInputInterface, GameStatusInterface {
      * @return A NumberCombination object based on the values of the dices.
      */
     public NumberCombination getNumberCombinationFromDices() {
-        return new NumberCombination(leftDice.getDiceValue(), middleDice.getDiceValue(), rightDice.getDiceValue(), true);
-    }
-
-    public boolean isAllowedToCall() {
-        return allowedToCall;
-    }
-
-    public boolean hasBelieved666() {
-        return believed666;
-    }
-
-    public Call getLatestCall() {
-        return latestCall;
-    }
-
-    @Override
-    public boolean isAllowedToThrow() {
-        if ((hasToThrow || (blindPass && !hasThrown)) && !cup.isMoving() && !cup.isBelieving() && !cup.isWatchingOwnThrow()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public boolean isAllowedToLock() {
-        if ((hasToThrow || (blindPass && !hasThrown)) && !cup.isMoving()) {
-            return true;
-        } else {
-            return false;
-        }
+        return new NumberCombination(leftDiceActor.getDiceValue(), middleDiceActor.getDiceValue(), rightDiceActor.getDiceValue(), true);
     }
 
     public GameState state() {
-        return GameState.getInstance();
+        return GameState.get();
     }
 }

@@ -27,7 +27,7 @@ public class StartStage extends AbstractStage {
 		playButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-                GameState.resetInstance();
+                GameState.reset();
 				stageInterface.startSelectingPlayersToPlayWith();
 			}
 		});
@@ -60,7 +60,7 @@ public class StartStage extends AbstractStage {
 
 		addActor(logo);
 
-        if (!GameState.getInstance().isNewGameState()) {
+        if (!GameState.get().isNewGameState()) {
             ContinueGameDialog continueGameDialog = new ContinueGameDialog(uiSkin, stageInterface);
             continueGameDialog.show(this);
         }

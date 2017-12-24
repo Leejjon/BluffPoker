@@ -10,11 +10,11 @@ import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.logic.DiceLocation;
 import net.leejjon.bluffpoker.interfaces.Lockable;
 import net.leejjon.bluffpoker.stages.GameStage;
+import net.leejjon.bluffpoker.state.GameState;
 
 import java.util.Random;
 
-public class Dice extends Stack implements Lockable {
-    private Cup cup;
+public class DiceActor extends Stack implements Lockable {
     private Texture[] diceTextures;
     private int diceValue;
     private DiceLocation location;
@@ -35,13 +35,12 @@ public class Dice extends Stack implements Lockable {
 
     private SpriteDrawable[] spriteDrawables = new SpriteDrawable[6];
 
-    public Dice(Cup cup, Texture[] diceTextures, Texture lockTexture, int initialValue, DiceLocation location, Group dicesBeforeCupActors, Group dicesUnderCupActors) {
+    public DiceActor(Texture[] diceTextures, Texture lockTexture, int initialValue, DiceLocation location, Group dicesBeforeCupActors, Group dicesUnderCupActors) {
         diceImage = new Image(diceTextures[initialValue - 1]);
         lockImage = new Image(lockTexture);
         lockImage.setVisible(false);
         add(diceImage);
         add(lockImage);
-        this.cup = cup;
         this.diceTextures = diceTextures;
         diceValue = initialValue;
         this.location = location;
@@ -62,7 +61,7 @@ public class Dice extends Stack implements Lockable {
     }
 
     public ThrowResult throwDice() {
-        if ((isUnderCup() && !cup.isLocked()) || (!isUnderCup() && !isLocked())) {
+        if ((isUnderCup() && !GameState.get().getCup().isLocked()) || (!isUnderCup() && !isLocked())) {
             generateRandomNumber();
             if (isUnderCup()) {
                 return ThrowResult.UNDER_CUP;
@@ -89,18 +88,18 @@ public class Dice extends Stack implements Lockable {
         float x = (GameStage.getMiddleX() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((getDiceWidth() / 2) / 2);
         switch (location) {
             case LEFT:
-                // This is the left dice, so we place it slightly left of the middle at the same height as the cup (with a little dynamic padding based on the dice size).
+                // This is the left dice, so we place it slightly left of the middle at the same height as the cupActor (with a little dynamic padding based on the dice size).
                 x = x - (getDiceWidth() / 2);
                 break;
             case MIDDLE:
-                // This is the middle dice, so we place it in the middle at the same height as the cup (with a little dynamic padding based on the dice size).
+                // This is the middle dice, so we place it in the middle at the same height as the cupActor (with a little dynamic padding based on the dice size).
                 break;
             case RIGHT:
                 x = x + (getDiceWidth() / 2);
                 break;
         }
 
-        float y = cup.getMiddleYForCup() + (getDiceHeight() / (3 + BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()));
+        float y = cupActor.getMiddleYForCup() + (getDiceHeight() / (3 + BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()));
         setPosition(x, y);
     }
 
@@ -117,7 +116,7 @@ public class Dice extends Stack implements Lockable {
     }
 
     public void pullAwayFromCup() {
-        if ((cup.isBelieving() || cup.isWatchingOwnThrow()) && isUnderCup()) {
+        if ((GameState.get().getCup().isBelieving() || cupActor.isWatchingOwnThrow()) && isUnderCup()) {
             underCup = false;
             moveBy(0, -getDiceHeight() / 2);
             dicesUnderCupActors.removeActor(this);
@@ -126,14 +125,14 @@ public class Dice extends Stack implements Lockable {
     }
 
     public void putBackUnderCup() {
-        if (cup.isBelieving() || cup.isWatchingOwnThrow()) {
+        if (cupActor.isBelieving() || cupActor.isWatchingOwnThrow()) {
             reset();
         }
     }
 
     public void reset() {
         if (!underCup) {
-            if (cup.isLocked()) {
+            if (cupActor.isLocked()) {
                 lock();
             } else {
                 unlock();
@@ -151,7 +150,7 @@ public class Dice extends Stack implements Lockable {
 
     @Override
     public void lock() {
-        if (!isUnderCup() || cup.isLocked()) {
+        if (!isUnderCup() || cupActor.isLocked()) {
             lock = true;
             lockImage.setVisible(true);
         }

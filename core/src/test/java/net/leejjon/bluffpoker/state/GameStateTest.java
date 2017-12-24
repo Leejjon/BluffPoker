@@ -4,14 +4,19 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 import net.leejjon.bluffpoker.BluffPokerGame;
+import net.leejjon.bluffpoker.logic.Player;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -24,7 +29,7 @@ public class GameStateTest extends GdxTest {
 
     @Test
     public void testConsoleLogging_threeMessages_success() {
-        GameState gameState = GameState.getInstance();
+        GameState gameState = GameState.get();
 
         try {
             gameState.logGameConsoleMessage("Blabla");
@@ -60,10 +65,27 @@ public class GameStateTest extends GdxTest {
         verify(preferences, times(3)).flush();
     }
 
+    @Test
+    public void testConstructPlayers() {
+        loadDefaultPlayers();
+        GameState gameState = GameState.get();
+        assertEquals(2, gameState.getPlayers().length);
+
+        Player currentPlayer = gameState.getCurrentPlayer();
+        assertNotNull(currentPlayer);
+        assertEquals("Leon", currentPlayer.getName());
+        assertEquals(3, currentPlayer);
+    }
+
     private void initializeUI(GameState gameState) {
         thirdLatestOutputLabel = gameState.createThirdLatestOutputLabel(uiSkin);
         secondLatestOutputLabel = gameState.createSecondLatestOutputLabel(uiSkin);
         latestOutputLabel = gameState.createLatestOutputLabel(uiSkin);
+    }
+
+    private void loadDefaultPlayers() {
+        List<String> playersList = Arrays.asList("Leon", "Dirk");
+        GameState.get().constructPlayers(playersList, 3);
     }
 
     @Test

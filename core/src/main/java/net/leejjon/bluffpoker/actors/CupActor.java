@@ -17,7 +17,9 @@ import net.leejjon.bluffpoker.stages.GameStage;
 
 import java.util.Iterator;
 
-public class Cup extends Stack implements Lockable {
+import lombok.Getter;
+
+public class CupActor extends Stack {
     private Group foregroundActors;
     private Group backgroundActors;
 
@@ -26,16 +28,12 @@ public class Cup extends Stack implements Lockable {
 
     private Texture closedCupTexture;
     private Image cup;
-    private Image lock;
+    @Getter private Image lock;
 
     private int middleYForCup = 0;
     private int middleXForCup = 0;
 
-    private boolean believing = false;
-    private boolean watchingOwnThrow = false;
-    private boolean locked = false;
-
-    public Cup(Texture closedCupTexture, Texture openCupTexture, Texture cupLockTexture, Group foregroundActors, Group backgroundActors) {
+    public CupActor(Texture closedCupTexture, Texture openCupTexture, Texture cupLockTexture, Group foregroundActors, Group backgroundActors) {
         cup = new Image(closedCupTexture);
         lock = new Image(cupLockTexture);
         lock.setVisible(false);
@@ -46,7 +44,7 @@ public class Cup extends Stack implements Lockable {
         this.foregroundActors = foregroundActors;
         this.backgroundActors = backgroundActors;
 
-        // Calculate the position for the Cup.
+        // Calculate the position for the CupActor.
         this.middleXForCup = (GameStage.getMiddleX() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((getCupWidth() / 2) / 2);
         this.middleYForCup = (GameStage.getMiddleY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((getCupHeight() / 2) / 2);
 
@@ -76,7 +74,6 @@ public class Cup extends Stack implements Lockable {
 
         foregroundActors.removeActor(this);
         backgroundActors.addActor(this);
-        believing = true;
     }
 
     public void doneBelieving() {
@@ -84,11 +81,6 @@ public class Cup extends Stack implements Lockable {
 
         backgroundActors.removeActor(this);
         foregroundActors.addActor(this);
-        believing = false;
-    }
-
-    public boolean isBelieving() {
-        return believing;
     }
 
     public void watchOwnThrow() {
@@ -109,10 +101,6 @@ public class Cup extends Stack implements Lockable {
         watchingOwnThrow = false;
     }
 
-    public boolean isWatchingOwnThrow() {
-        return watchingOwnThrow;
-    }
-
     public boolean isMoving() {
         boolean moving = false;
 
@@ -129,27 +117,10 @@ public class Cup extends Stack implements Lockable {
     public void reset() {
         cup.setVisible(true);
         setPosition(middleXForCup, middleYForCup);
-        Gdx.app.log("bluffpoker", "Cup has been reset.");
+        Gdx.app.log("bluffpoker", "CupActor has been reset.");
     }
 
     public int getMiddleYForCup() {
         return middleYForCup;
-    }
-
-    @Override
-    public void lock() {
-        locked = true;
-        lock.setVisible(true);
-    }
-
-    @Override
-    public void unlock() {
-        locked = false;
-        lock.setVisible(false);
-    }
-
-    @Override
-    public boolean isLocked() {
-        return locked;
     }
 }

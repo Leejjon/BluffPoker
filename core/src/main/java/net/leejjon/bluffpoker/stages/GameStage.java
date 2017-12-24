@@ -2,7 +2,6 @@ package net.leejjon.bluffpoker.stages;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -11,8 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.actors.BlackBoard;
-import net.leejjon.bluffpoker.actors.Cup;
-import net.leejjon.bluffpoker.actors.Dice;
+import net.leejjon.bluffpoker.actors.DiceActor;
 import net.leejjon.bluffpoker.enums.TextureKey;
 import net.leejjon.bluffpoker.dialogs.*;
 import net.leejjon.bluffpoker.enums.TutorialMessage;
@@ -28,10 +26,9 @@ public class GameStage extends AbstractStage implements UserInterface {
     private Game currentGame;
     private SpriteBatch batch;
     private Sound diceRoll;
-    private final Cup cup;
-    private Dice leftDice;
-    private Dice middleDice;
-    private Dice rightDice;
+    private DiceActor leftDiceActor;
+    private DiceActor middleDiceActor;
+    private DiceActor rightDiceActor;
 
     private CallTooLowDialog callTooLowDialog;
     private CallNotThreeIdenticalNumbersDialog callNotThreeIdenticalNumbersDialog;
@@ -40,16 +37,11 @@ public class GameStage extends AbstractStage implements UserInterface {
     private WinnerDialog winnerDialog;
     private TutorialDialog tutorialDialog;
 
-    private Label callInputField;
-
-    private ClickableLabel autoButton;
-    private ClickableLabel callButton;
-
     private static final String THROW_AT_LEAST_ONE_DICE = "Throw at least one dice!";
     private static final String THROW_WITH_ALL_DICES = "Throw with all dices!";
-    private static final String AUTO_BUTTON_LABEL = "Auto";
-    private static final String CALL_BUTTON_LABEL = "Call";
-    private static final String COULD_NOT_THROW_BECAUSE_CUP_IS_MOVING = "Could not throw. Cup moving: %b Cup is open : %b";
+    public static final String AUTO_BUTTON_LABEL = "Auto";
+    public static final String CALL_BUTTON_LABEL = "Call";
+    private static final String COULD_NOT_THROW_BECAUSE_CUP_IS_MOVING = "Could not throw. CupActor moving: %b CupActor is open : %b";
 
     private boolean autoButtonPressed = false;
 
@@ -75,16 +67,14 @@ public class GameStage extends AbstractStage implements UserInterface {
         Table topTable = new Table();
         topTable.top();
 
-        callInputField = new Label(NumberCombination.MIN.toString(), uiSkin, "arial64", Color.WHITE);
-
         final CallInputDialog callInputDialog = new CallInputDialog(this);
 
         float padding = 5f;
 
-        topTable.add(callInputField).pad(padding).padTop(padding * 2).colspan(2).center();
+        topTable.add(state().createCallInputFieldLabel(uiSkin)).pad(padding).padTop(padding * 2).colspan(2).center();
         topTable.row();
 
-        autoButton = new ClickableLabel(AUTO_BUTTON_LABEL, uiSkin);
+        ClickableLabel autoButton = state().createAutoButton(uiSkin);
         autoButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -93,14 +83,14 @@ public class GameStage extends AbstractStage implements UserInterface {
         });
         autoButton.setDisabled(true);
 
-        callButton = new ClickableLabel(CALL_BUTTON_LABEL, uiSkin);
+        ClickableLabel callButton = state().createCallButton(uiSkin);
         callButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (currentGame.isAllowedToCall()) {
+                if (state().isAllowedToCall()) {
                     String prefilledText = "";
                     if (autoButtonPressed) {
-                        prefilledText = callInputField.getText().toString();
+                        prefilledText = state().getCallInput();
                     }
                     Gdx.input.getTextInput(callInputDialog, CallInputDialog.ENTER_YOUR_CALL, prefilledText, CallInputDialog.ENTER_THREE_DIGITS);
                 }
@@ -146,7 +136,7 @@ public class GameStage extends AbstractStage implements UserInterface {
 
         BlackBoard callBoard = new BlackBoard(callBoardTexture);
 
-        cup = new Cup(closedCupTexture, openCupTexture, cupLockTexture, foreGroundActors, backgroundActors);
+        state().createCupActor(closedCupTexture, openCupTexture, cupLockTexture, foreGroundActors, backgroundActors);
 
         // Load the textures of the dices.
         Texture dice1 = stageInterface.getTexture(TextureKey.DICE1);
@@ -158,14 +148,14 @@ public class GameStage extends AbstractStage implements UserInterface {
 
         Texture[] diceTextures = new Texture[] {dice1, dice2, dice3, dice4, dice5, dice6};
 
-        leftDice = new Dice(cup, diceTextures, diceLockTexture, 6, DiceLocation.LEFT, dicesUnderCupActors, dicesBeforeCupActors);
-        leftDice.calculateAndSetPosition();
+        leftDiceActor = new DiceActor(diceTextures, diceLockTexture, 6, DiceLocation.LEFT, dicesUnderCupActors, dicesBeforeCupActors);
+        leftDiceActor.calculateAndSetPosition();
 
-        middleDice = new Dice(cup, diceTextures, diceLockTexture, 4, DiceLocation.MIDDLE, dicesUnderCupActors, dicesBeforeCupActors);
-        middleDice.calculateAndSetPosition();
+        middleDiceActor = new DiceActor(diceTextures, diceLockTexture, 4, DiceLocation.MIDDLE, dicesUnderCupActors, dicesBeforeCupActors);
+        middleDiceActor.calculateAndSetPosition();
 
-        rightDice = new Dice(cup, diceTextures, diceLockTexture, 3, DiceLocation.RIGHT, dicesUnderCupActors, dicesBeforeCupActors);
-        rightDice.calculateAndSetPosition();
+        rightDiceActor = new DiceActor(diceTextures, diceLockTexture, 3, DiceLocation.RIGHT, dicesUnderCupActors, dicesBeforeCupActors);
+        rightDiceActor.calculateAndSetPosition();
 
         addActor(backgroundActors);
         addActor(dicesBeforeCupActors);
@@ -176,11 +166,8 @@ public class GameStage extends AbstractStage implements UserInterface {
     }
 
     public void startGame(ArrayList<String> players) {
-        resetCall();
-        // TODO: Reset the gamestate (including log).
-
         if (currentGame == null) {
-            currentGame = new Game(cup, leftDice, middleDice, rightDice, diceRoll, this);
+            currentGame = new Game(leftDiceActor, middleDiceActor, rightDiceActor, diceRoll, this);
         }
 
         state().updatePlayerIterator(0);
@@ -189,18 +176,18 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     @Override
     public void call(String call) {
-        if (currentGame.isAllowedToCall()) {
+        if (state().isAllowedToCall()) {
             boolean validCall = false;
             try {
                 currentGame.validateCall(getNewCall(call));
                 validCall = true;
             } catch (InputValidationException e) {
-                if (currentGame.hasBelieved666()) {
-                    callNotThreeIdenticalNumbersDialog.setInvalidCallMessage(currentGame.getLatestCall().getNumberCombination());
+                if (state().isBelieved666()) {
+                    callNotThreeIdenticalNumbersDialog.setInvalidCallMessage(state().getLatestCall().getNumberCombination());
                     callNotThreeIdenticalNumbersDialog.show(this);
                 } else {
-                    if (currentGame.getLatestCall() != null) {
-                        callTooLowDialog.callTooLow(currentGame.getLatestCall().getNumberCombination());
+                    if (state().getLatestCall() != null) {
+                        callTooLowDialog.callTooLow(state().getLatestCall().getNumberCombination());
                         callTooLowDialog.show(this);
                     } else {
                         Gdx.app.log(BluffPokerGame.TAG, String.format("Invalid call received from on screen keyboard: %s", call));
@@ -210,8 +197,7 @@ public class GameStage extends AbstractStage implements UserInterface {
 
             if (validCall) {
                 lockMessageAlreadyShowed = false;
-                setCallField(call);
-                disableCallUserInterface();
+                autoButtonPressed = false;
             }
         } else {
             throwAtLeastOneDice.show(this);
@@ -235,53 +221,39 @@ public class GameStage extends AbstractStage implements UserInterface {
     }
 
     public void shake() {
-        if (currentGame.isAllowedToThrow()) {
+        if (state().isAllowedToThrow()) {
             int numberOfDicesToBeThrown = 0;
 
-            if ((leftDice.isUnderCup() && !cup.isLocked()) || !leftDice.isLocked()) {
+            if ((leftDiceActor.isUnderCup() && !state().getCupActor().isLocked()) || !leftDiceActor.isLocked()) {
                 numberOfDicesToBeThrown++;
             }
 
-            if ((middleDice.isUnderCup() && !cup.isLocked()) || !middleDice.isLocked()) {
+            if ((middleDiceActor.isUnderCup() && !state().getCupActor().isLocked()) || !middleDiceActor.isLocked()) {
                 numberOfDicesToBeThrown++;
             }
 
-            if ((rightDice.isUnderCup() && !cup.isLocked()) || !rightDice.isLocked()) {
+            if ((rightDiceActor.isUnderCup() && !state().getCupActor().isLocked()) || !rightDiceActor.isLocked()) {
                 numberOfDicesToBeThrown++;
             }
 
-            if (currentGame.hasBelieved666()) {
+            if (state().isBelieved666()) {
                 // You must throw all dices at once.
                 if (numberOfDicesToBeThrown < 3) {
                     throwAllDices.show(this);
                 } else {
                     currentGame.throwDices();
-                    enableCallUserInterface();
                 }
             } else {
                 // You must throw at least one dice.
                 if (numberOfDicesToBeThrown > 0 /* or is blind call and you dont need this warning. */) {
                     currentGame.throwDices();
-                    enableCallUserInterface();
                 } else {
                     throwAtLeastOneDice.show(this);
                 }
             }
         } else {
-            Gdx.app.log(BluffPokerGame.TAG, String.format(COULD_NOT_THROW_BECAUSE_CUP_IS_MOVING, cup.isMoving(), (cup.isWatchingOwnThrow() | cup.isBelieving())));
+            Gdx.app.log(BluffPokerGame.TAG, String.format(COULD_NOT_THROW_BECAUSE_CUP_IS_MOVING, state().getCupActor().isMoving(), (state().getCupActor().isWatchingOwnThrow() | state().getCupActor().isBelieving())));
         }
-    }
-
-    @Override
-    public void disableCallUserInterface() {
-        autoButtonPressed = false;
-        callButton.setDisabled(true);
-        autoButton.setDisabled(true);
-    }
-
-    @Override
-    public void setCallField(String call) {
-        callInputField.setText(call);
     }
 
     @Override
@@ -299,19 +271,13 @@ public class GameStage extends AbstractStage implements UserInterface {
         }
     }
 
-    @Override
-    public void enableCallUserInterface() {
-        callButton.setDisabled(false);
-        autoButton.setDisabled(false);
-    }
-
     private void setAutoValue() {
-        if (currentGame.isAllowedToCall()) {
+        if (state().isAllowedToCall()) {
             NumberCombination currentTextBoxValue;
             NumberCombination generatedCall;
             try {
-                currentTextBoxValue = NumberCombination.validNumberCombinationFrom(callInputField.getText().toString());
-                if (currentGame.hasBelieved666()) {
+                currentTextBoxValue = NumberCombination.validNumberCombinationFrom(state().getCallInput());
+                if (state().isBelieved666()) {
                     generatedCall = currentTextBoxValue.incrementAll();
                 } else {
                     generatedCall = currentTextBoxValue.increment();
@@ -320,7 +286,7 @@ public class GameStage extends AbstractStage implements UserInterface {
                 // Just put something in there.
                 generatedCall = NumberCombination.JUNK;
             }
-            callInputField.setText(generatedCall.toString());
+            state().setCallInput(generatedCall.toString());
             autoButtonPressed = true;
         }
     }
@@ -332,33 +298,16 @@ public class GameStage extends AbstractStage implements UserInterface {
     }
 
     @Override
-    public void logConsoleMessage(String message) {
-        state().logGameConsoleMessage(message);
-    }
-
-    @Override
-    public void finishGame(String winner ) {
+    public void finishGame(String winner) {
         winnerDialog.setWinner(winner);
         winnerDialog.show(this);
-    }
-
-    @Override
-    public void restart() {
-        resetCall();
-        // TODO: Reset the gamestate (including log).
-        currentGame.restart();
     }
 
     private NumberCombination getNewCall(String call) throws InputValidationException {
         return NumberCombination.validNumberCombinationFrom(call);
     }
 
-    @Override
-    public void resetCall() {
-        setCallField(NumberCombination.MIN.toString());
-    }
-
     public GameState state() {
-        return GameState.getInstance();
+        return GameState.get();
     }
 }

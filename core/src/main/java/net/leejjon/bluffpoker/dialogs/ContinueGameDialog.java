@@ -1,7 +1,6 @@
 package net.leejjon.bluffpoker.dialogs;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -39,7 +38,7 @@ public class ContinueGameDialog extends Dialog {
         noButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                GameState.resetInstance();
+                GameState.reset();
             }
         });
 
