@@ -27,11 +27,29 @@ public class Cup implements Lockable {
 
     public void believe() {
         believing = true;
-        cupActor.believe();
+        cupActor.open();
     }
 
     public void doneBelieving() {
         believing = false;
-        cupActor.doneBelieving();
+        cupActor.close();
+    }
+
+    public void watchOwnThrow() {
+        watchingOwnThrow = true;
+        cupActor.open();
+    }
+
+    public void doneWatchingOwnThrow() {
+        watchingOwnThrow = false;
+        cupActor.close();
+    }
+
+    public void update() {
+        if (believing || watchingOwnThrow) {
+            cupActor.open();
+        } else {
+            cupActor.close();
+        }
     }
 }

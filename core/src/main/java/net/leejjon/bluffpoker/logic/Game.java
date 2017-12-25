@@ -85,7 +85,7 @@ public class Game implements GameInputInterface {
 
     private void call(NumberCombination newCall) {
         if (state().getCup().isWatchingOwnThrow()) {
-            state().getCup().getCupActor().doneWatchingOwnThrow();
+            state().getCup().doneWatchingOwnThrow();
         }
 
         boolean wereThereAnyDicesUnderTheCup = leftDiceActor.isUnderCup() || middleDiceActor.isUnderCup() || rightDiceActor.isUnderCup();
@@ -139,7 +139,7 @@ public class Game implements GameInputInterface {
         if (!state().getCup().getCupActor().isMoving()) {
             if (state().isAllowedToBelieveOrNotBelieve()) {
                 if (state().getCup().isBelieving()) {
-                    state().getCup().getCupActor().doneBelieving();
+                    state().getCup().doneBelieving();
                     state().setAllowedToBelieveOrNotBelieve(false);
                     state().setCanViewOwnThrow(true);
                 } else {
@@ -153,9 +153,9 @@ public class Game implements GameInputInterface {
                 }
             } else if (state().isCanViewOwnThrow()) {
                 if (state().getCup().isWatchingOwnThrow()) {
-                    state().getCup().getCupActor().doneWatchingOwnThrow();
+                    state().getCup().doneWatchingOwnThrow();
                 } else {
-                    state().getCup().getCupActor().watchOwnThrow();
+                    state().getCup().watchOwnThrow();
                     state().setBlindPass(false);
                     if (!lookAtOwnThrowMessageHasBeenShown && state().isHasThrown()) {
                         if (state().getLatestCall() == null) {
@@ -483,10 +483,9 @@ public class Game implements GameInputInterface {
         final DiceActor.ThrowResult middleResult = middleDiceActor.throwDice();
         final DiceActor.ThrowResult rightResult = rightDiceActor.throwDice();
 
-        hasToThrow = false;
-        hasThrown = true;
-        canViewOwnThrow = true;
-
+        state().setHasToThrow(false);
+        state().setHasThrown(true);
+        state().setCanViewOwnThrow(true);
         state().allowPlayerToCall(true);
 
         if (leftResult == DiceActor.ThrowResult.UNDER_CUP || middleResult == DiceActor.ThrowResult.UNDER_CUP || rightResult == DiceActor.ThrowResult.UNDER_CUP) {

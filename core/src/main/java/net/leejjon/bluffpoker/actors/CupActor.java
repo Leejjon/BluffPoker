@@ -14,6 +14,8 @@ import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.actions.LiftCupAction;
 import net.leejjon.bluffpoker.interfaces.Lockable;
 import net.leejjon.bluffpoker.stages.GameStage;
+import net.leejjon.bluffpoker.state.Cup;
+import net.leejjon.bluffpoker.state.GameState;
 
 import java.util.Iterator;
 
@@ -69,36 +71,18 @@ public class CupActor extends Stack {
         return closedCupTexture.getHeight() / 2;
     }
 
-    public void believe() {
+    public void open() {
         cup.setDrawable(openCupSpriteDrawable);
 
         foregroundActors.removeActor(this);
         backgroundActors.addActor(this);
     }
 
-    public void doneBelieving() {
+    public void close() {
         cup.setDrawable(closedCupSpriteDrawable);
 
         backgroundActors.removeActor(this);
         foregroundActors.addActor(this);
-    }
-
-    public void watchOwnThrow() {
-        cup.setDrawable(openCupSpriteDrawable);
-
-        foregroundActors.removeActor(this);
-        backgroundActors.addActor(this);
-
-        watchingOwnThrow = true;
-    }
-
-    public void doneWatchingOwnThrow() {
-        cup.setDrawable(closedCupSpriteDrawable);
-
-        backgroundActors.removeActor(this);
-        foregroundActors.addActor(this);
-
-        watchingOwnThrow = false;
     }
 
     public boolean isMoving() {

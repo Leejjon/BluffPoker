@@ -140,6 +140,7 @@ public class GameState {
 
     public void createCupActor(Texture closedCupTexture, Texture openCupTexture, Texture cupLockTexture, Group foreGroundActors, Group backgroundActors) {
         cup.setCupActor(new CupActor(closedCupTexture, openCupTexture, cupLockTexture, foreGroundActors, backgroundActors));
+        cup.update();
     }
 
     public ClickableLabel createAutoButton(Skin uiSkin) {
@@ -252,22 +253,26 @@ public class GameState {
         saveGame();
     }
 
-    private void updateOutputLabels() {
-        thirdLatestOutputLabel.setText(thirdLatestOutput);
-        secondLatestOutputLabel.setText(secondLatestOutput);
-        latestOutputLabel.setText(latestOutput);
-    }
-
     private GameState() {}
 
-    private GameState(Label callInputField, Label thirdLatestOutputLabel, Label secondLatestOutputLabel, Label latestOutputLabel) {
+    private GameState(Label callInputField, Label thirdLatestOutputLabel, Label secondLatestOutputLabel, Label latestOutputLabel, CupActor cupActor) {
         this.callInputField = callInputField;
         this.callInputField.setText(callInput);
         this.thirdLatestOutputLabel = thirdLatestOutputLabel;
         this.secondLatestOutputLabel = secondLatestOutputLabel;
         this.latestOutputLabel = latestOutputLabel;
         updateOutputLabels();
+
+        cup.setCupActor(cupActor);
+        cup.update();
+
         save();
+    }
+
+    private void updateOutputLabels() {
+        thirdLatestOutputLabel.setText(thirdLatestOutput);
+        secondLatestOutputLabel.setText(secondLatestOutput);
+        latestOutputLabel.setText(latestOutput);
     }
 
     public void saveGame() {
@@ -310,6 +315,6 @@ public class GameState {
     }
 
     public static synchronized void reset() {
-        instance = new GameState(instance.callInputField, instance.thirdLatestOutputLabel, instance.secondLatestOutputLabel, instance.latestOutputLabel);
+        instance = new GameState(instance.callInputField, instance.thirdLatestOutputLabel, instance.secondLatestOutputLabel, instance.latestOutputLabel, instance.cup.getCupActor());
     }
 }

@@ -224,15 +224,15 @@ public class GameStage extends AbstractStage implements UserInterface {
         if (state().isAllowedToThrow()) {
             int numberOfDicesToBeThrown = 0;
 
-            if ((leftDiceActor.isUnderCup() && !state().getCupActor().isLocked()) || !leftDiceActor.isLocked()) {
+            if ((leftDiceActor.isUnderCup() && !state().getCup().isLocked()) || !leftDiceActor.isLocked()) {
                 numberOfDicesToBeThrown++;
             }
 
-            if ((middleDiceActor.isUnderCup() && !state().getCupActor().isLocked()) || !middleDiceActor.isLocked()) {
+            if ((middleDiceActor.isUnderCup() && !state().getCup().isLocked()) || !middleDiceActor.isLocked()) {
                 numberOfDicesToBeThrown++;
             }
 
-            if ((rightDiceActor.isUnderCup() && !state().getCupActor().isLocked()) || !rightDiceActor.isLocked()) {
+            if ((rightDiceActor.isUnderCup() && !state().getCup().isLocked()) || !rightDiceActor.isLocked()) {
                 numberOfDicesToBeThrown++;
             }
 
@@ -252,7 +252,10 @@ public class GameStage extends AbstractStage implements UserInterface {
                 }
             }
         } else {
-            Gdx.app.log(BluffPokerGame.TAG, String.format(COULD_NOT_THROW_BECAUSE_CUP_IS_MOVING, state().getCupActor().isMoving(), (state().getCupActor().isWatchingOwnThrow() | state().getCupActor().isBelieving())));
+            Gdx.app.log(BluffPokerGame.TAG,
+                    String.format(COULD_NOT_THROW_BECAUSE_CUP_IS_MOVING,
+                            state().getCup().getCupActor().isMoving(),
+                            (state().getCup().isWatchingOwnThrow() | state().getCup().isBelieving())));
         }
     }
 
