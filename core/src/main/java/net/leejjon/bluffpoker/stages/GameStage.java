@@ -3,14 +3,12 @@ package net.leejjon.bluffpoker.stages;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.actors.BlackBoard;
-import net.leejjon.bluffpoker.actors.DiceActor;
 import net.leejjon.bluffpoker.enums.TextureKey;
 import net.leejjon.bluffpoker.dialogs.*;
 import net.leejjon.bluffpoker.enums.TutorialMessage;
@@ -24,11 +22,7 @@ import java.util.ArrayList;
 
 public class GameStage extends AbstractStage implements UserInterface {
     private Game currentGame;
-    private SpriteBatch batch;
     private Sound diceRoll;
-    private DiceActor leftDiceActor;
-    private DiceActor middleDiceActor;
-    private DiceActor rightDiceActor;
 
     private CallTooLowDialog callTooLowDialog;
     private CallNotThreeIdenticalNumbersDialog callNotThreeIdenticalNumbersDialog;
@@ -55,14 +49,13 @@ public class GameStage extends AbstractStage implements UserInterface {
         Texture diceLockTexture = stageInterface.getTexture(TextureKey.DICE_LOCK);
         Texture cupLockTexture = stageInterface.getTexture(TextureKey.CUP_LOCK);
 
-        batch = new SpriteBatch();
         diceRoll = Gdx.audio.newSound(Gdx.files.internal("sound/diceroll.mp3"));
 
         callTooLowDialog = new CallTooLowDialog(uiSkin);
         callNotThreeIdenticalNumbersDialog = new CallNotThreeIdenticalNumbersDialog(uiSkin);
         throwAtLeastOneDice = new WarningDialog(THROW_AT_LEAST_ONE_DICE, uiSkin);
         throwAllDices = new WarningDialog(THROW_WITH_ALL_DICES, uiSkin);
-        winnerDialog = new WinnerDialog(stageInterface, this, uiSkin);
+        winnerDialog = new WinnerDialog(stageInterface, uiSkin);
 
         Table topTable = new Table();
         topTable.top();
@@ -148,14 +141,7 @@ public class GameStage extends AbstractStage implements UserInterface {
 
         Texture[] diceTextures = new Texture[] {dice1, dice2, dice3, dice4, dice5, dice6};
 
-        leftDiceActor = new DiceActor(diceTextures, diceLockTexture, 6, DiceLocation.LEFT, dicesUnderCupActors, dicesBeforeCupActors);
-        leftDiceActor.calculateAndSetPosition();
-
-        middleDiceActor = new DiceActor(diceTextures, diceLockTexture, 4, DiceLocation.MIDDLE, dicesUnderCupActors, dicesBeforeCupActors);
-        middleDiceActor.calculateAndSetPosition();
-
-        rightDiceActor = new DiceActor(diceTextures, diceLockTexture, 3, DiceLocation.RIGHT, dicesUnderCupActors, dicesBeforeCupActors);
-        rightDiceActor.calculateAndSetPosition();
+        state().createDiceActors(diceTextures, diceLockTexture, dicesBeforeCupActors, dicesUnderCupActors);
 
         addActor(backgroundActors);
         addActor(dicesBeforeCupActors);
@@ -167,7 +153,7 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     public void startGame(ArrayList<String> players) {
         if (currentGame == null) {
-            currentGame = new Game(leftDiceActor, middleDiceActor, rightDiceActor, diceRoll, this);
+            currentGame = new Game(diceRoll, this);
         }
 
         state().updatePlayerIterator(0);
@@ -222,30 +208,16 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     public void shake() {
         if (state().isAllowedToThrow()) {
-            int numberOfDicesToBeThrown = 0;
-
-            if ((leftDiceActor.isUnderCup() && !state().getCup().isLocked()) || !leftDiceActor.isLocked()) {
-                numberOfDicesToBeThrown++;
-            }
-
-            if ((middleDiceActor.isUnderCup() && !state().getCup().isLocked()) || !middleDiceActor.isLocked()) {
-                numberOfDicesToBeThrown++;
-            }
-
-            if ((rightDiceActor.isUnderCup() && !state().getCup().isLocked()) || !rightDiceActor.isLocked()) {
-                numberOfDicesToBeThrown++;
-            }
-
             if (state().isBelieved666()) {
                 // You must throw all dices at once.
-                if (numberOfDicesToBeThrown < 3) {
+                if (state().getNumberOfDicesToBeThrown() < 3) {
                     throwAllDices.show(this);
                 } else {
                     currentGame.throwDices();
                 }
             } else {
                 // You must throw at least one dice.
-                if (numberOfDicesToBeThrown > 0 /* or is blind call and you dont need this warning. */) {
+                if (state().getNumberOfDicesToBeThrown() > 0 /* or is blind call and you dont need this warning. */) {
                     currentGame.throwDices();
                 } else {
                     throwAtLeastOneDice.show(this);
@@ -295,7 +267,6 @@ public class GameStage extends AbstractStage implements UserInterface {
     }
 
     public void dispose() {
-        batch.dispose();
         diceRoll.dispose();
         super.dispose();
     }

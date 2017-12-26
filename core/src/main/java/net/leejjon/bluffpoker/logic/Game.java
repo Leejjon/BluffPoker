@@ -2,21 +2,17 @@ package net.leejjon.bluffpoker.logic;
 
 import com.badlogic.gdx.audio.Sound;
 import net.leejjon.bluffpoker.actions.LiftCupAction;
-import net.leejjon.bluffpoker.actors.DiceActor;
 import net.leejjon.bluffpoker.enums.TutorialMessage;
 import net.leejjon.bluffpoker.listener.CupListener;
-import net.leejjon.bluffpoker.listener.DiceListener;
 import net.leejjon.bluffpoker.interfaces.UserInterface;
 import net.leejjon.bluffpoker.interfaces.GameInputInterface;
+import net.leejjon.bluffpoker.state.Dice;
 import net.leejjon.bluffpoker.state.GameState;
 import net.leejjon.bluffpoker.state.SettingsState;
 
 import java.util.ArrayList;
 
 public class Game implements GameInputInterface {
-    private DiceActor leftDiceActor;
-    private DiceActor middleDiceActor;
-    private DiceActor rightDiceActor;
     private Sound diceRoll;
 
     private SettingsState settingsState;
@@ -46,18 +42,13 @@ public class Game implements GameInputInterface {
     private static final String HAS_NO_MORE_LIVES_LEFT = "%1$s has no more lives left";
 
 
-    public Game(DiceActor leftDiceActor, DiceActor middleDiceActor, DiceActor rightDiceActor, Sound diceRoll, UserInterface userInterface) {
-        this.leftDiceActor = leftDiceActor;
-        this.middleDiceActor = middleDiceActor;
-        this.rightDiceActor = rightDiceActor;
+    public Game(Sound diceRoll, UserInterface userInterface) {
         this.diceRoll = diceRoll;
         this.userInterface = userInterface;
         this.settingsState = SettingsState.getInstance();
 
         state().getCup().getCupActor().addListener(new CupListener(this));
-        leftDiceActor.addListener(new DiceListener(leftDiceActor, userInterface));
-        middleDiceActor.addListener(new DiceListener(middleDiceActor, userInterface));
-        rightDiceActor.addListener(new DiceListener(rightDiceActor, userInterface));
+        state().addDiceListeners(userInterface);
     }
 
     public void startGame(ArrayList<String> originalPlayers) {
@@ -88,7 +79,7 @@ public class Game implements GameInputInterface {
             state().getCup().doneWatchingOwnThrow();
         }
 
-        boolean wereThereAnyDicesUnderTheCup = leftDiceActor.isUnderCup() || middleDiceActor.isUnderCup() || rightDiceActor.isUnderCup();
+        boolean wereThereAnyDicesUnderTheCup = state().getLeftDice().isUnderCup() || state().getMiddleDice().isUnderCup() || state().getRightDice().isUnderCup();
 
         String addBlindToMessage = "";
         // Passing an empty cup doesn't count as a blind pass.
@@ -160,9 +151,9 @@ public class Game implements GameInputInterface {
                     if (!lookAtOwnThrowMessageHasBeenShown && state().isHasThrown()) {
                         if (state().getLatestCall() == null) {
                             userInterface.showTutorialMessage(TutorialMessage.LOOKING_AT_OWN_THROW_FIRST_TURN_SINCE_DEATH,
-                                    String.valueOf(leftDiceActor.getDiceValue()),
-                                    String.valueOf(middleDiceActor.getDiceValue()),
-                                    String.valueOf(rightDiceActor.getDiceValue()),
+                                    String.valueOf(state().getLeftDice().getDiceValue()),
+                                    String.valueOf(state().getMiddleDice().getDiceValue()),
+                                    String.valueOf(state().getRightDice().getDiceValue()),
                                     getNumberCombinationFromDices().toString());
                         } else {
                             if (getNumberCombinationFromDices().isGreaterThan(state().getLatestCall().getNumberCombination())) {
@@ -235,9 +226,9 @@ public class Game implements GameInputInterface {
             }
 
             // The cup should not be locked at this point.
-            leftDiceActor.reset();
-            middleDiceActor.reset();
-            rightDiceActor.reset();
+            state().getLeftDice().reset();
+            state().getMiddleDice().reset();
+            state().getRightDice().reset();
 
             state().resetLatestCall();
             state().logGameConsoleMessage(String.format(SHAKE_THE_CUP, state().getCurrentPlayer().getName()));
@@ -291,49 +282,15 @@ public class Game implements GameInputInterface {
                 state().allowPlayerToCall(false);
                 state().logGameConsoleMessage(state().getCurrentPlayer().getName() + WANTED_TO_PEEK_AFTER_ALL);
 
-                if (!leftDiceActor.isUnderCup()) {
-                    leftDiceActor.lock();
-                } else {
-                    leftDiceActor.unlock();
-                }
 
-                if (!middleDiceActor.isUnderCup()) {
-                    middleDiceActor.lock();
-                } else {
-                    middleDiceActor.unlock();
-                }
-
-                if (!rightDiceActor.isUnderCup()) {
-                    rightDiceActor.lock();
-                } else {
-                    rightDiceActor.unlock();
-                }
                 return true;
                 // Just locking / unlocking.
             } else if (state().userTriesToLockOrUnlock()) {
                 // Very important to use hasToThrow and not isAllowedToThrow().
                 if (state().getCup().isLocked()) {
-                    state().getCup().unlock();
-                    if (leftDiceActor.isUnderCup()) {
-                        leftDiceActor.unlock();
-                    }
-                    if (middleDiceActor.isUnderCup()) {
-                        middleDiceActor.unlock();
-                    }
-                    if (rightDiceActor.isUnderCup()) {
-                        rightDiceActor.unlock();
-                    }
+                    state().unlockCupAndDicesUnderCup();
                 } else {
-                    state().getCup().lock();
-                    if (leftDiceActor.isUnderCup()) {
-                        leftDiceActor.lock();
-                    }
-                    if (middleDiceActor.isUnderCup()) {
-                        middleDiceActor.lock();
-                    }
-                    if (rightDiceActor.isUnderCup()) {
-                        rightDiceActor.lock();
-                    }
+                    state().lockCupAndDicesUnderCup();
                 }
                 return true;
             } else {
@@ -362,9 +319,9 @@ public class Game implements GameInputInterface {
         state().setBelieved666(true);
 
         // TODO: Do we really need to put them back under the cup?
-        leftDiceActor.putBackUnderCup();
-        middleDiceActor.putBackUnderCup();
-        rightDiceActor.putBackUnderCup();
+        state().getLeftDice().putBackUnderCup();
+        state().getMiddleDice().putBackUnderCup();
+        state().getRightDice().putBackUnderCup();
         state().logGameConsoleMessage(state().getCurrentPlayer().getName() + BELIEVED_666);
         state().logGameConsoleMessage(THROW_THREE_OF_THE_SAME_NUMBERS_IN_ONE_THROW);
 
@@ -376,9 +333,10 @@ public class Game implements GameInputInterface {
         state().getCup().lock();
 
         // Lock the dices in case they are lying outside of the cup.
-        leftDiceActor.lock();
-        middleDiceActor.lock();
-        rightDiceActor.lock();
+        // TODO: Create lock all method in GameState.
+        state().getLeftDice().lock();
+        state().getMiddleDice().lock();
+        state().getRightDice().lock();
 
         state().setAllowedToBelieveOrNotBelieve(false);
         state().setHasToThrow(false);
@@ -392,14 +350,15 @@ public class Game implements GameInputInterface {
         state().setHasToThrow(true);
         state().setHasThrown(false);
 
-        if (!leftDiceActor.isUnderCup() && leftDiceActor.getDiceValue() == 6) {
-            leftDiceActor.lock();
+        // TODO: Create lock all if 6 method in GameState.
+        if (!state().getLeftDice().isUnderCup() && state().getLeftDice().getDiceValue() == 6) {
+            state().getLeftDice().lock();
         }
-        if (!middleDiceActor.isUnderCup() && middleDiceActor.getDiceValue() == 6) {
-            middleDiceActor.lock();
+        if (!state().getMiddleDice().isUnderCup() && state().getMiddleDice().getDiceValue() == 6) {
+            state().getMiddleDice().lock();
         }
-        if (!rightDiceActor.isUnderCup() && rightDiceActor.getDiceValue() == 6) {
-            rightDiceActor.lock();
+        if (!state().getRightDice().isUnderCup() && state().getRightDice().getDiceValue() == 6) {
+            state().getRightDice().lock();
         }
 
         state().getCup().believe();
@@ -479,23 +438,24 @@ public class Game implements GameInputInterface {
         state().getCup().getCupActor().reset();
         diceRoll.play(1.0f);
 
-        final DiceActor.ThrowResult leftResult = leftDiceActor.throwDice();
-        final DiceActor.ThrowResult middleResult = middleDiceActor.throwDice();
-        final DiceActor.ThrowResult rightResult = rightDiceActor.throwDice();
+        final Dice.ThrowResult leftResult = state().getLeftDice().throwDice();
+        final Dice.ThrowResult middleResult = state().getMiddleDice().throwDice();
+        final Dice.ThrowResult rightResult = state().getRightDice().throwDice();
 
         state().setHasToThrow(false);
         state().setHasThrown(true);
         state().setCanViewOwnThrow(true);
         state().allowPlayerToCall(true);
 
-        if (leftResult == DiceActor.ThrowResult.UNDER_CUP || middleResult == DiceActor.ThrowResult.UNDER_CUP || rightResult == DiceActor.ThrowResult.UNDER_CUP) {
+        if (leftResult == Dice.ThrowResult.UNDER_CUP || middleResult == Dice.ThrowResult.UNDER_CUP || rightResult == Dice.ThrowResult.UNDER_CUP) {
             state().setBlindPass(true); // Everytime you throw a dice under the cup, it starts out as a blind pass.
         }
 
+        // TODO: Unlock all in one method with one save.
         state().getCup().unlock();
-        leftDiceActor.unlock();
-        middleDiceActor.unlock();
-        rightDiceActor.unlock();
+        state().getLeftDice().unlock();
+        state().getMiddleDice().unlock();
+        state().getRightDice().unlock();
 
         if (state().isFirstThrowSinceDeath()) {
             state().setCallInput(NumberCombination.MIN.toString());
@@ -510,7 +470,7 @@ public class Game implements GameInputInterface {
      * @return A NumberCombination object based on the values of the dices.
      */
     public NumberCombination getNumberCombinationFromDices() {
-        return new NumberCombination(leftDiceActor.getDiceValue(), middleDiceActor.getDiceValue(), rightDiceActor.getDiceValue(), true);
+        return new NumberCombination(state().getLeftDice().getDiceValue(), state().getMiddleDice().getDiceValue(), state().getRightDice().getDiceValue(), true);
     }
 
     public GameState state() {

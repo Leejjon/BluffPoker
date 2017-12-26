@@ -14,24 +14,15 @@ import net.leejjon.bluffpoker.state.GameState;
 
 import java.util.Random;
 
-public class DiceActor extends Stack implements Lockable {
+import lombok.Getter;
+
+public class DiceActor extends Stack {
     private Texture[] diceTextures;
-    private int diceValue;
     private DiceLocation location;
-    private boolean underCup = true;
     private Group dicesBeforeCupActors, dicesUnderCupActors;
+
     private Image diceImage;
     private Image lockImage;
-    private boolean lock = false;
-
-    public enum ThrowResult {
-        // Dice was locked, so it was not thrown.
-        LOCKED,
-        // Dice was thrown outside of the cup.
-        OPEN,
-        // Dice was thrown under the cup.
-        UNDER_CUP;
-    }
 
     private SpriteDrawable[] spriteDrawables = new SpriteDrawable[6];
 
@@ -42,7 +33,6 @@ public class DiceActor extends Stack implements Lockable {
         add(diceImage);
         add(lockImage);
         this.diceTextures = diceTextures;
-        diceValue = initialValue;
         this.location = location;
         this.dicesBeforeCupActors = dicesBeforeCupActors;
         this.dicesUnderCupActors = dicesUnderCupActors;
@@ -60,31 +50,11 @@ public class DiceActor extends Stack implements Lockable {
         }
     }
 
-    public ThrowResult throwDice() {
-        if ((isUnderCup() && !GameState.get().getCup().isLocked()) || (!isUnderCup() && !isLocked())) {
-            generateRandomNumber();
-            if (isUnderCup()) {
-                return ThrowResult.UNDER_CUP;
-            } else {
-                return ThrowResult.OPEN;
-            }
-        } else {
-            if (diceValue != 6) {
-                unlock();
-            }
-            return ThrowResult.LOCKED;
-        }
+    public void updateDice(int newNumber) {
+        diceImage.setDrawable(spriteDrawables[newNumber]);
     }
 
-    private void generateRandomNumber() {
-        Random randomDiceNumber = new Random();
-        int randomNumber = randomDiceNumber.nextInt(6);
-
-        diceImage.setDrawable(spriteDrawables[randomNumber]);
-        diceValue = randomNumber;
-    }
-
-    public void calculateAndSetPosition() {
+    public void calculateAndSetPosition(int middleYForCup) {
         float x = (GameStage.getMiddleX() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((getDiceWidth() / 2) / 2);
         switch (location) {
             case LEFT:
@@ -99,7 +69,7 @@ public class DiceActor extends Stack implements Lockable {
                 break;
         }
 
-        float y = cupActor.getMiddleYForCup() + (getDiceHeight() / (3 + BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()));
+        float y = middleYForCup + (getDiceHeight() / (3 + BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()));
         setPosition(x, y);
     }
 
@@ -111,59 +81,23 @@ public class DiceActor extends Stack implements Lockable {
         return diceTextures[0].getHeight() / 2;
     }
 
-    public boolean isUnderCup() {
-        return underCup;
-    }
-
-    public void pullAwayFromCup() {
-        if ((GameState.get().getCup().isBelieving() || cupActor.isWatchingOwnThrow()) && isUnderCup()) {
-            underCup = false;
-            moveBy(0, -getDiceHeight() / 2);
-            dicesUnderCupActors.removeActor(this);
-            dicesBeforeCupActors.addActor(this);
-        }
-    }
-
-    public void putBackUnderCup() {
-        if (cupActor.isBelieving() || cupActor.isWatchingOwnThrow()) {
-            reset();
-        }
+    public void moveDown() {
+        moveBy(0, -getDiceHeight() / 2);
+        dicesUnderCupActors.removeActor(this);
+        dicesBeforeCupActors.addActor(this);
     }
 
     public void reset() {
-        if (!underCup) {
-            if (cupActor.isLocked()) {
-                lock();
-            } else {
-                unlock();
-            }
-            underCup = true;
-            moveBy(0, getDiceHeight() / 2);
-            dicesBeforeCupActors.removeActor(this);
-            dicesUnderCupActors.addActor(this);
-        }
+        moveBy(0, getDiceHeight() / 2);
+        dicesBeforeCupActors.removeActor(this);
+        dicesUnderCupActors.addActor(this);
     }
 
-    public int getDiceValue() {
-        return diceValue + 1;
-    }
-
-    @Override
     public void lock() {
-        if (!isUnderCup() || cupActor.isLocked()) {
-            lock = true;
-            lockImage.setVisible(true);
-        }
+        lockImage.setVisible(true);
     }
 
-    @Override
     public void unlock() {
-        lock = false;
         lockImage.setVisible(false);
-    }
-
-    @Override
-    public boolean isLocked() {
-        return lock;
     }
 }

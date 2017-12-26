@@ -12,9 +12,13 @@ import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import lombok.Getter;
 
+import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.actors.CupActor;
+import net.leejjon.bluffpoker.interfaces.UserInterface;
+import net.leejjon.bluffpoker.listener.DiceListener;
 import net.leejjon.bluffpoker.logic.BluffPokerPreferences;
 import net.leejjon.bluffpoker.logic.Call;
+import net.leejjon.bluffpoker.logic.DiceLocation;
 import net.leejjon.bluffpoker.logic.NumberCombination;
 import net.leejjon.bluffpoker.logic.Player;
 import net.leejjon.bluffpoker.stages.GameStage;
@@ -47,6 +51,10 @@ public class GameState {
 
     @Getter
     private Cup cup = new Cup();
+
+    @Getter private Dice leftDice = new Dice(0);
+    @Getter private Dice middleDice = new Dice(0);
+    @Getter private Dice rightDice = new Dice(0);
 
     @Getter
     private Call latestCall = null;
@@ -106,6 +114,23 @@ public class GameState {
         }
     }
 
+    public int getNumberOfDicesToBeThrown() {
+        int numberOfDicesToBeThrown = 0;
+
+        if ((leftDice.isUnderCup() && !cup.isLocked()) || !leftDice.isLocked()) {
+            numberOfDicesToBeThrown++;
+        }
+
+        if ((middleDice.isUnderCup() && !cup.isLocked()) || !middleDice.isLocked()) {
+            numberOfDicesToBeThrown++;
+        }
+
+        if ((rightDice.isUnderCup() && !cup.isLocked()) || !rightDice.isLocked()) {
+            numberOfDicesToBeThrown++;
+        }
+        return numberOfDicesToBeThrown;
+    }
+
     // Stateful UI elements
     private transient Label callInputField;
     private transient Label thirdLatestOutputLabel;
@@ -141,6 +166,20 @@ public class GameState {
     public void createCupActor(Texture closedCupTexture, Texture openCupTexture, Texture cupLockTexture, Group foreGroundActors, Group backgroundActors) {
         cup.setCupActor(new CupActor(closedCupTexture, openCupTexture, cupLockTexture, foreGroundActors, backgroundActors));
         cup.update();
+    }
+
+    // TODO: Can dices only be created after the cup?
+    public void createDiceActors(Texture[] diceTextures, Texture diceLockTexture, Group dicesBeforeCupActors, Group dicesUnderCupActors) {
+        int middleYForCup = cup.getCupActor().getMiddleYForCup();
+        leftDice.createDiceActor(diceTextures, diceLockTexture, DiceLocation.LEFT, dicesBeforeCupActors, dicesUnderCupActors, middleYForCup);
+        middleDice.createDiceActor(diceTextures, diceLockTexture, DiceLocation.MIDDLE, dicesBeforeCupActors, dicesUnderCupActors, middleYForCup);
+        rightDice.createDiceActor(diceTextures, diceLockTexture, DiceLocation.RIGHT, dicesBeforeCupActors, dicesUnderCupActors, middleYForCup);
+    }
+
+    public void addDiceListeners(UserInterface userInterface) {
+        leftDice.getDiceActor().addListener(new DiceListener(leftDice, userInterface));
+        middleDice.getDiceActor().addListener(new DiceListener(middleDice, userInterface));
+        rightDice.getDiceActor().addListener(new DiceListener(rightDice, userInterface));
     }
 
     public ClickableLabel createAutoButton(Skin uiSkin) {
@@ -253,6 +292,52 @@ public class GameState {
         saveGame();
     }
 
+    public void lockCupAndDicesUnderCup() {
+        cup.lock();
+        if (leftDice.isUnderCup()) {
+            leftDice.lock();
+        }
+        if (middleDice.isUnderCup()) {
+            middleDice.lock();
+        }
+        if (rightDice.isUnderCup()) {
+            rightDice.lock();
+        }
+    }
+
+    public void unlockCupAndDicesUnderCup() {
+        cup.unlock();
+        if (leftDice.isUnderCup()) {
+            leftDice.unlock();
+        }
+        if (middleDice.isUnderCup()) {
+            middleDice.unlock();
+        }
+        if (rightDice.isUnderCup()) {
+            rightDice.unlock();
+        }
+    }
+
+    public void lockDicesNotUnderCup() {
+        if (!leftDice.isUnderCup()) {
+            leftDice.lock();
+        } else {
+            leftDice.unlock();
+        }
+
+        if (!middleDice.isUnderCup()) {
+            middleDice.lock();
+        } else {
+            middleDice.unlock();
+        }
+
+        if (!rightDice.isUnderCup()) {
+            rightDice.lock();
+        } else {
+            rightDice.unlock();
+        }
+    }
+
     private GameState() {}
 
     private GameState(Label callInputField, Label thirdLatestOutputLabel, Label secondLatestOutputLabel, Label latestOutputLabel, CupActor cupActor) {
@@ -275,6 +360,7 @@ public class GameState {
         latestOutputLabel.setText(latestOutput);
     }
 
+    // TODO: Investigate whether this is neccesary.
     public void saveGame() {
         newGameState = false;
         save();
@@ -308,6 +394,7 @@ public class GameState {
             if (Strings.isNullOrEmpty(stateString)) {
                 instance = new GameState();
             } else {
+                Gdx.app.log(BluffPokerGame.TAG,"GameState: " + stateString);
                 instance = gson.fromJson(bluffPokerState.getString(GameState.KEY), GameState.class);
             }
             return instance;
