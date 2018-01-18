@@ -49,6 +49,16 @@ public class GameStage extends AbstractStage implements UserInterface {
         Texture diceLockTexture = stageInterface.getTexture(TextureKey.DICE_LOCK);
         Texture cupLockTexture = stageInterface.getTexture(TextureKey.CUP_LOCK);
 
+        // Load the textures of the dices.
+        Texture dice1 = stageInterface.getTexture(TextureKey.DICE1);
+        Texture dice2 = stageInterface.getTexture(TextureKey.DICE2);
+        Texture dice3 = stageInterface.getTexture(TextureKey.DICE3);
+        Texture dice4 = stageInterface.getTexture(TextureKey.DICE4);
+        Texture dice5 = stageInterface.getTexture(TextureKey.DICE5);
+        Texture dice6 = stageInterface.getTexture(TextureKey.DICE6);
+
+        Texture[] diceTextures = new Texture[] {dice1, dice2, dice3, dice4, dice5, dice6};
+
         diceRoll = Gdx.audio.newSound(Gdx.files.internal("sound/diceroll.mp3"));
 
         callTooLowDialog = new CallTooLowDialog(uiSkin);
@@ -130,17 +140,6 @@ public class GameStage extends AbstractStage implements UserInterface {
         BlackBoard callBoard = new BlackBoard(callBoardTexture);
 
         state().createCupActor(closedCupTexture, openCupTexture, cupLockTexture, foreGroundActors, backgroundActors);
-
-        // Load the textures of the dices.
-        Texture dice1 = stageInterface.getTexture(TextureKey.DICE1);
-        Texture dice2 = stageInterface.getTexture(TextureKey.DICE2);
-        Texture dice3 = stageInterface.getTexture(TextureKey.DICE3);
-        Texture dice4 = stageInterface.getTexture(TextureKey.DICE4);
-        Texture dice5 = stageInterface.getTexture(TextureKey.DICE5);
-        Texture dice6 = stageInterface.getTexture(TextureKey.DICE6);
-
-        Texture[] diceTextures = new Texture[] {dice1, dice2, dice3, dice4, dice5, dice6};
-
         state().createDiceActors(diceTextures, diceLockTexture, dicesBeforeCupActors, dicesUnderCupActors);
 
         addActor(backgroundActors);

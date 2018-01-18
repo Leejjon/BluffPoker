@@ -28,6 +28,14 @@ public enum TextureKey {
         return new Texture(fileName);
     }
 
+    /**
+     * @param relativePath Relative path to assets.
+     * @return Texture of enum entry.
+     */
+    protected Texture get(String relativePath) {
+        return new Texture(relativePath + fileName);
+    }
+
     private static Texture generateOnePixelTexture(float red, float green, float blue, float alpha) {
         Pixmap onePixelPixmap = new Pixmap(1, 1, Pixmap.Format.RGB888);
         onePixelPixmap.setColor(red, green, blue, alpha);

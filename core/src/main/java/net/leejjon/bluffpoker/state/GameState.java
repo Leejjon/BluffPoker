@@ -14,6 +14,7 @@ import lombok.Getter;
 
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.actors.CupActor;
+import net.leejjon.bluffpoker.actors.DiceActor;
 import net.leejjon.bluffpoker.interfaces.UserInterface;
 import net.leejjon.bluffpoker.listener.DiceListener;
 import net.leejjon.bluffpoker.logic.BluffPokerPreferences;
@@ -40,6 +41,12 @@ public class GameState {
         Preconditions.checkNotNull(thirdLatestOutputLabel);
         Preconditions.checkNotNull(secondLatestOutputLabel);
         Preconditions.checkNotNull(latestOutputLabel);
+        Preconditions.checkNotNull(autoButton);
+        Preconditions.checkNotNull(callButton);
+        Preconditions.checkNotNull(cup.getCupActor());
+        Preconditions.checkNotNull(leftDice.getDiceActor());
+        Preconditions.checkNotNull(middleDice.getDiceActor());
+        Preconditions.checkNotNull(rightDice.getDiceActor());
     }
 
     // Actual state
@@ -52,9 +59,9 @@ public class GameState {
     @Getter
     private Cup cup = new Cup();
 
-    @Getter private Dice leftDice = new Dice(0);
-    @Getter private Dice middleDice = new Dice(0);
-    @Getter private Dice rightDice = new Dice(0);
+    @Getter private Dice leftDice = new Dice(6);
+    @Getter private Dice middleDice = new Dice(4);
+    @Getter private Dice rightDice = new Dice(3);
 
     @Getter
     private Call latestCall = null;
@@ -340,16 +347,25 @@ public class GameState {
 
     private GameState() {}
 
-    private GameState(Label callInputField, Label thirdLatestOutputLabel, Label secondLatestOutputLabel, Label latestOutputLabel, CupActor cupActor) {
+    private GameState(Label callInputField, Label thirdLatestOutputLabel, Label secondLatestOutputLabel, Label latestOutputLabel, ClickableLabel autoButton,
+                              ClickableLabel callButton, CupActor cupActor, DiceActor leftDiceActor, DiceActor middleDiceActor, DiceActor rightDiceActor) {
         this.callInputField = callInputField;
         this.callInputField.setText(callInput);
         this.thirdLatestOutputLabel = thirdLatestOutputLabel;
         this.secondLatestOutputLabel = secondLatestOutputLabel;
         this.latestOutputLabel = latestOutputLabel;
+        this.autoButton = autoButton;
+        this.autoButton.setDisabled(!allowedToCall);
+        this.callButton = callButton;
+        this.callButton.setDisabled(!allowedToCall);
         updateOutputLabels();
 
         cup.setCupActor(cupActor);
         cup.update();
+
+        leftDice.setDiceActor(leftDiceActor);
+        middleDice.setDiceActor(middleDiceActor);
+        rightDice.setDiceActor(rightDiceActor);
 
         save();
     }
@@ -402,6 +418,7 @@ public class GameState {
     }
 
     public static synchronized void reset() {
-        instance = new GameState(instance.callInputField, instance.thirdLatestOutputLabel, instance.secondLatestOutputLabel, instance.latestOutputLabel, instance.cup.getCupActor());
+        instance = new GameState(instance.callInputField, instance.thirdLatestOutputLabel, instance.secondLatestOutputLabel, instance.latestOutputLabel, instance.autoButton,
+                instance.callButton, instance.cup.getCupActor(), instance.leftDice.getDiceActor(), instance.middleDice.getDiceActor(), instance.rightDice.getDiceActor());
     }
 }

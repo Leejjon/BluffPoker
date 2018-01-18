@@ -1,7 +1,6 @@
 package net.leejjon.bluffpoker.state;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.logic.Player;
@@ -23,9 +22,6 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GameStateTest extends GdxTest {
-    Label thirdLatestOutputLabel;
-    Label secondLatestOutputLabel;
-    Label latestOutputLabel;
 
     @Test
     public void testConsoleLogging_threeMessages_success() {
@@ -74,13 +70,7 @@ public class GameStateTest extends GdxTest {
         Player currentPlayer = gameState.getCurrentPlayer();
         assertNotNull(currentPlayer);
         assertEquals("Leon", currentPlayer.getName());
-        assertEquals(3, currentPlayer);
-    }
-
-    private void initializeUI(GameState gameState) {
-        thirdLatestOutputLabel = gameState.createThirdLatestOutputLabel(uiSkin);
-        secondLatestOutputLabel = gameState.createSecondLatestOutputLabel(uiSkin);
-        latestOutputLabel = gameState.createLatestOutputLabel(uiSkin);
+        assertEquals(3, currentPlayer.getLives());
     }
 
     private void loadDefaultPlayers() {
