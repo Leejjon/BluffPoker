@@ -155,8 +155,11 @@ public class GameStage extends AbstractStage implements UserInterface {
             currentGame = new Game(diceRoll, this);
         }
 
-        state().updatePlayerIterator(0);
         currentGame.startGame(players);
+    }
+
+    public void continueGame() {
+        currentGame = new Game(diceRoll, this);
     }
 
     @Override

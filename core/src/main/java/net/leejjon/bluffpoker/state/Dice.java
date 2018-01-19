@@ -25,19 +25,17 @@ public class Dice implements Lockable {
     /**
      * A setter that should only be used when reloading a game.
      */
-    void setDiceActor(DiceActor diceActor) {
+    void setDiceActor(DiceActor diceActor, int middleYForCup) {
         this.diceActor = diceActor;
-        diceActor.updateDice(diceValue);
-        if (underCup) {
-            diceActor.reset();
-        } else {
-            diceActor.moveDown();
-        }
+        diceActor.calculateAndSetPosition(middleYForCup);
+        diceActor.updateDice(diceValue - 1);
     }
 
     public void createDiceActor(Texture[] diceTextures, Texture diceLockTexture, DiceLocation diceLocation, Group dicesBeforeCupActors, Group dicesUnderCupActors, int middleYForCup) {
-        diceActor = new DiceActor(diceTextures, diceLockTexture, diceValue, diceLocation, dicesUnderCupActors, dicesBeforeCupActors);
-        diceActor.calculateAndSetPosition(middleYForCup);
+        diceActor = new DiceActor(diceTextures, diceLockTexture, diceValue, diceLocation, dicesUnderCupActors, dicesBeforeCupActors, middleYForCup);
+        if (!underCup) {
+            diceActor.moveDown();
+        }
     }
 
     public ThrowResult throwDice() {

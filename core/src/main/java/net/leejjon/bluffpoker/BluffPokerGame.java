@@ -94,6 +94,8 @@ public class BluffPokerGame extends ApplicationAdapter implements
     public void continuePlaying() {
         startMenuStage.setVisible(false);
         gameStage.setVisible(true);
+        gameStage.continueGame();
+        Gdx.input.setInputProcessor(gameStage);
     }
 
     @Override
@@ -120,8 +122,8 @@ public class BluffPokerGame extends ApplicationAdapter implements
     @Override
     public void startGame(ArrayList<String> players) {
         selectPlayersStage.setVisible(false);
-        gameStage.startGame(players);
         gameStage.setVisible(true);
+        gameStage.startGame(players);
         Gdx.input.setInputProcessor(gameStage);
     }
 

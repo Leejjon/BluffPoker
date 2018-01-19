@@ -26,8 +26,8 @@ public class DiceActor extends Stack {
 
     private SpriteDrawable[] spriteDrawables = new SpriteDrawable[6];
 
-    public DiceActor(Texture[] diceTextures, Texture lockTexture, int initialValue, DiceLocation location, Group dicesBeforeCupActors, Group dicesUnderCupActors) {
-        diceImage = new Image(diceTextures[initialValue - 1]);
+    public DiceActor(Texture[] diceTextures, Texture lockTexture, int initialValue, DiceLocation location, Group dicesBeforeCupActors, Group dicesUnderCupActors, int middleYForCup) {
+        diceImage = new Image(diceTextures[initialValue]);
         lockImage = new Image(lockTexture);
         lockImage.setVisible(false);
         add(diceImage);
@@ -42,6 +42,8 @@ public class DiceActor extends Stack {
         setHeight(getDiceHeight() / 2);
 
         initializeSpriteDrawables();
+
+        calculateAndSetPosition(middleYForCup);
     }
 
     private void initializeSpriteDrawables() {

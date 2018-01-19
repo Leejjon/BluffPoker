@@ -363,9 +363,10 @@ public class GameState {
         cup.setCupActor(cupActor);
         cup.update();
 
-        leftDice.setDiceActor(leftDiceActor);
-        middleDice.setDiceActor(middleDiceActor);
-        rightDice.setDiceActor(rightDiceActor);
+        int middleYForCup = cup.getCupActor().getMiddleYForCup();
+        leftDice.setDiceActor(leftDiceActor, middleYForCup);
+        middleDice.setDiceActor(middleDiceActor, middleYForCup);
+        rightDice.setDiceActor(rightDiceActor, middleYForCup);
 
         save();
     }
