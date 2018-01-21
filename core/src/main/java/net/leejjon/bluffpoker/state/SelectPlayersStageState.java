@@ -32,6 +32,14 @@ public class SelectPlayersStageState {
     }
 
     public void setPlayers(ArrayList<String> players) {
+        Gdx.app.postRunnable(new Runnable() {
+             @Override
+             public void run() {
+                 Gdx.app.log("bluffpoker", "Attempting setting playerlist items.");
+
+                 Gdx.app.log("bluffpoker", "Setting playerlist items success.");
+             }
+         });
         playerList.setItems(players.toArray(new String[players.size()]));
         this.players = new ArrayList<>(players);
         save();
@@ -62,7 +70,7 @@ public class SelectPlayersStageState {
             // Load game state if a previous state exists.
             Preferences bluffPokerState = Gdx.app.getPreferences(BluffPokerPreferences.KEY);
             String stateString = bluffPokerState.getString(SelectPlayersStageState.KEY);
-            Gdx.app.log(BluffPokerGame.TAG, stateString);
+            Gdx.app.log(BluffPokerGame.TAG, "StateString: " + stateString);
             if (Strings.isNullOrEmpty(stateString)) {
                 instance = new SelectPlayersStageState();
             } else {

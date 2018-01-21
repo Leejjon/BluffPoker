@@ -1,5 +1,6 @@
 package net.leejjon.bluffpoker.actors;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -27,12 +28,13 @@ public class DiceActor extends Stack {
     private SpriteDrawable[] spriteDrawables = new SpriteDrawable[6];
 
     public DiceActor(Texture[] diceTextures, Texture lockTexture, int initialValue, DiceLocation location, Group dicesBeforeCupActors, Group dicesUnderCupActors, int middleYForCup) {
-        diceImage = new Image(diceTextures[initialValue]);
+        this.diceTextures = diceTextures;
+        diceImage = new Image(diceTextures[initialValue-1]);
         lockImage = new Image(lockTexture);
         lockImage.setVisible(false);
         add(diceImage);
         add(lockImage);
-        this.diceTextures = diceTextures;
+
         this.location = location;
         this.dicesBeforeCupActors = dicesBeforeCupActors;
         this.dicesUnderCupActors = dicesUnderCupActors;
@@ -72,6 +74,7 @@ public class DiceActor extends Stack {
         }
 
         float y = middleYForCup + (getDiceHeight() / (3 + BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()));
+
         setPosition(x, y);
     }
 

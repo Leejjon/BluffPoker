@@ -53,6 +53,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
             state.setPlayers(players);
         }
 
+
         Texture callBoardTexture = stageInterface.getTexture(TextureKey.CALL_BOARD);
         BlackBoard choosePlayersBackground = new BlackBoard(callBoardTexture);
 

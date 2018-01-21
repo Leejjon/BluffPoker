@@ -1,5 +1,6 @@
 package net.leejjon.bluffpoker.state;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Group;
 
@@ -33,6 +34,7 @@ public class Dice implements Lockable {
 
     public void createDiceActor(Texture[] diceTextures, Texture diceLockTexture, DiceLocation diceLocation, Group dicesBeforeCupActors, Group dicesUnderCupActors, int middleYForCup) {
         diceActor = new DiceActor(diceTextures, diceLockTexture, diceValue, diceLocation, dicesUnderCupActors, dicesBeforeCupActors, middleYForCup);
+
         if (!underCup) {
             diceActor.moveDown();
         }
