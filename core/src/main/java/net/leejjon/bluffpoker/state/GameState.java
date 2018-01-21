@@ -325,26 +325,6 @@ public class GameState {
         }
     }
 
-    public void lockDicesNotUnderCup() {
-        if (!leftDice.isUnderCup()) {
-            leftDice.lock();
-        } else {
-            leftDice.unlock();
-        }
-
-        if (!middleDice.isUnderCup()) {
-            middleDice.lock();
-        } else {
-            middleDice.unlock();
-        }
-
-        if (!rightDice.isUnderCup()) {
-            rightDice.lock();
-        } else {
-            rightDice.unlock();
-        }
-    }
-
     private GameState() {}
 
     private GameState(Label callInputField, Label thirdLatestOutputLabel, Label secondLatestOutputLabel, Label latestOutputLabel, ClickableLabel autoButton,

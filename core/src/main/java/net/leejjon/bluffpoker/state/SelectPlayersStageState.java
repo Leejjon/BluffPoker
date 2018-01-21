@@ -32,15 +32,14 @@ public class SelectPlayersStageState {
     }
 
     public void setPlayers(ArrayList<String> players) {
+        // TODO: If this is an empty list, this fails with an ObjCException. When placed in the postRunnable it works fine though.
         Gdx.app.postRunnable(new Runnable() {
-             @Override
-             public void run() {
-                 Gdx.app.log("bluffpoker", "Attempting setting playerlist items.");
+            @Override
+            public void run() {
+                playerList.setItems(players.toArray(new String[players.size()]));
+            }
+        });
 
-                 Gdx.app.log("bluffpoker", "Setting playerlist items success.");
-             }
-         });
-        playerList.setItems(players.toArray(new String[players.size()]));
         this.players = new ArrayList<>(players);
         save();
     }
@@ -53,7 +52,8 @@ public class SelectPlayersStageState {
         preferences.flush();
     }
 
-    private SelectPlayersStageState() {}
+    private SelectPlayersStageState() {
+    }
 
     /**
      * Singleton with lazy initialization.
