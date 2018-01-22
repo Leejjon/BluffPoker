@@ -47,13 +47,6 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         final AddNewPlayerDialog addNewPlayerDialog = new AddNewPlayerDialog(this);
         playersFromPhonebookDialog = new PlayersFromPhonebookDialog(uiSkin, this);
 
-        if (state.getPlayers().isEmpty()) {
-            ArrayList<String> players = new ArrayList<>();
-            players.add(BluffPokerGame.getPlatformSpecificInterface().getDeviceOwnerName());
-            state.setPlayers(players);
-        }
-
-
         Texture callBoardTexture = stageInterface.getTexture(TextureKey.CALL_BOARD);
         BlackBoard choosePlayersBackground = new BlackBoard(callBoardTexture);
 
@@ -77,6 +70,12 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
 
         ScrollPane playersScrollPane = new ScrollPane(state.createPlayerList(getCustomListStyle(uiSkin)), uiSkin);
         playersScrollPane.setScrollingDisabled(true, false);
+
+        if (state.getPlayers().isEmpty()) {
+            ArrayList<String> players = new ArrayList<>();
+            players.add(BluffPokerGame.getPlatformSpecificInterface().getDeviceOwnerName());
+            state.setPlayers(players);
+        }
 
         int width = Gdx.graphics.getWidth() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor();
         int height = Gdx.graphics.getHeight() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor();

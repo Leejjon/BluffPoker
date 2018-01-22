@@ -32,14 +32,7 @@ public class SelectPlayersStageState {
     }
 
     public void setPlayers(ArrayList<String> players) {
-        // TODO: If this is an empty list, this fails with an ObjCException. When placed in the postRunnable it works fine though.
-        Gdx.app.postRunnable(new Runnable() {
-            @Override
-            public void run() {
-                playerList.setItems(players.toArray(new String[players.size()]));
-            }
-        });
-
+        playerList.setItems(players.toArray(new String[players.size()]));
         this.players = new ArrayList<>(players);
         save();
     }
