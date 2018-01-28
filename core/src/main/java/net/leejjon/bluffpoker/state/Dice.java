@@ -60,7 +60,7 @@ public class Dice implements Lockable {
         Random randomDiceNumber = new Random();
         int randomNumber = randomDiceNumber.nextInt(6);
 
-        diceValue = randomNumber;
+        diceValue = randomNumber + 1;
         GameState.get().saveGame();
         diceActor.updateDice(randomNumber);
     }
@@ -82,7 +82,7 @@ public class Dice implements Lockable {
     }
 
     public int getDiceValue() {
-        return diceValue + 1;
+        return diceValue;
     }
 
 

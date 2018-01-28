@@ -59,6 +59,7 @@ public class GameState {
     @Getter
     private Cup cup = new Cup();
 
+    // This is actually 643, but we show
     @Getter private Dice leftDice = new Dice(6);
     @Getter private Dice middleDice = new Dice(4);
     @Getter private Dice rightDice = new Dice(3);
@@ -178,6 +179,7 @@ public class GameState {
     // TODO: Can dices only be created after the cup?
     public void createDiceActors(Texture[] diceTextures, Texture diceLockTexture, Group dicesBeforeCupActors, Group dicesUnderCupActors) {
         int middleYForCup = cup.getCupActor().getMiddleYForCup();
+
         leftDice.createDiceActor(diceTextures, diceLockTexture, DiceLocation.LEFT, dicesBeforeCupActors, dicesUnderCupActors, middleYForCup);
         middleDice.createDiceActor(diceTextures, diceLockTexture, DiceLocation.MIDDLE, dicesBeforeCupActors, dicesUnderCupActors, middleYForCup);
         rightDice.createDiceActor(diceTextures, diceLockTexture, DiceLocation.RIGHT, dicesBeforeCupActors, dicesUnderCupActors, middleYForCup);
@@ -363,10 +365,13 @@ public class GameState {
         save();
     }
 
+    public static final String SAVED_GAMESTATE = "Saved GameState: ";
+
     private void save() {
         Gson gson = new Gson();
         Preferences preferences = Gdx.app.getPreferences(BluffPokerPreferences.KEY);
         String json = gson.toJson(this);
+        Gdx.app.log(BluffPokerGame.TAG,SAVED_GAMESTATE + json);
         preferences.putString(GameState.KEY, json);
         preferences.flush();
     }
@@ -391,7 +396,7 @@ public class GameState {
             if (Strings.isNullOrEmpty(stateString)) {
                 instance = new GameState();
             } else {
-                Gdx.app.log(BluffPokerGame.TAG,"GameState: " + stateString);
+                Gdx.app.log(BluffPokerGame.TAG,"Loaded GameState from: " + stateString);
                 instance = gson.fromJson(bluffPokerState.getString(GameState.KEY), GameState.class);
             }
             return instance;
@@ -401,5 +406,12 @@ public class GameState {
     public static synchronized void reset() {
         instance = new GameState(instance.callInputField, instance.thirdLatestOutputLabel, instance.secondLatestOutputLabel, instance.latestOutputLabel, instance.autoButton,
                 instance.callButton, instance.cup.getCupActor(), instance.leftDice.getDiceActor(), instance.middleDice.getDiceActor(), instance.rightDice.getDiceActor());
+    }
+
+    /**
+     * Only to be used in tests.
+     */
+    void resetToNull() {
+        instance = null;
     }
 }
