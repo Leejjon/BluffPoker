@@ -29,9 +29,9 @@ import net.leejjon.bluffpoker.ui.ClickableLabel;
  * A singleton to contain all the state in the game, designed with testability in mind.
  */
 public class GameState {
-    public static final String KEY = "gameState";
+    static final String KEY = "gameState";
     // Font used in console is Microsoft JingHei
-    public static final String console = "console";
+    private static final String console = "console";
 
     @Getter
     private boolean newGameState = true;

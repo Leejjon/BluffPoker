@@ -3,19 +3,19 @@ package net.leejjon.bluffpoker.state;
 import com.badlogic.gdx.Gdx;
 
 import net.leejjon.bluffpoker.BluffPokerGame;
-import net.leejjon.bluffpoker.logic.Player;
+import net.leejjon.bluffpoker.enums.TutorialMessage;
+import net.leejjon.bluffpoker.interfaces.UserInterface;
+import net.leejjon.bluffpoker.logic.Game;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.ArrayList;
 
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -23,6 +23,14 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GameStateTest extends GdxTest {
+
+    @Test
+    public void testLogging() {
+        String logMesssage = "Hoi";
+        Gdx.app.log(BluffPokerGame.TAG, logMesssage);
+
+        assertEquals(logMesssage, logMessages.get(0));
+    }
 
     @Test
     public void testConsoleLogging_threeMessages_success() {
@@ -63,43 +71,49 @@ public class GameStateTest extends GdxTest {
     }
 
     @Test
-    public void testConstructPlayers() {
-        loadDefaultPlayers();
+    public void testNewGame_success() {
         GameState gameState = GameState.get();
-        assertEquals(2, gameState.getPlayers().length);
+        initializeUI(gameState);
 
-        Player currentPlayer = gameState.getCurrentPlayer();
-        assertNotNull(currentPlayer);
-        assertEquals("Leon", currentPlayer.getName());
-        assertEquals(3, currentPlayer.getLives());
+        Game game = new Game(diceRoll, getTestUserInterface());
+
+        game.startGame(loadDefaultPlayers());
+
+        GameStateAssertor.NEW_GAME.assertGameState(gameState);
+
+        String logMessageWithState = logMessages.get(1);
+        String state = logMessageWithState.substring(GameState.SAVED_GAMESTATE.length());
+
+        // From this point, reset and reload the game.
+        gameState.resetToNull();
+        when(preferences.getString(GameState.KEY)).thenReturn(state);
+
+        gameState = GameState.get();
+        initializeUI(gameState);
+
+        GameStateAssertor.NEW_GAME.assertGameState(gameState);
     }
 
-    @Test
-    public void loadDices() {
-//        GameState gameState = GameState.get();
-//        initializeUI(gameState);
-//
-//        gameState.saveGame();
-//        String logMessageWithState = logMessages.get(0);
-//        String state = logMessageWithState.substring(GameState.SAVED_GAMESTATE.length());
-//
-//        gameState.resetToNull();
-//        when(preferences.getString(SelectPlayersStageState.KEY)).thenReturn(state);
-//
-//        gameState = GameState.get();
-//        initializeUI(gameState);
+    private UserInterface getTestUserInterface() {
+        return new UserInterface() {
+            @Override
+            public void call(String call) {}
+
+            @Override
+            public void finishGame(String winner) {}
+
+            @Override
+            public void showTutorialMessage(TutorialMessage message, String... arguments) {}
+
+            @Override
+            public void showLockMessage() {}
+        };
     }
 
-    private void loadDefaultPlayers() {
-        List<String> playersList = Arrays.asList("Leon", "Dirk");
-        GameState.get().constructPlayers(playersList, 3);
-    }
-
-    @Test
-    public void testLogging() {
-        String logMesssage = "Hoi";
-        Gdx.app.log(BluffPokerGame.TAG, logMesssage);
-
-        assertEquals(logMesssage, logMessages.get(0));
+    private ArrayList<String> loadDefaultPlayers() {
+        ArrayList<String> playerList = new ArrayList<>();
+        playerList.add("Leon");
+        playerList.add("Dirk");
+        return playerList;
     }
 }

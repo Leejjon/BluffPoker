@@ -5,6 +5,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.mock.graphics.MockGraphics;
 import com.badlogic.gdx.graphics.GL20;
@@ -43,6 +44,7 @@ public class GdxTest {
     protected static Array<String> logMessages = new Array<>();
     protected ObjectMap<TextureKey, Texture> textureMap;
     protected Skin uiSkin;
+    protected Sound diceRoll;
 
     protected Label thirdLatestOutputLabel;
     protected Label secondLatestOutputLabel;
@@ -125,6 +127,7 @@ public class GdxTest {
         // Use the default libgdx UI skin.
         uiSkin = new Skin(Gdx.files.internal(relativePath + "uiskin.json"));
         uiSkin.addRegions(new TextureAtlas(relativePath + "uiskin.atlas"));
+        diceRoll = Gdx.audio.newSound(Gdx.files.internal(relativePath + "sound/diceroll.mp3"));
 
         textureMap = TextureTestLoader.getAllTexturesForInUnitTest(relativePath);
 
@@ -133,7 +136,6 @@ public class GdxTest {
 
 
     protected void initializeUI(GameState gameState) {
-        Texture callBoardTexture = textureMap.get(TextureKey.CALL_BOARD);
         Texture closedCupTexture = textureMap.get(TextureKey.CLOSED_CUP);
         Texture openCupTexture = textureMap.get(TextureKey.OPEN_CUP);
         Texture diceLockTexture = textureMap.get(TextureKey.DICE_LOCK);
@@ -169,6 +171,10 @@ public class GdxTest {
     public void reset() {
         logMessages.clear();
         uiSkin.dispose();
+        diceRoll.dispose();
+        for (Texture t : textureMap.values()) {
+            t.dispose();
+        }
     }
 
     @AfterClass
