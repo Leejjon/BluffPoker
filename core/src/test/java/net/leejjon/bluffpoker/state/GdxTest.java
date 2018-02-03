@@ -3,11 +3,9 @@ package net.leejjon.bluffpoker.state;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
-import com.badlogic.gdx.backends.headless.mock.graphics.MockGraphics;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -22,6 +20,7 @@ import net.leejjon.bluffpoker.enums.TextureKey;
 import net.leejjon.bluffpoker.enums.TextureTestLoader;
 import net.leejjon.bluffpoker.interfaces.PlatformSpecificInterface;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
+import net.leejjon.bluffpoker.ui.ClickableLabel;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -32,7 +31,6 @@ import java.io.File;
 import java.util.Set;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Credits to this method for setting up tests:
@@ -49,6 +47,11 @@ public class GdxTest {
     protected Label thirdLatestOutputLabel;
     protected Label secondLatestOutputLabel;
     protected Label latestOutputLabel;
+    protected Label callInputLabel;
+    protected ClickableLabel autoButton;
+    protected ClickableLabel callButton;
+    protected Group dicesBeforeCupActors;
+    protected Group dicesUnderCupActors;
 
     @BeforeClass
     public static void init() {
@@ -153,16 +156,17 @@ public class GdxTest {
 
         Group foreGroundActors = new Group();
         Group backgroundActors = new Group();
-        Group dicesUnderCupActors = new Group();
-        Group dicesBeforeCupActors = new Group();
+        dicesBeforeCupActors = new Group();
+        dicesUnderCupActors = new Group();
 
         gameState.createCallInputFieldLabel(uiSkin);
         thirdLatestOutputLabel = gameState.createThirdLatestOutputLabel(uiSkin);
         secondLatestOutputLabel = gameState.createSecondLatestOutputLabel(uiSkin);
         latestOutputLabel = gameState.createLatestOutputLabel(uiSkin);
+        callInputLabel = gameState.createCallInputFieldLabel(uiSkin);
         gameState.createCupActor(closedCupTexture, openCupTexture, cupLockTexture, foreGroundActors, backgroundActors);
-        gameState.createAutoButton(uiSkin);
-        gameState.createCallButton(uiSkin);
+        autoButton = gameState.createAutoButton(uiSkin);
+        callButton = gameState.createCallButton(uiSkin);
         gameState.createDiceActors(diceTextures, diceLockTexture, dicesBeforeCupActors, dicesUnderCupActors);
     }
 

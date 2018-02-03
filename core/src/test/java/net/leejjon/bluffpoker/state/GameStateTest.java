@@ -79,7 +79,8 @@ public class GameStateTest extends GdxTest {
 
         game.startGame(loadDefaultPlayers());
 
-        GameStateAssertor.NEW_GAME.assertGameState(gameState);
+        GameStateEnum.NEW_GAME.assertGameState(gameState);
+        GameStateEnum.NEW_GAME.assertUserInterfaceState(gameState, callInputLabel, autoButton, callButton);
 
         String logMessageWithState = logMessages.get(1);
         String state = logMessageWithState.substring(GameState.SAVED_GAMESTATE.length());
@@ -91,7 +92,8 @@ public class GameStateTest extends GdxTest {
         gameState = GameState.get();
         initializeUI(gameState);
 
-        GameStateAssertor.NEW_GAME.assertGameState(gameState);
+        GameStateEnum.NEW_GAME.assertGameState(gameState);
+        GameStateEnum.NEW_GAME.assertUserInterfaceState(gameState, callInputLabel, autoButton, callButton);
     }
 
     private UserInterface getTestUserInterface() {

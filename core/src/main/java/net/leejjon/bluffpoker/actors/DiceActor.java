@@ -1,6 +1,5 @@
 package net.leejjon.bluffpoker.actors;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -9,19 +8,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.logic.DiceLocation;
-import net.leejjon.bluffpoker.interfaces.Lockable;
 import net.leejjon.bluffpoker.stages.GameStage;
-import net.leejjon.bluffpoker.state.GameState;
-
-import java.util.Random;
-
-import lombok.Getter;
 
 public class DiceActor extends Stack {
     private Texture[] diceTextures;
     private DiceLocation location;
     private Group dicesBeforeCupActors, dicesUnderCupActors;
-
     private Image diceImage;
     private Image lockImage;
 
@@ -29,7 +21,11 @@ public class DiceActor extends Stack {
 
     public DiceActor(Texture[] diceTextures, Texture lockTexture, int initialValue, DiceLocation location, Group dicesBeforeCupActors, Group dicesUnderCupActors, int middleYForCup) {
         this.diceTextures = diceTextures;
-        diceImage = new Image(diceTextures[initialValue-1]);
+        for (int i = 0; i < diceTextures.length; i++) {
+            spriteDrawables[i] = new SpriteDrawable(new Sprite(diceTextures[i]));
+        }
+
+        diceImage = new Image(spriteDrawables[initialValue-1]);
         lockImage = new Image(lockTexture);
         lockImage.setVisible(false);
         add(diceImage);
@@ -38,20 +34,12 @@ public class DiceActor extends Stack {
         this.location = location;
         this.dicesBeforeCupActors = dicesBeforeCupActors;
         this.dicesUnderCupActors = dicesUnderCupActors;
-        dicesUnderCupActors.addActor(this);
+        this.dicesUnderCupActors.addActor(this);
 
         setWidth(getDiceWidth() / 2);
         setHeight(getDiceHeight() / 2);
 
-        initializeSpriteDrawables();
-
         calculateAndSetPosition(middleYForCup);
-    }
-
-    private void initializeSpriteDrawables() {
-        for (int i = 0; i < diceTextures.length; i++) {
-            spriteDrawables[i] = new SpriteDrawable(new Sprite(diceTextures[i]));
-        }
     }
 
     public void updateDice(int newNumber) {
@@ -104,5 +92,26 @@ public class DiceActor extends Stack {
 
     public void unlock() {
         lockImage.setVisible(false);
+    }
+
+    /**
+     * Only use this in test.
+     */
+    public Image getDiceImage() {
+        return diceImage;
+    }
+
+    /**
+     * Only use this in test.
+     */
+    public Image getLockImage() {
+        return lockImage;
+    }
+
+    /**
+     * Only use this in tests.
+     */
+    public SpriteDrawable[] getSpriteDrawables() {
+        return spriteDrawables;
     }
 }

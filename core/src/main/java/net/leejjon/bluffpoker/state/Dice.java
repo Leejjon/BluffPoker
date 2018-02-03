@@ -33,10 +33,13 @@ public class Dice implements Lockable {
     }
 
     public void createDiceActor(Texture[] diceTextures, Texture diceLockTexture, DiceLocation diceLocation, Group dicesBeforeCupActors, Group dicesUnderCupActors, int middleYForCup) {
-        diceActor = new DiceActor(diceTextures, diceLockTexture, diceValue, diceLocation, dicesUnderCupActors, dicesBeforeCupActors, middleYForCup);
+        diceActor = new DiceActor(diceTextures, diceLockTexture, diceValue, diceLocation, dicesBeforeCupActors, dicesUnderCupActors, middleYForCup);
 
         if (!underCup) {
             diceActor.moveDown();
+        }
+        if (locked) {
+            diceActor.lock();
         }
     }
 
@@ -97,6 +100,7 @@ public class Dice implements Lockable {
     public void putBackUnderCup() {
         Cup cup = GameState.get().getCup();
         if (cup.isBelieving() || cup.isWatchingOwnThrow()) {
+            underCup = true;
             diceActor.reset();
         }
     }

@@ -1,25 +1,15 @@
 package net.leejjon.bluffpoker.state;
 
-import net.leejjon.bluffpoker.logic.Player;
+public interface GameStateAssertor {
+    void assertDices(GameState gameState);
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+    void assertCallBoard(GameState gameState);
 
-public enum GameStateAssertor implements AssertableGameState {
-    NEW_GAME {
-        @Override
-        public void assertDices(GameState gameState) {
-            assertEquals(6, gameState.getLeftDice().getDiceValue());
-            assertEquals(4, gameState.getMiddleDice().getDiceValue());
-            assertEquals(3, gameState.getRightDice().getDiceValue());
-        }
+    void assertPlayers(GameState gameState);
 
-        @Override
-        public void assertPlayers(GameState gameState) {
-            Player currentPlayer = gameState.getCurrentPlayer();
-            assertNotNull(currentPlayer);
-            assertEquals("Leon", currentPlayer.getName());
-            assertEquals(3, currentPlayer.getLives());
-        }
+    default void assertGameState(GameState gameState) {
+        assertPlayers(gameState);
+        assertDices(gameState);
+        assertCallBoard(gameState);
     }
 }

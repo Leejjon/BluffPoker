@@ -143,9 +143,9 @@ public class GameStage extends AbstractStage implements UserInterface {
         state().createDiceActors(diceTextures, diceLockTexture, dicesBeforeCupActors, dicesUnderCupActors);
 
         addActor(backgroundActors);
-        addActor(dicesBeforeCupActors);
-        addActor(foreGroundActors);
         addActor(dicesUnderCupActors);
+        addActor(foreGroundActors);
+        addActor(dicesBeforeCupActors);
         addActor(callBoard);
         addActor(topTable);
     }
