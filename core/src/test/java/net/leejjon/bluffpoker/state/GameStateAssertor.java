@@ -5,11 +5,17 @@ public interface GameStateAssertor {
 
     void assertCallBoard(GameState gameState);
 
+    void assertCup(Cup cup);
+
     void assertPlayers(GameState gameState);
+
+    void assertStatusses(GameState gameState);
 
     default void assertGameState(GameState gameState) {
         assertPlayers(gameState);
         assertDices(gameState);
         assertCallBoard(gameState);
+        assertCup(gameState.getCup());
+        assertStatusses(gameState);
     }
 }

@@ -84,7 +84,6 @@ public class GameStage extends AbstractStage implements UserInterface {
                 setAutoValue();
             }
         });
-        autoButton.setDisabled(true);
 
         ClickableLabel callButton = state().createCallButton(uiSkin);
         callButton.addListener(new ClickListener() {
@@ -99,7 +98,6 @@ public class GameStage extends AbstractStage implements UserInterface {
                 }
             }
         });
-        callButton.setDisabled(true);
 
         float extraClickableSpace = 10f;
         topTable.add(autoButton).width(autoButton.getWidth() + (extraClickableSpace*2)).height(autoButton.getHeight() + extraClickableSpace).colspan(1).left();

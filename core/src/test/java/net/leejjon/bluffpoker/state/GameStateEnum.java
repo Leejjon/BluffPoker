@@ -6,12 +6,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.SnapshotArray;
 
+import net.leejjon.bluffpoker.actors.CupActor;
 import net.leejjon.bluffpoker.actors.DiceActor;
 import net.leejjon.bluffpoker.logic.Player;
 import net.leejjon.bluffpoker.ui.ClickableLabel;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
     NEW_GAME {
@@ -29,11 +33,37 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
         }
 
         @Override
+        public void assertCup(Cup cup) {
+            assertFalse(cup.isBelieving());
+            assertFalse(cup.isLocked());
+            assertFalse(cup.isWatchingOwnThrow());
+        }
+
+        @Override
         public void assertPlayers(GameState gameState) {
             Player currentPlayer = gameState.getCurrentPlayer();
             assertNotNull(currentPlayer);
             assertEquals("Leon", currentPlayer.getName());
             assertEquals(3, currentPlayer.getLives());
+
+            // TODO: Assert other players.
+        }
+
+        @Override
+        public void assertStatusses(GameState gameState) {
+            assertNull(gameState.getLatestCall());
+        }
+
+        @Override
+        public void assertCallBoard(Label callInputLabel, ClickableLabel autoButton, ClickableLabel callButton) {
+            assertEquals("000", callInputLabel.getText().toString());
+            assertTrue(autoButton.isDisabled());
+            assertTrue(callButton.isDisabled());
+        }
+
+        @Override
+        public void assertCup(CupActor cupActor) {
+
         }
 
         @Override
@@ -50,15 +80,9 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
             assertIfDicesAreInUnderCupGroup(left, middle, right, dicesUnderCupActors);
         }
-
-        @Override
-        public void assertCallBoard(Label callInputLabel, ClickableLabel autoButton, ClickableLabel callButton) {
-            assertEquals("000", callInputLabel.getText().toString());
-            // TODO:
-        }
     };
 
-    public void assertIfDicesAreInUnderCupGroup(DiceActor left, DiceActor middle, DiceActor right, Group dicesUnderCupActors) {
+    void assertIfDicesAreInUnderCupGroup(DiceActor left, DiceActor middle, DiceActor right, Group dicesUnderCupActors) {
         // Assert if the dices have been added to the correct group.
         SnapshotArray<Actor> children = dicesUnderCupActors.getChildren();
         assertEquals(left, children.get(0));

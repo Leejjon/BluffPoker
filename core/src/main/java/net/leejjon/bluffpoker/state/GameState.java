@@ -193,11 +193,13 @@ public class GameState {
 
     public ClickableLabel createAutoButton(Skin uiSkin) {
         autoButton = new ClickableLabel(GameStage.AUTO_BUTTON_LABEL, uiSkin);
+        autoButton.setDisabled(true);
         return autoButton;
     }
 
     public ClickableLabel createCallButton(Skin uiSkin) {
         callButton = new ClickableLabel(GameStage.CALL_BUTTON_LABEL, uiSkin);
+        callButton.setDisabled(true);
         return callButton;
     }
 
