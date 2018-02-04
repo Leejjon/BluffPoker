@@ -1,7 +1,10 @@
 package net.leejjon.bluffpoker.state;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 import net.leejjon.bluffpoker.actors.DiceActor;
 import net.leejjon.bluffpoker.logic.Player;
@@ -34,14 +37,18 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
         }
 
         @Override
-        public void assertDices(DiceActor left, DiceActor middle, DiceActor right) {
+        public void assertDices(DiceActor left, DiceActor middle, DiceActor right, Group dicesUnderCupActors) {
             // Default is 643, but -1 because of array index will make it 532.
             Drawable drawableOfDiceImage6 = left.getSpriteDrawables()[5];
             assertEquals(drawableOfDiceImage6, left.getDiceImage().getDrawable());
 
-//            Drawable drawableOfDiceImage6 = left.getSpriteDrawables()[5];
-//            assertEquals();
-            // TODO:
+            Drawable drawableOfDiceImage4 = middle.getSpriteDrawables()[3];
+            assertEquals(drawableOfDiceImage4, middle.getDiceImage().getDrawable());
+
+            Drawable drawableOfDiceImage3 = right.getSpriteDrawables()[2];
+            assertEquals(drawableOfDiceImage3, right.getDiceImage().getDrawable());
+
+            assertIfDicesAreInUnderCupGroup(left, middle, right, dicesUnderCupActors);
         }
 
         @Override
@@ -49,5 +56,13 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
             assertEquals("000", callInputLabel.getText().toString());
             // TODO:
         }
+    };
+
+    public void assertIfDicesAreInUnderCupGroup(DiceActor left, DiceActor middle, DiceActor right, Group dicesUnderCupActors) {
+        // Assert if the dices have been added to the correct group.
+        SnapshotArray<Actor> children = dicesUnderCupActors.getChildren();
+        assertEquals(left, children.get(0));
+        assertEquals(middle, children.get(1));
+        assertEquals(right, children.get(2));
     }
 }

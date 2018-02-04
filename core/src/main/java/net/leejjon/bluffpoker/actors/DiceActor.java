@@ -17,12 +17,27 @@ public class DiceActor extends Stack {
     private Image diceImage;
     private Image lockImage;
 
-    private SpriteDrawable[] spriteDrawables = new SpriteDrawable[6];
+    private SpriteDrawableWithId[] spriteDrawables = new SpriteDrawableWithId[6];
+
+    public static class SpriteDrawableWithId extends SpriteDrawable {
+        public final int id;
+        public SpriteDrawableWithId(Sprite sprite, int id) {
+            super(sprite);
+            this.id = id;
+        }
+
+        @Override
+        public String toString() {
+            return "SpriteDrawableWithId{" +
+                    "id=" + id +
+                    '}';
+        }
+    }
 
     public DiceActor(Texture[] diceTextures, Texture lockTexture, int initialValue, DiceLocation location, Group dicesBeforeCupActors, Group dicesUnderCupActors, int middleYForCup) {
         this.diceTextures = diceTextures;
         for (int i = 0; i < diceTextures.length; i++) {
-            spriteDrawables[i] = new SpriteDrawable(new Sprite(diceTextures[i]));
+            spriteDrawables[i] = new SpriteDrawableWithId(new Sprite(diceTextures[i]), i);
         }
 
         diceImage = new Image(spriteDrawables[initialValue-1]);
