@@ -41,12 +41,17 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertPlayers(GameState gameState) {
-            Player currentPlayer = gameState.getCurrentPlayer();
-            assertNotNull(currentPlayer);
-            assertEquals("Leon", currentPlayer.getName());
-            assertEquals(3, currentPlayer.getLives());
+            Player[] players = gameState.getPlayers();
+            Player leon = players[0];
+            assertEquals("Leon", leon.getName());
+            assertEquals(3, leon.getLives());
 
-            // TODO: Assert other players.
+            Player dirk = players[1];
+            assertEquals("Dirk", dirk.getName());
+            assertEquals(3, dirk.getLives());
+
+            Player currentPlayer = gameState.getCurrentPlayer();
+            assertEquals(leon, currentPlayer);
         }
 
         @Override
@@ -63,7 +68,8 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertCup(CupActor cupActor) {
-
+            assertTrue(cupActor.isVisible());
+            assertEquals(cupActor.getClosedCupDrawable(), cupActor.getCupImage().getDrawable());
         }
 
         @Override

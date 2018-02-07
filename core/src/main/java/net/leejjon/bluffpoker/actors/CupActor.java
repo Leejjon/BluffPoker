@@ -2,20 +2,15 @@ package net.leejjon.bluffpoker.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import net.leejjon.bluffpoker.BluffPokerGame;
 import net.leejjon.bluffpoker.actions.LiftCupAction;
-import net.leejjon.bluffpoker.interfaces.Lockable;
 import net.leejjon.bluffpoker.stages.GameStage;
-import net.leejjon.bluffpoker.state.Cup;
-import net.leejjon.bluffpoker.state.GameState;
 
 import java.util.Iterator;
 
@@ -25,21 +20,21 @@ public class CupActor extends Stack {
     private Group foregroundActors;
     private Group backgroundActors;
 
-    private TextureRegionDrawable closedCupSpriteDrawable;
-    private TextureRegionDrawable openCupSpriteDrawable;
+    @Getter private TextureRegionDrawable closedCupDrawable;
+    @Getter private TextureRegionDrawable openCupDrawable;
 
     private Texture closedCupTexture;
-    private Image cup;
+    @Getter private Image cupImage;
     @Getter private Image lock;
 
     private int middleYForCup = 0;
     private int middleXForCup = 0;
 
     public CupActor(Texture closedCupTexture, Texture openCupTexture, Texture cupLockTexture, Group foregroundActors, Group backgroundActors) {
-        cup = new Image(closedCupTexture);
+        cupImage = new Image(closedCupTexture);
         lock = new Image(cupLockTexture);
         lock.setVisible(false);
-        add(cup);
+        add(cupImage);
         add(lock);
 
         this.closedCupTexture = closedCupTexture;
@@ -56,8 +51,8 @@ public class CupActor extends Stack {
         setHeight(getCupHeight() / 2);
         setPosition(middleXForCup, middleYForCup);
 
-        closedCupSpriteDrawable = new TextureRegionDrawable(new TextureRegion(closedCupTexture));
-        openCupSpriteDrawable = new TextureRegionDrawable(new TextureRegion(openCupTexture));
+        closedCupDrawable = new TextureRegionDrawable(new TextureRegion(closedCupTexture));
+        openCupDrawable = new TextureRegionDrawable(new TextureRegion(openCupTexture));
 
         setFillParent(false);
         foregroundActors.addActor(this);
@@ -72,14 +67,14 @@ public class CupActor extends Stack {
     }
 
     public void open() {
-        cup.setDrawable(openCupSpriteDrawable);
+        cupImage.setDrawable(openCupDrawable);
 
         foregroundActors.removeActor(this);
         backgroundActors.addActor(this);
     }
 
     public void close() {
-        cup.setDrawable(closedCupSpriteDrawable);
+        cupImage.setDrawable(closedCupDrawable);
 
         backgroundActors.removeActor(this);
         foregroundActors.addActor(this);
@@ -99,7 +94,7 @@ public class CupActor extends Stack {
     }
 
     public void reset() {
-        cup.setVisible(true);
+        cupImage.setVisible(true);
         setPosition(middleXForCup, middleYForCup);
         Gdx.app.log("bluffpoker", "CupActor has been reset.");
     }
