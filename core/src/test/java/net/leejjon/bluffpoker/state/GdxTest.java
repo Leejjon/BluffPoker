@@ -179,6 +179,7 @@ public class GdxTest {
         for (Texture t : textureMap.values()) {
             t.dispose();
         }
+        GameState.resetToNull();
     }
 
     @AfterClass

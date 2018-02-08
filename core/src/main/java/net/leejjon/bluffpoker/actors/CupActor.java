@@ -25,17 +25,17 @@ public class CupActor extends Stack {
 
     private Texture closedCupTexture;
     @Getter private Image cupImage;
-    @Getter private Image lock;
+    @Getter private Image lockImage;
 
     private int middleYForCup = 0;
     private int middleXForCup = 0;
 
     public CupActor(Texture closedCupTexture, Texture openCupTexture, Texture cupLockTexture, Group foregroundActors, Group backgroundActors) {
         cupImage = new Image(closedCupTexture);
-        lock = new Image(cupLockTexture);
-        lock.setVisible(false);
+        lockImage = new Image(cupLockTexture);
+        lockImage.setVisible(false);
         add(cupImage);
-        add(lock);
+        add(lockImage);
 
         this.closedCupTexture = closedCupTexture;
         this.foregroundActors = foregroundActors;

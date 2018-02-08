@@ -17,14 +17,14 @@ public class Cup implements Lockable {
     public void lock() {
         locked = true;
         GameState.get().saveGame();
-        cupActor.getLock().setVisible(true);
+        cupActor.getLockImage().setVisible(true);
     }
 
     @Override
     public void unlock() {
         locked = false;
         GameState.get().saveGame();
-        cupActor.getLock().setVisible(false);
+        cupActor.getLockImage().setVisible(false);
     }
 
     public void believe() {
@@ -57,7 +57,7 @@ public class Cup implements Lockable {
         } else {
             cupActor.close();
             if (locked) {
-                cupActor.getLock().setVisible(true);
+                cupActor.getLockImage().setVisible(true);
             }
         }
     }

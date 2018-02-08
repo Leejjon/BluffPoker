@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.SnapshotArray;
 
 import net.leejjon.bluffpoker.actors.CupActor;
 import net.leejjon.bluffpoker.actors.DiceActor;
+import net.leejjon.bluffpoker.logic.NumberCombination;
 import net.leejjon.bluffpoker.logic.Player;
 import net.leejjon.bluffpoker.ui.ClickableLabel;
 
@@ -20,10 +21,8 @@ import static org.junit.Assert.assertTrue;
 public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
     NEW_GAME {
         @Override
-        public void assertDices(GameState gameState) {
-            assertEquals(6, gameState.getLeftDice().getDiceValue());
-            assertEquals(4, gameState.getMiddleDice().getDiceValue());
-            assertEquals(3, gameState.getRightDice().getDiceValue());
+        public NumberCombination getExpectedDiceNumber() {
+            return new NumberCombination(6,4,3, false);
         }
 
         @Override
@@ -56,6 +55,7 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertStatusses(GameState gameState) {
+            assertTrue(gameState.isAllowedToThrow());
             assertNull(gameState.getLatestCall());
         }
 
@@ -70,6 +70,7 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
         public void assertCup(CupActor cupActor) {
             assertTrue(cupActor.isVisible());
             assertEquals(cupActor.getClosedCupDrawable(), cupActor.getCupImage().getDrawable());
+            assertFalse(cupActor.getLockImage().isVisible());
         }
 
         @Override
@@ -85,6 +86,47 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
             assertEquals(drawableOfDiceImage3, right.getDiceImage().getDrawable());
 
             assertIfDicesAreInUnderCupGroup(left, middle, right, dicesUnderCupActors);
+        }
+    },
+    AFTER_FIRST_SHAKE_THROW_542 {
+        @Override
+        public NumberCombination getExpectedDiceNumber() {
+            return new NumberCombination(5, 4, 2, false);
+        }
+
+        @Override
+        public void assertCallBoard(GameState gameState) {
+
+        }
+
+        @Override
+        public void assertCup(Cup cup) {
+
+        }
+
+        @Override
+        public void assertPlayers(GameState gameState) {
+
+        }
+
+        @Override
+        public void assertStatusses(GameState gameState) {
+
+        }
+
+        @Override
+        public void assertCallBoard(Label callInputLabel, ClickableLabel autoButton, ClickableLabel callButton) {
+
+        }
+
+        @Override
+        public void assertCup(CupActor cupActor) {
+
+        }
+
+        @Override
+        public void assertDices(DiceActor left, DiceActor middle, DiceActor right, Group dicesUnderCupActors) {
+
         }
     };
 

@@ -405,6 +405,14 @@ public class GameState {
         }
     }
 
+    /**
+     * Only to be used in tests.
+     * @return Json value of the current GameState instance.
+     */
+    static String getStateString() {
+        return (new Gson()).toJson(instance);
+    }
+
     public static synchronized void reset() {
         instance = new GameState(instance.callInputField, instance.thirdLatestOutputLabel, instance.secondLatestOutputLabel, instance.latestOutputLabel, instance.autoButton,
                 instance.callButton, instance.cup.getCupActor(), instance.leftDice.getDiceActor(), instance.middleDice.getDiceActor(), instance.rightDice.getDiceActor());
@@ -413,7 +421,7 @@ public class GameState {
     /**
      * Only to be used in tests.
      */
-    void resetToNull() {
+    static void resetToNull() {
         instance = null;
     }
 }

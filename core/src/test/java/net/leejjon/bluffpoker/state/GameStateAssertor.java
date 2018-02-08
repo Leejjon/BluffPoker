@@ -1,7 +1,15 @@
 package net.leejjon.bluffpoker.state;
 
+import net.leejjon.bluffpoker.logic.NumberCombination;
+
+import static org.junit.Assert.assertEquals;
+
 public interface GameStateAssertor {
-    void assertDices(GameState gameState);
+    default void assertDices(GameState gameState) {
+        assertEquals(getExpectedDiceNumber().getHighestNumber(), gameState.getLeftDice().getDiceValue());
+        assertEquals(getExpectedDiceNumber().getMiddleNumber(), gameState.getMiddleDice().getDiceValue());
+        assertEquals(getExpectedDiceNumber().getLowestNumber(), gameState.getRightDice().getDiceValue());
+    }
 
     void assertCallBoard(GameState gameState);
 
@@ -10,6 +18,8 @@ public interface GameStateAssertor {
     void assertPlayers(GameState gameState);
 
     void assertStatusses(GameState gameState);
+
+    NumberCombination getExpectedDiceNumber();
 
     default void assertGameState(GameState gameState) {
         assertPlayers(gameState);

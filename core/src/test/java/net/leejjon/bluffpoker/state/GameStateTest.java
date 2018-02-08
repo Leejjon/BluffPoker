@@ -70,30 +70,39 @@ public class GameStateTest extends GdxTest {
         verify(preferences, times(3)).flush();
     }
 
-    @Test
-    public void testNewGame_success() {
+    private Game startNewGame() {
         GameState gameState = GameState.get();
         initializeUI(gameState);
 
         Game game = new Game(diceRoll, getTestUserInterface());
-
         game.startGame(loadDefaultPlayers());
+        return game;
+    }
 
-        GameStateEnum.NEW_GAME.assertGameState(gameState);
-        GameStateEnum.NEW_GAME.assertUserInterfaceState(gameState, callInputLabel, autoButton, callButton, dicesUnderCupActors);
-
-        String logMessageWithState = logMessages.get(1);
-        String state = logMessageWithState.substring(GameState.SAVED_GAMESTATE.length());
-
+    private void reloadGame() {
+        String stateString = GameState.getStateString();
         // From this point, reset and reload the game.
-        gameState.resetToNull();
-        when(preferences.getString(GameState.KEY)).thenReturn(state);
+        GameState.get().resetToNull();
+        when(preferences.getString(GameState.KEY)).thenReturn(stateString);
+        initializeUI(GameState.get());
+    }
 
-        gameState = GameState.get();
-        initializeUI(gameState);
+    @Test
+    public void testNewGame() {
+        startNewGame();
 
-        GameStateEnum.NEW_GAME.assertGameState(gameState);
-        GameStateEnum.NEW_GAME.assertUserInterfaceState(gameState, callInputLabel, autoButton, callButton, dicesUnderCupActors);
+        GameStateEnum.NEW_GAME.assertGameState(GameState.get());
+        GameStateEnum.NEW_GAME.assertUserInterfaceState(GameState.get(), callInputLabel, autoButton, callButton, dicesUnderCupActors);
+
+        reloadGame();
+        GameStateEnum.NEW_GAME.assertGameState(GameState.get());
+        GameStateEnum.NEW_GAME.assertUserInterfaceState(GameState.get(), callInputLabel, autoButton, callButton, dicesUnderCupActors);
+    }
+
+    @Test
+    public void testFirstThrow_542() {
+        startNewGame();
+        // TODO: Implement.
     }
 
     private UserInterface getTestUserInterface() {
