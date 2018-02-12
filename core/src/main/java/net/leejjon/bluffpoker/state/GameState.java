@@ -12,9 +12,10 @@ import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import lombok.Getter;
 
-import net.leejjon.bluffpoker.BluffPokerGame;
+import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.actors.CupActor;
 import net.leejjon.bluffpoker.actors.DiceActor;
+import net.leejjon.bluffpoker.interfaces.DiceValueGenerator;
 import net.leejjon.bluffpoker.interfaces.UserInterface;
 import net.leejjon.bluffpoker.listener.DiceListener;
 import net.leejjon.bluffpoker.logic.BluffPokerPreferences;
@@ -60,9 +61,9 @@ public class GameState {
     private Cup cup = new Cup();
 
     // This is actually 643, but we show
-    @Getter private Dice leftDice = new Dice(6);
-    @Getter private Dice middleDice = new Dice(4);
-    @Getter private Dice rightDice = new Dice(3);
+    @Getter private Dice leftDice;
+    @Getter private Dice middleDice;
+    @Getter private Dice rightDice;
 
     @Getter
     private Call latestCall = null;
@@ -177,8 +178,20 @@ public class GameState {
     }
 
     // TODO: Can dices only be created after the cup?
-    public void createDiceActors(Texture[] diceTextures, Texture diceLockTexture, Group dicesBeforeCupActors, Group dicesUnderCupActors) {
+    public void createDiceActors(Texture[] diceTextures, Texture diceLockTexture, Group dicesBeforeCupActors, Group dicesUnderCupActors, DiceValueGenerator diceValueGenerator) {
         int middleYForCup = cup.getCupActor().getMiddleYForCup();
+
+        if (leftDice == null) {
+            leftDice = new Dice(diceValueGenerator, 6);
+        }
+
+        if (middleDice == null) {
+            middleDice = new Dice(diceValueGenerator, 4);
+        }
+
+        if (rightDice == null) {
+            rightDice = new Dice(diceValueGenerator, 3);
+        }
 
         leftDice.createDiceActor(diceTextures, diceLockTexture, DiceLocation.LEFT, dicesBeforeCupActors, dicesUnderCupActors, middleYForCup);
         middleDice.createDiceActor(diceTextures, diceLockTexture, DiceLocation.MIDDLE, dicesBeforeCupActors, dicesUnderCupActors, middleYForCup);
@@ -373,7 +386,7 @@ public class GameState {
         Gson gson = new Gson();
         Preferences preferences = Gdx.app.getPreferences(BluffPokerPreferences.KEY);
         String json = gson.toJson(this);
-        Gdx.app.log(BluffPokerGame.TAG,SAVED_GAMESTATE + json);
+        Gdx.app.log(BluffPokerApp.TAG,SAVED_GAMESTATE + json);
         preferences.putString(GameState.KEY, json);
         preferences.flush();
     }
@@ -398,7 +411,7 @@ public class GameState {
             if (Strings.isNullOrEmpty(stateString)) {
                 instance = new GameState();
             } else {
-                Gdx.app.log(BluffPokerGame.TAG,"Loaded GameState from: " + stateString);
+                Gdx.app.log(BluffPokerApp.TAG,"Loaded GameState from: " + stateString);
                 instance = gson.fromJson(bluffPokerState.getString(GameState.KEY), GameState.class);
             }
             return instance;

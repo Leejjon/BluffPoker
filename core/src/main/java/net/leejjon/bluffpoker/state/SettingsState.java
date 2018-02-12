@@ -13,7 +13,7 @@ import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import lombok.Getter;
-import net.leejjon.bluffpoker.BluffPokerGame;
+import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.logic.BluffPokerPreferences;
 
 public class SettingsState {
@@ -137,7 +137,7 @@ public class SettingsState {
                     Gson gson = new Gson();
                     instance = gson.fromJson(bluffPokerPreferences.getString(KEY), SettingsState.class);
                 } catch (JsonSyntaxException e) {
-                    Gdx.app.log(BluffPokerGame.TAG, INVALID_SETTINGS, e);
+                    Gdx.app.log(BluffPokerApp.TAG, INVALID_SETTINGS, e);
                     instance = new SettingsState();
                 }
             }

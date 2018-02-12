@@ -12,7 +12,7 @@ import com.badlogic.gdx.backends.iosmoe.IOSApplication;
 import com.badlogic.gdx.backends.iosmoe.IOSApplicationConfiguration;
 import com.badlogic.gdx.backends.iosmoe.IOSInput;
 import lombok.Getter;
-import net.leejjon.bluffpoker.BluffPokerGame;
+import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.interfaces.PlatformSpecificInterface;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
 import org.moe.natj.general.Pointer;
@@ -30,7 +30,7 @@ public class IOSMoeLauncher extends IOSApplication.Delegate implements PlatformS
         super(peer);
     }
 
-    private BluffPokerGame bluffPokerGame;
+    private BluffPokerApp bluffPokerApp;
 
     private IOSApplication bluffPokerIOSApplication;
 
@@ -39,11 +39,11 @@ public class IOSMoeLauncher extends IOSApplication.Delegate implements PlatformS
         IOSApplicationConfiguration config = new IOSApplicationConfiguration();
         config.useAccelerometer = true;
 
-        bluffPokerGame = new BluffPokerGame(this);
-        bluffPokerIOSApplication = new IOSApplication(bluffPokerGame, config) {
+        bluffPokerApp = new BluffPokerApp(this);
+        bluffPokerIOSApplication = new IOSApplication(bluffPokerApp, config) {
             @Override
             protected IOSInput createInput() {
-                return new BluffPokerIOSInput(this, bluffPokerGame, config);
+                return new BluffPokerIOSInput(this, bluffPokerApp, config);
             }
         };
         return bluffPokerIOSApplication;

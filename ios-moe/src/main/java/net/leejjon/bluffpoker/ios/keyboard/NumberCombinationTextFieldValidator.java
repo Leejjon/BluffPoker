@@ -3,8 +3,6 @@ package net.leejjon.bluffpoker.ios.keyboard;
 import apple.foundation.struct.NSRange;
 import apple.uikit.UITextField;
 import apple.uikit.protocol.UITextFieldDelegate;
-import com.badlogic.gdx.Gdx;
-import net.leejjon.bluffpoker.BluffPokerGame;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

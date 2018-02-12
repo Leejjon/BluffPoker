@@ -2,10 +2,11 @@ package net.leejjon.bluffpoker.state;
 
 import com.badlogic.gdx.Gdx;
 
-import net.leejjon.bluffpoker.BluffPokerGame;
+import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.enums.TutorialMessage;
 import net.leejjon.bluffpoker.interfaces.UserInterface;
-import net.leejjon.bluffpoker.logic.Game;
+import net.leejjon.bluffpoker.logic.BluffPokerGame;
+import net.leejjon.bluffpoker.logic.NumberCombination;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +28,7 @@ public class GameStateTest extends GdxTest {
     @Test
     public void testLogging() {
         String logMesssage = "Hoi";
-        Gdx.app.log(BluffPokerGame.TAG, logMesssage);
+        Gdx.app.log(BluffPokerApp.TAG, logMesssage);
 
         assertEquals(logMesssage, logMessages.get(0));
     }
@@ -39,7 +40,8 @@ public class GameStateTest extends GdxTest {
         try {
             gameState.logGameConsoleMessage("Blabla");
             fail("Should not be able to log if UI is not initialized.");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
 
         initializeUI(gameState);
 
@@ -70,54 +72,79 @@ public class GameStateTest extends GdxTest {
         verify(preferences, times(3)).flush();
     }
 
-    private Game startNewGame() {
+    private BluffPokerGame startNewGame() {
         GameState gameState = GameState.get();
         initializeUI(gameState);
 
-        Game game = new Game(diceRoll, getTestUserInterface());
+        BluffPokerGame game = initializeGame();
         game.startGame(loadDefaultPlayers());
         return game;
     }
 
-    private void reloadGame() {
+    private BluffPokerGame initializeGame() {
+        return new BluffPokerGame(diceRoll, getTestUserInterface());
+    }
+
+    private BluffPokerGame throwSpecificValue(BluffPokerGame game, int left, int middle, int right) {
+        predictableDiceValueGenerator.add(left, middle, right);
+
+        game.throwDices();
+        return game;
+    }
+
+    private BluffPokerGame reloadGame() {
         String stateString = GameState.getStateString();
         // From this point, reset and reload the game.
         GameState.get().resetToNull();
         when(preferences.getString(GameState.KEY)).thenReturn(stateString);
         initializeUI(GameState.get());
+
+        return initializeGame();
     }
 
     @Test
     public void testNewGame() {
-        startNewGame();
+        BluffPokerGame newGame = startNewGame();
 
-        GameStateEnum.NEW_GAME.assertGameState(GameState.get());
+        GameStateEnum.NEW_GAME.assertGameState(GameState.get(), NumberCombination.BLUFF_NUMBER);
         GameStateEnum.NEW_GAME.assertUserInterfaceState(GameState.get(), callInputLabel, autoButton, callButton, dicesUnderCupActors);
+        GameStateEnum.NEW_GAME.assertBluffPokerGame(newGame, NumberCombination.BLUFF_NUMBER);
 
-        reloadGame();
-        GameStateEnum.NEW_GAME.assertGameState(GameState.get());
+        BluffPokerGame reloadedGame = reloadGame();
+        GameStateEnum.NEW_GAME.assertGameState(GameState.get(), NumberCombination.BLUFF_NUMBER);
         GameStateEnum.NEW_GAME.assertUserInterfaceState(GameState.get(), callInputLabel, autoButton, callButton, dicesUnderCupActors);
+        GameStateEnum.NEW_GAME.assertBluffPokerGame(reloadedGame, NumberCombination.BLUFF_NUMBER);
     }
 
     @Test
-    public void testFirstThrow_542() {
-        startNewGame();
-        // TODO: Implement.
+    public void testFirstThrow_641() {
+        NumberCombination expectedNumberCombination = new NumberCombination(6, 4, 1, false);
+
+        // Add 530 will result in displaying 641. The random generator always generates 0-5 instead of 1-6, so the method that uses the generator will add +1.
+        BluffPokerGame game = throwSpecificValue(startNewGame(),5, 3, 0);
+        GameStateEnum.AFTER_FIRST_SHAKE.assertBluffPokerGame(game, expectedNumberCombination);
+
+        BluffPokerGame reloadedGame = reloadGame();
+        GameStateEnum.AFTER_FIRST_SHAKE.assertBluffPokerGame(reloadedGame, expectedNumberCombination);
     }
 
     private UserInterface getTestUserInterface() {
         return new UserInterface() {
             @Override
-            public void call(String call) {}
+            public void call(String call) {
+            }
 
             @Override
-            public void finishGame(String winner) {}
+            public void finishGame(String winner) {
+            }
 
             @Override
-            public void showTutorialMessage(TutorialMessage message, String... arguments) {}
+            public void showTutorialMessage(TutorialMessage message, String... arguments) {
+            }
 
             @Override
-            public void showLockMessage() {}
+            public void showLockMessage() {
+            }
         };
     }
 

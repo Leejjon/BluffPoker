@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
-import net.leejjon.bluffpoker.BluffPokerGame;
+import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.enums.TextureKey;
 import net.leejjon.bluffpoker.enums.TextureTestLoader;
 import net.leejjon.bluffpoker.interfaces.PlatformSpecificInterface;
@@ -40,6 +40,8 @@ public class GdxTest {
     private static Application application;
     protected static Preferences preferences;
     protected static Array<String> logMessages = new Array<>();
+    protected PredictableDiceValueGenerator predictableDiceValueGenerator = new PredictableDiceValueGenerator();
+
     protected ObjectMap<TextureKey, Texture> textureMap;
     protected Skin uiSkin;
     protected Sound diceRoll;
@@ -99,7 +101,7 @@ public class GdxTest {
 //        Gdx.graphics = myMockedGraphics;
 
         // Set platformSpecificInterface to avoid null pointers.
-        new BluffPokerGame(new PlatformSpecificInterface() {
+        new BluffPokerApp(new PlatformSpecificInterface() {
             @Override
             public String getDeviceOwnerName() {
                 return "Leejjon";
@@ -167,7 +169,9 @@ public class GdxTest {
         gameState.createCupActor(closedCupTexture, openCupTexture, cupLockTexture, foreGroundActors, backgroundActors);
         autoButton = gameState.createAutoButton(uiSkin);
         callButton = gameState.createCallButton(uiSkin);
-        gameState.createDiceActors(diceTextures, diceLockTexture, dicesBeforeCupActors, dicesUnderCupActors);
+
+
+        gameState.createDiceActors(diceTextures, diceLockTexture, dicesBeforeCupActors, dicesUnderCupActors, predictableDiceValueGenerator);
     }
 
 

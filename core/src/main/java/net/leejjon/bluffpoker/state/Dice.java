@@ -1,27 +1,29 @@
 package net.leejjon.bluffpoker.state;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Group;
 
 import net.leejjon.bluffpoker.actors.DiceActor;
+import net.leejjon.bluffpoker.interfaces.DiceValueGenerator;
 import net.leejjon.bluffpoker.interfaces.Lockable;
 import net.leejjon.bluffpoker.logic.DiceLocation;
-
-import java.util.Random;
 
 import lombok.Getter;
 
 public class Dice implements Lockable {
-    public Dice(int diceValue) {
-        this.diceValue = diceValue;
-    }
+    private final transient DiceValueGenerator diceValueGenerator;
+    @Getter private transient DiceActor diceActor;
 
     private int diceValue;
+
     @Getter private boolean underCup = true;
     @Getter private boolean locked = false;
 
-    @Getter private transient DiceActor diceActor;
+
+    public Dice(DiceValueGenerator diceValueGenerator, int diceValue) {
+        this.diceValueGenerator = diceValueGenerator;
+        this.diceValue = diceValue;
+    }
 
     /**
      * A setter that should only be used when reloading a game.
@@ -45,7 +47,10 @@ public class Dice implements Lockable {
 
     public ThrowResult throwDice() {
         if ((underCup && !GameState.get().getCup().isLocked()) || (!underCup && !isLocked())) {
-            generateRandomNumber();
+            int randomNumber = diceValueGenerator.generateRandomDiceValue();
+            diceValue = randomNumber + 1;
+            GameState.get().saveGame();
+            diceActor.updateDice(randomNumber);
             if (underCup) {
                 return ThrowResult.UNDER_CUP;
             } else {
@@ -57,15 +62,6 @@ public class Dice implements Lockable {
             }
             return ThrowResult.LOCKED;
         }
-    }
-
-    private void generateRandomNumber() {
-        Random randomDiceNumber = new Random();
-        int randomNumber = randomDiceNumber.nextInt(6);
-
-        diceValue = randomNumber + 1;
-        GameState.get().saveGame();
-        diceActor.updateDice(randomNumber);
     }
 
     @Override

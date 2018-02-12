@@ -14,7 +14,7 @@ import android.provider.ContactsContract;
 import android.view.Display;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
-import net.leejjon.bluffpoker.BluffPokerGame;
+import net.leejjon.bluffpoker.BluffPokerApp;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -28,7 +28,7 @@ import net.leejjon.bluffpoker.interfaces.PlatformSpecificInterface;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
 
 public class AndroidLauncher extends AndroidApplication implements SensorEventListener, PlatformSpecificInterface {
-    private BluffPokerGame game;
+    private BluffPokerApp game;
 
     private static final int READ_CONTACTS_FOR_PLAYER_NAME = 1;
 
@@ -53,7 +53,7 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
         sensorManager.registerListener(this, acceleroSensor,
                 SensorManager.SENSOR_DELAY_NORMAL);
 
-        game = new BluffPokerGame(this);
+        game = new BluffPokerApp(this);
 
         initialize(game, config);
 //        initialize(new MyGdxGame(), config);

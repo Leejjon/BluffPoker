@@ -7,11 +7,12 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import net.leejjon.bluffpoker.BluffPokerGame;
+import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.actors.BlackBoard;
 import net.leejjon.bluffpoker.enums.TextureKey;
 import net.leejjon.bluffpoker.dialogs.*;
 import net.leejjon.bluffpoker.enums.TutorialMessage;
+import net.leejjon.bluffpoker.interfaces.DiceValueGenerator;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 import net.leejjon.bluffpoker.interfaces.UserInterface;
 import net.leejjon.bluffpoker.logic.*;
@@ -21,7 +22,7 @@ import net.leejjon.bluffpoker.ui.ClickableLabel;
 import java.util.ArrayList;
 
 public class GameStage extends AbstractStage implements UserInterface {
-    private Game currentGame;
+    private BluffPokerGame currentGame;
     private Sound diceRoll;
 
     private CallTooLowDialog callTooLowDialog;
@@ -103,8 +104,8 @@ public class GameStage extends AbstractStage implements UserInterface {
         topTable.add(autoButton).width(autoButton.getWidth() + (extraClickableSpace*2)).height(autoButton.getHeight() + extraClickableSpace).colspan(1).left();
         topTable.add(callButton).width(callButton.getWidth() + (extraClickableSpace*2)).height(callButton.getHeight() + extraClickableSpace).colspan(1).right();
 
-        float middleXForTopTable = (GameStage.getMiddleX() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((topTable.getWidth() / 2) / 2);
-        float topY = (GameStage.getTopY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - (topTable.getHeight() / 2);
+        float middleXForTopTable = (GameStage.getMiddleX() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor()) - ((topTable.getWidth() / 2) / 2);
+        float topY = (GameStage.getTopY() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor()) - (topTable.getHeight() / 2);
 
         topTable.setPosition(middleXForTopTable, topY);
 
@@ -113,7 +114,7 @@ public class GameStage extends AbstractStage implements UserInterface {
         table.bottom();
 
         float bottomPadding = 3f;
-        float maxLabelWidth = Gdx.graphics.getWidth() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor();
+        float maxLabelWidth = Gdx.graphics.getWidth() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor();
 
         table.add(state().createThirdLatestOutputLabel(uiSkin)).left().width(maxLabelWidth).padLeft(padding).padBottom(bottomPadding);
         table.row();
@@ -121,7 +122,7 @@ public class GameStage extends AbstractStage implements UserInterface {
         table.row();
         table.add(state().createLatestOutputLabel(uiSkin)).left().width(maxLabelWidth).padLeft(padding).padBottom(bottomPadding);
 
-        float bottomY = (GameStage.getBottomY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) + (table.getHeight() / 2);
+        float bottomY = (GameStage.getBottomY() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor()) + (table.getHeight() / 2);
 
         table.setPosition(0, bottomY);
 
@@ -138,7 +139,7 @@ public class GameStage extends AbstractStage implements UserInterface {
         BlackBoard callBoard = new BlackBoard(callBoardTexture);
 
         state().createCupActor(closedCupTexture, openCupTexture, cupLockTexture, foreGroundActors, backgroundActors);
-        state().createDiceActors(diceTextures, diceLockTexture, dicesBeforeCupActors, dicesUnderCupActors);
+        state().createDiceActors(diceTextures, diceLockTexture, dicesBeforeCupActors, dicesUnderCupActors, new DiceValueGenerator() {});
 
         addActor(backgroundActors);
         addActor(dicesUnderCupActors);
@@ -150,14 +151,14 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     public void startGame(ArrayList<String> players) {
         if (currentGame == null) {
-            currentGame = new Game(diceRoll, this);
+            currentGame = new BluffPokerGame(diceRoll, this);
         }
 
         currentGame.startGame(players);
     }
 
     public void continueGame() {
-        currentGame = new Game(diceRoll, this);
+        currentGame = new BluffPokerGame(diceRoll, this);
     }
 
     @Override
@@ -176,7 +177,7 @@ public class GameStage extends AbstractStage implements UserInterface {
                         callTooLowDialog.callTooLow(state().getLatestCall().getNumberCombination());
                         callTooLowDialog.show(this);
                     } else {
-                        Gdx.app.log(BluffPokerGame.TAG, String.format("Invalid call received from on screen keyboard: %s", call));
+                        Gdx.app.log(BluffPokerApp.TAG, String.format("Invalid call received from on screen keyboard: %s", call));
                     }
                 }
             }
@@ -199,11 +200,11 @@ public class GameStage extends AbstractStage implements UserInterface {
     }
 
     public static int getTopY() {
-        return Gdx.graphics.getHeight() - BluffPokerGame.getPlatformSpecificInterface().getTopPadding();
+        return Gdx.graphics.getHeight() - BluffPokerApp.getPlatformSpecificInterface().getTopPadding();
     }
 
     private static int getBottomY() {
-        return BluffPokerGame.getPlatformSpecificInterface().getBottomPadding();
+        return BluffPokerApp.getPlatformSpecificInterface().getBottomPadding();
     }
 
     public void shake() {
@@ -224,7 +225,7 @@ public class GameStage extends AbstractStage implements UserInterface {
                 }
             }
         } else {
-            Gdx.app.log(BluffPokerGame.TAG,
+            Gdx.app.log(BluffPokerApp.TAG,
                     String.format(COULD_NOT_THROW_BECAUSE_CUP_IS_MOVING,
                             state().getCup().getCupActor().isMoving(),
                             (state().getCup().isWatchingOwnThrow() | state().getCup().isBelieving())));

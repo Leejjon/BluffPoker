@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
-import net.leejjon.bluffpoker.BluffPokerGame;
+import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 import net.leejjon.bluffpoker.state.GameState;
 
@@ -47,6 +47,6 @@ public class ContinueGameDialog extends Dialog {
     }
 
     private float get80PercentOfScreen() {
-        return ((Gdx.graphics.getWidth() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) * 100) / 120;
+        return ((Gdx.graphics.getWidth() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor()) * 100) / 120;
     }
 }

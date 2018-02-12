@@ -1,7 +1,7 @@
 package net.leejjon.bluffpoker.enums;
 
 import lombok.Getter;
-import net.leejjon.bluffpoker.logic.Game;
+import net.leejjon.bluffpoker.logic.BluffPokerGame;
 
 public enum TutorialMessage {
     BELIEVE_OR_NOT_BELIEVE("Pass the phone to %2$s. So %2$s, %1$s says he/she has thrown at least %3$s. Do you believe this?\n - If you believe this, give the cup a single tap.\n - If you don't believe this, swipe the cup up."),
@@ -10,7 +10,7 @@ public enum TutorialMessage {
     DISABLED_TUTORIAL("You have disabled the tutorial. You can always turn it back on again from the settings screen."),
     EXPLAIN_LOCK("The lock icon on the dice means it won't be thrown. You can toggle the lock on/off by tapping on the dice. Close the cup and shake the phone to throw the dices under the cup."),
     FIRST_THROWN_SINCE_DEATH("You threw all dices under the cup. Tap on the cup to take a look at your throw. \nPS: Don't show the other players!"),
-    GAME_START("Read the console messages at the bottom for the main game information. Right now it says, \"" + Game.SHAKE_THE_CUP  + "\", which means %1$s has to shake this actual phone! You should hear a dice sound confirming the throw."),
+    GAME_START("Read the console messages at the bottom for the main game information. Right now it says, \"" + BluffPokerGame.SHAKE_THE_CUP  + "\", which means %1$s has to shake this actual phone! You should hear a dice sound confirming the throw."),
     LOOKING_AT_OWN_THROW_FIRST_TURN_SINCE_DEATH("You have thrown %s, %s and %s. That is worth %4$s (when counting the throw value always put the highest number left and the lowest number right). Press the \"Call\" button to enter your call. Either enter %4$s to be safe or something higher if you think you can fool the next player to believe you."),
     LOOK_AT_OWN_THROW_THAT_IS_HIGHER("You can safely call what you have just thrown (%1$s), as it is higher than %2$s's call, which is: %3$s."),
     LOOK_AT_OWN_THROW_THAT_IS_LOWER("You just threw (%1$s), which is not higher than %2$s's call (%3$s). You have to bluff your way out by calling something higher! You can use the auto button for a minimal bluff."),

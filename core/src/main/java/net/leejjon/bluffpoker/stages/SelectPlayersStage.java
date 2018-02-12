@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import net.leejjon.bluffpoker.BluffPokerGame;
+import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.actors.BlackBoard;
 import net.leejjon.bluffpoker.enums.TextureKey;
 import net.leejjon.bluffpoker.dialogs.AddNewPlayerDialog;
@@ -57,8 +57,8 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         topTable.center();
         topTable.top();
 
-        float middleX = (GameStage.getMiddleX() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((topTable.getWidth() / 2) / 2);
-        float topY = (GameStage.getTopY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - (topTable.getHeight() / 2);
+        float middleX = (GameStage.getMiddleX() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor()) - ((topTable.getWidth() / 2) / 2);
+        float topY = (GameStage.getTopY() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor()) - (topTable.getHeight() / 2);
 
         topTable.setPosition(middleX, topY);
 
@@ -73,12 +73,12 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
 
         if (state.getPlayers().isEmpty()) {
             ArrayList<String> players = new ArrayList<>();
-            players.add(BluffPokerGame.getPlatformSpecificInterface().getDeviceOwnerName());
+            players.add(BluffPokerApp.getPlatformSpecificInterface().getDeviceOwnerName());
             state.setPlayers(players);
         }
 
-        int width = Gdx.graphics.getWidth() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor();
-        int height = Gdx.graphics.getHeight() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor();
+        int width = Gdx.graphics.getWidth() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor();
+        int height = Gdx.graphics.getHeight() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor();
 
         table.center();
         table.bottom();
@@ -122,7 +122,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         phonebook.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                BluffPokerGame.getPlatformSpecificInterface().initiateSelectContacts(SelectPlayersStage.this, new TreeSet<>(state.getPlayers()));
+                BluffPokerApp.getPlatformSpecificInterface().initiateSelectContacts(SelectPlayersStage.this, new TreeSet<>(state.getPlayers()));
             }
         });
         TextButton startGame = new TextButton("Start game", uiSkin);

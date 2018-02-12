@@ -12,7 +12,7 @@ import net.leejjon.bluffpoker.state.SettingsState;
 
 import java.util.ArrayList;
 
-public class Game implements GameInputInterface {
+public class BluffPokerGame implements GameInputInterface {
     private Sound diceRoll;
 
     private SettingsState settingsState;
@@ -42,7 +42,7 @@ public class Game implements GameInputInterface {
     private static final String HAS_NO_MORE_LIVES_LEFT = "%1$s has no more lives left";
 
 
-    public Game(Sound diceRoll, UserInterface userInterface) {
+    public BluffPokerGame(Sound diceRoll, UserInterface userInterface) {
         this.diceRoll = diceRoll;
         this.userInterface = userInterface;
         this.settingsState = SettingsState.getInstance();

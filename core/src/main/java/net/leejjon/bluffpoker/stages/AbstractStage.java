@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
-import net.leejjon.bluffpoker.BluffPokerGame;
+import net.leejjon.bluffpoker.BluffPokerApp;
 
 public abstract class AbstractStage extends Stage {
 	protected boolean visible;
@@ -12,8 +12,8 @@ public abstract class AbstractStage extends Stage {
 	protected Table table;
 
 	public AbstractStage(boolean defaultVisibility) {
-		super(new StretchViewport(BluffPokerGame.getPlatformSpecificInterface().getZoomFactor() > 0 ?  Gdx.graphics.getWidth() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor() :  Gdx.graphics.getWidth(),
-				BluffPokerGame.getPlatformSpecificInterface().getZoomFactor() > 0 ? Gdx.graphics.getHeight()/ BluffPokerGame.getPlatformSpecificInterface().getZoomFactor() : Gdx.graphics.getHeight()));
+		super(new StretchViewport(BluffPokerApp.getPlatformSpecificInterface().getZoomFactor() > 0 ?  Gdx.graphics.getWidth() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor() :  Gdx.graphics.getWidth(),
+				BluffPokerApp.getPlatformSpecificInterface().getZoomFactor() > 0 ? Gdx.graphics.getHeight()/ BluffPokerApp.getPlatformSpecificInterface().getZoomFactor() : Gdx.graphics.getHeight()));
 		visible = defaultVisibility;
 		
 		table = new Table();

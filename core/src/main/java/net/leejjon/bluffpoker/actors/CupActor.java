@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import net.leejjon.bluffpoker.BluffPokerGame;
+import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.actions.LiftCupAction;
 import net.leejjon.bluffpoker.stages.GameStage;
 
@@ -42,8 +42,8 @@ public class CupActor extends Stack {
         this.backgroundActors = backgroundActors;
 
         // Calculate the position for the CupActor.
-        this.middleXForCup = (GameStage.getMiddleX() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((getCupWidth() / 2) / 2);
-        this.middleYForCup = (GameStage.getMiddleY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((getCupHeight() / 2) / 2);
+        this.middleXForCup = (GameStage.getMiddleX() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor()) - ((getCupWidth() / 2) / 2);
+        this.middleYForCup = (GameStage.getMiddleY() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor()) - ((getCupHeight() / 2) / 2);
 
         // Yeah, everything is shown bigger because of the divideScreenByThisValue to prevent buttons and labels from being too small.
         // Because of this the picture itself is also too big, so we divide it by the same number again to end up with a satisfying result.

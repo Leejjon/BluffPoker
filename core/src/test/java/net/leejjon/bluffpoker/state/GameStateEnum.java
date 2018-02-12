@@ -20,10 +20,6 @@ import static org.junit.Assert.assertTrue;
 
 public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
     NEW_GAME {
-        @Override
-        public NumberCombination getExpectedDiceNumber() {
-            return new NumberCombination(6,4,3, false);
-        }
 
         @Override
         public void assertCallBoard(GameState gameState) {
@@ -88,11 +84,7 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
             assertIfDicesAreInUnderCupGroup(left, middle, right, dicesUnderCupActors);
         }
     },
-    AFTER_FIRST_SHAKE_THROW_542 {
-        @Override
-        public NumberCombination getExpectedDiceNumber() {
-            return new NumberCombination(5, 4, 2, false);
-        }
+    AFTER_FIRST_SHAKE {
 
         @Override
         public void assertCallBoard(GameState gameState) {

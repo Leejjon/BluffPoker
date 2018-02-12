@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 
-import net.leejjon.bluffpoker.BluffPokerGame;
+import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.logic.BluffPokerPreferences;
 
 import java.util.ArrayList;
@@ -63,7 +63,7 @@ public class SelectPlayersStageState {
             // Load game state if a previous state exists.
             Preferences bluffPokerState = Gdx.app.getPreferences(BluffPokerPreferences.KEY);
             String stateString = bluffPokerState.getString(SelectPlayersStageState.KEY);
-            Gdx.app.log(BluffPokerGame.TAG, "StateString: " + stateString);
+            Gdx.app.log(BluffPokerApp.TAG, "StateString: " + stateString);
             if (Strings.isNullOrEmpty(stateString)) {
                 instance = new SelectPlayersStageState();
             } else {

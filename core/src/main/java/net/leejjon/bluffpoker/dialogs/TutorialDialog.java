@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.leejjon.bluffpoker.BluffPokerGame;
+import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.enums.TutorialMessage;
 import net.leejjon.bluffpoker.state.SettingsState;
 
@@ -100,7 +100,7 @@ public class TutorialDialog extends Dialog {
     }
 
     private float get80PercentOfScreen() {
-        return ((Gdx.graphics.getWidth() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) * 100) / 120;
+        return ((Gdx.graphics.getWidth() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor()) * 100) / 120;
     }
 
     private void showDisableTutorialCheckBox() {

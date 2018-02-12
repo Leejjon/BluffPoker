@@ -18,7 +18,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-public class BluffPokerGame extends ApplicationAdapter implements
+public class BluffPokerApp extends ApplicationAdapter implements
         StageInterface, PhoneInputListener {
     public static final String TAG = "bluffpoker";
     private Skin uiSkin;
@@ -36,7 +36,7 @@ public class BluffPokerGame extends ApplicationAdapter implements
 
     private ObjectMap<TextureKey, Texture> textureMap;
 
-    public BluffPokerGame(PlatformSpecificInterface platformSpecificInterface) {
+    public BluffPokerApp(PlatformSpecificInterface platformSpecificInterface) {
         this.platformSpecificInterface = platformSpecificInterface;
     }
 
