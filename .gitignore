@@ -12,3 +12,4 @@ ios-moe/xcode/native/
 ios-moe/xcode/ios-moe/custom.xcconfig
 local.properties
 /.nb-gradle/
+moe.remotebuild.properties
