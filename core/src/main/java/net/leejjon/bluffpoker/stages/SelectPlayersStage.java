@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import net.leejjon.bluffpoker.BluffPokerGame;
+import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.actors.BlackBoard;
 import net.leejjon.bluffpoker.enums.TextureKey;
 import net.leejjon.bluffpoker.dialogs.AddNewPlayerDialog;
@@ -17,6 +17,7 @@ import net.leejjon.bluffpoker.dialogs.WarningDialog;
 import net.leejjon.bluffpoker.enums.TutorialMessage;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
+import net.leejjon.bluffpoker.state.SelectPlayersStageState;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,10 +27,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class SelectPlayersStage extends AbstractStage implements ModifyPlayerListener {
     public static final int MAX_PLAYER_NAME_LENGTH = 10;
 
-    // TODO: Make this list thread safe?
-    private java.util.List<String> players;
-    private List<String> playerList;
-
     private final TutorialDialog tutorialDialog;
     private final WarningDialog playerAlreadyExistsWarning;
     private final WarningDialog playerNameInvalid;
@@ -37,25 +34,18 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
     private final PlayersFromPhonebookDialog playersFromPhonebookDialog;
 
     private AtomicBoolean orderingHintShown = new AtomicBoolean(false);
+    private SelectPlayersStageState state;
 
     public SelectPlayersStage(Skin uiSkin, TutorialDialog tutorialDialog, final StageInterface stageInterface) {
         super(false);
         this.tutorialDialog = tutorialDialog;
 
+        state = SelectPlayersStageState.getInstance();
         playerAlreadyExistsWarning = new WarningDialog(uiSkin);
         playerNameInvalid = new WarningDialog("Player name empty or too long!", uiSkin);
         minimalTwoPlayersRequired = new WarningDialog("Select at least two players!", uiSkin);
         final AddNewPlayerDialog addNewPlayerDialog = new AddNewPlayerDialog(this);
         playersFromPhonebookDialog = new PlayersFromPhonebookDialog(uiSkin, this);
-
-        players = new ArrayList<>();
-        players.add(BluffPokerGame.getPlatformSpecificInterface().getDeviceOwnerName());
-
-        List.ListStyle ls = uiSkin.get(List.ListStyle.class);
-        ls.selection = addBordersToTextArea(ls.selection);
-        ls.fontColorSelected = new Color(1f, 1f, 1f, 1.0f);
-        playerList = new List<>(ls);
-        playerList.setItems(players.toArray(new String[players.size()]));
 
         Texture callBoardTexture = stageInterface.getTexture(TextureKey.CALL_BOARD);
         BlackBoard choosePlayersBackground = new BlackBoard(callBoardTexture);
@@ -67,8 +57,8 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         topTable.center();
         topTable.top();
 
-        float middleX = (GameStage.getMiddleX() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((topTable.getWidth() / 2) / 2);
-        float topY = (GameStage.getTopY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - (topTable.getHeight() / 2);
+        float middleX = (GameStage.getMiddleX() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor()) - ((topTable.getWidth() / 2) / 2);
+        float topY = (GameStage.getTopY() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor()) - (topTable.getHeight() / 2);
 
         topTable.setPosition(middleX, topY);
 
@@ -78,11 +68,17 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         topTable.row();
         topTable.add(playersLabel).colspan(2);
 
-        ScrollPane playersScrollPane = new ScrollPane(playerList, uiSkin);
+        ScrollPane playersScrollPane = new ScrollPane(state.createPlayerList(getCustomListStyle(uiSkin)), uiSkin);
         playersScrollPane.setScrollingDisabled(true, false);
 
-        int width = Gdx.graphics.getWidth() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor();
-        int height = Gdx.graphics.getHeight() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor();
+        if (state.getPlayers().isEmpty()) {
+            ArrayList<String> players = new ArrayList<>();
+            players.add(BluffPokerApp.getPlatformSpecificInterface().getDeviceOwnerName());
+            state.setPlayers(players);
+        }
+
+        int width = Gdx.graphics.getWidth() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor();
+        int height = Gdx.graphics.getHeight() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor();
 
         table.center();
         table.bottom();
@@ -126,7 +122,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         phonebook.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                BluffPokerGame.getPlatformSpecificInterface().initiateSelectContacts(SelectPlayersStage.this, new TreeSet<>(players));
+                BluffPokerApp.getPlatformSpecificInterface().initiateSelectContacts(SelectPlayersStage.this, new TreeSet<>(state.getPlayers()));
             }
         });
         TextButton startGame = new TextButton("Start game", uiSkin);
@@ -162,7 +158,14 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         addActor(table);
     }
 
-    private Drawable addBordersToTextArea(Drawable drawable) {
+    static List.ListStyle getCustomListStyle(Skin uiSkin) {
+        List.ListStyle ls = uiSkin.get(List.ListStyle.class);
+        ls.selection = addBordersToTextArea(ls.selection);
+        ls.fontColorSelected = new Color(1f, 1f, 1f, 1.0f);
+        return ls;
+    }
+
+    private static Drawable addBordersToTextArea(Drawable drawable) {
         drawable.setLeftWidth(2f);
         drawable.setTopHeight(2f);
         drawable.setBottomHeight(2f);
@@ -176,40 +179,45 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
     }
 
     private void startGame(StageInterface changeScreen) {
-        if (players.size() < 2) {
+        if (state.getPlayers().size() < 2) {
             minimalTwoPlayersRequired.show(this);
         } else {
             orderingHintShown.set(false);
-            changeScreen.startGame(players);
+            changeScreen.startGame(state.getPlayers());
         }
     }
 
     private void swapPlayerUp() {
-        int selectedIndex = playerList.getSelectedIndex();
+        int selectedIndex = state.getPlayerList().getSelectedIndex();
         if (selectedIndex > 0) {
+            ArrayList<String> players = state.getPlayers();
             Collections.swap(players, selectedIndex, selectedIndex - 1);
-            playerList.setItems(players.toArray(new String[players.size()]));
+            state.setPlayers(players);
         }
     }
 
     private void swapPlayerDown() {
-        int selectedIndex = playerList.getSelectedIndex();
+        int selectedIndex = state.getPlayerList().getSelectedIndex();
+        ArrayList<String> players = state.getPlayers();
         if (selectedIndex > -1 && selectedIndex < players.size() - 1 && players.size() > 1) {
             Collections.swap(players, selectedIndex, selectedIndex + 1);
-            playerList.setItems(players.toArray(new String[players.size()]));
+            state.setPlayers(players);
         }
     }
 
     private void removeSelectedPlayer() {
-        String selectedPlayer = playerList.getSelected();
+        String selectedPlayer = state.getPlayerList().getSelected();
         if (selectedPlayer != null) {
+            ArrayList<String> players = state.getPlayers();
             players.remove(selectedPlayer);
-            playerList.setItems(players.toArray(new String[players.size()]));
+            state.setPlayers(players);
         }
     }
 
     private void addPlayersToGame(String ... playerNames) {
+        ArrayList<String> players = state.getPlayers();
         for (String playerName : playerNames) {
+
             String trimmedPlayerName = playerName.trim();
             // If a playerName is to long and contains spaces split it up.
             if (trimmedPlayerName.length() > MAX_PLAYER_NAME_LENGTH && trimmedPlayerName.substring(0,10).contains(" ")) {
@@ -234,7 +242,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         }
 
         // Update the actual UI list with the new players.
-        playerList.setItems(players.toArray(new String[players.size()]));
+        state.setPlayers(players);
     }
 
     static String cutOffPlayerName(final String playerName, java.util.List<String> players) {

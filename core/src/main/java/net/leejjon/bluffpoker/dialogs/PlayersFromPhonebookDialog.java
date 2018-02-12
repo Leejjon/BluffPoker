@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import net.leejjon.bluffpoker.BluffPokerGame;
+import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.listener.ModifyPlayerListener;
 
 import java.util.HashMap;
@@ -31,8 +31,8 @@ public class PlayersFromPhonebookDialog extends Dialog {
         ScrollPane playersScrollPane = new ScrollPane(checkBoxPerPhonebookEntryTable, uiSkin);
 
         // Take 50% of the screen.
-        int width = Gdx.graphics.getWidth() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor();
-        int height = Gdx.graphics.getHeight() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor();
+        int width = Gdx.graphics.getWidth() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor();
+        int height = Gdx.graphics.getHeight() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor();
 
         contentTable.add(playersScrollPane).width((width * 100) / 140).height((height * 100) / 200).padTop(3f).padRight(1f);
 

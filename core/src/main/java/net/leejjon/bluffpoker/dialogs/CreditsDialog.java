@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
-import net.leejjon.bluffpoker.BluffPokerGame;
+import net.leejjon.bluffpoker.BluffPokerApp;
 
 public class CreditsDialog extends Dialog {
     public CreditsDialog(Skin skin) {
@@ -22,6 +22,6 @@ public class CreditsDialog extends Dialog {
     }
 
     private float get80PercentOfScreen() {
-        return ((Gdx.graphics.getWidth() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) * 100) / 120;
+        return ((Gdx.graphics.getWidth() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor()) * 100) / 120;
     }
 }

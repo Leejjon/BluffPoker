@@ -2,7 +2,7 @@ package net.leejjon.bluffpoker.actors;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import net.leejjon.bluffpoker.BluffPokerGame;
+import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.stages.GameStage;
 
 public class BlackBoard extends Image {
@@ -12,8 +12,8 @@ public class BlackBoard extends Image {
         this.callBoardTexture = callBoardTexture;
 
         // Calculate the position for the BlackBoard.
-        int middleX = (GameStage.getMiddleX() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - ((getCallBoardWidth() / 2) / 2);
-        int topY = (GameStage.getTopY() / BluffPokerGame.getPlatformSpecificInterface().getZoomFactor()) - (getCallBoardHeight() / 2);
+        int middleX = (GameStage.getMiddleX() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor()) - ((getCallBoardWidth() / 2) / 2);
+        int topY = (GameStage.getTopY() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor()) - (getCallBoardHeight() / 2);
 
         setPosition(middleX, topY);
         setWidth(getCallBoardWidth() / 2);

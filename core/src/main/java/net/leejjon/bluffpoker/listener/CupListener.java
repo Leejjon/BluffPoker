@@ -5,9 +5,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import net.leejjon.bluffpoker.interfaces.GameInputInterface;
 
-/**
- * Created by Leejjon on 3-10-2015.
- */
 public class CupListener extends ActorGestureListener {
     private GameInputInterface game;
 

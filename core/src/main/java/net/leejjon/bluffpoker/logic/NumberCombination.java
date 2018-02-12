@@ -6,6 +6,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.Getter;
+
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
@@ -17,9 +19,9 @@ public class NumberCombination implements Comparable<NumberCombination> {
     public static NumberCombination BLUFF_NUMBER = new NumberCombination(6, 4, 3, true);
     public static NumberCombination MAX = new NumberCombination(6, 6, 6, true);
 
-    private final int highestNumber;
-    private final int middleNumber;
-    private final int lowestNumber;
+    @Getter private final int highestNumber;
+    @Getter private final int middleNumber;
+    @Getter private final int lowestNumber;
 
     /**
      * Use this parameter to generate a NumberCombination object from a throw or hard coded value.

@@ -2,19 +2,18 @@ package net.leejjon.bluffpoker.listener;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import net.leejjon.bluffpoker.actors.Dice;
-import net.leejjon.bluffpoker.interfaces.GameStatusInterface;
+
 import net.leejjon.bluffpoker.interfaces.UserInterface;
+import net.leejjon.bluffpoker.state.Dice;
+import net.leejjon.bluffpoker.state.GameState;
 
 public class DiceListener extends ActorGestureListener {
 
     private final Dice dice;
-    private final GameStatusInterface gameStatusInterface;
     private final UserInterface userInterface;
 
-    public DiceListener(Dice dice, GameStatusInterface gameStatusInterface, UserInterface userInterface) {
+    public DiceListener(Dice dice, UserInterface userInterface) {
         this.dice = dice;
-        this.gameStatusInterface = gameStatusInterface;
         this.userInterface = userInterface;
     }
 
@@ -23,12 +22,12 @@ public class DiceListener extends ActorGestureListener {
         if (dice.isUnderCup()) {
             // You've tapped while the dice was under the cup, so you probably meant to swipe it down. We'll do that anyway for you.
             dice.pullAwayFromCup();
-            if (gameStatusInterface.isAllowedToLock()) {
+            if (GameState.get().isAllowedToLock()) {
                 dice.lock();
                 userInterface.showLockMessage();
             }
         } else {
-            if (gameStatusInterface.isAllowedToLock()) {
+            if (GameState.get().isAllowedToLock()) {
                 // If it is a blind pass the dices outside of the cup will be locked by default. The hasToThrow boolean is false, but the user is allowed to throw, so it may unlock the dices and throw.
                 if (dice.isLocked()) {
                     dice.unlock();
@@ -49,7 +48,7 @@ public class DiceListener extends ActorGestureListener {
             } else {
                 // You've made a swipe gesture on the dice in the direction: Down
                 dice.pullAwayFromCup();
-                if (gameStatusInterface.isAllowedToLock()) {
+                if (GameState.get().isAllowedToLock()) {
                     dice.lock();
                     userInterface.showLockMessage();
                 }

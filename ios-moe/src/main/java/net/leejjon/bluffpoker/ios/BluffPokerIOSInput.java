@@ -13,7 +13,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.iosmoe.IOSApplication;
 import com.badlogic.gdx.backends.iosmoe.IOSApplicationConfiguration;
 import com.badlogic.gdx.backends.iosmoe.IOSInput;
-import net.leejjon.bluffpoker.BluffPokerGame;
+
 import net.leejjon.bluffpoker.dialogs.CallInputDialog;
 import net.leejjon.bluffpoker.ios.keyboard.NumberCombinationTextFieldValidator;
 import net.leejjon.bluffpoker.ios.keyboard.PlayerNameTextFieldValidator;

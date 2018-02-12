@@ -7,15 +7,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 import net.leejjon.bluffpoker.interfaces.UserInterface;
+import net.leejjon.bluffpoker.state.GameState;
 
 public class WinnerDialog extends Dialog {
-    public WinnerDialog(final StageInterface stageListener, final UserInterface userInterface, Skin skin) {
+    public WinnerDialog(final StageInterface stageListener, Skin skin) {
         super("We have a winner!", skin);
         TextButton restartButton = new TextButton("Restart", skin);
         restartButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                userInterface.restart();
+                GameState.reset();
             }
         });
         button(restartButton);

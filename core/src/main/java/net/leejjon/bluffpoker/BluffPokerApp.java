@@ -1,6 +1,6 @@
 package net.leejjon.bluffpoker;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -10,7 +10,6 @@ import net.leejjon.bluffpoker.dialogs.TutorialDialog;
 import net.leejjon.bluffpoker.interfaces.PlatformSpecificInterface;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 import net.leejjon.bluffpoker.listener.PhoneInputListener;
-import net.leejjon.bluffpoker.state.GameState;
 import net.leejjon.bluffpoker.stages.*;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -18,13 +17,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import net.leejjon.bluffpoker.state.Settings;
 
-public class BluffPokerGame extends ApplicationAdapter implements
+public class BluffPokerApp extends ApplicationAdapter implements
         StageInterface, PhoneInputListener {
     public static final String TAG = "bluffpoker";
-    private GameState state;
-    private Settings settings;
     private Skin uiSkin;
 
     private TutorialDialog tutorialDialog;
@@ -40,26 +36,23 @@ public class BluffPokerGame extends ApplicationAdapter implements
 
     private ObjectMap<TextureKey, Texture> textureMap;
 
-    public BluffPokerGame(PlatformSpecificInterface platformSpecificInterface) {
+    public BluffPokerApp(PlatformSpecificInterface platformSpecificInterface) {
         this.platformSpecificInterface = platformSpecificInterface;
     }
 
     @Override
     public void create() {
-        state = GameState.getGameState();
-        settings = Settings.getSettings();
-
         // Use the default libgdx UI skin.
         uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
         uiSkin.addRegions(new TextureAtlas("uiskin.atlas"));
 
         textureMap = TextureKey.getAllTextures();
 
-        tutorialDialog = new TutorialDialog(uiSkin, getSettings());
+        tutorialDialog = new TutorialDialog(uiSkin);
 
         // Create the stages.
         startMenuStage = new StartStage(uiSkin, this);
-        settingsStage = new SettingsStage(uiSkin, this, settings);
+        settingsStage = new SettingsStage(uiSkin, this);
         selectPlayersStage = new SelectPlayersStage(uiSkin, tutorialDialog,this);
         gameStage = new GameStage(uiSkin, tutorialDialog, this);
 
@@ -101,12 +94,13 @@ public class BluffPokerGame extends ApplicationAdapter implements
     public void continuePlaying() {
         startMenuStage.setVisible(false);
         gameStage.setVisible(true);
+        gameStage.continueGame();
+        Gdx.input.setInputProcessor(gameStage);
     }
 
     @Override
     public void openSettingsStage() {
         startMenuStage.setVisible(false);
-        settingsStage.loadLatestSettings();
         settingsStage.setVisible(true);
         Gdx.input.setInputProcessor(settingsStage);
     }
@@ -126,26 +120,16 @@ public class BluffPokerGame extends ApplicationAdapter implements
     }
 
     @Override
-    public void startGame(List<String> players) {
+    public void startGame(ArrayList<String> players) {
         selectPlayersStage.setVisible(false);
-        gameStage.startGame(players, settings);
         gameStage.setVisible(true);
+        gameStage.startGame(players);
         Gdx.input.setInputProcessor(gameStage);
-    }
-
-    @Override
-    public GameState getState() {
-        return state;
     }
 
     @Override
     public Texture getTexture(TextureKey textureKey) {
         return textureMap.get(textureKey);
-    }
-
-    @Override
-    public Settings getSettings() {
-        return settings;
     }
 
     @Override

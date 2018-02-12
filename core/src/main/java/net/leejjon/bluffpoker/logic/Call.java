@@ -9,7 +9,7 @@ public class Call {
     /**
      * Player who made the call.
      */
-    private final Player player;
+    private final String playerName;
 
     /**
      * The NumberCombination that belongs to it.

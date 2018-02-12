@@ -1,9 +1,12 @@
 package net.leejjon.bluffpoker.logic;
 
 public class Player {
-    private String name;
+    private final String name;
+
     private int lives;
+
     private boolean dead = false;
+
     private boolean ridingOnTheBok = false;
 
     public Player(String name, int lives) {
