@@ -122,6 +122,7 @@ public class GameStateTest extends GdxTest {
 
         // Add 530 will result in displaying 641. The random generator always generates 0-5 instead of 1-6, so the method that uses the generator will add +1.
         BluffPokerGame game = throwSpecificValue(startNewGame(),5, 3, 0);
+        GameStateEnum.AFTER_FIRST_SHAKE.assertGameState(GameState.get(), expectedNumberCombination); // TODO: Make sure all enum methods are implemented correctly.
         GameStateEnum.AFTER_FIRST_SHAKE.assertBluffPokerGame(game, expectedNumberCombination);
 
         BluffPokerGame reloadedGame = reloadGame();
