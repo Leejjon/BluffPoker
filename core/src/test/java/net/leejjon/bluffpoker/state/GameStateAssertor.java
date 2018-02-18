@@ -2,6 +2,7 @@ package net.leejjon.bluffpoker.state;
 
 import net.leejjon.bluffpoker.logic.BluffPokerGame;
 import net.leejjon.bluffpoker.logic.NumberCombination;
+import net.leejjon.bluffpoker.logic.Player;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,12 +17,24 @@ public interface GameStateAssertor {
 
     void assertCup(Cup cup);
 
-    void assertPlayers(GameState gameState);
+    default void assertPlayers() {
+        Player[] players = GameState.get().getPlayers();
+        Player leon = players[0];
+        assertEquals("Leon", leon.getName());
+        assertEquals(3, leon.getLives());
+
+        Player dirk = players[1];
+        assertEquals("Dirk", dirk.getName());
+        assertEquals(3, dirk.getLives());
+
+        Player currentPlayer = GameState.get().getCurrentPlayer();
+        assertEquals(leon, currentPlayer);
+    }
 
     void assertStatusses(GameState gameState);
 
     default void assertGameState(GameState gameState, NumberCombination expectedNumberCombination) {
-        assertPlayers(gameState);
+        assertPlayers();
         assertDices(gameState, expectedNumberCombination);
         assertCallBoard(gameState);
         assertCup(gameState.getCup());

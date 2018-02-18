@@ -361,8 +361,13 @@ public class GameState {
         cup.update();
 
         int middleYForCup = cup.getCupActor().getMiddleYForCup();
+
+        leftDice = new Dice(new DiceValueGenerator() {}, 6);
         leftDice.setDiceActor(leftDiceActor, middleYForCup);
+        // TODO: Make sure it's unit tested.
+        middleDice = new Dice(new DiceValueGenerator() {}, 4);
         middleDice.setDiceActor(middleDiceActor, middleYForCup);
+        rightDice = new Dice(new DiceValueGenerator() {}, 3);
         rightDice.setDiceActor(rightDiceActor, middleYForCup);
 
         save();

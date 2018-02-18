@@ -126,6 +126,7 @@ public class GameStateTest extends GdxTest {
         GameStateEnum.AFTER_FIRST_SHAKE.assertBluffPokerGame(game, expectedNumberCombination);
 
         BluffPokerGame reloadedGame = reloadGame();
+        GameStateEnum.AFTER_FIRST_SHAKE.assertGameState(GameState.get(), expectedNumberCombination);
         GameStateEnum.AFTER_FIRST_SHAKE.assertBluffPokerGame(reloadedGame, expectedNumberCombination);
     }
 

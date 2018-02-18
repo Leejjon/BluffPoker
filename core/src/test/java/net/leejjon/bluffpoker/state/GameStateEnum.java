@@ -20,7 +20,6 @@ import static org.junit.Assert.assertTrue;
 
 public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
     NEW_GAME {
-
         @Override
         public void assertCallBoard(GameState gameState) {
             assertEquals("000", gameState.getCallInput());
@@ -35,23 +34,9 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
         }
 
         @Override
-        public void assertPlayers(GameState gameState) {
-            Player[] players = gameState.getPlayers();
-            Player leon = players[0];
-            assertEquals("Leon", leon.getName());
-            assertEquals(3, leon.getLives());
-
-            Player dirk = players[1];
-            assertEquals("Dirk", dirk.getName());
-            assertEquals(3, dirk.getLives());
-
-            Player currentPlayer = gameState.getCurrentPlayer();
-            assertEquals(leon, currentPlayer);
-        }
-
-        @Override
         public void assertStatusses(GameState gameState) {
             assertTrue(gameState.isAllowedToThrow());
+            assertFalse(gameState.isAllowedToBelieveOrNotBelieve());
             assertNull(gameState.getLatestCall());
         }
 
@@ -85,20 +70,17 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
         }
     },
     AFTER_FIRST_SHAKE {
-
         @Override
         public void assertCallBoard(GameState gameState) {
-
+            assertEquals("000", gameState.getCallInput());
+            assertEquals(true, gameState.isAllowedToCall());
         }
 
         @Override
         public void assertCup(Cup cup) {
-
-        }
-
-        @Override
-        public void assertPlayers(GameState gameState) {
-
+            assertFalse(cup.isBelieving());
+            assertFalse(cup.isLocked());
+            assertFalse(cup.isWatchingOwnThrow());
         }
 
         @Override
