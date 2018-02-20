@@ -7,18 +7,18 @@ import net.leejjon.bluffpoker.logic.Player;
 import static org.junit.Assert.assertEquals;
 
 public interface GameStateAssertor {
-    default void assertDices(GameState gameState, NumberCombination expectedNumberCombination) {
-        assertEquals(expectedNumberCombination.getHighestNumber(), gameState.getLeftDice().getDiceValue());
-        assertEquals(expectedNumberCombination.getMiddleNumber(), gameState.getMiddleDice().getDiceValue());
-        assertEquals(expectedNumberCombination.getLowestNumber(), gameState.getRightDice().getDiceValue());
+    default void assertDices(NumberCombination expectedNumberCombination) {
+        assertEquals(expectedNumberCombination.getHighestNumber(), GameState.state().getLeftDice().getDiceValue());
+        assertEquals(expectedNumberCombination.getMiddleNumber(), GameState.state().getMiddleDice().getDiceValue());
+        assertEquals(expectedNumberCombination.getLowestNumber(), GameState.state().getRightDice().getDiceValue());
     }
 
-    void assertCallBoard(GameState gameState);
+    void assertCallBoard();
 
-    void assertCup(Cup cup);
+    void assertCup();
 
     default void assertPlayers() {
-        Player[] players = GameState.get().getPlayers();
+        Player[] players = GameState.state().getPlayers();
         Player leon = players[0];
         assertEquals("Leon", leon.getName());
         assertEquals(3, leon.getLives());
@@ -27,21 +27,18 @@ public interface GameStateAssertor {
         assertEquals("Dirk", dirk.getName());
         assertEquals(3, dirk.getLives());
 
-        Player currentPlayer = GameState.get().getCurrentPlayer();
+        Player currentPlayer = GameState.state().getCurrentPlayer();
         assertEquals(leon, currentPlayer);
     }
 
-    void assertStatusses(GameState gameState);
+    void assertStatusses();
 
-    default void assertGameState(GameState gameState, NumberCombination expectedNumberCombination) {
+    default void assertState(BluffPokerGame game, NumberCombination expectedNumberCombination) {
         assertPlayers();
-        assertDices(gameState, expectedNumberCombination);
-        assertCallBoard(gameState);
-        assertCup(gameState.getCup());
-        assertStatusses(gameState);
-    }
-
-    default void assertBluffPokerGame(BluffPokerGame game, NumberCombination expectedNumberCombination) {
+        assertDices(expectedNumberCombination);
+        assertCallBoard();
+        assertCup();
+        assertStatusses();
         assertEquals(expectedNumberCombination, game.getNumberCombinationFromDices());
     }
 }

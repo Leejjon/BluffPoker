@@ -81,7 +81,7 @@ public class GameState {
     private boolean hasToThrow = true;
     @Getter private boolean hasThrown = false;
     @Getter private boolean allowedToBelieveOrNotBelieve = false;
-    @Getter private boolean canViewOwnThrow = false;
+    @Getter private boolean allowedToViewOwnThrow = false;
     @Getter private boolean allowedToCall = false;
     @Getter private boolean believed666 = false;
     @Getter private boolean blindPass = false;
@@ -206,13 +206,13 @@ public class GameState {
 
     public ClickableLabel createAutoButton(Skin uiSkin) {
         autoButton = new ClickableLabel(GameStage.AUTO_BUTTON_LABEL, uiSkin);
-        autoButton.setDisabled(true);
+        autoButton.setDisabled(!allowedToCall);
         return autoButton;
     }
 
     public ClickableLabel createCallButton(Skin uiSkin) {
         callButton = new ClickableLabel(GameStage.CALL_BUTTON_LABEL, uiSkin);
-        callButton.setDisabled(true);
+        callButton.setDisabled(!allowedToCall);
         return callButton;
     }
 
@@ -240,8 +240,8 @@ public class GameState {
         saveGame();
     }
 
-    public void setCanViewOwnThrow(boolean value) {
-        canViewOwnThrow = value;
+    public void setAllowedToViewOwnThrow(boolean value) {
+        allowedToViewOwnThrow = value;
         saveGame();
     }
 
@@ -277,7 +277,7 @@ public class GameState {
     public void updateLatestCall(Call newCall) {
         firstThrowSinceDeath = false;
         allowedToCall = false;
-        canViewOwnThrow = false;
+        allowedToViewOwnThrow = false;
         allowedToBelieveOrNotBelieve = true;
         latestCall = newCall;
         saveGame();
@@ -286,7 +286,7 @@ public class GameState {
     public void resetLatestCall() {
         latestCall = null;
         allowedToBelieveOrNotBelieve = false;
-        canViewOwnThrow = false;
+        allowedToViewOwnThrow = false;
         believed666 = false;
         hasToThrow = true;
         hasThrown = false;
@@ -364,7 +364,6 @@ public class GameState {
 
         leftDice = new Dice(new DiceValueGenerator() {}, 6);
         leftDice.setDiceActor(leftDiceActor, middleYForCup);
-        // TODO: Make sure it's unit tested.
         middleDice = new Dice(new DiceValueGenerator() {}, 4);
         middleDice.setDiceActor(middleDiceActor, middleYForCup);
         rightDice = new Dice(new DiceValueGenerator() {}, 3);
@@ -404,7 +403,7 @@ public class GameState {
     /**
      * @return The only instantiation of the GameState within the app.
      */
-    public static synchronized GameState get() {
+    public static synchronized GameState state() {
         if (instance != null) {
             return instance;
         } else {

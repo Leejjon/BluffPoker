@@ -22,12 +22,12 @@ public class DiceListener extends ActorGestureListener {
         if (dice.isUnderCup()) {
             // You've tapped while the dice was under the cup, so you probably meant to swipe it down. We'll do that anyway for you.
             dice.pullAwayFromCup();
-            if (GameState.get().isAllowedToLock()) {
+            if (GameState.state().isAllowedToLock()) {
                 dice.lock();
                 userInterface.showLockMessage();
             }
         } else {
-            if (GameState.get().isAllowedToLock()) {
+            if (GameState.state().isAllowedToLock()) {
                 // If it is a blind pass the dices outside of the cup will be locked by default. The hasToThrow boolean is false, but the user is allowed to throw, so it may unlock the dices and throw.
                 if (dice.isLocked()) {
                     dice.unlock();
@@ -48,7 +48,7 @@ public class DiceListener extends ActorGestureListener {
             } else {
                 // You've made a swipe gesture on the dice in the direction: Down
                 dice.pullAwayFromCup();
-                if (GameState.get().isAllowedToLock()) {
+                if (GameState.state().isAllowedToLock()) {
                     dice.lock();
                     userInterface.showLockMessage();
                 }

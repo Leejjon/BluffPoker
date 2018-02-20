@@ -96,7 +96,7 @@ public class CupActor extends Stack {
     public void reset() {
         cupImage.setVisible(true);
         setPosition(middleXForCup, middleYForCup);
-        Gdx.app.log("bluffpoker", "CupActor has been reset.");
+        Gdx.app.log("bluffpoker", "CupActor has been moveUp.");
     }
 
     public int getMiddleYForCup() {

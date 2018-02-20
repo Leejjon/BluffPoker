@@ -21,6 +21,8 @@ import net.leejjon.bluffpoker.ui.ClickableLabel;
 
 import java.util.ArrayList;
 
+import static net.leejjon.bluffpoker.state.GameState.state;
+
 public class GameStage extends AbstractStage implements UserInterface {
     private BluffPokerGame currentGame;
     private Sound diceRoll;
@@ -280,9 +282,5 @@ public class GameStage extends AbstractStage implements UserInterface {
 
     private NumberCombination getNewCall(String call) throws InputValidationException {
         return NumberCombination.validNumberCombinationFrom(call);
-    }
-
-    public GameState state() {
-        return GameState.get();
     }
 }

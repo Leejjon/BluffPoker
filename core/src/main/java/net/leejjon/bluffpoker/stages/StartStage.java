@@ -60,7 +60,7 @@ public class StartStage extends AbstractStage {
 
 		addActor(logo);
 
-        if (!GameState.get().isNewGameState()) {
+        if (!GameState.state().isNewGameState()) {
             ContinueGameDialog continueGameDialog = new ContinueGameDialog(uiSkin, stageInterface);
             continueGameDialog.show(this);
         }

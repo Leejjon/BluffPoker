@@ -32,6 +32,7 @@ public class Dice implements Lockable {
         this.diceActor = diceActor;
         diceActor.calculateAndSetPosition(middleYForCup);
         diceActor.updateDice(diceValue - 1);
+        diceActor.reset();
     }
 
     public void createDiceActor(Texture[] diceTextures, Texture diceLockTexture, DiceLocation diceLocation, Group dicesBeforeCupActors, Group dicesUnderCupActors, int middleYForCup) {
@@ -46,10 +47,10 @@ public class Dice implements Lockable {
     }
 
     public ThrowResult throwDice() {
-        if ((underCup && !GameState.get().getCup().isLocked()) || (!underCup && !isLocked())) {
+        if ((underCup && !GameState.state().getCup().isLocked()) || (!underCup && !isLocked())) {
             int randomNumber = diceValueGenerator.generateRandomDiceValue();
             diceValue = randomNumber + 1;
-            GameState.get().saveGame();
+            GameState.state().saveGame();
             diceActor.updateDice(randomNumber);
             if (underCup) {
                 return ThrowResult.UNDER_CUP;
@@ -68,7 +69,7 @@ public class Dice implements Lockable {
     public void lock() {
         if (!underCup || locked) {
             locked = true;
-            GameState.get().saveGame();
+            GameState.state().saveGame();
             diceActor.lock();
         }
     }
@@ -76,7 +77,7 @@ public class Dice implements Lockable {
     @Override
     public void unlock() {
         locked = false;
-        GameState.get().saveGame();
+        GameState.state().saveGame();
         diceActor.unlock();
     }
 
@@ -86,23 +87,23 @@ public class Dice implements Lockable {
 
 
     public void pullAwayFromCup() {
-        if ((GameState.get().getCup().isBelieving() || GameState.get().getCup().isWatchingOwnThrow()) && isUnderCup()) {
+        if ((GameState.state().getCup().isBelieving() || GameState.state().getCup().isWatchingOwnThrow()) && isUnderCup()) {
             underCup = false;
-            GameState.get().saveGame();
+            GameState.state().saveGame();
             diceActor.moveDown();
         }
     }
 
     public void putBackUnderCup() {
-        Cup cup = GameState.get().getCup();
+        Cup cup = GameState.state().getCup();
         if (cup.isBelieving() || cup.isWatchingOwnThrow()) {
             underCup = true;
-            diceActor.reset();
+            diceActor.moveUp();
         }
     }
 
     /**
-     * Specify the meaning of reset. It now seems to move the dice back up.
+     * Specify the meaning of moveUp. It now seems to move the dice back up.
      */
     public void reset() {
         if (!underCup) {
@@ -112,8 +113,8 @@ public class Dice implements Lockable {
                 diceActor.unlock();
             }
             underCup = true;
-            GameState.get().saveGame();
-            diceActor.reset();
+            GameState.state().saveGame();
+            diceActor.moveUp();
         }
     }
 

@@ -30,6 +30,7 @@ import org.junit.BeforeClass;
 import java.io.File;
 import java.util.Set;
 
+import static net.leejjon.bluffpoker.state.GameState.state;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -84,7 +85,7 @@ public class GdxTest {
         };
 
 //        /**
-//         * Give the mocked graphics some width and height so we don't get divide by zero errors.
+//         * Give the mocked graphics some width and height so we don't state divide by zero errors.
 //         */
 //        MockGraphics myMockedGraphics = new MockGraphics() {
 //            @Override
@@ -140,7 +141,7 @@ public class GdxTest {
     }
 
 
-    protected void initializeUI(GameState gameState) {
+    protected void initializeUI() {
         Texture closedCupTexture = textureMap.get(TextureKey.CLOSED_CUP);
         Texture openCupTexture = textureMap.get(TextureKey.OPEN_CUP);
         Texture diceLockTexture = textureMap.get(TextureKey.DICE_LOCK);
@@ -161,17 +162,15 @@ public class GdxTest {
         dicesBeforeCupActors = new Group();
         dicesUnderCupActors = new Group();
 
-        gameState.createCallInputFieldLabel(uiSkin);
-        thirdLatestOutputLabel = gameState.createThirdLatestOutputLabel(uiSkin);
-        secondLatestOutputLabel = gameState.createSecondLatestOutputLabel(uiSkin);
-        latestOutputLabel = gameState.createLatestOutputLabel(uiSkin);
-        callInputLabel = gameState.createCallInputFieldLabel(uiSkin);
-        gameState.createCupActor(closedCupTexture, openCupTexture, cupLockTexture, foreGroundActors, backgroundActors);
-        autoButton = gameState.createAutoButton(uiSkin);
-        callButton = gameState.createCallButton(uiSkin);
-
-
-        gameState.createDiceActors(diceTextures, diceLockTexture, dicesBeforeCupActors, dicesUnderCupActors, predictableDiceValueGenerator);
+        state().createCallInputFieldLabel(uiSkin);
+        thirdLatestOutputLabel = state().createThirdLatestOutputLabel(uiSkin);
+        secondLatestOutputLabel = state().createSecondLatestOutputLabel(uiSkin);
+        latestOutputLabel = state().createLatestOutputLabel(uiSkin);
+        callInputLabel = state().createCallInputFieldLabel(uiSkin);
+        state().createCupActor(closedCupTexture, openCupTexture, cupLockTexture, foreGroundActors, backgroundActors);
+        autoButton = state().createAutoButton(uiSkin);
+        callButton = state().createCallButton(uiSkin);
+        state().createDiceActors(diceTextures, diceLockTexture, dicesBeforeCupActors, dicesUnderCupActors, predictableDiceValueGenerator);
     }
 
 

@@ -16,38 +16,38 @@ public class Cup implements Lockable {
     @Override
     public void lock() {
         locked = true;
-        GameState.get().saveGame();
+        GameState.state().saveGame();
         cupActor.getLockImage().setVisible(true);
     }
 
     @Override
     public void unlock() {
         locked = false;
-        GameState.get().saveGame();
+        GameState.state().saveGame();
         cupActor.getLockImage().setVisible(false);
     }
 
     public void believe() {
         believing = true;
-        GameState.get().saveGame();
+        GameState.state().saveGame();
         cupActor.open();
     }
 
     public void doneBelieving() {
         believing = false;
-        GameState.get().saveGame();
+        GameState.state().saveGame();
         cupActor.close();
     }
 
     public void watchOwnThrow() {
         watchingOwnThrow = true;
-        GameState.get().saveGame();
+        GameState.state().saveGame();
         cupActor.open();
     }
 
     public void doneWatchingOwnThrow() {
         watchingOwnThrow = false;
-        GameState.get().saveGame();
+        GameState.state().saveGame();
         cupActor.close();
     }
 

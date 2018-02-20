@@ -7,10 +7,11 @@ import net.leejjon.bluffpoker.listener.CupListener;
 import net.leejjon.bluffpoker.interfaces.UserInterface;
 import net.leejjon.bluffpoker.interfaces.GameInputInterface;
 import net.leejjon.bluffpoker.state.Dice;
-import net.leejjon.bluffpoker.state.GameState;
 import net.leejjon.bluffpoker.state.SettingsState;
 
 import java.util.ArrayList;
+
+import static net.leejjon.bluffpoker.state.GameState.state;
 
 public class BluffPokerGame implements GameInputInterface {
     private Sound diceRoll;
@@ -113,7 +114,7 @@ public class BluffPokerGame implements GameInputInterface {
 
         // At this point (during placing a call) not all players should be dead.
         do {
-            // If the localPlayerIterator runs out of the arrays bounds, we reset it to 0.
+            // If the localPlayerIterator runs out of the arrays bounds, we moveUp it to 0.
             if (localPlayerIterator == state().getPlayers().length) {
                 localPlayerIterator = 0;
             }
@@ -132,7 +133,7 @@ public class BluffPokerGame implements GameInputInterface {
                 if (state().getCup().isBelieving()) {
                     state().getCup().doneBelieving();
                     state().setAllowedToBelieveOrNotBelieve(false);
-                    state().setCanViewOwnThrow(true);
+                    state().setAllowedToViewOwnThrow(true);
                 } else {
                     // Start next turn.
                     nextPlayer();
@@ -142,7 +143,7 @@ public class BluffPokerGame implements GameInputInterface {
                         believe();
                     }
                 }
-            } else if (state().isCanViewOwnThrow()) {
+            } else if (state().isAllowedToViewOwnThrow()) {
                 if (state().getCup().isWatchingOwnThrow()) {
                     state().getCup().doneWatchingOwnThrow();
                 } else {
@@ -206,7 +207,7 @@ public class BluffPokerGame implements GameInputInterface {
             state().setBlindPass(true);
             // TODO: make sure all people on the bok die when the shared bok is allowed.
 
-            // Detect if the current player jumped on the block and check if we should not allow other players to get on the bok too.
+            // Detect if the current player jumped on the block and check if we should not allow other players to state on the bok too.
             if (state().isBokAvailable() && !settingsState.isAllowSharedBok() && state().getCurrentPlayer().isRidingOnTheBok()) {
                 state().logGameConsoleMessage(state().getCurrentPlayer().getName() + RIDING_ON_THE_BOK);
                 state().setBokAvailable(false);
@@ -267,7 +268,7 @@ public class BluffPokerGame implements GameInputInterface {
                 state().getCup().lock();
 
                 // Leave blindPass true on purpose.
-                state().setCanViewOwnThrow(false);
+                state().setAllowedToViewOwnThrow(false);
                 state().allowPlayerToCall(true);
                 state().logGameConsoleMessage(NOW_ENTER_YOUR_CALL);
                 return true;
@@ -278,7 +279,7 @@ public class BluffPokerGame implements GameInputInterface {
 
                 // Don't set blindPass to false, the player simply has to throw again and can call without watching and then it will be set to blind again.
                 state().setHasToThrow(true);
-                state().setCanViewOwnThrow(true);
+                state().setAllowedToViewOwnThrow(true);
                 state().allowPlayerToCall(false);
                 state().logGameConsoleMessage(state().getCurrentPlayer().getName() + WANTED_TO_PEEK_AFTER_ALL);
 
@@ -444,7 +445,7 @@ public class BluffPokerGame implements GameInputInterface {
 
         state().setHasToThrow(false);
         state().setHasThrown(true);
-        state().setCanViewOwnThrow(true);
+        state().setAllowedToViewOwnThrow(true);
         state().allowPlayerToCall(true);
 
         if (leftResult == Dice.ThrowResult.UNDER_CUP || middleResult == Dice.ThrowResult.UNDER_CUP || rightResult == Dice.ThrowResult.UNDER_CUP) {
@@ -471,9 +472,5 @@ public class BluffPokerGame implements GameInputInterface {
      */
     public NumberCombination getNumberCombinationFromDices() {
         return new NumberCombination(state().getLeftDice().getDiceValue(), state().getMiddleDice().getDiceValue(), state().getRightDice().getDiceValue(), true);
-    }
-
-    public GameState state() {
-        return GameState.get();
     }
 }

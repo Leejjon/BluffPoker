@@ -80,8 +80,12 @@ public class DiceActor extends Stack {
         dicesBeforeCupActors.addActor(this);
     }
 
-    public void reset() {
+    public void moveUp() {
         moveBy(0, getDiceHeight() / 2);
+        reset();
+    }
+
+    public void reset() {
         dicesBeforeCupActors.removeActor(this);
         dicesUnderCupActors.addActor(this);
     }
