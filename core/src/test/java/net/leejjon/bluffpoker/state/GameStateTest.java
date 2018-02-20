@@ -172,6 +172,16 @@ public class GameStateTest extends GdxTest {
         GameStateEnum.VIEW_AFTER_FIRST_SHAKE.assertState(game, expectedNumberCombination);
     }
 
+    @Test
+    public void testFirstThrow_641_thenViewOwnThrowAndMoveOut6() {
+        NumberCombination expectedNumberCombination = get641();
+        BluffPokerGame game = moveLeftDiceOut(tapCup(throwSpecificValue(startNewGame(), expectedNumberCombination)));
+
+        // TODO: Introduce new GameStateEnum value.
+//        GameStateEnum.VIEW_AFTER_FIRST_SHAKE.assertUserInterfaceState(callInputLabel, autoButton, callButton, dicesUnderCupActors, expectedNumberCombination);
+//        GameStateEnum.VIEW_AFTER_FIRST_SHAKE.assertState(game, expectedNumberCombination);
+    }
+
     private UserInterface getTestUserInterface() {
         return new UserInterface() {
             @Override

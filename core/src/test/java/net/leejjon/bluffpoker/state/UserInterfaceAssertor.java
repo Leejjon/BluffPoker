@@ -17,11 +17,19 @@ public interface UserInterfaceAssertor {
 
     void assertCup(CupActor cupActor);
 
-    default void assertDices(DiceActor left, DiceActor middle, DiceActor right, Group dicesUnderCupActors, NumberCombination expectedValue) {
+    default void assertDices(Group dicesUnderCupActors, NumberCombination expectedValue) {
+        DiceActor left = GameState.state().getLeftDice().getDiceActor();
+        DiceActor middle = GameState.state().getMiddleDice().getDiceActor();
+        DiceActor right = GameState.state().getRightDice().getDiceActor();
+
         // Default is 643, but -1 because of array index will make it 532.
         assertEquals(left.getSpriteDrawables()[expectedValue.getHighestNumber() - 1], left.getDiceImage().getDrawable());
         assertEquals(middle.getSpriteDrawables()[expectedValue.getMiddleNumber() - 1], middle.getDiceImage().getDrawable());
         assertEquals(right.getSpriteDrawables()[expectedValue.getLowestNumber() - 1], right.getDiceImage().getDrawable());
+        assertDiceLocations(left, middle, right, dicesUnderCupActors);
+    }
+
+    default void assertDiceLocations(DiceActor left, DiceActor middle, DiceActor right, Group dicesUnderCupActors) {
         assertIfDicesAreInUnderCupGroup(left, middle, right, dicesUnderCupActors);
     }
 
@@ -31,7 +39,7 @@ public interface UserInterfaceAssertor {
     default void assertUserInterfaceState(Label callInputLabel, ClickableLabel autoButton, ClickableLabel callButton, Group dicesUnderCupActors, NumberCombination expectedValue) {
         assertCallBoard(callInputLabel, autoButton, callButton);
         assertCup(GameState.state().getCup().getCupActor());
-        assertDices(GameState.state().getLeftDice().getDiceActor(), GameState.state().getMiddleDice().getDiceActor(), GameState.state().getRightDice().getDiceActor(), dicesUnderCupActors, expectedValue);
+        assertDices(dicesUnderCupActors, expectedValue);
     }
 
     static void assertIfDicesAreInUnderCupGroup(DiceActor left, DiceActor middle, DiceActor right, Group dicesUnderCupActors) {

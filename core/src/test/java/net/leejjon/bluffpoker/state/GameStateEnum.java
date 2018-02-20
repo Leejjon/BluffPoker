@@ -101,7 +101,8 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertCallBoard() {
-
+            assertEquals("000", GameState.state().getCallInput());
+            assertEquals(true, GameState.state().isAllowedToCall());
         }
 
         @Override
@@ -113,7 +114,10 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertStatusses() {
-
+            assertFalse(GameState.state().isAllowedToThrow());
+            assertFalse(GameState.state().isAllowedToBelieveOrNotBelieve());
+            assertTrue(GameState.state().isAllowedToViewOwnThrow());
+            assertNull(GameState.state().getLatestCall());
         }
     };
 }
