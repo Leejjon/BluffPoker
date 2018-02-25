@@ -7,117 +7,219 @@ import com.badlogic.gdx.utils.SnapshotArray;
 
 import net.leejjon.bluffpoker.actors.CupActor;
 import net.leejjon.bluffpoker.actors.DiceActor;
+import net.leejjon.bluffpoker.logic.NumberCombination;
 import net.leejjon.bluffpoker.ui.ClickableLabel;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
     NEW_GAME {
         @Override
-        public void assertCallBoard() {
-            assertEquals("000", GameState.state().getCallInput());
+        public void assertCallBoardInGameState(String expectedCall) {
+            assertEquals(expectedCall, GameState.state().getCallInput());
             assertEquals(false, GameState.state().isAllowedToCall());
         }
 
         @Override
-        public void assertCup() {
+        public void assertCupInGameState() {
             assertFalse(GameState.state().getCup().isBelieving());
             assertFalse(GameState.state().getCup().isLocked());
             assertFalse(GameState.state().getCup().isWatchingOwnThrow());
         }
 
         @Override
-        public void assertStatusses() {
+        public void assertStatusses(NumberCombination expectedCall) {
             assertTrue(GameState.state().isAllowedToThrow());
             assertFalse(GameState.state().isAllowedToBelieveOrNotBelieve());
             assertFalse(GameState.state().isAllowedToViewOwnThrow());
-            assertNull(GameState.state().getLatestCall());
+            assertEquals(expectedCall, GameState.state().getLatestCall());
         }
 
         @Override
-        public void assertCallBoard(Label callInputLabel, ClickableLabel autoButton, ClickableLabel callButton) {
-            assertEquals("000", callInputLabel.getText().toString());
-            assertTrue(autoButton.isDisabled());
-            assertTrue(callButton.isDisabled());
-        }
-
-        @Override
-        public void assertCup(CupActor cupActor) {
+        public void assertCupInUI(CupActor cupActor) {
             assertEquals(cupActor.getClosedCupDrawable(), cupActor.getCupImage().getDrawable());
             assertFalse(cupActor.getLockImage().isVisible());
         }
     },
     AFTER_FIRST_SHAKE {
         @Override
-        public void assertCallBoard() {
-            assertEquals("000", GameState.state().getCallInput());
-            assertEquals(true, GameState.state().isAllowedToCall());
+        public void assertCallBoardInUI(String expectedCall, Label callInputLabel, ClickableLabel autoButton, ClickableLabel callButton) {
+            assertEquals(expectedCall, callInputLabel.getText().toString());
+            assertFalse(autoButton.isDisabled());
+            assertFalse(callButton.isDisabled());
         }
 
         @Override
-        public void assertCup() {
+        public void assertCupInGameState() {
             assertFalse(GameState.state().getCup().isBelieving());
             assertFalse(GameState.state().getCup().isLocked());
             assertFalse(GameState.state().getCup().isWatchingOwnThrow());
         }
 
         @Override
-        public void assertStatusses() {
+        public void assertStatusses(NumberCombination expectedCall) {
             assertFalse(GameState.state().isAllowedToThrow());
             assertFalse(GameState.state().isAllowedToBelieveOrNotBelieve());
             assertTrue(GameState.state().isAllowedToViewOwnThrow());
-            assertNull(GameState.state().getLatestCall());
+            assertEquals(expectedCall, GameState.state().getLatestCall());
         }
 
         @Override
-        public void assertCallBoard(Label callInputLabel, ClickableLabel autoButton, ClickableLabel callButton) {
-            assertEquals("000", callInputLabel.getText().toString());
-            assertFalse(autoButton.isDisabled());
-            assertFalse(callButton.isDisabled());
+        public void assertCallBoardInGameState(String expectedCall) {
+            assertEquals(expectedCall, GameState.state().getCallInput());
+            assertTrue(GameState.state().isAllowedToCall());
         }
 
         @Override
-        public void assertCup(CupActor cupActor) {
+        public void assertCupInUI(CupActor cupActor) {
             assertEquals(cupActor.getClosedCupDrawable(), cupActor.getCupImage().getDrawable());
             assertFalse(cupActor.getLockImage().isVisible());
         }
     },
     VIEW_AFTER_FIRST_SHAKE {
         @Override
-        public void assertCallBoard(Label callInputLabel, ClickableLabel autoButton, ClickableLabel callButton) {
-            assertEquals("000", GameState.state().getCallInput());
-            assertEquals(true, GameState.state().isAllowedToCall());
+        public void assertCallBoardInUI(String expectedCall, Label callInputLabel, ClickableLabel autoButton, ClickableLabel callButton) {
+            assertEquals(expectedCall, callInputLabel.getText().toString());
+            assertFalse(autoButton.isDisabled());
+            assertFalse(callButton.isDisabled());
         }
 
         @Override
-        public void assertCup(CupActor cupActor) {
+        public void assertCupInUI(CupActor cupActor) {
             assertEquals(cupActor.getOpenCupDrawable(), cupActor.getCupImage().getDrawable());
             assertFalse(cupActor.getLockImage().isVisible());
         }
 
         @Override
-        public void assertCallBoard() {
-            assertEquals("000", GameState.state().getCallInput());
-            assertEquals(true, GameState.state().isAllowedToCall());
+        public void assertCallBoardInGameState(String expectedCall) {
+            assertEquals(expectedCall, GameState.state().getCallInput());
+            assertTrue(GameState.state().isAllowedToCall());
         }
 
         @Override
-        public void assertCup() {
+        public void assertCupInGameState() {
             assertFalse(GameState.state().getCup().isBelieving());
             assertFalse(GameState.state().getCup().isLocked());
             assertTrue(GameState.state().getCup().isWatchingOwnThrow());
         }
 
         @Override
-        public void assertStatusses() {
+        public void assertStatusses(NumberCombination expectedCall) {
             assertFalse(GameState.state().isAllowedToThrow());
             assertFalse(GameState.state().isAllowedToBelieveOrNotBelieve());
             assertTrue(GameState.state().isAllowedToViewOwnThrow());
-            assertNull(GameState.state().getLatestCall());
+            assertEquals(expectedCall, GameState.state().getLatestCall());
         }
-    };
+    },
+    TAKE_6_OUT {
+        @Override
+        public void assertCallBoardInUI(String expectedCall, Label callInputLabel, ClickableLabel autoButton, ClickableLabel callButton) {
+            assertEquals(expectedCall, callInputLabel.getText().toString());
+            assertFalse(autoButton.isDisabled());
+            assertFalse(callButton.isDisabled());
+        }
+
+        @Override
+        public void assertCupInUI(CupActor cupActor) {
+            assertEquals(cupActor.getOpenCupDrawable(), cupActor.getCupImage().getDrawable());
+            assertFalse(cupActor.getLockImage().isVisible());
+        }
+
+        @Override
+        public void assertCallBoardInGameState(String expectedCall) {
+            assertEquals(expectedCall, GameState.state().getCallInput());
+            assertTrue(GameState.state().isAllowedToCall());
+        }
+
+        @Override
+        public void assertCupInGameState() {
+            assertFalse(GameState.state().getCup().isBelieving());
+            assertFalse(GameState.state().getCup().isLocked());
+            assertTrue(GameState.state().getCup().isWatchingOwnThrow());
+        }
+
+        @Override
+        public void assertStatusses(NumberCombination expectedCall) {
+            assertFalse(GameState.state().isAllowedToThrow());
+            assertFalse(GameState.state().isAllowedToBelieveOrNotBelieve());
+            assertTrue(GameState.state().isAllowedToViewOwnThrow());
+            assertEquals(expectedCall, GameState.state().getLatestCall());
+        }
+
+        @Override
+        public void assertDiceLocations(DiceActor left, DiceActor middle, DiceActor right, Group dicesUnderCupActors, Group dicesBeforeCupActors) {
+            // Assert if the dices have been added to the correct group.
+            SnapshotArray<Actor> dicesBeforeCup = dicesBeforeCupActors.getChildren();
+            assertEquals(left, dicesBeforeCup.get(0));
+
+            SnapshotArray<Actor> dicesUnderCup = dicesUnderCupActors.getChildren();
+            assertEquals(middle, dicesUnderCup.get(0));
+            assertEquals(right, dicesUnderCup.get(1));
+        }
+
+        @Override
+        public void assertDices(NumberCombination expectedNumberCombination) {
+            assertExpectedNumberCombinationWithGameState(expectedNumberCombination);
+            assertFalse(GameState.state().getLeftDice().isUnderCup());
+            assertTrue(GameState.state().getMiddleDice().isUnderCup());
+            assertTrue(GameState.state().getRightDice().isUnderCup());
+        }
+    },
+    CALL {
+        @Override
+        public void assertCallBoardInUI(String expectedCall, Label callInputLabel, ClickableLabel autoButton, ClickableLabel callButton) {
+            assertEquals(expectedCall, callInputLabel.getText().toString());
+            assertTrue(autoButton.isDisabled());
+            assertTrue(callButton.isDisabled());
+        }
+
+        @Override
+        public void assertCupInUI(CupActor cupActor) {
+            assertEquals(cupActor.getClosedCupDrawable(), cupActor.getCupImage().getDrawable());
+            assertFalse(cupActor.getLockImage().isVisible());
+        }
+
+        @Override
+        public void assertCallBoardInGameState(String expectedCall) {
+            assertEquals(expectedCall, GameState.state().getCallInput());
+            assertFalse(GameState.state().isAllowedToCall());
+        }
+
+        @Override
+        public void assertCupInGameState() {
+            assertFalse(GameState.state().getCup().isBelieving());
+            assertFalse(GameState.state().getCup().isLocked());
+            assertFalse(GameState.state().getCup().isWatchingOwnThrow());
+        }
+
+        @Override
+        public void assertStatusses(NumberCombination expectedCall) {
+            assertFalse(GameState.state().isAllowedToThrow());
+            assertTrue(GameState.state().isAllowedToBelieveOrNotBelieve());
+            assertFalse(GameState.state().isAllowedToViewOwnThrow());
+            assertEquals(expectedCall, GameState.state().getLatestCall().getNumberCombination());
+        }
+
+        @Override
+        public void assertDiceLocations(DiceActor left, DiceActor middle, DiceActor right, Group dicesUnderCupActors, Group dicesBeforeCupActors) {
+            // Assert if the dices have been added to the correct group.
+            SnapshotArray<Actor> dicesBeforeCup = dicesBeforeCupActors.getChildren();
+            assertEquals(left, dicesBeforeCup.get(0));
+
+            SnapshotArray<Actor> dicesUnderCup = dicesUnderCupActors.getChildren();
+            assertEquals(middle, dicesUnderCup.get(0));
+            assertEquals(right, dicesUnderCup.get(1));
+        }
+
+        @Override
+        public void assertDices(NumberCombination expectedNumberCombination) {
+            assertExpectedNumberCombinationWithGameState(expectedNumberCombination);
+            assertFalse(GameState.state().getLeftDice().isUnderCup());
+            assertTrue(GameState.state().getMiddleDice().isUnderCup());
+            assertTrue(GameState.state().getRightDice().isUnderCup());
+        }
+    }
 }

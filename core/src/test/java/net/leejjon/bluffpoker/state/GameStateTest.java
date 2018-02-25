@@ -8,6 +8,7 @@ import net.leejjon.bluffpoker.interfaces.UserInterface;
 import net.leejjon.bluffpoker.listener.CupListener;
 import net.leejjon.bluffpoker.listener.DiceListener;
 import net.leejjon.bluffpoker.logic.BluffPokerGame;
+import net.leejjon.bluffpoker.logic.InputValidationException;
 import net.leejjon.bluffpoker.logic.NumberCombination;
 
 import org.junit.Test;
@@ -104,6 +105,10 @@ public class GameStateTest extends GdxTest {
         return game;
     }
 
+    private BluffPokerGame call(BluffPokerGame game, String call) throws InputValidationException {
+        game.validateCall(NumberCombination.validNumberCombinationFrom(call));
+        return game;
+    }
 
     private BluffPokerGame reloadGame() {
         String stateString = GameState.getStateString();
@@ -121,12 +126,13 @@ public class GameStateTest extends GdxTest {
     public void testNewGameFromFirstInstallation() {
         BluffPokerGame newGame = startNewGame();
 
-        GameStateEnum.NEW_GAME.assertUserInterfaceState(callInputLabel, autoButton, callButton, dicesUnderCupActors, NumberCombination.BLUFF_NUMBER);
-        GameStateEnum.NEW_GAME.assertState(newGame, NumberCombination.BLUFF_NUMBER);
+        GameStateEnum.NEW_GAME.assertUserInterfaceState(NumberCombination.MIN.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, NumberCombination.BLUFF_NUMBER);
+        GameStateEnum.NEW_GAME.assertState(newGame, NumberCombination.BLUFF_NUMBER, null);
 
-        BluffPokerGame reloadedGame = reloadGame();
-        GameStateEnum.NEW_GAME.assertUserInterfaceState(callInputLabel, autoButton, callButton, dicesUnderCupActors, NumberCombination.BLUFF_NUMBER);
-        GameStateEnum.NEW_GAME.assertState(reloadedGame, NumberCombination.BLUFF_NUMBER);
+        GameStateEnum.NEW_GAME.assertUserInterfaceState(NumberCombination.MIN.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, NumberCombination.BLUFF_NUMBER);
+        GameStateEnum.NEW_GAME.assertState(reloadGame(), NumberCombination.BLUFF_NUMBER, null);
     }
 
     private NumberCombination get641() {
@@ -134,21 +140,22 @@ public class GameStateTest extends GdxTest {
     }
 
     @Test
-    public void testFirstThrow_641() {
+    public void testFirstThrow641() {
         NumberCombination expectedNumberCombination = get641();
 
         // Add 530 will result in displaying 641. The random generator always generates 0-5 instead of 1-6, so the method that uses the generator will add +1.
         BluffPokerGame game = throwSpecificValue(startNewGame(), expectedNumberCombination);
-        GameStateEnum.AFTER_FIRST_SHAKE.assertUserInterfaceState(callInputLabel, autoButton, callButton, dicesUnderCupActors, expectedNumberCombination);
-        GameStateEnum.AFTER_FIRST_SHAKE.assertState(game, expectedNumberCombination);
+        GameStateEnum.AFTER_FIRST_SHAKE.assertUserInterfaceState(NumberCombination.MIN.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.AFTER_FIRST_SHAKE.assertState(game, expectedNumberCombination, null);
 
-        BluffPokerGame reloadedGame = reloadGame();
-        GameStateEnum.AFTER_FIRST_SHAKE.assertUserInterfaceState(callInputLabel, autoButton, callButton, dicesUnderCupActors, expectedNumberCombination);
-        GameStateEnum.AFTER_FIRST_SHAKE.assertState(reloadedGame, expectedNumberCombination);
+        GameStateEnum.AFTER_FIRST_SHAKE.assertUserInterfaceState(NumberCombination.MIN.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.AFTER_FIRST_SHAKE.assertState(reloadGame(), expectedNumberCombination, null);
     }
 
     @Test
-    public void testFirstThrow_641_thenReset() {
+    public void testFirstThrow641_thenReset() {
         NumberCombination expectedNumberCombination = get641();
         BluffPokerGame game = throwSpecificValue(startNewGame(), expectedNumberCombination);
 
@@ -159,27 +166,52 @@ public class GameStateTest extends GdxTest {
         BluffPokerGame gameThatHasBeenReset = initializeGame();
         game.startGame(loadDefaultPlayers());
 
-        GameStateEnum.NEW_GAME.assertUserInterfaceState(callInputLabel, autoButton, callButton, dicesUnderCupActors, NumberCombination.BLUFF_NUMBER);
-        GameStateEnum.NEW_GAME.assertState(gameThatHasBeenReset, NumberCombination.BLUFF_NUMBER);
+        GameStateEnum.NEW_GAME.assertUserInterfaceState(NumberCombination.MIN.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, NumberCombination.BLUFF_NUMBER);
+        GameStateEnum.NEW_GAME.assertState(gameThatHasBeenReset, NumberCombination.BLUFF_NUMBER, null);
     }
 
     @Test
-    public void testFirstThrow_641_thenViewOwnThrow() {
+    public void testFirstThrow641_thenViewOwnThrow() {
         NumberCombination expectedNumberCombination = get641();
         BluffPokerGame game = tapCup(throwSpecificValue(startNewGame(), expectedNumberCombination));
 
-        GameStateEnum.VIEW_AFTER_FIRST_SHAKE.assertUserInterfaceState(callInputLabel, autoButton, callButton, dicesUnderCupActors, expectedNumberCombination);
-        GameStateEnum.VIEW_AFTER_FIRST_SHAKE.assertState(game, expectedNumberCombination);
+        GameStateEnum.VIEW_AFTER_FIRST_SHAKE.assertUserInterfaceState(NumberCombination.MIN.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.VIEW_AFTER_FIRST_SHAKE.assertState(game, expectedNumberCombination, null);
+
+        GameStateEnum.VIEW_AFTER_FIRST_SHAKE.assertUserInterfaceState(NumberCombination.MIN.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.VIEW_AFTER_FIRST_SHAKE.assertState(reloadGame(), expectedNumberCombination, null);
     }
 
     @Test
-    public void testFirstThrow_641_thenViewOwnThrowAndMoveOut6() {
+    public void testFirstThrow641_thenViewOwnThrowAndMoveOut6() {
         NumberCombination expectedNumberCombination = get641();
         BluffPokerGame game = moveLeftDiceOut(tapCup(throwSpecificValue(startNewGame(), expectedNumberCombination)));
 
-        // TODO: Introduce new GameStateEnum value.
-//        GameStateEnum.VIEW_AFTER_FIRST_SHAKE.assertUserInterfaceState(callInputLabel, autoButton, callButton, dicesUnderCupActors, expectedNumberCombination);
-//        GameStateEnum.VIEW_AFTER_FIRST_SHAKE.assertState(game, expectedNumberCombination);
+        GameStateEnum.TAKE_6_OUT.assertUserInterfaceState(NumberCombination.MIN.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.TAKE_6_OUT.assertState(game, expectedNumberCombination, null);
+
+        GameStateEnum.TAKE_6_OUT.assertUserInterfaceState(NumberCombination.MIN.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.TAKE_6_OUT.assertState(reloadGame(), expectedNumberCombination, null);
+    }
+
+    @Test
+    public void testFirstThrow641_thenViewOwnThrowAndMoveOut6_call600() throws InputValidationException {
+        NumberCombination expectedNumberCombination = get641();
+        String call = "641";
+        BluffPokerGame game = call(moveLeftDiceOut(tapCup(throwSpecificValue(startNewGame(), expectedNumberCombination))), call);
+
+        GameStateEnum.CALL.assertUserInterfaceState(call,
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.CALL.assertState(game, expectedNumberCombination, expectedNumberCombination);
+
+        GameStateEnum.CALL.assertUserInterfaceState(call,
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.CALL.assertState(reloadGame(), expectedNumberCombination, expectedNumberCombination);
     }
 
     private UserInterface getTestUserInterface() {
