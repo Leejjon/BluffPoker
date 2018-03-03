@@ -33,7 +33,10 @@ public interface GameStateAssertor {
 
     void assertCupInGameState();
 
-    default void assertPlayersInGameState() {
+    /**
+     * @param expectedCurrentPlayer This is pretty weird but how I have built it. It is only the next players turn after a believe or unsuccessful not believe action.
+     */
+    default void assertPlayersInGameState(Player expectedCurrentPlayer) {
         Player[] players = GameState.state().getPlayers();
         Player leon = players[0];
         assertEquals("Leon", leon.getName());
@@ -44,13 +47,13 @@ public interface GameStateAssertor {
         assertEquals(3, dirk.getLives());
 
         Player currentPlayer = GameState.state().getCurrentPlayer();
-        assertEquals(leon, currentPlayer);
+        assertEquals(expectedCurrentPlayer, currentPlayer);
     }
 
     void assertStatusses(NumberCombination expectedCall);
 
-    default void assertState(BluffPokerGame game, NumberCombination expectedNumberCombination, NumberCombination expectedCall) {
-        assertPlayersInGameState();
+    default void assertState(BluffPokerGame game, NumberCombination expectedNumberCombination, NumberCombination expectedCall, Player expectedCurrentPlayer) {
+        assertPlayersInGameState(expectedCurrentPlayer);
         assertDices(expectedNumberCombination);
         assertCallBoardInGameState(expectedCall != null ? expectedCall.toString() : "000");
         assertCupInGameState();

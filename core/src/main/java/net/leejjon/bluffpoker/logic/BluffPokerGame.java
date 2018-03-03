@@ -28,7 +28,7 @@ public class BluffPokerGame implements GameInputInterface {
     public static final String SHAKE_THE_CUP = "Shake the cup: %1$s";
     private static final String CALL_THREE_IDENTICAL_NUMBERS_HIGHER_THAN = "Call three the identical numbers higher than ";
     private static final String YOUR_CALL_MUST_BE_HIGHER_THAN = "Your call must be higher than: ";
-    private static final String BLIND_MESSAGE = " (blind)";
+    public static final String BLIND_MESSAGE = " (blind)";
     private static final String CALLED = " called ";
     private static final String BELIEVED_666 = " believed 666!";
     private static final String BELIEVED_THE_CALL = " believed the call";
@@ -303,6 +303,7 @@ public class BluffPokerGame implements GameInputInterface {
     }
 
     private void believe() {
+        state().setAllowedToBelieveOrNotBelieve(false);
         state().logGameConsoleMessage(state().getCurrentPlayer().getName() + BELIEVED_THE_CALL);
         state().logGameConsoleMessage("Throw at least one dice ...");
 
