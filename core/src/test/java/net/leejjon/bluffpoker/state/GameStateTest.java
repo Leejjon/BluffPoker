@@ -43,14 +43,14 @@ public class GameStateTest extends GdxTest {
         assertEquals(logMesssage, logMessages.get(0));
     }
 
+    @Test(expected = NullPointerException.class)
+    public void testLogConsoleMessageWithoutUI_fail() {
+        state().logGameConsoleMessage("Blabla");
+        fail("Should not be able to log if UI is not initialized.");
+    }
+
     @Test
     public void testConsoleLogging_threeMessages_success() {
-        try {
-            state().logGameConsoleMessage("Blabla");
-            fail("Should not be able to log if UI is not initialized.");
-        } catch (NullPointerException e) {
-        }
-
         initializeUI();
 
         assertTrue(state().isNewGameState());
@@ -335,6 +335,23 @@ public class GameStateTest extends GdxTest {
     }
 
     @Test
+    public void testFirstThrow641_moveOut6_call643_dontBelieve_player1LosesLife() throws InputValidationException {
+        NumberCombination expectedNumberCombination = get641();
+        NumberCombination bluffNumber = NumberCombination.BLUFF_NUMBER;
+
+        BluffPokerGame game = swipeCupUpAndFinishAnimation(call(moveLeftDiceOut(tapCup(throwSpecificValue(startNewGame(), expectedNumberCombination))), bluffNumber));
+
+        GameStateEnum.NOT_BELIEVE_CORRECT_LEFT_DICE_OUT.assertUserInterfaceState(bluffNumber.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        // We expect the latestCall object to be reset (null), but the callboard still to show the old value so the players can see the bluff.
+        GameStateEnum.NOT_BELIEVE_CORRECT_LEFT_DICE_OUT.assertState(game, expectedNumberCombination, null, bluffNumber, getPlayer1(LOST_ONE_LIFE));
+
+        GameStateEnum.NOT_BELIEVE_CORRECT_LEFT_DICE_OUT.assertUserInterfaceState(bluffNumber.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.NOT_BELIEVE_CORRECT_LEFT_DICE_OUT.assertState(reloadGame(), expectedNumberCombination, null, bluffNumber, getPlayer1(LOST_ONE_LIFE));
+    }
+
+    @Test
     public void testFirstThrow641_blindCall600_dontBelieve_player2LosesLife() throws InputValidationException {
         NumberCombination expectedNumberCombination = get641();
         NumberCombination call = call600();
@@ -348,6 +365,11 @@ public class GameStateTest extends GdxTest {
         GameStateEnum.NOT_BELIEVE_INCORRECT_ALL_DICES_UNDER_CUP.assertUserInterfaceState(call.toString(),
                 callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
         GameStateEnum.NOT_BELIEVE_INCORRECT_ALL_DICES_UNDER_CUP.assertState(reloadGame(), expectedNumberCombination, null, call, getPlayer2(LOST_ONE_LIFE));
+    }
+
+    @Test
+    public void testFirstThrow641_moveOut6_call600_dontBelieve_player2LosesLife() throws InputValidationException {
+        // TODO
     }
 
     private UserInterface getTestUserInterface() {
