@@ -204,7 +204,6 @@ public class BluffPokerGame implements GameInputInterface {
 
             state().currentPlayerLosesLife(canUseBok());
             state().setFirstThrowSinceDeath(true);
-            state().setBlindPass(true);
             // TODO: make sure all people on the bok die when the shared bok is allowed.
 
             // Detect if the current player jumped on the block and check if we should not allow other players to state on the bok too.
@@ -227,9 +226,10 @@ public class BluffPokerGame implements GameInputInterface {
             }
 
             // The cup should not be locked at this point.
-            state().getLeftDice().reset();
-            state().getMiddleDice().reset();
-            state().getRightDice().reset();
+            // TODO: Remove
+//            state().getLeftDice().reset();
+//            state().getMiddleDice().reset();
+//            state().getRightDice().reset();
 
             state().resetLatestCall();
             state().logGameConsoleMessage(String.format(SHAKE_THE_CUP, state().getCurrentPlayer().getName()));
@@ -437,7 +437,13 @@ public class BluffPokerGame implements GameInputInterface {
     }
 
     public void throwDices() {
-        state().getCup().getCupActor().reset();
+        if (state().isFirstThrowSinceDeath()) {
+            state().getCup().getCupActor().reset();
+            state().getLeftDice().reset();
+            state().getMiddleDice().reset();
+            state().getRightDice().reset();
+        }
+
         diceRoll.play(1.0f);
 
         final Dice.ThrowResult leftResult = state().getLeftDice().throwDice();
@@ -453,6 +459,7 @@ public class BluffPokerGame implements GameInputInterface {
             state().setBlindPass(true); // Everytime you throw a dice under the cup, it starts out as a blind pass.
         }
 
+        // Since the throw is over, unlock the dices.
         // TODO: Unlock all in one method with one save.
         state().getCup().unlock();
         state().getLeftDice().unlock();

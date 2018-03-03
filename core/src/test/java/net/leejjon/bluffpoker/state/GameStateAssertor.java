@@ -1,11 +1,8 @@
 package net.leejjon.bluffpoker.state;
 
 import net.leejjon.bluffpoker.logic.BluffPokerGame;
-import net.leejjon.bluffpoker.logic.InputValidationException;
 import net.leejjon.bluffpoker.logic.NumberCombination;
 import net.leejjon.bluffpoker.logic.Player;
-
-import lombok.SneakyThrows;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -52,10 +49,10 @@ public interface GameStateAssertor {
 
     void assertStatusses(NumberCombination expectedCall);
 
-    default void assertState(BluffPokerGame game, NumberCombination expectedNumberCombination, NumberCombination expectedCall, Player expectedCurrentPlayer) {
+    default void assertState(BluffPokerGame game, NumberCombination expectedNumberCombination, NumberCombination expectedCall, NumberCombination lastCallInput, Player expectedCurrentPlayer) {
         assertPlayersInGameState(expectedCurrentPlayer);
         assertDices(expectedNumberCombination);
-        assertCallBoardInGameState(expectedCall != null ? expectedCall.toString() : "000");
+        assertCallBoardInGameState(lastCallInput.toString());
         assertCupInGameState();
         assertStatusses(expectedCall);
         assertEquals(expectedNumberCombination, game.getNumberCombinationFromDices());
