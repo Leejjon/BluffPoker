@@ -303,7 +303,6 @@ public class BluffPokerGame implements GameInputInterface {
     }
 
     private void believe() {
-        state().setAllowedToBelieveOrNotBelieve(false);
         state().logGameConsoleMessage(state().getCurrentPlayer().getName() + BELIEVED_THE_CALL);
         state().logGameConsoleMessage("Throw at least one dice ...");
 

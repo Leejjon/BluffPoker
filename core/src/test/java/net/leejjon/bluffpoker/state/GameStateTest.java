@@ -369,7 +369,34 @@ public class GameStateTest extends GdxTest {
 
     @Test
     public void testFirstThrow641_moveOut6_call600_dontBelieve_player2LosesLife() throws InputValidationException {
-        // TODO
+        NumberCombination expectedNumberCombination = get641();
+        NumberCombination bluffNumber = call600();
+
+        BluffPokerGame game = swipeCupUpAndFinishAnimation(call(moveLeftDiceOut(tapCup(throwSpecificValue(startNewGame(), expectedNumberCombination))), bluffNumber));
+
+        GameStateEnum.NOT_BELIEVE_INCORRECT_LEFT_DICE_OUT.assertUserInterfaceState(bluffNumber.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        // We expect the latestCall object to be reset (null), but the callboard still to show the old value so the players can see the bluff.
+        GameStateEnum.NOT_BELIEVE_INCORRECT_LEFT_DICE_OUT.assertState(game, expectedNumberCombination, null, bluffNumber, getPlayer2(LOST_ONE_LIFE));
+
+        GameStateEnum.NOT_BELIEVE_INCORRECT_LEFT_DICE_OUT.assertUserInterfaceState(bluffNumber.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.NOT_BELIEVE_INCORRECT_LEFT_DICE_OUT.assertState(reloadGame(), expectedNumberCombination, null, bluffNumber, getPlayer2(LOST_ONE_LIFE));
+    }
+
+    @Test
+    public void testBelieveCall600_closeCup() throws InputValidationException {
+        NumberCombination expectedNumberCombination = get641();
+        NumberCombination call = call600();
+        BluffPokerGame game = tapCup(tapCup(call(throwSpecificValue(startNewGame(), expectedNumberCombination), call)));
+
+        GameStateEnum.AFTER_BELIEVE_ALL_DICES_UNDER_CUP_CLOSE_CUP.assertUserInterfaceState(call.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.AFTER_BELIEVE_ALL_DICES_UNDER_CUP_CLOSE_CUP.assertState(game, expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
+
+        GameStateEnum.AFTER_BELIEVE_ALL_DICES_UNDER_CUP_CLOSE_CUP.assertUserInterfaceState(call.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.AFTER_BELIEVE_ALL_DICES_UNDER_CUP_CLOSE_CUP.assertState(reloadGame(), expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
     }
 
     private UserInterface getTestUserInterface() {

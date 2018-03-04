@@ -1,8 +1,11 @@
 package net.leejjon.bluffpoker.listener;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+
+import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.interfaces.GameInputInterface;
 
 public class CupListener extends ActorGestureListener {
@@ -30,17 +33,17 @@ public class CupListener extends ActorGestureListener {
         // keep it here because it's useful to know how to detect all four directions.
         if (Math.abs(velocityX) > Math.abs(velocityY)) {
             if (velocityX > 0) {
-                System.out.println("You've made a swipe gesture on the cup in the direction: Right");
+                Gdx.app.log(BluffPokerApp.TAG, "You've made a swipe gesture on the cup in the direction: Right");
             } else {
-                System.out.println("You've made a swipe gesture on the cup in the direction: Left");
+                Gdx.app.log(BluffPokerApp.TAG, "You've made a swipe gesture on the cup in the direction: Left");
             }
         } else {
             if (velocityY > 0) {
-                System.out.println("You've made a swipe gesture on the cup in the direction: Up");
+                Gdx.app.log(BluffPokerApp.TAG, "You've made a swipe gesture on the cup in the direction: Up");
 
                 game.swipeCupUp();
             } else {
-                System.out.println("You've made a swipe gesture on the cup in the direction: Down");
+                Gdx.app.log(BluffPokerApp.TAG, "You've made a swipe gesture on the cup in the direction: Down");
             }
         }
     }

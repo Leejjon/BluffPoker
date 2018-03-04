@@ -21,7 +21,10 @@ public interface UserInterfaceAssertor {
         assertTrue(callButton.isDisabled());
     }
 
-    void assertCupInUI(CupActor cupActor);
+    default void assertCupInUI(CupActor cupActor) {
+        assertEquals(cupActor.getClosedCupDrawable(), cupActor.getCupImage().getDrawable());
+        assertFalse(cupActor.getLockImage().isVisible());
+    }
 
     default void assertDicesInUI(Group dicesUnderCupActors, Group dicesBeforeCupActors, NumberCombination expectedValue) {
         DiceActor left = GameState.state().getLeftDice().getDiceActor();
