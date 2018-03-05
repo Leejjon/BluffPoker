@@ -87,7 +87,7 @@ public class Dice implements Lockable {
 
 
     public void pullAwayFromCup() {
-        if ((GameState.state().getCup().isBelieving() || GameState.state().getCup().isWatchingOwnThrow()) && isUnderCup()) {
+        if ((GameState.state().getCup().isBelieving() || GameState.state().getCup().isWatchingOwnThrow()) && underCup) {
             underCup = false;
             GameState.state().saveGame();
             diceActor.moveDown();
@@ -96,8 +96,9 @@ public class Dice implements Lockable {
 
     public void putBackUnderCup() {
         Cup cup = GameState.state().getCup();
-        if (cup.isBelieving() || cup.isWatchingOwnThrow()) {
+        if (underCup == false && (cup.isBelieving() || cup.isWatchingOwnThrow())) {
             underCup = true;
+            GameState.state().saveGame();
             diceActor.moveUp();
         }
     }

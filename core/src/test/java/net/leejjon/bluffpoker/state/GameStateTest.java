@@ -125,6 +125,12 @@ public class GameStateTest extends GdxTest {
         return game;
     }
 
+    private BluffPokerGame swipeLeftDiceUp(BluffPokerGame game) {
+        DiceListener diceListener = (DiceListener) state().getLeftDice().getDiceActor().getListeners().get(0);
+        diceListener.fling(null, 0, 1, 0);
+        return game;
+    }
+
     private BluffPokerGame call(BluffPokerGame game, NumberCombination call) throws InputValidationException {
         game.validateCall(call);
         return game;
@@ -232,6 +238,20 @@ public class GameStateTest extends GdxTest {
     public void testFirstThrow641_view() {
         NumberCombination expectedNumberCombination = get641();
         BluffPokerGame game = tapCup(throwSpecificValue(startNewGame(), expectedNumberCombination));
+
+        GameStateEnum.VIEW_AFTER_FIRST_SHAKE.assertUserInterfaceState(NumberCombination.MIN.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.VIEW_AFTER_FIRST_SHAKE.assertState(game, expectedNumberCombination, null, NumberCombination.MIN, getPlayer1(DEFAULT_LIVES));
+
+        GameStateEnum.VIEW_AFTER_FIRST_SHAKE.assertUserInterfaceState(NumberCombination.MIN.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.VIEW_AFTER_FIRST_SHAKE.assertState(reloadGame(), expectedNumberCombination, null, NumberCombination.MIN, getPlayer1(DEFAULT_LIVES));
+    }
+
+    @Test
+    public void testFirstThrow641_view_swipeDiceDownAndUp() {
+        NumberCombination expectedNumberCombination = get641();
+        BluffPokerGame game = swipeLeftDiceUp(moveLeftDiceOut(tapCup(throwSpecificValue(startNewGame(), expectedNumberCombination))));
 
         GameStateEnum.VIEW_AFTER_FIRST_SHAKE.assertUserInterfaceState(NumberCombination.MIN.toString(),
                 callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);

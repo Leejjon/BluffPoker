@@ -65,8 +65,8 @@ public interface UserInterfaceAssertor {
     static void assertIfDicesAreInUnderCupGroup(DiceActor left, DiceActor middle, DiceActor right, Group dicesUnderCupActors) {
         // Assert if the dices have been added to the correct group.
         SnapshotArray<Actor> children = dicesUnderCupActors.getChildren();
-        assertEquals(left, children.get(0));
-        assertEquals(middle, children.get(1));
-        assertEquals(right, children.get(2));
+        assertTrue(children.contains(left, true));
+        assertTrue(children.contains(middle, true));
+        assertTrue(children.contains(right, true));
     }
 }

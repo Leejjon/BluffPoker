@@ -204,13 +204,12 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertDiceLocations(DiceActor left, DiceActor middle, DiceActor right, Group dicesUnderCupActors, Group dicesBeforeCupActors) {
-            // Assert if the dices have been added to the correct group.
             SnapshotArray<Actor> dicesBeforeCup = dicesBeforeCupActors.getChildren();
-            assertEquals(left, dicesBeforeCup.get(0));
+            dicesBeforeCup.contains(left, true);
 
             SnapshotArray<Actor> dicesUnderCup = dicesUnderCupActors.getChildren();
-            assertEquals(middle, dicesUnderCup.get(0));
-            assertEquals(right, dicesUnderCup.get(1));
+            dicesUnderCup.contains(middle, true);
+            dicesUnderCup.contains(right, true);
         }
 
         @Override
@@ -257,13 +256,12 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertDiceLocations(DiceActor left, DiceActor middle, DiceActor right, Group dicesUnderCupActors, Group dicesBeforeCupActors) {
-            // Assert if the dices have been added to the correct group.
             SnapshotArray<Actor> dicesBeforeCup = dicesBeforeCupActors.getChildren();
-            assertEquals(left, dicesBeforeCup.get(0));
+            dicesBeforeCup.contains(left, true);
 
             SnapshotArray<Actor> dicesUnderCup = dicesUnderCupActors.getChildren();
-            assertEquals(middle, dicesUnderCup.get(0));
-            assertEquals(right, dicesUnderCup.get(1));
+            dicesUnderCup.contains(middle, true);
+            dicesUnderCup.contains(right, true);
         }
 
         @Override
@@ -347,11 +345,11 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
         public void assertDiceLocations(DiceActor left, DiceActor middle, DiceActor right, Group dicesUnderCupActors, Group dicesBeforeCupActors) {
             // Assert if the dices have been added to the correct group.
             SnapshotArray<Actor> dicesBeforeCup = dicesBeforeCupActors.getChildren();
-            assertEquals(left, dicesBeforeCup.get(0));
+            dicesBeforeCup.contains(left, true);
 
             SnapshotArray<Actor> dicesUnderCup = dicesUnderCupActors.getChildren();
-            assertEquals(middle, dicesUnderCup.get(0));
-            assertEquals(right, dicesUnderCup.get(1));
+            dicesUnderCup.contains(middle, true);
+            dicesUnderCup.contains(right, true);
         }
 
         @Override
@@ -500,13 +498,12 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertDiceLocations(DiceActor left, DiceActor middle, DiceActor right, Group dicesUnderCupActors, Group dicesBeforeCupActors) {
-            // Assert if the dices have been added to the correct group.
             SnapshotArray<Actor> dicesBeforeCup = dicesBeforeCupActors.getChildren();
-            assertEquals(left, dicesBeforeCup.get(0));
+            dicesBeforeCup.contains(left, true);
 
             SnapshotArray<Actor> dicesUnderCup = dicesUnderCupActors.getChildren();
-            assertEquals(middle, dicesUnderCup.get(0));
-            assertEquals(right, dicesUnderCup.get(1));
+            dicesUnderCup.contains(middle, true);
+            dicesUnderCup.contains(right, true);
         }
 
         @Override
@@ -566,13 +563,12 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertDiceLocations(DiceActor left, DiceActor middle, DiceActor right, Group dicesUnderCupActors, Group dicesBeforeCupActors) {
-            // Assert if the dices have been added to the correct group.
             SnapshotArray<Actor> dicesBeforeCup = dicesBeforeCupActors.getChildren();
-            assertEquals(left, dicesBeforeCup.get(0));
+            dicesBeforeCup.contains(left, true);
 
             SnapshotArray<Actor> dicesUnderCup = dicesUnderCupActors.getChildren();
-            assertEquals(middle, dicesUnderCup.get(0));
-            assertEquals(right, dicesUnderCup.get(1));
+            dicesUnderCup.contains(middle, true);
+            dicesUnderCup.contains(right, true);
         }
 
         @Override
