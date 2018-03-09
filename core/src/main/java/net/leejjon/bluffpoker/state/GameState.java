@@ -108,7 +108,7 @@ public class GameState {
     public boolean userTriesToLockOrUnlock() { return !blindPass && hasToThrow && !firstThrowSinceDeath; }
 
     public boolean isAllowedToThrow() {
-        if ((hasToThrow || (blindPass && !hasThrown)) && !cup.getCupActor().isMoving() && !cup.isBelieving() && !cup.isWatchingOwnThrow()) {
+        if (hasToThrow && !cup.getCupActor().isMoving() && !cup.isBelieving() && !cup.isWatchingOwnThrow()) {
             return true;
         } else {
             return false;

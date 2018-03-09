@@ -322,6 +322,21 @@ public class GameStateTest extends GdxTest {
     }
 
     @Test
+    public void testFirstThrow641_blindCall600_blindBelieve() throws InputValidationException {
+        NumberCombination expectedNumberCombination = get641();
+        NumberCombination call = call600();
+        BluffPokerGame game = longTapCup(call(throwSpecificValue(startNewGame(), expectedNumberCombination), call));
+
+        GameStateEnum.BELIEVED_ALL_DICES_UNDER_CUP_BLIND.assertUserInterfaceState(call.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.BELIEVED_ALL_DICES_UNDER_CUP_BLIND.assertState(game, expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
+
+        GameStateEnum.BELIEVED_ALL_DICES_UNDER_CUP_BLIND.assertUserInterfaceState(call.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.BELIEVED_ALL_DICES_UNDER_CUP_BLIND.assertState(reloadGame(), expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
+    }
+
+    @Test
     public void testFirstThrow641_view_moveOut6_call600_believe() throws InputValidationException {
         NumberCombination expectedNumberCombination = get641();
         NumberCombination call = call600();
@@ -417,6 +432,26 @@ public class GameStateTest extends GdxTest {
         GameStateEnum.AFTER_BELIEVE_ALL_DICES_UNDER_CUP_CLOSE_CUP.assertUserInterfaceState(call.toString(),
                 callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
         GameStateEnum.AFTER_BELIEVE_ALL_DICES_UNDER_CUP_CLOSE_CUP.assertState(reloadGame(), expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
+    }
+
+    @Test
+    public void test_blindBelieveCall600_peek() throws InputValidationException {
+        NumberCombination expectedNumberCombination = get641();
+        NumberCombination call = call600();
+        BluffPokerGame game = longTapCup(call(throwSpecificValue(startNewGame(), expectedNumberCombination), call));
+
+        GameStateEnum.BELIEVED_ALL_DICES_UNDER_CUP_BLIND.assertUserInterfaceState(call.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.BELIEVED_ALL_DICES_UNDER_CUP_BLIND.assertState(game, expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
+
+        game = longTapCup(game);
+
+        GameStateEnum.AFTER_BELIEVE_ALL_DICES_UNDER_CUP_BLIND_PEEK.assertUserInterfaceState(call.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.AFTER_BELIEVE_ALL_DICES_UNDER_CUP_BLIND_PEEK.assertState(game, expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
+//        GameStateEnum.BELIEVED_ALL_DICES_UNDER_CUP_BLIND.assertUserInterfaceState(call.toString(),
+//                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+//        GameStateEnum.BELIEVED_ALL_DICES_UNDER_CUP_BLIND.assertState(reloadGame(), expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
     }
 
     private UserInterface getTestUserInterface() {

@@ -35,7 +35,7 @@ public class BluffPokerGame implements GameInputInterface {
     private static final String BELIEVED_THE_CALL_BLIND = " believed the call (blind)";
     private static final String THROW_THREE_OF_THE_SAME_NUMBERS_IN_ONE_THROW = "Throw three of the same numbers in one throw!";
     private static final String NOW_ENTER_YOUR_CALL = "Now enter your call ...";
-    private static final String NOW_ENTER_YOUR_CALL_OR_THROW = "Now enter your call or throw ...";
+    private static final String NOW_ENTER_YOUR_CALL_OR_THROW = "Now enter your call (or peek) ...";
     private static final String RIDING_ON_THE_BOK = " is riding on the bok";
     private static final String WANTED_TO_PEEK_AFTER_ALL = " wanted to peek after all";
     private static final String LOST_A_LIFE = "%1$s lost a life and has %2$d left";
@@ -277,12 +277,11 @@ public class BluffPokerGame implements GameInputInterface {
                 state().getCup().unlock();
                 state().getCup().believe();
 
-                // Don't set blindPass to false, the player simply has to throw again and can call without watching and then it will be set to blind again.
                 state().setHasToThrow(true);
                 state().setAllowedToViewOwnThrow(true);
                 state().allowPlayerToCall(false);
+                state().setBlindPass(false);
                 state().logGameConsoleMessage(state().getCurrentPlayer().getName() + WANTED_TO_PEEK_AFTER_ALL);
-
 
                 return true;
                 // Just locking / unlocking.
