@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class Cup implements Lockable {
     private boolean believing = false;
-    private boolean watchingOwnThrow = false;
+    private boolean watching = false;
     private boolean locked = false;
 
     private transient CupActor cupActor;
@@ -40,19 +40,19 @@ public class Cup implements Lockable {
     }
 
     public void watchOwnThrow() {
-        watchingOwnThrow = true;
+        watching = true;
         GameState.state().saveGame();
         cupActor.open();
     }
 
     public void doneWatchingOwnThrow() {
-        watchingOwnThrow = false;
+        watching = false;
         GameState.state().saveGame();
         cupActor.close();
     }
 
     public void update() {
-        if (believing || watchingOwnThrow) {
+        if (believing || watching) {
             cupActor.open();
         } else {
             cupActor.close();

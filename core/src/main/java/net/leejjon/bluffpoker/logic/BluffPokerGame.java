@@ -76,7 +76,7 @@ public class BluffPokerGame implements GameInputInterface {
     }
 
     private void call(NumberCombination newCall) {
-        if (state().getCup().isWatchingOwnThrow()) {
+        if (state().getCup().isWatching()) {
             state().getCup().doneWatchingOwnThrow();
         }
 
@@ -144,7 +144,7 @@ public class BluffPokerGame implements GameInputInterface {
                     }
                 }
             } else if (state().isAllowedToViewOwnThrow()) {
-                if (state().getCup().isWatchingOwnThrow()) {
+                if (state().getCup().isWatching()) {
                     state().getCup().doneWatchingOwnThrow();
                 } else {
                     state().getCup().watchOwnThrow();
@@ -179,7 +179,7 @@ public class BluffPokerGame implements GameInputInterface {
     @Override
     public void swipeCupUp() {
         // Obviously, you can not "not believe" something after you've first believed it, or if you have just made a throw yourself.
-        if (!state().getCup().isBelieving() && !state().getCup().isWatchingOwnThrow() && state().isAllowedToBelieveOrNotBelieve()) {
+        if (!state().getCup().isBelieving() && !state().getCup().isWatching() && state().isAllowedToBelieveOrNotBelieve()) {
             state().getCup().getCupActor().addAction(new LiftCupAction());
 
             // Variables for the tutorial mode.
@@ -275,12 +275,12 @@ public class BluffPokerGame implements GameInputInterface {
                 // Unlocking halfway the turn.
             } else if (state().bailedOutOfBlindBelieving()) {
                 state().getCup().unlock();
-                state().getCup().believe();
-
-                state().setHasToThrow(true);
-                state().setAllowedToViewOwnThrow(true);
-                state().allowPlayerToCall(false);
+                state().getCup().watchOwnThrow();
                 state().setBlindPass(false);
+                state().allowPlayerToCall(false);
+                state().setAllowedToViewOwnThrow(true);
+                state().setHasToThrow(true);
+
                 state().logGameConsoleMessage(state().getCurrentPlayer().getName() + WANTED_TO_PEEK_AFTER_ALL);
 
                 return true;

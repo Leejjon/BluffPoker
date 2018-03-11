@@ -16,7 +16,6 @@ import net.leejjon.bluffpoker.interfaces.DiceValueGenerator;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 import net.leejjon.bluffpoker.interfaces.UserInterface;
 import net.leejjon.bluffpoker.logic.*;
-import net.leejjon.bluffpoker.state.GameState;
 import net.leejjon.bluffpoker.ui.ClickableLabel;
 
 import java.util.ArrayList;
@@ -230,7 +229,7 @@ public class GameStage extends AbstractStage implements UserInterface {
             Gdx.app.log(BluffPokerApp.TAG,
                     String.format(COULD_NOT_THROW_BECAUSE_CUP_IS_MOVING,
                             state().getCup().getCupActor().isMoving(),
-                            (state().getCup().isWatchingOwnThrow() | state().getCup().isBelieving())));
+                            (state().getCup().isWatching() | state().getCup().isBelieving())));
         }
     }
 
