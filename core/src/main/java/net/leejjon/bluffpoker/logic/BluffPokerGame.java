@@ -367,6 +367,11 @@ public class BluffPokerGame implements GameInputInterface {
         lookAtOwnThrowMessageHasBeenShown = false;
     }
 
+    @Override
+    public void openMenu() {
+
+    }
+
     /**
      * Watch out, this is a recursive function.
      * @return A boolean if there is a next player.

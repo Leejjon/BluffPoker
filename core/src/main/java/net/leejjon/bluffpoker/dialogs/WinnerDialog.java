@@ -7,7 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 import net.leejjon.bluffpoker.interfaces.UserInterface;
+import net.leejjon.bluffpoker.stages.SelectPlayersStage;
 import net.leejjon.bluffpoker.state.GameState;
+import net.leejjon.bluffpoker.state.SelectPlayersStageState;
 
 public class WinnerDialog extends Dialog {
     public WinnerDialog(final StageInterface stageListener, Skin skin) {
@@ -17,6 +19,7 @@ public class WinnerDialog extends Dialog {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 GameState.reset();
+                stageListener.startGame(SelectPlayersStageState.getInstance().getPlayers());
             }
         });
         button(restartButton);

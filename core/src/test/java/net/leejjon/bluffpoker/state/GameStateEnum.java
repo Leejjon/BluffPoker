@@ -700,7 +700,7 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertStatusses(NumberCombination expectedCall) {
-            assertTrue(GameState.state().isAllowedToThrow()); 
+            assertTrue(GameState.state().isAllowedToThrow());
             assertFalse(GameState.state().isAllowedToBelieveOrNotBelieve());
             assertTrue(GameState.state().isAllowedToViewOwnThrow());
             assertFalse(GameState.state().isBlindPass());

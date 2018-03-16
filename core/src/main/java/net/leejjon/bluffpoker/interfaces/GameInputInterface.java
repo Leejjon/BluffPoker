@@ -6,4 +6,6 @@ public interface GameInputInterface {
     void swipeCupUp();
 
     boolean longTapOnCup();
+
+    void openMenu();
 }
