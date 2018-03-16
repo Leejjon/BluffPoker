@@ -226,11 +226,6 @@ public class BluffPokerGame implements GameInputInterface {
             }
 
             // The cup should not be locked at this point.
-            // TODO: Remove
-//            state().getLeftDice().reset();
-//            state().getMiddleDice().reset();
-//            state().getRightDice().reset();
-
             state().resetLatestCall();
             state().logGameConsoleMessage(String.format(SHAKE_THE_CUP, state().getCurrentPlayer().getName()));
 

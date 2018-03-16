@@ -45,6 +45,14 @@ public class SelectPlayersStageState {
         preferences.flush();
     }
 
+    public static ArrayList<String> updatePlayerListMoveWinnerOnTop(String winner) {
+        ArrayList<String> players = SelectPlayersStageState.getInstance().getPlayers();
+        players.remove(players.indexOf(winner));
+        players.add(0, winner);
+        SelectPlayersStageState.getInstance().setPlayers(players);
+        return players;
+    }
+
     private SelectPlayersStageState() {
     }
 

@@ -55,4 +55,17 @@ public class SelectPlayersStageTest extends GdxTest {
         listWithExistingUsers.add("Leon Ded");
         assertEquals("Leon Ded D", SelectPlayersStage.cutOffPlayerName("Leon Ded D", listWithExistingUsers));
     }
+
+    @Test
+    public void testMoveWinnerToTop() {
+        when(preferences.getString(SelectPlayersStageState.KEY)).thenReturn(DEFAULT_PLAYERS);
+        SelectPlayersStageState.getInstance().createPlayerList(SelectPlayersStage.getCustomListStyle(uiSkin));
+
+        final String pya = "Pya";
+        final String leon = "Leon";
+        ArrayList<String> originalList = SelectPlayersStageState.getInstance().getPlayers();
+        assertEquals(leon, originalList.get(0));
+        ArrayList<String> updatedList = SelectPlayersStageState.updatePlayerListMoveWinnerOnTop("Pya");
+        assertEquals(pya, updatedList.get(0));
+    }
 }
