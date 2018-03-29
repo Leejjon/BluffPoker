@@ -1,11 +1,11 @@
 android {
-    buildToolsVersion "26.0.2"
-    compileSdkVersion 26
+    buildToolsVersion "27.0.3"
+    compileSdkVersion 27
 
     defaultConfig {
         applicationId "net.leejjon.blufpoker.android"
         minSdkVersion 24
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 20
         versionName "4.0"
 
