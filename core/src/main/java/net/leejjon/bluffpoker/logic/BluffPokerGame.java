@@ -329,7 +329,6 @@ public class BluffPokerGame implements GameInputInterface {
     }
 
     private void blindBelieve() {
-        state().logGameConsoleMessage(state().getCurrentPlayer().getName() + BELIEVED_THE_CALL_BLIND);
         state().getCup().lock();
 
         // Lock the dices in case they are lying outside of the cup.
@@ -343,6 +342,8 @@ public class BluffPokerGame implements GameInputInterface {
         state().setHasThrown(false);
         state().setBlindPass(true);
         state().allowPlayerToCall(true);
+
+        state().logGameConsoleMessage(state().getCurrentPlayer().getName() + BELIEVED_THE_CALL_BLIND);
         state().logGameConsoleMessage(NOW_ENTER_YOUR_CALL_OR_THROW);
     }
 
