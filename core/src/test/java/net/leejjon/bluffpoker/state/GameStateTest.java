@@ -337,6 +337,36 @@ public class GameStateTest extends GdxTest {
     }
 
     @Test
+    public void testFirstThrow641_blindCall666_believe() throws InputValidationException {
+        NumberCombination expectedNumberCombination = get641();
+        NumberCombination call = NumberCombination.MAX;
+        BluffPokerGame game = tapCup(call(throwSpecificValue(startNewGame(), expectedNumberCombination), call));
+
+        GameStateEnum.BELIEVED_666_ALL_DICES_UNDER_CUP.assertUserInterfaceState(call.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.BELIEVED_666_ALL_DICES_UNDER_CUP.assertState(game, expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
+
+        GameStateEnum.BELIEVED_666_ALL_DICES_UNDER_CUP.assertUserInterfaceState(call.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.BELIEVED_666_ALL_DICES_UNDER_CUP.assertState(reloadGame(), expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
+    }
+
+    @Test
+    public void testFirstThrow641_blindCall666_believe_close() throws InputValidationException {
+        NumberCombination expectedNumberCombination = get641();
+        NumberCombination call = NumberCombination.MAX;
+        BluffPokerGame game = tapCup(tapCup(call(throwSpecificValue(startNewGame(), expectedNumberCombination), call)));
+
+        GameStateEnum.BELIEVED_666_ALL_DICES_UNDER_CUP_CLOSE.assertUserInterfaceState(call.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.BELIEVED_666_ALL_DICES_UNDER_CUP_CLOSE.assertState(game, expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
+
+        GameStateEnum.BELIEVED_666_ALL_DICES_UNDER_CUP_CLOSE.assertUserInterfaceState(call.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.BELIEVED_666_ALL_DICES_UNDER_CUP_CLOSE.assertState(reloadGame(), expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
+    }
+
+    @Test
     public void testFirstThrow641_view_moveOut6_call600_believe() throws InputValidationException {
         NumberCombination expectedNumberCombination = get641();
         NumberCombination call = call600();

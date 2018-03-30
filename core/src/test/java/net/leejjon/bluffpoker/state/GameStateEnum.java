@@ -11,6 +11,7 @@ import net.leejjon.bluffpoker.logic.NumberCombination;
 import net.leejjon.bluffpoker.logic.Player;
 import net.leejjon.bluffpoker.ui.ClickableLabel;
 
+import static net.leejjon.bluffpoker.state.GameState.state;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -20,24 +21,25 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
     NEW_GAME {
         @Override
         public void assertCallBoardInGameState(String expectedCall) {
-            assertEquals(expectedCall, GameState.state().getCallInput());
-            assertEquals(false, GameState.state().isAllowedToCall());
+            assertEquals(expectedCall, state().getCallInput());
+            assertEquals(false, state().isAllowedToCall());
         }
 
         @Override
         public void assertCupInGameState() {
-            assertFalse(GameState.state().getCup().isBelieving());
-            assertFalse(GameState.state().getCup().isLocked());
-            assertFalse(GameState.state().getCup().isWatching());
+            assertFalse(state().getCup().isBelieving());
+            assertFalse(state().getCup().isLocked());
+            assertFalse(state().getCup().isWatching());
         }
 
         @Override
         public void assertStatusses(NumberCombination expectedCall) {
-            assertTrue(GameState.state().isAllowedToThrow());
-            assertFalse(GameState.state().isAllowedToBelieveOrNotBelieve());
-            assertFalse(GameState.state().isAllowedToViewOwnThrow());
-            assertFalse(GameState.state().isBlindPass());
-            assertEquals(expectedCall, GameState.state().getLatestCall());
+            assertTrue(state().isAllowedToThrow());
+            assertFalse(state().isAllowedToBelieveOrNotBelieve());
+            assertFalse(state().isAllowedToViewOwnThrow());
+            assertFalse(state().isBlindPass());
+            assertFalse(state().isBelieved666());
+            assertEquals(expectedCall, state().getLatestCall());
         }
     },
     AFTER_FIRST_SHAKE {
@@ -50,24 +52,25 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertCupInGameState() {
-            assertFalse(GameState.state().getCup().isBelieving());
-            assertFalse(GameState.state().getCup().isLocked());
-            assertFalse(GameState.state().getCup().isWatching());
+            assertFalse(state().getCup().isBelieving());
+            assertFalse(state().getCup().isLocked());
+            assertFalse(state().getCup().isWatching());
         }
 
         @Override
         public void assertStatusses(NumberCombination expectedCall) {
-            assertFalse(GameState.state().isAllowedToThrow());
-            assertFalse(GameState.state().isAllowedToBelieveOrNotBelieve());
-            assertTrue(GameState.state().isAllowedToViewOwnThrow());
-            assertTrue(GameState.state().isBlindPass());
-            assertEquals(expectedCall, GameState.state().getLatestCall());
+            assertFalse(state().isAllowedToThrow());
+            assertFalse(state().isAllowedToBelieveOrNotBelieve());
+            assertTrue(state().isAllowedToViewOwnThrow());
+            assertTrue(state().isBlindPass());
+            assertFalse(state().isBelieved666());
+            assertEquals(expectedCall, state().getLatestCall());
         }
 
         @Override
         public void assertCallBoardInGameState(String expectedCall) {
-            assertEquals(expectedCall, GameState.state().getCallInput());
-            assertTrue(GameState.state().isAllowedToCall());
+            assertEquals(expectedCall, state().getCallInput());
+            assertTrue(state().isAllowedToCall());
         }
     },
     VIEW_AFTER_FIRST_SHAKE {
@@ -86,24 +89,25 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertCallBoardInGameState(String expectedCall) {
-            assertEquals(expectedCall, GameState.state().getCallInput());
-            assertTrue(GameState.state().isAllowedToCall());
+            assertEquals(expectedCall, state().getCallInput());
+            assertTrue(state().isAllowedToCall());
         }
 
         @Override
         public void assertCupInGameState() {
-            assertFalse(GameState.state().getCup().isBelieving());
-            assertFalse(GameState.state().getCup().isLocked());
-            assertTrue(GameState.state().getCup().isWatching());
+            assertFalse(state().getCup().isBelieving());
+            assertFalse(state().getCup().isLocked());
+            assertTrue(state().getCup().isWatching());
         }
 
         @Override
         public void assertStatusses(NumberCombination expectedCall) {
-            assertFalse(GameState.state().isAllowedToThrow());
-            assertFalse(GameState.state().isAllowedToBelieveOrNotBelieve());
-            assertTrue(GameState.state().isAllowedToViewOwnThrow());
-            assertFalse(GameState.state().isBlindPass());
-            assertEquals(expectedCall, GameState.state().getLatestCall());
+            assertFalse(state().isAllowedToThrow());
+            assertFalse(state().isAllowedToBelieveOrNotBelieve());
+            assertTrue(state().isAllowedToViewOwnThrow());
+            assertFalse(state().isBlindPass());
+            assertFalse(state().isBelieved666());
+            assertEquals(expectedCall, state().getLatestCall());
         }
     },
     CALL {
@@ -116,24 +120,25 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertCallBoardInGameState(String expectedCall) {
-            assertEquals(expectedCall, GameState.state().getCallInput());
-            assertFalse(GameState.state().isAllowedToCall());
+            assertEquals(expectedCall, state().getCallInput());
+            assertFalse(state().isAllowedToCall());
         }
 
         @Override
         public void assertCupInGameState() {
-            assertFalse(GameState.state().getCup().isBelieving());
-            assertFalse(GameState.state().getCup().isLocked());
-            assertFalse(GameState.state().getCup().isWatching());
+            assertFalse(state().getCup().isBelieving());
+            assertFalse(state().getCup().isLocked());
+            assertFalse(state().getCup().isWatching());
         }
 
         @Override
         public void assertStatusses(NumberCombination expectedCall) {
-            assertFalse(GameState.state().isAllowedToThrow());
-            assertTrue(GameState.state().isAllowedToBelieveOrNotBelieve());
-            assertFalse(GameState.state().isAllowedToViewOwnThrow());
-            assertFalse(GameState.state().isBlindPass());
-            assertEquals(expectedCall, GameState.state().getLatestCall().getNumberCombination());
+            assertFalse(state().isAllowedToThrow());
+            assertTrue(state().isAllowedToBelieveOrNotBelieve());
+            assertFalse(state().isAllowedToViewOwnThrow());
+            assertFalse(state().isBlindPass());
+            assertFalse(state().isBelieved666());
+            assertEquals(expectedCall, state().getLatestCall().getNumberCombination());
         }
     },
     CALL_BLIND {
@@ -146,24 +151,25 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertCallBoardInGameState(String expectedCall) {
-            assertEquals(expectedCall, GameState.state().getCallInput());
-            assertFalse(GameState.state().isAllowedToCall());
+            assertEquals(expectedCall, state().getCallInput());
+            assertFalse(state().isAllowedToCall());
         }
 
         @Override
         public void assertCupInGameState() {
-            assertFalse(GameState.state().getCup().isBelieving());
-            assertFalse(GameState.state().getCup().isLocked());
-            assertFalse(GameState.state().getCup().isWatching());
+            assertFalse(state().getCup().isBelieving());
+            assertFalse(state().getCup().isLocked());
+            assertFalse(state().getCup().isWatching());
         }
 
         @Override
         public void assertStatusses(NumberCombination expectedCall) {
-            assertFalse(GameState.state().isAllowedToThrow());
-            assertTrue(GameState.state().isAllowedToBelieveOrNotBelieve());
-            assertFalse(GameState.state().isAllowedToViewOwnThrow());
-            assertFalse(GameState.state().isBlindPass());
-            assertEquals(expectedCall, GameState.state().getLatestCall().getNumberCombination());
+            assertFalse(state().isAllowedToThrow());
+            assertTrue(state().isAllowedToBelieveOrNotBelieve());
+            assertFalse(state().isAllowedToViewOwnThrow());
+            assertFalse(state().isBlindPass());
+            assertFalse(state().isBelieved666());
+            assertEquals(expectedCall, state().getLatestCall().getNumberCombination());
         }
     },
     TAKE_6_OUT {
@@ -182,24 +188,25 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertCallBoardInGameState(String expectedCall) {
-            assertEquals(expectedCall, GameState.state().getCallInput());
-            assertTrue(GameState.state().isAllowedToCall());
+            assertEquals(expectedCall, state().getCallInput());
+            assertTrue(state().isAllowedToCall());
         }
 
         @Override
         public void assertCupInGameState() {
-            assertFalse(GameState.state().getCup().isBelieving());
-            assertFalse(GameState.state().getCup().isLocked());
-            assertTrue(GameState.state().getCup().isWatching());
+            assertFalse(state().getCup().isBelieving());
+            assertFalse(state().getCup().isLocked());
+            assertTrue(state().getCup().isWatching());
         }
 
         @Override
         public void assertStatusses(NumberCombination expectedCall) {
-            assertFalse(GameState.state().isAllowedToThrow());
-            assertFalse(GameState.state().isAllowedToBelieveOrNotBelieve());
-            assertTrue(GameState.state().isAllowedToViewOwnThrow());
-            assertFalse(GameState.state().isBlindPass());
-            assertEquals(expectedCall, GameState.state().getLatestCall());
+            assertFalse(state().isAllowedToThrow());
+            assertFalse(state().isAllowedToBelieveOrNotBelieve());
+            assertTrue(state().isAllowedToViewOwnThrow());
+            assertFalse(state().isBlindPass());
+            assertFalse(state().isBelieved666());
+            assertEquals(expectedCall, state().getLatestCall());
         }
 
         @Override
@@ -215,13 +222,13 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
         @Override
         public void assertDices(NumberCombination expectedNumberCombination) {
             assertExpectedNumberCombinationWithGameState(expectedNumberCombination);
-            assertFalse(GameState.state().getLeftDice().isUnderCup());
-            assertTrue(GameState.state().getMiddleDice().isUnderCup());
-            assertTrue(GameState.state().getRightDice().isUnderCup());
+            assertFalse(state().getLeftDice().isUnderCup());
+            assertTrue(state().getMiddleDice().isUnderCup());
+            assertTrue(state().getRightDice().isUnderCup());
 
-            assertFalse(GameState.state().getLeftDice().isLocked());
-            assertFalse(GameState.state().getMiddleDice().isLocked());
-            assertFalse(GameState.state().getRightDice().isLocked());
+            assertFalse(state().getLeftDice().isLocked());
+            assertFalse(state().getMiddleDice().isLocked());
+            assertFalse(state().getRightDice().isLocked());
         }
     },
     CALL_LEFT_SIX_OUT {
@@ -234,24 +241,25 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertCallBoardInGameState(String expectedCall) {
-            assertEquals(expectedCall, GameState.state().getCallInput());
-            assertFalse(GameState.state().isAllowedToCall());
+            assertEquals(expectedCall, state().getCallInput());
+            assertFalse(state().isAllowedToCall());
         }
 
         @Override
         public void assertCupInGameState() {
-            assertFalse(GameState.state().getCup().isBelieving());
-            assertFalse(GameState.state().getCup().isLocked());
-            assertFalse(GameState.state().getCup().isWatching());
+            assertFalse(state().getCup().isBelieving());
+            assertFalse(state().getCup().isLocked());
+            assertFalse(state().getCup().isWatching());
         }
 
         @Override
         public void assertStatusses(NumberCombination expectedCall) {
-            assertFalse(GameState.state().isAllowedToThrow());
-            assertTrue(GameState.state().isAllowedToBelieveOrNotBelieve());
-            assertFalse(GameState.state().isAllowedToViewOwnThrow());
-            assertFalse(GameState.state().isBlindPass());
-            assertEquals(expectedCall, GameState.state().getLatestCall().getNumberCombination());
+            assertFalse(state().isAllowedToThrow());
+            assertTrue(state().isAllowedToBelieveOrNotBelieve());
+            assertFalse(state().isAllowedToViewOwnThrow());
+            assertFalse(state().isBlindPass());
+            assertFalse(state().isBelieved666());
+            assertEquals(expectedCall, state().getLatestCall().getNumberCombination());
         }
 
         @Override
@@ -267,42 +275,43 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
         @Override
         public void assertDices(NumberCombination expectedNumberCombination) {
             assertExpectedNumberCombinationWithGameState(expectedNumberCombination);
-            assertFalse(GameState.state().getLeftDice().isUnderCup());
-            assertTrue(GameState.state().getMiddleDice().isUnderCup());
-            assertTrue(GameState.state().getRightDice().isUnderCup());
+            assertFalse(state().getLeftDice().isUnderCup());
+            assertTrue(state().getMiddleDice().isUnderCup());
+            assertTrue(state().getRightDice().isUnderCup());
 
-            assertFalse(GameState.state().getLeftDice().isLocked());
-            assertFalse(GameState.state().getMiddleDice().isLocked());
-            assertFalse(GameState.state().getRightDice().isLocked());
+            assertFalse(state().getLeftDice().isLocked());
+            assertFalse(state().getMiddleDice().isLocked());
+            assertFalse(state().getRightDice().isLocked());
         }
     },
     BELIEVED_ALL_DICES_UNDER_CUP {
         @Override
-        public void assertCupInUI(CupActor cupActor) {
-            assertEquals(cupActor.getOpenCupDrawable(), cupActor.getCupImage().getDrawable());
-            assertFalse(cupActor.getLockImage().isVisible());
-        }
-
-        @Override
         public void assertCallBoardInGameState(String expectedCall) {
-            assertEquals(expectedCall, GameState.state().getCallInput());
-            assertFalse(GameState.state().isAllowedToCall());
+            assertEquals(expectedCall, state().getCallInput());
+            assertFalse(state().isAllowedToCall());
         }
 
         @Override
         public void assertCupInGameState() {
-            assertTrue(GameState.state().getCup().isBelieving());
-            assertFalse(GameState.state().getCup().isLocked());
-            assertFalse(GameState.state().getCup().isWatching());
+            assertTrue(state().getCup().isBelieving());
+            assertFalse(state().getCup().isLocked());
+            assertFalse(state().getCup().isWatching());
         }
 
         @Override
         public void assertStatusses(NumberCombination expectedCall) {
-            assertFalse(GameState.state().isAllowedToThrow()); // First has to close the cup.
-            assertTrue(GameState.state().isAllowedToBelieveOrNotBelieve());
-            assertFalse(GameState.state().isAllowedToViewOwnThrow());
-            assertFalse(GameState.state().isBlindPass());
-            assertEquals(expectedCall, GameState.state().getLatestCall().getNumberCombination());
+            assertFalse(state().isAllowedToThrow()); // First has to close the cup.
+            assertTrue(state().isAllowedToBelieveOrNotBelieve());
+            assertFalse(state().isAllowedToViewOwnThrow());
+            assertFalse(state().isBlindPass());
+            assertFalse(state().isBelieved666());
+            assertEquals(expectedCall, state().getLatestCall().getNumberCombination());
+        }
+
+        @Override
+        public void assertCupInUI(CupActor cupActor) {
+            assertEquals(cupActor.getOpenCupDrawable(), cupActor.getCupImage().getDrawable());
+            assertFalse(cupActor.getLockImage().isVisible());
         }
     },
     BELIEVED_LEFT_SIX_OUT {
@@ -314,24 +323,25 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertCallBoardInGameState(String expectedCall) {
-            assertEquals(expectedCall, GameState.state().getCallInput());
-            assertFalse(GameState.state().isAllowedToCall());
+            assertEquals(expectedCall, state().getCallInput());
+            assertFalse(state().isAllowedToCall());
         }
 
         @Override
         public void assertCupInGameState() {
-            assertTrue(GameState.state().getCup().isBelieving());
-            assertFalse(GameState.state().getCup().isLocked());
-            assertFalse(GameState.state().getCup().isWatching());
+            assertTrue(state().getCup().isBelieving());
+            assertFalse(state().getCup().isLocked());
+            assertFalse(state().getCup().isWatching());
         }
 
         @Override
         public void assertStatusses(NumberCombination expectedCall) {
-            assertFalse(GameState.state().isAllowedToThrow()); // First has to close the cup.
-            assertTrue(GameState.state().isAllowedToBelieveOrNotBelieve());
-            assertFalse(GameState.state().isAllowedToViewOwnThrow());
-            assertFalse(GameState.state().isBlindPass());
-            assertEquals(expectedCall, GameState.state().getLatestCall().getNumberCombination());
+            assertFalse(state().isAllowedToThrow()); // First has to close the cup.
+            assertTrue(state().isAllowedToBelieveOrNotBelieve());
+            assertFalse(state().isAllowedToViewOwnThrow());
+            assertFalse(state().isBlindPass());
+            assertFalse(state().isBelieved666());
+            assertEquals(expectedCall, state().getLatestCall().getNumberCombination());
         }
 
         @Override
@@ -355,36 +365,37 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
         @Override
         public void assertDices(NumberCombination expectedNumberCombination) {
             assertExpectedNumberCombinationWithGameState(expectedNumberCombination);
-            assertFalse(GameState.state().getLeftDice().isUnderCup());
-            assertTrue(GameState.state().getMiddleDice().isUnderCup());
-            assertTrue(GameState.state().getRightDice().isUnderCup());
+            assertFalse(state().getLeftDice().isUnderCup());
+            assertTrue(state().getMiddleDice().isUnderCup());
+            assertTrue(state().getRightDice().isUnderCup());
 
-            assertTrue(GameState.state().getLeftDice().isLocked());
-            assertFalse(GameState.state().getMiddleDice().isLocked());
-            assertFalse(GameState.state().getRightDice().isLocked());
+            assertTrue(state().getLeftDice().isLocked());
+            assertFalse(state().getMiddleDice().isLocked());
+            assertFalse(state().getRightDice().isLocked());
         }
     },
     BELIEVED_ALL_DICES_UNDER_CUP_BLIND {
         @Override
         public void assertCallBoardInGameState(String expectedCall) {
-            assertEquals(expectedCall, GameState.state().getCallInput());
-            assertTrue(GameState.state().isAllowedToCall());
+            assertEquals(expectedCall, state().getCallInput());
+            assertTrue(state().isAllowedToCall());
         }
 
         @Override
         public void assertCupInGameState() {
-            assertFalse(GameState.state().getCup().isBelieving());
-            assertTrue(GameState.state().getCup().isLocked());
-            assertFalse(GameState.state().getCup().isWatching());
+            assertFalse(state().getCup().isBelieving());
+            assertTrue(state().getCup().isLocked());
+            assertFalse(state().getCup().isWatching());
         }
 
         @Override
         public void assertStatusses(NumberCombination expectedCall) {
-            assertFalse(GameState.state().isAllowedToThrow());
-            assertFalse(GameState.state().isAllowedToBelieveOrNotBelieve());
-            assertFalse(GameState.state().isAllowedToViewOwnThrow());
-            assertTrue(GameState.state().isBlindPass());
-            assertEquals(expectedCall, GameState.state().getLatestCall().getNumberCombination());
+            assertFalse(state().isAllowedToThrow());
+            assertFalse(state().isAllowedToBelieveOrNotBelieve());
+            assertFalse(state().isAllowedToViewOwnThrow());
+            assertTrue(state().isBlindPass());
+            assertFalse(state().isBelieved666());
+            assertEquals(expectedCall, state().getLatestCall().getNumberCombination());
         }
 
         @Override
@@ -400,38 +411,92 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
             assertFalse(callButton.isDisabled());
         }
     },
-    NOT_BELIEVE_CORRECT_All_DICES_UNDER_CUP {
-
+    BELIEVED_666_ALL_DICES_UNDER_CUP {
         @Override
         public void assertCallBoardInGameState(String expectedCall) {
-            assertEquals(expectedCall, GameState.state().getCallInput());
-            assertFalse(GameState.state().isAllowedToCall());
+            assertEquals(expectedCall, state().getCallInput());
+            assertFalse(state().isAllowedToCall());
         }
 
         @Override
         public void assertCupInGameState() {
-            assertFalse(GameState.state().getCup().isBelieving());
-            assertFalse(GameState.state().getCup().isLocked());
-            assertFalse(GameState.state().getCup().isWatching());
+            assertTrue(state().getCup().isBelieving());
+            assertFalse(state().getCup().isLocked());
+            assertFalse(state().getCup().isWatching());
         }
 
         @Override
         public void assertStatusses(NumberCombination expectedCall) {
-            assertTrue(GameState.state().isAllowedToThrow());
-            assertFalse(GameState.state().isAllowedToBelieveOrNotBelieve());
-            assertFalse(GameState.state().isAllowedToViewOwnThrow());
-            assertFalse(GameState.state().isBlindPass());
+            assertFalse(state().isAllowedToThrow()); // First has to close the cup.
+            assertTrue(state().isAllowedToBelieveOrNotBelieve());
+            assertFalse(state().isAllowedToViewOwnThrow());
+            assertFalse(state().isBlindPass());
+            assertTrue(state().isBelieved666());
+            assertEquals(expectedCall, state().getLatestCall().getNumberCombination());
+        }
+
+        @Override
+        public void assertCupInUI(CupActor cupActor) {
+            assertEquals(cupActor.getOpenCupDrawable(), cupActor.getCupImage().getDrawable());
+            assertFalse(cupActor.getLockImage().isVisible());
+        }
+    },
+    BELIEVED_666_ALL_DICES_UNDER_CUP_CLOSE {
+        @Override
+        public void assertCallBoardInGameState(String expectedCall) {
+            assertEquals(expectedCall, state().getCallInput());
+            assertFalse(state().isAllowedToCall());
+        }
+
+        @Override
+        public void assertCupInGameState() {
+            assertFalse(state().getCup().isBelieving());
+            assertFalse(state().getCup().isLocked());
+            assertFalse(state().getCup().isWatching());
+        }
+
+        @Override
+        public void assertStatusses(NumberCombination expectedCall) {
+            assertTrue(state().isAllowedToThrow()); // First has to close the cup.
+            assertFalse(state().isAllowedToBelieveOrNotBelieve());
+            assertTrue(state().isAllowedToViewOwnThrow());
+            assertFalse(state().isBlindPass());
+            assertTrue(state().isBelieved666());
+            assertEquals(expectedCall, state().getLatestCall().getNumberCombination());
+        }
+    },
+    NOT_BELIEVE_CORRECT_All_DICES_UNDER_CUP {
+
+        @Override
+        public void assertCallBoardInGameState(String expectedCall) {
+            assertEquals(expectedCall, state().getCallInput());
+            assertFalse(state().isAllowedToCall());
+        }
+
+        @Override
+        public void assertCupInGameState() {
+            assertFalse(state().getCup().isBelieving());
+            assertFalse(state().getCup().isLocked());
+            assertFalse(state().getCup().isWatching());
+        }
+
+        @Override
+        public void assertStatusses(NumberCombination expectedCall) {
+            assertTrue(state().isAllowedToThrow());
+            assertFalse(state().isAllowedToBelieveOrNotBelieve());
+            assertFalse(state().isAllowedToViewOwnThrow());
+            assertFalse(state().isBlindPass());
 
             if (expectedCall == null) {
-                assertNull(GameState.state().getLatestCall());
+                assertNull(state().getLatestCall());
             } else {
-                assertEquals(expectedCall, GameState.state().getLatestCall().getNumberCombination());
+                assertEquals(expectedCall, state().getLatestCall().getNumberCombination());
             }
         }
 
         @Override
         public void assertPlayersInGameState(Player expectedCurrentPlayer) {
-            Player[] players = GameState.state().getPlayers();
+            Player[] players = state().getPlayers();
             Player leon = players[0];
             assertEquals("Leon", leon.getName());
             assertEquals(2, leon.getLives());
@@ -440,7 +505,7 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
             assertEquals("Dirk", dirk.getName());
             assertEquals(3, dirk.getLives());
 
-            Player currentPlayer = GameState.state().getCurrentPlayer();
+            Player currentPlayer = state().getCurrentPlayer();
             assertEquals(expectedCurrentPlayer, currentPlayer);
         }
     },
@@ -448,34 +513,34 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertCallBoardInGameState(String expectedCall) {
-            assertEquals(expectedCall, GameState.state().getCallInput());
-            assertFalse(GameState.state().isAllowedToCall());
+            assertEquals(expectedCall, state().getCallInput());
+            assertFalse(state().isAllowedToCall());
         }
 
         @Override
         public void assertCupInGameState() {
-            assertFalse(GameState.state().getCup().isBelieving());
-            assertFalse(GameState.state().getCup().isLocked());
-            assertFalse(GameState.state().getCup().isWatching());
+            assertFalse(state().getCup().isBelieving());
+            assertFalse(state().getCup().isLocked());
+            assertFalse(state().getCup().isWatching());
         }
 
         @Override
         public void assertStatusses(NumberCombination expectedCall) {
-            assertTrue(GameState.state().isAllowedToThrow());
-            assertFalse(GameState.state().isAllowedToBelieveOrNotBelieve());
-            assertFalse(GameState.state().isAllowedToViewOwnThrow());
-            assertFalse(GameState.state().isBlindPass());
+            assertTrue(state().isAllowedToThrow());
+            assertFalse(state().isAllowedToBelieveOrNotBelieve());
+            assertFalse(state().isAllowedToViewOwnThrow());
+            assertFalse(state().isBlindPass());
 
             if (expectedCall == null) {
-                assertNull(GameState.state().getLatestCall());
+                assertNull(state().getLatestCall());
             } else {
-                assertEquals(expectedCall, GameState.state().getLatestCall().getNumberCombination());
+                assertEquals(expectedCall, state().getLatestCall().getNumberCombination());
             }
         }
 
         @Override
         public void assertPlayersInGameState(Player expectedCurrentPlayer) {
-            Player[] players = GameState.state().getPlayers();
+            Player[] players = state().getPlayers();
             Player leon = players[0];
             assertEquals("Leon", leon.getName());
             assertEquals(3, leon.getLives());
@@ -484,7 +549,7 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
             assertEquals("Dirk", dirk.getName());
             assertEquals(2, dirk.getLives());
 
-            Player currentPlayer = GameState.state().getCurrentPlayer();
+            Player currentPlayer = state().getCurrentPlayer();
             assertEquals(expectedCurrentPlayer, currentPlayer);
         }
     },
@@ -492,34 +557,34 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertCallBoardInGameState(String expectedCall) {
-            assertEquals(expectedCall, GameState.state().getCallInput());
-            assertFalse(GameState.state().isAllowedToCall());
+            assertEquals(expectedCall, state().getCallInput());
+            assertFalse(state().isAllowedToCall());
         }
 
         @Override
         public void assertCupInGameState() {
-            assertFalse(GameState.state().getCup().isBelieving());
-            assertFalse(GameState.state().getCup().isLocked());
-            assertFalse(GameState.state().getCup().isWatching());
+            assertFalse(state().getCup().isBelieving());
+            assertFalse(state().getCup().isLocked());
+            assertFalse(state().getCup().isWatching());
         }
 
         @Override
         public void assertStatusses(NumberCombination expectedCall) {
-            assertTrue(GameState.state().isAllowedToThrow());
-            assertFalse(GameState.state().isAllowedToBelieveOrNotBelieve());
-            assertFalse(GameState.state().isAllowedToViewOwnThrow());
-            assertFalse(GameState.state().isBlindPass());
+            assertTrue(state().isAllowedToThrow());
+            assertFalse(state().isAllowedToBelieveOrNotBelieve());
+            assertFalse(state().isAllowedToViewOwnThrow());
+            assertFalse(state().isBlindPass());
 
             if (expectedCall == null) {
-                assertNull(GameState.state().getLatestCall());
+                assertNull(state().getLatestCall());
             } else {
-                assertEquals(expectedCall, GameState.state().getLatestCall().getNumberCombination());
+                assertEquals(expectedCall, state().getLatestCall().getNumberCombination());
             }
         }
 
         @Override
         public void assertPlayersInGameState(Player expectedCurrentPlayer) {
-            Player[] players = GameState.state().getPlayers();
+            Player[] players = state().getPlayers();
             Player leon = players[0];
             assertEquals("Leon", leon.getName());
             assertEquals(2, leon.getLives());
@@ -528,7 +593,7 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
             assertEquals("Dirk", dirk.getName());
             assertEquals(3, dirk.getLives());
 
-            Player currentPlayer = GameState.state().getCurrentPlayer();
+            Player currentPlayer = state().getCurrentPlayer();
             assertEquals(expectedCurrentPlayer, currentPlayer);
         }
 
@@ -545,46 +610,46 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
         @Override
         public void assertDices(NumberCombination expectedNumberCombination) {
             assertExpectedNumberCombinationWithGameState(expectedNumberCombination);
-            assertFalse(GameState.state().getLeftDice().isUnderCup());
-            assertTrue(GameState.state().getMiddleDice().isUnderCup());
-            assertTrue(GameState.state().getRightDice().isUnderCup());
+            assertFalse(state().getLeftDice().isUnderCup());
+            assertTrue(state().getMiddleDice().isUnderCup());
+            assertTrue(state().getRightDice().isUnderCup());
 
-            assertFalse(GameState.state().getLeftDice().isLocked());
-            assertFalse(GameState.state().getMiddleDice().isLocked());
-            assertFalse(GameState.state().getRightDice().isLocked());
+            assertFalse(state().getLeftDice().isLocked());
+            assertFalse(state().getMiddleDice().isLocked());
+            assertFalse(state().getRightDice().isLocked());
         }
     },
     NOT_BELIEVE_INCORRECT_LEFT_DICE_OUT {
         @Override
         public void assertCallBoardInGameState(String expectedCall) {
-            assertEquals(expectedCall, GameState.state().getCallInput());
-            assertFalse(GameState.state().isAllowedToCall());
+            assertEquals(expectedCall, state().getCallInput());
+            assertFalse(state().isAllowedToCall());
         }
 
         @Override
         public void assertCupInGameState() {
-            assertFalse(GameState.state().getCup().isBelieving());
-            assertFalse(GameState.state().getCup().isLocked());
-            assertFalse(GameState.state().getCup().isWatching());
+            assertFalse(state().getCup().isBelieving());
+            assertFalse(state().getCup().isLocked());
+            assertFalse(state().getCup().isWatching());
         }
 
         @Override
         public void assertStatusses(NumberCombination expectedCall) {
-            assertTrue(GameState.state().isAllowedToThrow());
-            assertFalse(GameState.state().isAllowedToBelieveOrNotBelieve());
-            assertFalse(GameState.state().isAllowedToViewOwnThrow());
-            assertFalse(GameState.state().isBlindPass());
+            assertTrue(state().isAllowedToThrow());
+            assertFalse(state().isAllowedToBelieveOrNotBelieve());
+            assertFalse(state().isAllowedToViewOwnThrow());
+            assertFalse(state().isBlindPass());
 
             if (expectedCall == null) {
-                assertNull(GameState.state().getLatestCall());
+                assertNull(state().getLatestCall());
             } else {
-                assertEquals(expectedCall, GameState.state().getLatestCall().getNumberCombination());
+                assertEquals(expectedCall, state().getLatestCall().getNumberCombination());
             }
         }
 
         @Override
         public void assertPlayersInGameState(Player expectedCurrentPlayer) {
-            Player[] players = GameState.state().getPlayers();
+            Player[] players = state().getPlayers();
             Player leon = players[0];
             assertEquals("Leon", leon.getName());
             assertEquals(3, leon.getLives());
@@ -593,7 +658,7 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
             assertEquals("Dirk", dirk.getName());
             assertEquals(2, dirk.getLives());
 
-            Player currentPlayer = GameState.state().getCurrentPlayer();
+            Player currentPlayer = state().getCurrentPlayer();
             assertEquals(expectedCurrentPlayer, currentPlayer);
         }
 
@@ -610,50 +675,50 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
         @Override
         public void assertDices(NumberCombination expectedNumberCombination) {
             assertExpectedNumberCombinationWithGameState(expectedNumberCombination);
-            assertFalse(GameState.state().getLeftDice().isUnderCup());
-            assertTrue(GameState.state().getMiddleDice().isUnderCup());
-            assertTrue(GameState.state().getRightDice().isUnderCup());
+            assertFalse(state().getLeftDice().isUnderCup());
+            assertTrue(state().getMiddleDice().isUnderCup());
+            assertTrue(state().getRightDice().isUnderCup());
 
-            assertFalse(GameState.state().getLeftDice().isLocked());
-            assertFalse(GameState.state().getMiddleDice().isLocked());
-            assertFalse(GameState.state().getRightDice().isLocked());
+            assertFalse(state().getLeftDice().isLocked());
+            assertFalse(state().getMiddleDice().isLocked());
+            assertFalse(state().getRightDice().isLocked());
         }
     },
     AFTER_BELIEVE_ALL_DICES_UNDER_CUP_CLOSE_CUP {
         @Override
         public void assertCallBoardInGameState(String expectedCall) {
-            assertEquals(expectedCall, GameState.state().getCallInput());
-            assertFalse(GameState.state().isAllowedToCall());
+            assertEquals(expectedCall, state().getCallInput());
+            assertFalse(state().isAllowedToCall());
         }
 
         @Override
         public void assertCupInGameState() {
-            assertFalse(GameState.state().getCup().isWatching());
-            assertFalse(GameState.state().getCup().isBelieving());
-            assertFalse(GameState.state().getCup().isLocked());
+            assertFalse(state().getCup().isWatching());
+            assertFalse(state().getCup().isBelieving());
+            assertFalse(state().getCup().isLocked());
         }
 
         @Override
         public void assertStatusses(NumberCombination expectedCall) {
-            assertTrue(GameState.state().isAllowedToThrow()); // First has to close the cup.
-            assertFalse(GameState.state().isAllowedToBelieveOrNotBelieve());
-            assertTrue(GameState.state().isAllowedToViewOwnThrow());
-            assertFalse(GameState.state().isBlindPass());
-            assertEquals(expectedCall, GameState.state().getLatestCall().getNumberCombination());
+            assertTrue(state().isAllowedToThrow()); // First has to close the cup.
+            assertFalse(state().isAllowedToBelieveOrNotBelieve());
+            assertTrue(state().isAllowedToViewOwnThrow());
+            assertFalse(state().isBlindPass());
+            assertEquals(expectedCall, state().getLatestCall().getNumberCombination());
         }
     },
     AFTER_BELIEVE_ALL_DICES_UNDER_CUP_BLIND_PEEK {
         @Override
         public void assertCallBoardInGameState(String expectedCall) {
-            assertEquals(expectedCall, GameState.state().getCallInput());
-            assertFalse(GameState.state().isAllowedToCall());
+            assertEquals(expectedCall, state().getCallInput());
+            assertFalse(state().isAllowedToCall());
         }
 
         @Override
         public void assertCupInGameState() {
-            assertFalse(GameState.state().getCup().isBelieving());
-            assertFalse(GameState.state().getCup().isLocked());
-            assertTrue(GameState.state().getCup().isWatching());
+            assertFalse(state().getCup().isBelieving());
+            assertFalse(state().getCup().isLocked());
+            assertTrue(state().getCup().isWatching());
         }
 
         @Override
@@ -664,11 +729,11 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertStatusses(NumberCombination expectedCall) {
-            assertFalse(GameState.state().isAllowedToThrow()); // First has to close the cup.
-            assertFalse(GameState.state().isAllowedToBelieveOrNotBelieve());
-            assertTrue(GameState.state().isAllowedToViewOwnThrow());
-            assertFalse(GameState.state().isBlindPass());
-            assertEquals(expectedCall, GameState.state().getLatestCall().getNumberCombination());
+            assertFalse(state().isAllowedToThrow()); // First has to close the cup.
+            assertFalse(state().isAllowedToBelieveOrNotBelieve());
+            assertTrue(state().isAllowedToViewOwnThrow());
+            assertFalse(state().isBlindPass());
+            assertEquals(expectedCall, state().getLatestCall().getNumberCombination());
         }
 
         @Override
@@ -681,15 +746,15 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
     AFTER_BELIEVE_ALL_DICES_UNDER_CUP_BLIND_PEEK_CLOSE {
         @Override
         public void assertCallBoardInGameState(String expectedCall) {
-            assertEquals(expectedCall, GameState.state().getCallInput());
-            assertFalse(GameState.state().isAllowedToCall());
+            assertEquals(expectedCall, state().getCallInput());
+            assertFalse(state().isAllowedToCall());
         }
 
         @Override
         public void assertCupInGameState() {
-            assertFalse(GameState.state().getCup().isBelieving());
-            assertFalse(GameState.state().getCup().isLocked());
-            assertFalse(GameState.state().getCup().isWatching());
+            assertFalse(state().getCup().isBelieving());
+            assertFalse(state().getCup().isLocked());
+            assertFalse(state().getCup().isWatching());
         }
 
         @Override
@@ -700,11 +765,11 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertStatusses(NumberCombination expectedCall) {
-            assertTrue(GameState.state().isAllowedToThrow());
-            assertFalse(GameState.state().isAllowedToBelieveOrNotBelieve());
-            assertTrue(GameState.state().isAllowedToViewOwnThrow());
-            assertFalse(GameState.state().isBlindPass());
-            assertEquals(expectedCall, GameState.state().getLatestCall().getNumberCombination());
+            assertTrue(state().isAllowedToThrow());
+            assertFalse(state().isAllowedToBelieveOrNotBelieve());
+            assertTrue(state().isAllowedToViewOwnThrow());
+            assertFalse(state().isBlindPass());
+            assertEquals(expectedCall, state().getLatestCall().getNumberCombination());
         }
 
         @Override
