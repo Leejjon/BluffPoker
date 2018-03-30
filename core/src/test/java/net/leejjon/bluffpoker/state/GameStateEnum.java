@@ -44,10 +44,9 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
     },
     AFTER_FIRST_SHAKE {
         @Override
-        public void assertCallBoardInUI(String expectedCall, Label callInputLabel, ClickableLabel autoButton, ClickableLabel callButton) {
-            assertEquals(expectedCall, callInputLabel.getText().toString());
-            assertFalse(autoButton.isDisabled());
-            assertFalse(callButton.isDisabled());
+        public void assertCallBoardInGameState(String expectedCall) {
+            assertEquals(expectedCall, state().getCallInput());
+            assertTrue(state().isAllowedToCall());
         }
 
         @Override
@@ -64,13 +63,16 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
             assertTrue(state().isAllowedToViewOwnThrow());
             assertTrue(state().isBlindPass());
             assertFalse(state().isBelieved666());
+
+            // Both are null in this case.
             assertEquals(expectedCall, state().getLatestCall());
         }
 
         @Override
-        public void assertCallBoardInGameState(String expectedCall) {
-            assertEquals(expectedCall, state().getCallInput());
-            assertTrue(state().isAllowedToCall());
+        public void assertCallBoardInUI(String expectedCall, Label callInputLabel, ClickableLabel autoButton, ClickableLabel callButton) {
+            assertEquals(expectedCall, callInputLabel.getText().toString());
+            assertFalse(autoButton.isDisabled());
+            assertFalse(callButton.isDisabled());
         }
     },
     VIEW_AFTER_FIRST_SHAKE {
@@ -441,7 +443,7 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
             assertFalse(cupActor.getLockImage().isVisible());
         }
     },
-    BELIEVED_666_ALL_DICES_UNDER_CUP_CLOSE {
+    BELIEVED_666_ALL_DICES_UNDER_CUP_CLOSED {
         @Override
         public void assertCallBoardInGameState(String expectedCall) {
             assertEquals(expectedCall, state().getCallInput());
@@ -463,6 +465,37 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
             assertFalse(state().isBlindPass());
             assertTrue(state().isBelieved666());
             assertEquals(expectedCall, state().getLatestCall().getNumberCombination());
+        }
+    },
+    BELIEVED_666_ALL_DICES_UNDER_CUP_CLOSED_THROWN {
+        @Override
+        public void assertCallBoardInGameState(String expectedCall) {
+            assertEquals(expectedCall, state().getCallInput());
+            assertTrue(state().isAllowedToCall());
+        }
+
+        @Override
+        public void assertCupInGameState() {
+            assertFalse(state().getCup().isBelieving());
+            assertFalse(state().getCup().isLocked());
+            assertFalse(state().getCup().isWatching());
+        }
+
+        @Override
+        public void assertStatusses(NumberCombination expectedCall) {
+            assertFalse(state().isAllowedToThrow());
+            assertFalse(state().isAllowedToBelieveOrNotBelieve());
+            assertTrue(state().isAllowedToViewOwnThrow());
+            assertTrue(state().isBlindPass());
+            assertTrue(state().isBelieved666());
+            assertEquals(expectedCall, state().getLatestCall().getNumberCombination());
+        }
+
+        @Override
+        public void assertCallBoardInUI(String expectedCall, Label callInputLabel, ClickableLabel autoButton, ClickableLabel callButton) {
+            assertEquals(expectedCall, callInputLabel.getText().toString());
+            assertFalse(autoButton.isDisabled());
+            assertFalse(callButton.isDisabled());
         }
     },
     NOT_BELIEVE_CORRECT_All_DICES_UNDER_CUP {

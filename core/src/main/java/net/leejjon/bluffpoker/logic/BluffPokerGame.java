@@ -30,9 +30,10 @@ public class BluffPokerGame implements GameInputInterface {
     private static final String YOUR_CALL_MUST_BE_HIGHER_THAN = "Your call must be higher than: ";
     public static final String BLIND_MESSAGE = " (blind)";
     private static final String CALLED = " called ";
-    private static final String BELIEVED_666 = " believed 666!";
+    private static final String BELIEVED_666 = "%1$s believed %2$s!";
     private static final String BELIEVED_THE_CALL = " believed the call";
     private static final String BELIEVED_THE_CALL_BLIND = " believed the call (blind)";
+    private static final String THROW_AT_LEAST_ONE_DICE = "Throw at least one dice ...";
     private static final String THROW_THREE_OF_THE_SAME_NUMBERS_IN_ONE_THROW = "Throw three of the same numbers in one throw!";
     private static final String NOW_ENTER_YOUR_CALL = "Now enter your call ...";
     private static final String NOW_ENTER_YOUR_CALL_OR_THROW = "Now enter your call (or peek) ...";
@@ -297,30 +298,34 @@ public class BluffPokerGame implements GameInputInterface {
     }
 
     private void believe() {
-        state().logGameConsoleMessage(state().getCurrentPlayer().getName() + BELIEVED_THE_CALL);
-        state().logGameConsoleMessage("Throw at least one dice ...");
-
-        if (getNumberCombinationFromDices().isGreaterThan(new NumberCombination(6,0,0, true))) {
-            userInterface.showTutorialMessage(TutorialMessage.MOVE_SIX_OUT, state().getLatestCall().getPlayerName(), state().getLatestCall().getNumberCombination().toString());
+        if (state().isBelieved666()) {
+            preparePostBelieve666Action();
         } else {
-            userInterface.showTutorialMessage(TutorialMessage.RETHROW_ALL_DICES, state().getLatestCall().getPlayerName(), state().getLatestCall().getNumberCombination().toString());
+            state().logGameConsoleMessage(state().getCurrentPlayer().getName() + BELIEVED_THE_CALL);
+            state().logGameConsoleMessage(THROW_AT_LEAST_ONE_DICE);
+
+            if (getNumberCombinationFromDices().isGreaterThan(new NumberCombination(6, 0, 0, true))) {
+                userInterface.showTutorialMessage(TutorialMessage.MOVE_SIX_OUT, state().getLatestCall().getPlayerName(), state().getLatestCall().getNumberCombination().toString());
+            } else {
+                userInterface.showTutorialMessage(TutorialMessage.RETHROW_ALL_DICES, state().getLatestCall().getPlayerName(), state().getLatestCall().getNumberCombination().toString());
+            }
         }
 
         postBelieveUiUpdate();
     }
 
     private void believe666() {
-        // TODO: Do we need to make the dices visible here?
         state().setBelieved666(true);
-
-        // TODO: Do we really need to put them back under the cup?
         state().getLeftDice().putBackUnderCup();
         state().getMiddleDice().putBackUnderCup();
         state().getRightDice().putBackUnderCup();
-        state().logGameConsoleMessage(state().getCurrentPlayer().getName() + BELIEVED_666);
-        state().logGameConsoleMessage(THROW_THREE_OF_THE_SAME_NUMBERS_IN_ONE_THROW);
-
+        preparePostBelieve666Action();
         postBelieveUiUpdate();
+    }
+
+    private void preparePostBelieve666Action() {
+        state().logGameConsoleMessage(String.format(BELIEVED_666, state().getCurrentPlayer().getName(), state().getLatestCall().getNumberCombination()));
+        state().logGameConsoleMessage(THROW_THREE_OF_THE_SAME_NUMBERS_IN_ONE_THROW);
     }
 
     private void blindBelieve() {

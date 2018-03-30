@@ -352,18 +352,34 @@ public class GameStateTest extends GdxTest {
     }
 
     @Test
-    public void testFirstThrow641_blindCall666_believe_close() throws InputValidationException {
+    public void testFirstThrow641_blindCall666_believe_closed() throws InputValidationException {
         NumberCombination expectedNumberCombination = get641();
         NumberCombination call = NumberCombination.MAX;
         BluffPokerGame game = tapCup(tapCup(call(throwSpecificValue(startNewGame(), expectedNumberCombination), call)));
 
-        GameStateEnum.BELIEVED_666_ALL_DICES_UNDER_CUP_CLOSE.assertUserInterfaceState(call.toString(),
+        GameStateEnum.BELIEVED_666_ALL_DICES_UNDER_CUP_CLOSED.assertUserInterfaceState(call.toString(),
                 callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
-        GameStateEnum.BELIEVED_666_ALL_DICES_UNDER_CUP_CLOSE.assertState(game, expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
+        GameStateEnum.BELIEVED_666_ALL_DICES_UNDER_CUP_CLOSED.assertState(game, expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
 
-        GameStateEnum.BELIEVED_666_ALL_DICES_UNDER_CUP_CLOSE.assertUserInterfaceState(call.toString(),
+        GameStateEnum.BELIEVED_666_ALL_DICES_UNDER_CUP_CLOSED.assertUserInterfaceState(call.toString(),
                 callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
-        GameStateEnum.BELIEVED_666_ALL_DICES_UNDER_CUP_CLOSE.assertState(reloadGame(), expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
+        GameStateEnum.BELIEVED_666_ALL_DICES_UNDER_CUP_CLOSED.assertState(reloadGame(), expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
+    }
+
+    @Test
+    public void testFirstThrow641_blindCall666_believe_closed_thrown() throws InputValidationException {
+        NumberCombination expectedNumberCombination = get641();
+        NumberCombination call = NumberCombination.MAX;
+        // After believing 666 we just throw 641 again.
+        BluffPokerGame game = throwSpecificValue(tapCup(tapCup(call(throwSpecificValue(startNewGame(), expectedNumberCombination), call))), expectedNumberCombination);
+
+        GameStateEnum.BELIEVED_666_ALL_DICES_UNDER_CUP_CLOSED_THROWN.assertUserInterfaceState(call.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.BELIEVED_666_ALL_DICES_UNDER_CUP_CLOSED_THROWN.assertState(game, expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
+
+        GameStateEnum.BELIEVED_666_ALL_DICES_UNDER_CUP_CLOSED_THROWN.assertUserInterfaceState(call.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.BELIEVED_666_ALL_DICES_UNDER_CUP_CLOSED_THROWN.assertState(reloadGame(), expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
     }
 
     @Test
