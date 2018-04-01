@@ -2,7 +2,9 @@ package net.leejjon.bluffpoker;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.utils.ObjectMap;
 import lombok.Getter;
 import net.leejjon.bluffpoker.enums.TextureKey;
@@ -11,6 +13,7 @@ import net.leejjon.bluffpoker.interfaces.PlatformSpecificInterface;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 import net.leejjon.bluffpoker.listener.PhoneInputListener;
 import net.leejjon.bluffpoker.stages.*;
+import net.leejjon.bluffpoker.ui.SwipeFromLeftGestureDetector;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -29,6 +32,9 @@ public class BluffPokerApp extends ApplicationAdapter implements
     private SelectPlayersStage selectPlayersStage;
     private SettingsStage settingsStage;
     private GameStage gameStage;
+    private PauseStage pauseStage;
+
+    private InputMultiplexer gameInput;
 
     // Made it static because on iOS the zoomfactor cannot be calculated before the create method is initiated.
     @Getter
@@ -55,9 +61,14 @@ public class BluffPokerApp extends ApplicationAdapter implements
         settingsStage = new SettingsStage(uiSkin, this);
         selectPlayersStage = new SelectPlayersStage(uiSkin, tutorialDialog,this);
         gameStage = new GameStage(uiSkin, tutorialDialog, this);
+        pauseStage = new PauseStage(this, uiSkin);
 
         // Make sure touch input goes to the startStage.
         Gdx.input.setInputProcessor(startMenuStage);
+
+        gameInput = new InputMultiplexer();
+        gameInput.addProcessor(gameStage);
+        gameInput.addProcessor(new SwipeFromLeftGestureDetector(this));
     }
 
     @Override
@@ -70,6 +81,7 @@ public class BluffPokerApp extends ApplicationAdapter implements
         settingsStage.draw();
         selectPlayersStage.draw();
         gameStage.draw();
+        pauseStage.draw();
     }
 
     @Override
@@ -95,7 +107,7 @@ public class BluffPokerApp extends ApplicationAdapter implements
         startMenuStage.setVisible(false);
         gameStage.setVisible(true);
         gameStage.continueGame();
-        Gdx.input.setInputProcessor(gameStage);
+        Gdx.input.setInputProcessor(gameInput);
     }
 
     @Override
@@ -124,12 +136,24 @@ public class BluffPokerApp extends ApplicationAdapter implements
         selectPlayersStage.setVisible(false);
         gameStage.setVisible(true);
         gameStage.startGame(players);
-        Gdx.input.setInputProcessor(gameStage);
+        Gdx.input.setInputProcessor(gameInput);
     }
 
     @Override
     public Texture getTexture(TextureKey textureKey) {
         return textureMap.get(textureKey);
+    }
+
+    @Override
+    public void openPauseScreen() {
+        pauseStage.setVisible(true);
+        Gdx.input.setInputProcessor(pauseStage);
+    }
+
+    @Override
+    public void closePauseScreen() {
+        pauseStage.setVisible(false);
+        Gdx.input.setInputProcessor(gameInput);
     }
 
     @Override

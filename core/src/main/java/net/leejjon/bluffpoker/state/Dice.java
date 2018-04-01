@@ -9,9 +9,10 @@ import net.leejjon.bluffpoker.interfaces.Lockable;
 import net.leejjon.bluffpoker.logic.DiceLocation;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class Dice implements Lockable {
-    private final transient DiceValueGenerator diceValueGenerator;
+    @Setter private transient DiceValueGenerator diceValueGenerator;
     @Getter private transient DiceActor diceActor;
 
     private int diceValue;

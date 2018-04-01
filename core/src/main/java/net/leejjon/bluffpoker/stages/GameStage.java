@@ -148,6 +148,17 @@ public class GameStage extends AbstractStage implements UserInterface {
         addActor(dicesBeforeCupActors);
         addActor(callBoard);
         addActor(topTable);
+
+//        TextButton hoi = new TextButton("", uiSkin);
+//        hoi.setHeight(GameStage.getTopY() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor());
+//        hoi.setWidth((Gdx.graphics.getWidth() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor()) / 6);
+//        hoi.addListener(new ClickListener() {
+//            @Override
+//            public void clicked(InputEvent event, float x, float y) {
+//                Gdx.app.log(BluffPokerApp.TAG, "Click");
+//            }
+//        });
+//        addActor(hoi);
     }
 
     public void startGame(ArrayList<String> players) {

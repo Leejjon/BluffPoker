@@ -91,10 +91,6 @@ public class GameState {
         return players[playerIterator];
     }
 
-    /**
-     * TODO: This method fails when believing
-     * @return
-     */
     public boolean isBelievingBlind() { return !blindPass && !hasToThrow && allowedToBelieveOrNotBelieve; }
 
     public boolean isInitiatingBlindPass() { return blindPass && hasThrown && firstThrowSinceDeath && !allowedToBelieveOrNotBelieve; }
@@ -103,7 +99,7 @@ public class GameState {
      * TODO: This method is broken when believing 666.
      * @return
      */
-    public boolean bailedOutOfBlindBelieving() { return blindPass && !hasToThrow && !firstThrowSinceDeath; }
+    public boolean bailedOutOfBlindBelieving() { return blindPass && !hasToThrow && !firstThrowSinceDeath && !believed666; }
 
     public boolean userTriesToLockOrUnlock() { return !blindPass && hasToThrow && !firstThrowSinceDeath; }
 
@@ -177,20 +173,25 @@ public class GameState {
         cup.update();
     }
 
-    // TODO: Can dices only be created after the cup?
     public void createDiceActors(Texture[] diceTextures, Texture diceLockTexture, Group dicesBeforeCupActors, Group dicesUnderCupActors, DiceValueGenerator diceValueGenerator) {
         int middleYForCup = cup.getCupActor().getMiddleYForCup();
 
         if (leftDice == null) {
             leftDice = new Dice(diceValueGenerator, 6);
+        } else {
+            leftDice.setDiceValueGenerator(diceValueGenerator);
         }
 
         if (middleDice == null) {
             middleDice = new Dice(diceValueGenerator, 4);
+        } else {
+            middleDice.setDiceValueGenerator(diceValueGenerator);
         }
 
         if (rightDice == null) {
             rightDice = new Dice(diceValueGenerator, 3);
+        } else {
+            rightDice.setDiceValueGenerator(diceValueGenerator);
         }
 
         leftDice.createDiceActor(diceTextures, diceLockTexture, DiceLocation.LEFT, dicesBeforeCupActors, dicesUnderCupActors, middleYForCup);
@@ -342,7 +343,9 @@ public class GameState {
         }
     }
 
-    private GameState() {}
+    private GameState() {
+
+    }
 
     private GameState(Label callInputField, Label thirdLatestOutputLabel, Label secondLatestOutputLabel, Label latestOutputLabel, ClickableLabel autoButton,
                               ClickableLabel callButton, CupActor cupActor, DiceActor leftDiceActor, DiceActor middleDiceActor, DiceActor rightDiceActor) {
