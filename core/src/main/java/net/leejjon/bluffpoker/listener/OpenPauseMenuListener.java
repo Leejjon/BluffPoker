@@ -1,4 +1,4 @@
-package net.leejjon.bluffpoker.ui;
+package net.leejjon.bluffpoker.listener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.input.GestureDetector;
@@ -8,18 +8,17 @@ import net.leejjon.bluffpoker.interfaces.StageInterface;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class SwipeFromLeftGestureDetector extends GestureDetector {
+public class OpenPauseMenuListener extends GestureDetector {
     private final int leftAreaApplicableForSwipe;
 
     private AtomicBoolean ignoreFling = new AtomicBoolean(true);
 
-    public SwipeFromLeftGestureDetector(StageInterface stageInterface) {
+    public OpenPauseMenuListener(StageInterface stageInterface) {
         super(new GestureDetector.GestureAdapter() {
             @Override
             public boolean fling(float velocityX, float velocityY, int button) {
                 if (Math.abs(velocityX) > Math.abs(velocityY)) {
                     if (velocityX > 0) {
-                        Gdx.app.log(BluffPokerApp.TAG, "Open the menu.");
                         stageInterface.openPauseScreen();
                         return true;
                     }
@@ -35,7 +34,6 @@ public class SwipeFromLeftGestureDetector extends GestureDetector {
     @Override
     public boolean touchDown(int x, int y, int pointer, int button) {
         if (x >= 0 && x < leftAreaApplicableForSwipe) {
-            Gdx.app.log(BluffPokerApp.TAG, "Fling detected, area size: " + leftAreaApplicableForSwipe);
             ignoreFling.lazySet(false);
             return super.touchDown(x, y, pointer, button);
         } else {

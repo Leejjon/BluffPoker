@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import net.leejjon.bluffpoker.BluffPokerApp;
+import net.leejjon.bluffpoker.stages.PauseStage;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -30,9 +31,10 @@ public enum TextureKey {
         protected Texture get() {
             int width = Gdx.graphics.getWidth() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor();
             int height = Gdx.graphics.getHeight() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor();
-            Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
+
+            Pixmap pixmap = new Pixmap(width - PauseStage.getMenuWidth(), height, Pixmap.Format.RGBA8888);
             pixmap.setColor(0, 0, 0, 0.6f);
-            pixmap.fillRectangle(0, 0, width, height);
+            pixmap.fillRectangle(0, 0, width - PauseStage.getMenuWidth(), height);
             Texture texture = new Texture(pixmap);
             pixmap.dispose();
             return texture;
