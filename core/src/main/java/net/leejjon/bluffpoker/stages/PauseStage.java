@@ -2,26 +2,36 @@ package net.leejjon.bluffpoker.stages;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Disposable;
 
 import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.enums.TextureKey;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 
 public class PauseStage extends AbstractStage {
+    private int rightSideOfMenuX;
+
+    private float backgroundAlpha = 0.5f;
+    private ShapeRenderer screenDimmerRenderer;
+
     public PauseStage(StageInterface stageInterface, Skin skin) {
         super(false);
 
         TextureRegionDrawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(stageInterface.getTexture(TextureKey.MENU_COLOR)));
+//        TextureRegionDrawable screenDimmerDrawable = new TextureRegionDrawable(new TextureRegion(stageInterface.getTexture(TextureKey.SCREEN_DIMMER)));
 
         int width = Gdx.graphics.getWidth() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor();
         int height = Gdx.graphics.getHeight() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor();
@@ -58,26 +68,48 @@ public class PauseStage extends AbstractStage {
         table.add(menuTable).width(getMenuWidth()).height(height)
                 .padTop(BluffPokerApp.getPlatformSpecificInterface().getTopPadding())
                 .padBottom(BluffPokerApp.getPlatformSpecificInterface().getBottomPadding());
+        table.setX(0f);
 
-        Image screenDimmer = new Image(stageInterface.getTexture(TextureKey.SCREEN_DIMMER));
-        screenDimmer.setPosition(getMenuWidth(), 0);
-        screenDimmer.addListener(new ActorGestureListener() {
-            /**
-             * Override touch up instead of clicked because we want any gesture there to close the pause screen.
-             */
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                stageInterface.closePauseScreen();
-            }
-        });
+        screenDimmerRenderer = new ShapeRenderer();
 
-        addActor(screenDimmer);
         addActor(table);
+    }
 
+    @Override
+    public void draw() {
+        super.draw();
+        if (isVisible()) {
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            screenDimmerRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            screenDimmerRenderer.setColor(0f, 0f, 0f, backgroundAlpha);
+            // All Scene2D related
+            screenDimmerRenderer.rect(rightSideOfMenuX, 0, Gdx.graphics.getWidth() - rightSideOfMenuX, Gdx.graphics.getHeight());
+            screenDimmerRenderer.end();
+        }
+    }
+
+    @Override
+    public void dispose() {
+        screenDimmerRenderer.dispose();
+        super.dispose();
+    }
+
+    public void setRightSideOfMenuX(int x) {
+        if (x <= getRawMenuWidth()) {
+            this.rightSideOfMenuX = x;
+            table.setX((rightSideOfMenuX / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor()) - getMenuWidth());
+        }
     }
 
     public static int getMenuWidth() {
         int width = Gdx.graphics.getWidth() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor();
+        int oneSixthOfWidth = width / 6;
+        return (width / 2) + oneSixthOfWidth;
+    }
+
+    public static int getRawMenuWidth() {
+        int width = Gdx.graphics.getWidth();
         int oneSixthOfWidth = width / 6;
         return (width / 2) + oneSixthOfWidth;
     }

@@ -32,9 +32,9 @@ public enum TextureKey {
             int width = Gdx.graphics.getWidth() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor();
             int height = Gdx.graphics.getHeight() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor();
 
-            Pixmap pixmap = new Pixmap(width - PauseStage.getMenuWidth(), height, Pixmap.Format.RGBA8888);
+            Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
             pixmap.setColor(0, 0, 0, 0.6f);
-            pixmap.fillRectangle(0, 0, width - PauseStage.getMenuWidth(), height);
+            pixmap.fillRectangle(0, 0, 1,1);
             Texture texture = new Texture(pixmap);
             pixmap.dispose();
             return texture;

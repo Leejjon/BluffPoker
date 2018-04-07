@@ -1,6 +1,7 @@
 package net.leejjon.bluffpoker;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Texture;
@@ -11,9 +12,9 @@ import net.leejjon.bluffpoker.dialogs.TutorialDialog;
 import net.leejjon.bluffpoker.interfaces.PlatformSpecificInterface;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 import net.leejjon.bluffpoker.listener.ClosePauseMenuListener;
+import net.leejjon.bluffpoker.listener.FancyOpenPauseMenuListener;
 import net.leejjon.bluffpoker.listener.PhoneInputListener;
 import net.leejjon.bluffpoker.stages.*;
-import net.leejjon.bluffpoker.listener.OpenPauseMenuListener;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -34,6 +35,8 @@ public class BluffPokerApp extends ApplicationAdapter implements
 
     private InputMultiplexer gameInput;
     private InputMultiplexer pauseMenuInput;
+
+    private FancyOpenPauseMenuListener openPauseMenuListener;
 
     // Made it static because on iOS the zoomfactor cannot be calculated before the create method is initiated.
     @Getter
@@ -65,9 +68,11 @@ public class BluffPokerApp extends ApplicationAdapter implements
         // Make sure touch input goes to the startStage.
         Gdx.input.setInputProcessor(startMenuStage);
 
+        openPauseMenuListener = new FancyOpenPauseMenuListener(this);
+
         gameInput = new InputMultiplexer();
         gameInput.addProcessor(gameStage);
-        gameInput.addProcessor(new OpenPauseMenuListener(this));
+        gameInput.addProcessor(openPauseMenuListener);
 
         pauseMenuInput = new InputMultiplexer();
         pauseMenuInput.addProcessor(pauseStage);
@@ -147,14 +152,28 @@ public class BluffPokerApp extends ApplicationAdapter implements
         return textureMap.get(textureKey);
     }
 
+    private AtomicBoolean pauseScreenAlreadyOpen = new AtomicBoolean(false);
+
     @Override
-    public void openPauseScreen() {
-        pauseStage.setVisible(true);
-        Gdx.input.setInputProcessor(pauseMenuInput);
+    public void openPauseScreen(int x) {
+        if (pauseScreenAlreadyOpen.weakCompareAndSet(false, true)) {
+
+            pauseStage.setVisible(true);
+            Gdx.input.setInputProcessor(openPauseMenuListener);
+        }
+        pauseStage.setRightSideOfMenuX(x);
     }
+
+//    @Override
+//    public void movePauseScreen(int x) {
+//        if (pauseScreenAlreadyOpen.get()) {
+//            pauseStage.moveRightSideOfMenu(x);
+//        }
+//    }
 
     @Override
     public void closePauseScreen() {
+        pauseScreenAlreadyOpen.set(false);
         pauseStage.setVisible(false);
         Gdx.input.setInputProcessor(gameInput);
     }
