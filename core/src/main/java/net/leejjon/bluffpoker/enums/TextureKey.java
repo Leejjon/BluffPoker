@@ -74,7 +74,11 @@ public enum TextureKey {
      * @return Texture of enum entry.
      */
     protected Texture get(String relativePath) {
-        return new Texture(relativePath + fileName);
+        if (fileName == null) {
+            return get();
+        } else {
+            return new Texture(relativePath + fileName);
+        }
     }
 
     public static ObjectMap<TextureKey, Texture> getAllTextures() {

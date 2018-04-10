@@ -30,7 +30,8 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
     @Getter
     private float rightSideOfMenuX;
 
-    private float backgroundAlpha = 0.5f;
+    private float backgroundAlpha = 0f;
+    private final float maxBackgroundAlpha = 0.5f;
     private ShapeRenderer screenDimmerRenderer;
 
     private AtomicBoolean openPauseMenuActionRunning = new AtomicBoolean(false);
@@ -109,13 +110,26 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
     public void setRightSideOfMenuX(float x) {
         if (x <= getRawMenuWidth()) {
             this.rightSideOfMenuX = x;
+            this.backgroundAlpha = calculateAlpha(x);
             table.setX((rightSideOfMenuX / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor()) - getMenuWidth());
         }
     }
 
+    private float calculateAlpha(float x) {
+        float alpha = 0;
+
+        if (x > 0) {
+            final float ratio = maxBackgroundAlpha * x;
+            alpha = ratio / getRawMenuWidth();
+        }
+
+        return alpha;
+    }
+
     @Override
     public void continueOpeningPauseMenu() {
-        if (openPauseMenuActionRunning.weakCompareAndSet(false, true)) {
+        // TODO: Cancel out any close menu actions.
+        if (openPauseMenuActionRunning.compareAndSet(false, true)) {
             addAction(new OpenPauseMenuAction(this));
         } else {
             Gdx.app.log(BluffPokerApp.TAG, "Attempted to open pause menu while an openPauseMenuAction was already running.");
@@ -124,7 +138,8 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
 
     @Override
     public void continueClosingPauseMenu() {
-        if (closePauseMenuActionRunning.weakCompareAndSet(false, true)) {
+        // TODO: Cancel out any close menu actions.
+        if (closePauseMenuActionRunning.compareAndSet(false, true)) {
             addAction(new ClosePauseMenuAction(this));
         } else {
             Gdx.app.log(BluffPokerApp.TAG, "Attempted to close pause menu while a closePauseMenuAction was already running.");
@@ -145,7 +160,6 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
     public void doneOpeningPauseMenu() {
         setRightSideOfMenuX(PauseStage.getRawMenuWidth());
         openPauseMenuActionRunning.set(false);
-        // TODO:
     }
 
     @Override

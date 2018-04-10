@@ -811,5 +811,66 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
             assertTrue(autoButton.isDisabled());
             assertTrue(callButton.isDisabled());
         }
+    },
+    AFTER_BELIEVE_LEFT_SIX_OUT_PULL_BACK_LEFT_SIX {
+        @Override
+        public void assertCupInUI(CupActor cupActor) {
+            assertEquals(cupActor.getOpenCupDrawable(), cupActor.getCupImage().getDrawable());
+            assertFalse(cupActor.getLockImage().isVisible());
+        }
+
+        @Override
+        public void assertCallBoardInGameState(String expectedCall) {
+            assertEquals(expectedCall, state().getCallInput());
+            assertFalse(state().isAllowedToCall());
+        }
+
+        @Override
+        public void assertCupInGameState() {
+            assertTrue(state().getCup().isBelieving());
+            assertFalse(state().getCup().isLocked());
+            assertFalse(state().getCup().isWatching());
+        }
+
+        @Override
+        public void assertStatusses(NumberCombination expectedCall) {
+            assertFalse(state().isAllowedToThrow()); // First has to close the cup.
+            assertTrue(state().isAllowedToBelieveOrNotBelieve());
+            assertFalse(state().isAllowedToViewOwnThrow());
+            assertFalse(state().isBlindPass());
+            assertFalse(state().isBelieved666());
+            assertEquals(expectedCall, state().getLatestCall().getNumberCombination());
+        }
+
+
+        @Override
+        public void assertDiceLocksInUI(DiceActor left, DiceActor middle, DiceActor right) {
+            assertTrue(left.getLockImage().isVisible());
+            assertFalse(middle.getLockImage().isVisible());
+            assertFalse(right.getLockImage().isVisible());
+        }
+
+        @Override
+        public void assertDiceLocations(DiceActor left, DiceActor middle, DiceActor right, Group dicesUnderCupActors, Group dicesBeforeCupActors) {
+            // Assert if the dices have been added to the correct group.
+            SnapshotArray<Actor> dicesBeforeCup = dicesBeforeCupActors.getChildren();
+            dicesBeforeCup.contains(left, true);
+
+            SnapshotArray<Actor> dicesUnderCup = dicesUnderCupActors.getChildren();
+            dicesUnderCup.contains(middle, true);
+            dicesUnderCup.contains(right, true);
+        }
+
+        @Override
+        public void assertDices(NumberCombination expectedNumberCombination) {
+            assertExpectedNumberCombinationWithGameState(expectedNumberCombination);
+            assertFalse(state().getLeftDice().isUnderCup());
+            assertTrue(state().getMiddleDice().isUnderCup());
+            assertTrue(state().getRightDice().isUnderCup());
+
+            assertTrue(state().getLeftDice().isLocked());
+            assertFalse(state().getMiddleDice().isLocked());
+            assertFalse(state().getRightDice().isLocked());
+        }
     }
 }

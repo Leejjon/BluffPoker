@@ -514,6 +514,22 @@ public class GameStateTest extends GdxTest {
         GameStateEnum.AFTER_BELIEVE_ALL_DICES_UNDER_CUP_BLIND_PEEK_CLOSE.assertState(reloadGame(), expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
     }
 
+    @Test
+    public void testFirstThrow641_believeLeftSixOut_pullBackLeftSix() throws InputValidationException {
+        NumberCombination expectedNumberCombination = get641();
+        NumberCombination call = call600();
+
+        BluffPokerGame game = tapCup(call(moveLeftDiceOut(tapCup(throwSpecificValue(startNewGame(), expectedNumberCombination))), call));
+
+        GameStateEnum.AFTER_BELIEVE_LEFT_SIX_OUT_PULL_BACK_LEFT_SIX.assertUserInterfaceState(call.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.AFTER_BELIEVE_LEFT_SIX_OUT_PULL_BACK_LEFT_SIX.assertState(game, expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
+
+        GameStateEnum.AFTER_BELIEVE_LEFT_SIX_OUT_PULL_BACK_LEFT_SIX.assertUserInterfaceState(call.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);
+        GameStateEnum.AFTER_BELIEVE_LEFT_SIX_OUT_PULL_BACK_LEFT_SIX.assertState(reloadGame(), expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
+    }
+
     private UserInterface getTestUserInterface() {
         return new UserInterface() {
             @Override
