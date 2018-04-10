@@ -519,7 +519,9 @@ public class GameStateTest extends GdxTest {
         NumberCombination expectedNumberCombination = get641();
         NumberCombination call = call600();
 
-        BluffPokerGame game = tapCup(call(moveLeftDiceOut(tapCup(throwSpecificValue(startNewGame(), expectedNumberCombination))), call));
+        BluffPokerGame game = swipeLeftDiceUp(tapCup(call(moveLeftDiceOut(tapCup(throwSpecificValue(startNewGame(), expectedNumberCombination))), call)));
+
+        // TODO: Write a method that moves the left dice back under the cup.
 
         GameStateEnum.AFTER_BELIEVE_LEFT_SIX_OUT_PULL_BACK_LEFT_SIX.assertUserInterfaceState(call.toString(),
                 callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination);

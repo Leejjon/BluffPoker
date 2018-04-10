@@ -845,7 +845,7 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertDiceLocksInUI(DiceActor left, DiceActor middle, DiceActor right) {
-            assertTrue(left.getLockImage().isVisible());
+            assertFalse(left.getLockImage().isVisible());
             assertFalse(middle.getLockImage().isVisible());
             assertFalse(right.getLockImage().isVisible());
         }
@@ -864,11 +864,11 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
         @Override
         public void assertDices(NumberCombination expectedNumberCombination) {
             assertExpectedNumberCombinationWithGameState(expectedNumberCombination);
-            assertFalse(state().getLeftDice().isUnderCup());
+            assertTrue(state().getLeftDice().isUnderCup());
             assertTrue(state().getMiddleDice().isUnderCup());
             assertTrue(state().getRightDice().isUnderCup());
 
-            assertTrue(state().getLeftDice().isLocked());
+            assertFalse(state().getLeftDice().isLocked());
             assertFalse(state().getMiddleDice().isLocked());
             assertFalse(state().getRightDice().isLocked());
         }

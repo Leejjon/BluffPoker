@@ -99,7 +99,9 @@ public class Dice implements Lockable {
         Cup cup = GameState.state().getCup();
         if (underCup == false && (cup.isBelieving() || cup.isWatching())) {
             underCup = true;
+            locked = false;
             GameState.state().saveGame();
+            diceActor.unlock();
             diceActor.moveUp();
         }
     }
