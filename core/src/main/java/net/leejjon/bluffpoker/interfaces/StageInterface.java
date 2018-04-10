@@ -13,7 +13,7 @@ public interface StageInterface {
 	void backToStartStage();
 	void startGame(ArrayList<String> players);
     Texture getTexture(TextureKey textureKey);
-    void openPauseScreen(int x);
+    void startOpeningPauseScreen(int x);
 //	void movePauseScreen(int x);
     void closePauseScreen();
 }

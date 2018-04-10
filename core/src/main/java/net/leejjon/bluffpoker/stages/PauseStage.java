@@ -3,7 +3,6 @@ package net.leejjon.bluffpoker.stages;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -11,24 +10,35 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Disposable;
 
 import net.leejjon.bluffpoker.BluffPokerApp;
+import net.leejjon.bluffpoker.actions.ClosePauseMenuAction;
+import net.leejjon.bluffpoker.actions.OpenPauseMenuAction;
 import net.leejjon.bluffpoker.enums.TextureKey;
+import net.leejjon.bluffpoker.interfaces.PauseStageInterface;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
 
-public class PauseStage extends AbstractStage {
-    private int rightSideOfMenuX;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import lombok.Getter;
+
+public class PauseStage extends AbstractStage implements PauseStageInterface {
+    private StageInterface stageInterface;
+
+    @Getter
+    private float rightSideOfMenuX;
 
     private float backgroundAlpha = 0.5f;
     private ShapeRenderer screenDimmerRenderer;
 
+    private AtomicBoolean openPauseMenuActionRunning = new AtomicBoolean(false);
+    private AtomicBoolean closePauseMenuActionRunning = new AtomicBoolean(false);
+
     public PauseStage(StageInterface stageInterface, Skin skin) {
         super(false);
+        this.stageInterface = stageInterface;
 
         TextureRegionDrawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(stageInterface.getTexture(TextureKey.MENU_COLOR)));
 //        TextureRegionDrawable screenDimmerDrawable = new TextureRegionDrawable(new TextureRegion(stageInterface.getTexture(TextureKey.SCREEN_DIMMER)));
@@ -95,11 +105,54 @@ public class PauseStage extends AbstractStage {
         super.dispose();
     }
 
-    public void setRightSideOfMenuX(int x) {
+    @Override
+    public void setRightSideOfMenuX(float x) {
         if (x <= getRawMenuWidth()) {
             this.rightSideOfMenuX = x;
             table.setX((rightSideOfMenuX / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor()) - getMenuWidth());
         }
+    }
+
+    @Override
+    public void continueOpeningPauseMenu() {
+        if (openPauseMenuActionRunning.weakCompareAndSet(false, true)) {
+            addAction(new OpenPauseMenuAction(this));
+        } else {
+            Gdx.app.log(BluffPokerApp.TAG, "Attempted to open pause menu while an openPauseMenuAction was already running.");
+        }
+    }
+
+    @Override
+    public void continueClosingPauseMenu() {
+        if (closePauseMenuActionRunning.weakCompareAndSet(false, true)) {
+            addAction(new ClosePauseMenuAction(this));
+        } else {
+            Gdx.app.log(BluffPokerApp.TAG, "Attempted to close pause menu while a closePauseMenuAction was already running.");
+        }
+    }
+
+    @Override
+    public boolean hasOpenPauseMenuActionRunning() {
+        return openPauseMenuActionRunning.get();
+    }
+
+    @Override
+    public boolean hasClosePauseMenuActionRunning() {
+        return closePauseMenuActionRunning.get();
+    }
+
+    @Override
+    public void doneOpeningPauseMenu() {
+        setRightSideOfMenuX(PauseStage.getRawMenuWidth());
+        openPauseMenuActionRunning.set(false);
+        // TODO:
+    }
+
+    @Override
+    public void doneClosingPauseMenu() {
+        closePauseMenuActionRunning.set(false);
+        setRightSideOfMenuX(0);
+        stageInterface.closePauseScreen();
     }
 
     public static int getMenuWidth() {

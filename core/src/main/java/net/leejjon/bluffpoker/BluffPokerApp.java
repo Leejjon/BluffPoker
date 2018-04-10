@@ -1,7 +1,6 @@
 package net.leejjon.bluffpoker;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Texture;
@@ -68,7 +67,7 @@ public class BluffPokerApp extends ApplicationAdapter implements
         // Make sure touch input goes to the startStage.
         Gdx.input.setInputProcessor(startMenuStage);
 
-        openPauseMenuListener = new FancyOpenPauseMenuListener(this);
+        openPauseMenuListener = new FancyOpenPauseMenuListener(this, pauseStage);
 
         gameInput = new InputMultiplexer();
         gameInput.addProcessor(gameStage);
@@ -76,7 +75,7 @@ public class BluffPokerApp extends ApplicationAdapter implements
 
         pauseMenuInput = new InputMultiplexer();
         pauseMenuInput.addProcessor(pauseStage);
-        pauseMenuInput.addProcessor(new ClosePauseMenuListener(this));
+        pauseMenuInput.addProcessor(new ClosePauseMenuListener(pauseStage));
     }
 
     @Override
@@ -152,28 +151,15 @@ public class BluffPokerApp extends ApplicationAdapter implements
         return textureMap.get(textureKey);
     }
 
-    private AtomicBoolean pauseScreenAlreadyOpen = new AtomicBoolean(false);
-
     @Override
-    public void openPauseScreen(int x) {
-        if (pauseScreenAlreadyOpen.weakCompareAndSet(false, true)) {
-
-            pauseStage.setVisible(true);
-            Gdx.input.setInputProcessor(openPauseMenuListener);
-        }
+    public void startOpeningPauseScreen(int x) {
+        pauseStage.setVisible(true);
+        Gdx.input.setInputProcessor(openPauseMenuListener);
         pauseStage.setRightSideOfMenuX(x);
     }
 
-//    @Override
-//    public void movePauseScreen(int x) {
-//        if (pauseScreenAlreadyOpen.get()) {
-//            pauseStage.moveRightSideOfMenu(x);
-//        }
-//    }
-
     @Override
     public void closePauseScreen() {
-        pauseScreenAlreadyOpen.set(false);
         pauseStage.setVisible(false);
         Gdx.input.setInputProcessor(gameInput);
     }
