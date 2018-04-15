@@ -1,6 +1,9 @@
 package net.leejjon.bluffpoker.logic;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+
+import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.actions.LiftCupAction;
 import net.leejjon.bluffpoker.enums.TutorialMessage;
 import net.leejjon.bluffpoker.listener.CupListener;
@@ -289,10 +292,9 @@ public class BluffPokerGame implements GameInputInterface {
                     state().lockCupAndDicesUnderCup();
                 }
                 return true;
-            } else {
-                throw new IllegalStateException(String.format("Illegal appState detected: blindPass=%b, hasThrown=%b, hasToThrow=%b, firstThrowSinceDeath=%b, allowedToBelieveOrNotBelieve=%b",
-                                state().isBlindPass(), state().isHasThrown(), state().isHasThrown(), state().isFirstThrowSinceDeath(), state().isAllowedToBelieveOrNotBelieve()));
             }
+            Gdx.app.log(BluffPokerApp.TAG, String.format("Long tap had no result: blindPass=%b, hasThrown=%b, hasToThrow=%b, firstThrowSinceDeath=%b, allowedToBelieveOrNotBelieve=%b, believed666=%b",
+                                state().isBlindPass(), state().isHasThrown(), state().isHasThrown(), state().isFirstThrowSinceDeath(), state().isAllowedToBelieveOrNotBelieve(), state().isBelieved666()));
         }
         return false;
     }

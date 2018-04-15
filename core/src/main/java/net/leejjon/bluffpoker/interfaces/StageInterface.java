@@ -13,5 +13,8 @@ public interface StageInterface {
 	void backToStartStage();
 	void startGame(ArrayList<String> players);
     Texture getTexture(TextureKey textureKey);
-    // TODO: add getUISkin method.
+    void startOpeningPauseScreen(int x);
+//	void movePauseScreen(int x);
+	void openPauseScreen();
+    void closePauseScreen();
 }

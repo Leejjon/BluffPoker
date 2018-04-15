@@ -2,6 +2,7 @@ package net.leejjon.bluffpoker;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ObjectMap;
 import lombok.Getter;
@@ -9,6 +10,8 @@ import net.leejjon.bluffpoker.enums.TextureKey;
 import net.leejjon.bluffpoker.dialogs.TutorialDialog;
 import net.leejjon.bluffpoker.interfaces.PlatformSpecificInterface;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
+import net.leejjon.bluffpoker.listener.ClosePauseMenuListener;
+import net.leejjon.bluffpoker.listener.FancyOpenPauseMenuListener;
 import net.leejjon.bluffpoker.listener.PhoneInputListener;
 import net.leejjon.bluffpoker.stages.*;
 
@@ -23,12 +26,16 @@ public class BluffPokerApp extends ApplicationAdapter implements
     public static final String TAG = "bluffpoker";
     private Skin uiSkin;
 
-    private TutorialDialog tutorialDialog;
-
     private StartStage startMenuStage;
     private SelectPlayersStage selectPlayersStage;
     private SettingsStage settingsStage;
     private GameStage gameStage;
+    private PauseStage pauseStage;
+
+    private InputMultiplexer gameInput;
+    private InputMultiplexer pauseMenuInput;
+
+    private FancyOpenPauseMenuListener openPauseMenuListener;
 
     // Made it static because on iOS the zoomfactor cannot be calculated before the create method is initiated.
     @Getter
@@ -37,7 +44,7 @@ public class BluffPokerApp extends ApplicationAdapter implements
     private ObjectMap<TextureKey, Texture> textureMap;
 
     public BluffPokerApp(PlatformSpecificInterface platformSpecificInterface) {
-        this.platformSpecificInterface = platformSpecificInterface;
+        BluffPokerApp.platformSpecificInterface = platformSpecificInterface;
     }
 
     @Override
@@ -48,16 +55,27 @@ public class BluffPokerApp extends ApplicationAdapter implements
 
         textureMap = TextureKey.getAllTextures();
 
-        tutorialDialog = new TutorialDialog(uiSkin);
+        TutorialDialog tutorialDialog = new TutorialDialog(uiSkin);
 
         // Create the stages.
         startMenuStage = new StartStage(uiSkin, this);
         settingsStage = new SettingsStage(uiSkin, this);
         selectPlayersStage = new SelectPlayersStage(uiSkin, tutorialDialog,this);
         gameStage = new GameStage(uiSkin, tutorialDialog, this);
+        pauseStage = new PauseStage(this, uiSkin);
 
         // Make sure touch input goes to the startStage.
         Gdx.input.setInputProcessor(startMenuStage);
+
+        openPauseMenuListener = new FancyOpenPauseMenuListener(this, pauseStage);
+
+        gameInput = new InputMultiplexer();
+        gameInput.addProcessor(gameStage);
+        gameInput.addProcessor(openPauseMenuListener);
+
+        pauseMenuInput = new InputMultiplexer();
+        pauseMenuInput.addProcessor(new ClosePauseMenuListener(pauseStage));
+        pauseMenuInput.addProcessor(pauseStage);
     }
 
     @Override
@@ -70,6 +88,7 @@ public class BluffPokerApp extends ApplicationAdapter implements
         settingsStage.draw();
         selectPlayersStage.draw();
         gameStage.draw();
+        pauseStage.draw();
     }
 
     @Override
@@ -95,7 +114,7 @@ public class BluffPokerApp extends ApplicationAdapter implements
         startMenuStage.setVisible(false);
         gameStage.setVisible(true);
         gameStage.continueGame();
-        Gdx.input.setInputProcessor(gameStage);
+        Gdx.input.setInputProcessor(gameInput);
     }
 
     @Override
@@ -124,12 +143,30 @@ public class BluffPokerApp extends ApplicationAdapter implements
         selectPlayersStage.setVisible(false);
         gameStage.setVisible(true);
         gameStage.startGame(players);
-        Gdx.input.setInputProcessor(gameStage);
+        Gdx.input.setInputProcessor(gameInput);
     }
 
     @Override
     public Texture getTexture(TextureKey textureKey) {
         return textureMap.get(textureKey);
+    }
+
+    @Override
+    public void startOpeningPauseScreen(int x) {
+        pauseStage.setVisible(true);
+        Gdx.input.setInputProcessor(openPauseMenuListener);
+        pauseStage.setRightSideOfMenuX(x);
+    }
+
+    @Override
+    public void openPauseScreen() {
+        Gdx.input.setInputProcessor(pauseMenuInput);
+    }
+
+    @Override
+    public void closePauseScreen() {
+        pauseStage.setVisible(false);
+        Gdx.input.setInputProcessor(gameInput);
     }
 
     @Override

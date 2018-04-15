@@ -10,7 +10,10 @@ public class TextureTestLoader {
     public static ObjectMap<TextureKey, Texture> getAllTexturesForInUnitTest(String relativePath) {
         ObjectMap<TextureKey, Texture> textureMap = new ObjectMap<>();
         for (TextureKey t : TextureKey.values()) {
-            textureMap.put(t, t.get(relativePath));
+            Texture texture = t.get(relativePath);
+            if (texture != null) {
+                textureMap.put(t, texture);
+            }
         }
         return textureMap;
     }
