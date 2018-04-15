@@ -93,41 +93,19 @@ public class BluffPokerGame implements GameInputInterface {
             state().setBlindPass(false);
         }
 
-        state().getCup().unlock();
-        state().allowPlayerToCall(false);
-        state().updateLatestCall(new Call(state().getCurrentPlayer().getName(), newCall));
-        state().setCallInput(newCall.toString());
+        state().submitCall(newCall.toString(), new Call(state().getCurrentPlayer().getName(), newCall));
 
         state().logGameConsoleMessage(state().getCurrentPlayer().getName() + CALLED + newCall + addBlindToMessage);
         state().logGameConsoleMessage(getMessageToTellNextUserToBelieveOrNot());
 
         userInterface.showTutorialMessage(TutorialMessage.BELIEVE_OR_NOT_BELIEVE,
                 state().getLatestCall().getPlayerName(),
-                getNextPlayer().getName(),
+                state().getNextPlayer().getName(),
                 state().getLatestCall().getNumberCombination().toString());
     }
 
     private String getMessageToTellNextUserToBelieveOrNot() {
-        return String.format(BELIEVE_IT_OR_NOT, getNextPlayer().getName());
-    }
-
-    private Player getNextPlayer() {
-        Player nextPlayer;
-
-        int localPlayerIterator = state().getPlayerIterator() + 1;
-
-        // At this point (during placing a call) not all players should be dead.
-        do {
-            // If the localPlayerIterator runs out of the arrays bounds, we moveUp it to 0.
-            if (localPlayerIterator == state().getPlayers().length) {
-                localPlayerIterator = 0;
-            }
-
-            nextPlayer = state().getPlayers()[localPlayerIterator];
-
-            localPlayerIterator++;
-        } while (nextPlayer.isDead());
-        return nextPlayer;
+        return String.format(BELIEVE_IT_OR_NOT, state().getNextPlayer().getName());
     }
 
     @Override
@@ -268,15 +246,15 @@ public class BluffPokerGame implements GameInputInterface {
 
                 // Leave blindPass true on purpose.
                 state().setAllowedToViewOwnThrow(false);
-                state().allowPlayerToCall(true);
+                state().allowPlayerToCallWithSave(true);
                 state().logGameConsoleMessage(NOW_ENTER_YOUR_CALL);
                 return true;
                 // Unlocking halfway the turn.
             } else if (state().bailedOutOfBlindBelieving()) {
-                state().getCup().unlock();
+                state().getCup().unlockWithSave();
                 state().getCup().watchOwnThrow();
                 state().setBlindPass(false);
-                state().allowPlayerToCall(false);
+                state().allowPlayerToCallWithSave(false);
                 state().setAllowedToViewOwnThrow(true);
                 state().setHasToThrow(true);
 
@@ -343,7 +321,7 @@ public class BluffPokerGame implements GameInputInterface {
         state().setHasToThrow(false);
         state().setHasThrown(false);
         state().setBlindPass(true);
-        state().allowPlayerToCall(true);
+        state().allowPlayerToCallWithSave(true);
 
         state().logGameConsoleMessage(state().getCurrentPlayer().getName() + BELIEVED_THE_CALL_BLIND);
         state().logGameConsoleMessage(NOW_ENTER_YOUR_CALL_OR_THROW);
@@ -459,21 +437,21 @@ public class BluffPokerGame implements GameInputInterface {
         state().setHasToThrow(false);
         state().setHasThrown(true);
         state().setAllowedToViewOwnThrow(true);
-        state().allowPlayerToCall(true);
+        state().allowPlayerToCallWithSave(true);
 
         if (leftResult == Dice.ThrowResult.UNDER_CUP || middleResult == Dice.ThrowResult.UNDER_CUP || rightResult == Dice.ThrowResult.UNDER_CUP) {
             state().setBlindPass(true); // Everytime you throw a dice under the cup, it starts out as a blind pass.
         }
 
-        // Since the throw is over, unlock the dices.
+        // Since the throw is over, unlockWithSave the dices.
         // TODO: Unlock all in one method with one save.
-        state().getCup().unlock();
-        state().getLeftDice().unlock();
-        state().getMiddleDice().unlock();
-        state().getRightDice().unlock();
+        state().getCup().unlockWithSave();
+        state().getLeftDice().unlockWithSave();
+        state().getMiddleDice().unlockWithSave();
+        state().getRightDice().unlockWithSave();
 
         if (state().isFirstThrowSinceDeath()) {
-            state().setCallInput(NumberCombination.MIN.toString());
+            state().resetCallInput();
             state().logGameConsoleMessage(String.format(WATCH_OWN_THROW, state().getCurrentPlayer().getName()));
             userInterface.showTutorialMessage(TutorialMessage.FIRST_THROWN_SINCE_DEATH);
         } else {

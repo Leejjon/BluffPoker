@@ -60,7 +60,7 @@ public class Dice implements Lockable {
             }
         } else {
             if (diceValue != 6) {
-                unlock();
+                unlockWithSave();
             }
             return ThrowResult.LOCKED;
         }
@@ -76,7 +76,7 @@ public class Dice implements Lockable {
     }
 
     @Override
-    public void unlock() {
+    public void unlockWithSave() {
         locked = false;
         GameState.state().saveGame();
         diceActor.unlock();

@@ -28,9 +28,9 @@ public class DiceListener extends ActorGestureListener {
             }
         } else {
             if (GameState.state().isAllowedToLock()) {
-                // If it is a blind pass the dices outside of the cup will be locked by default. The hasToThrow boolean is false, but the user is allowed to throw, so it may unlock the dices and throw.
+                // If it is a blind pass the dices outside of the cup will be locked by default. The hasToThrow boolean is false, but the user is allowed to throw, so it may unlockWithSave the dices and throw.
                 if (dice.isLocked()) {
-                    dice.unlock();
+                    dice.unlockWithSave();
                 } else {
                     dice.lock();
                 }

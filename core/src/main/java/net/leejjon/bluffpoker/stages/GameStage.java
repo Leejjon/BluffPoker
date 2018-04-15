@@ -263,7 +263,7 @@ public class GameStage extends AbstractStage implements UserInterface {
                 // Just put something in there.
                 generatedCall = NumberCombination.JUNK;
             }
-            state().setCallInput(generatedCall.toString());
+            state().setCallInputWithSave(generatedCall.toString());
             autoButtonPressed = true;
         }
     }

@@ -40,21 +40,22 @@ import static org.mockito.Mockito.mock;
 public class GdxTest {
     private static Application application;
     protected static Preferences preferences;
-    protected static Array<String> logMessages = new Array<>();
-    protected PredictableDiceValueGenerator predictableDiceValueGenerator = new PredictableDiceValueGenerator();
+    static Array<String> logMessages = new Array<>();
+    PredictableDiceValueGenerator predictableDiceValueGenerator = new PredictableDiceValueGenerator();
 
-    protected ObjectMap<TextureKey, Texture> textureMap;
+    ObjectMap<TextureKey, Texture> textureMap;
     protected Skin uiSkin;
-    protected Sound diceRoll;
+    Sound diceRoll;
 
-    protected Label thirdLatestOutputLabel;
-    protected Label secondLatestOutputLabel;
-    protected Label latestOutputLabel;
-    protected Label callInputLabel;
-    protected ClickableLabel autoButton;
-    protected ClickableLabel callButton;
-    protected Group dicesBeforeCupActors;
-    protected Group dicesUnderCupActors;
+    Label thirdLatestOutputLabel;
+    Label secondLatestOutputLabel;
+    Label latestOutputLabel;
+    Label currentPlayerLabel;
+    Label callInputLabel;
+    ClickableLabel autoButton;
+    ClickableLabel callButton;
+    Group dicesBeforeCupActors;
+    Group dicesUnderCupActors;
 
     @BeforeClass
     public static void init() {
@@ -166,6 +167,7 @@ public class GdxTest {
         thirdLatestOutputLabel = state().createThirdLatestOutputLabel(uiSkin);
         secondLatestOutputLabel = state().createSecondLatestOutputLabel(uiSkin);
         latestOutputLabel = state().createLatestOutputLabel(uiSkin);
+        currentPlayerLabel = state().createCurrentPlayerLabel(uiSkin);
         callInputLabel = state().createCallInputFieldLabel(uiSkin);
         state().createCupActor(closedCupTexture, openCupTexture, cupLockTexture, foreGroundActors, backgroundActors);
         autoButton = state().createAutoButton(uiSkin);

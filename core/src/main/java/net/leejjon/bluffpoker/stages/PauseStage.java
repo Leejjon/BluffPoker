@@ -21,6 +21,7 @@ import net.leejjon.bluffpoker.actions.OpenPauseMenuAction;
 import net.leejjon.bluffpoker.enums.TextureKey;
 import net.leejjon.bluffpoker.interfaces.PauseStageInterface;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
+import net.leejjon.bluffpoker.state.GameState;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -60,9 +61,9 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
         menuTop.left();
         menuTop.setBackground(backgroundDrawable);
 
-        Label currentPlayerLabel = new Label("Turn:", skin, console, Color.BLACK);
-        menuTop.add(currentPlayerLabel).align(Align.left).pad(defaultPadding).pad(defaultPadding).padTop(topBottomPadding).padLeft(borderPadding);
-        menuTop.add(new Label("Leejjon", skin, console, Color.BLACK)).pad(defaultPadding).padLeft(borderPadding).padTop(topBottomPadding).align(Align.left).colspan(2);
+        Label turnLabel = new Label("Turn:", skin, console, Color.BLACK);
+        menuTop.add(turnLabel).align(Align.left).pad(defaultPadding).pad(defaultPadding).padTop(topBottomPadding).padLeft(borderPadding);
+        menuTop.add(GameState.state().createCurrentPlayerLabel(skin)).pad(defaultPadding).padLeft(borderPadding).padTop(topBottomPadding).align(Align.left).colspan(2);
         menuTop.row();
         TextButton forfeitButton = new TextButton("Forfeit", skin, "menu");
         forfeitButton.addListener(new ClickListener() {

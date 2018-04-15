@@ -6,24 +6,27 @@ import net.leejjon.bluffpoker.interfaces.Lockable;
 import lombok.Data;
 
 @Data
-public class Cup implements Lockable {
+public class Cup {
     private boolean believing = false;
     private boolean watching = false;
     private boolean locked = false;
 
     private transient CupActor cupActor;
 
-    @Override
     public void lock() {
         locked = true;
         GameState.state().saveGame();
         cupActor.getLockImage().setVisible(true);
     }
 
-    @Override
+    @Deprecated
+    public void unlockWithSave() {
+        unlock();
+        GameState.state().saveGame();
+    }
+
     public void unlock() {
         locked = false;
-        GameState.state().saveGame();
         cupActor.getLockImage().setVisible(false);
     }
 

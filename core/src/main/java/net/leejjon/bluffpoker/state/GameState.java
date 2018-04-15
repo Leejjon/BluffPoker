@@ -42,6 +42,7 @@ public class GameState {
         Preconditions.checkNotNull(thirdLatestOutputLabel);
         Preconditions.checkNotNull(secondLatestOutputLabel);
         Preconditions.checkNotNull(latestOutputLabel);
+        Preconditions.checkNotNull(currentPlayerLabel);
         Preconditions.checkNotNull(autoButton);
         Preconditions.checkNotNull(callButton);
         Preconditions.checkNotNull(cup.getCupActor());
@@ -89,6 +90,25 @@ public class GameState {
     // Custom state getter methods
     public Player getCurrentPlayer() {
         return players[playerIterator];
+    }
+
+    public Player getNextPlayer() {
+        Player nextPlayer;
+
+        int localPlayerIterator = getPlayerIterator() + 1;
+
+        // At this point (during placing a call) not all players should be dead.
+        do {
+            // If the localPlayerIterator runs out of the arrays bounds, we moveUp it to 0.
+            if (localPlayerIterator == getPlayers().length) {
+                localPlayerIterator = 0;
+            }
+
+            nextPlayer = getPlayers()[localPlayerIterator];
+
+            localPlayerIterator++;
+        } while (nextPlayer.isDead());
+        return nextPlayer;
     }
 
     public boolean isBelievingBlind() { return !blindPass && !hasToThrow && allowedToBelieveOrNotBelieve; }
@@ -141,12 +161,13 @@ public class GameState {
     private transient Label thirdLatestOutputLabel;
     private transient Label secondLatestOutputLabel;
     private transient Label latestOutputLabel;
+    private transient Label currentPlayerLabel;
     private transient ClickableLabel autoButton;
     private transient ClickableLabel callButton;
 
     // UI element initialization methods
     public Label createCallInputFieldLabel(Skin uiSkin) {
-        callInputField = new Label(NumberCombination.MIN.toString(), uiSkin, "arial64", Color.WHITE);
+        callInputField = new Label(callInput, uiSkin, "arial64", Color.WHITE);
         return callInputField;
     }
 
@@ -166,6 +187,14 @@ public class GameState {
         latestOutputLabel = new Label(latestOutput, uiSkin, console, Color.BLACK);
         latestOutputLabel.setWrap(true);
         return latestOutputLabel;
+    }
+
+    public Label createCurrentPlayerLabel(Skin uiSkin) {
+        currentPlayerLabel = new Label("DefaultPlayer", uiSkin, console, Color.BLACK);
+        if (players != null) {
+            updateCurrentPlayerLabel();
+        }
+        return currentPlayerLabel;
     }
 
     public void createCupActor(Texture closedCupTexture, Texture openCupTexture, Texture cupLockTexture, Group foreGroundActors, Group backgroundActors) {
@@ -223,12 +252,23 @@ public class GameState {
         for (int i = 0; i < originalPlayers.size(); i++) {
             players[i] = new Player(originalPlayers.get(i), numberOfLives);
         }
+        updateCurrentPlayerLabel();
         saveGame();
     }
 
     public void updatePlayerIterator(int newPlayerIteratorValue) {
         playerIterator = newPlayerIteratorValue;
+
+        updateCurrentPlayerLabel();
         saveGame();
+    }
+
+    private void updateCurrentPlayerLabel() {
+        if (isAllowedToBelieveOrNotBelieve() && !state().getCup().isBelieving()) {
+            currentPlayerLabel.setText(getNextPlayer().getName());
+        } else {
+            currentPlayerLabel.setText(getCurrentPlayer().getName());
+        }
     }
 
     public void currentPlayerLosesLife(boolean canUseBok) {
@@ -275,13 +315,12 @@ public class GameState {
         saveGame();
     }
 
-    public void updateLatestCall(Call newCall) {
+    private void updateLatestCall(Call newCall) {
         firstThrowSinceDeath = false;
         allowedToCall = false;
         allowedToViewOwnThrow = false;
         allowedToBelieveOrNotBelieve = true;
         latestCall = newCall;
-        saveGame();
     }
 
     public void resetLatestCall() {
@@ -294,16 +333,39 @@ public class GameState {
         saveGame();
     }
 
+    @Deprecated
+    public void allowPlayerToCallWithSave(boolean allow) {
+        allowPlayerToCall(allow);
+        saveGame();
+    }
+
     public void allowPlayerToCall(boolean allow) {
         allowedToCall = allow;
         callButton.setDisabled(!allow);
         autoButton.setDisabled(!allow);
+    }
+
+    private void setCallInput(String callInput) {
+        this.callInput = callInput;
+        callInputField.setText(callInput);
+    }
+
+    public void setCallInputWithSave(String callInput) {
+        setCallInput(callInput);
         saveGame();
     }
 
-    public void setCallInput(String callInput) {
-        this.callInput = callInput;
-        callInputField.setText(callInput);
+    public void resetCallInput() {
+        setCallInput(NumberCombination.MIN.toString());
+        saveGame();
+    }
+
+    public void submitCall(String callInput, Call call) {
+        getCup().unlock();
+        allowPlayerToCall(false);
+        setCallInput(callInput);
+        updateLatestCall(call);
+        updateCurrentPlayerLabel();
         saveGame();
     }
 
@@ -331,15 +393,15 @@ public class GameState {
     }
 
     public void unlockCupAndDicesUnderCup() {
-        cup.unlock();
+        cup.unlockWithSave();
         if (leftDice.isUnderCup()) {
-            leftDice.unlock();
+            leftDice.unlockWithSave();
         }
         if (middleDice.isUnderCup()) {
-            middleDice.unlock();
+            middleDice.unlockWithSave();
         }
         if (rightDice.isUnderCup()) {
-            rightDice.unlock();
+            rightDice.unlockWithSave();
         }
     }
 
@@ -347,13 +409,14 @@ public class GameState {
 
     }
 
-    private GameState(Label callInputField, Label thirdLatestOutputLabel, Label secondLatestOutputLabel, Label latestOutputLabel, ClickableLabel autoButton,
+    private GameState(Label callInputField, Label thirdLatestOutputLabel, Label secondLatestOutputLabel, Label latestOutputLabel, Label currentPlayerLabel, ClickableLabel autoButton,
                               ClickableLabel callButton, CupActor cupActor, DiceActor leftDiceActor, DiceActor middleDiceActor, DiceActor rightDiceActor) {
         this.callInputField = callInputField;
         this.callInputField.setText(callInput);
         this.thirdLatestOutputLabel = thirdLatestOutputLabel;
         this.secondLatestOutputLabel = secondLatestOutputLabel;
         this.latestOutputLabel = latestOutputLabel;
+        this.currentPlayerLabel = currentPlayerLabel;
         this.autoButton = autoButton;
         this.autoButton.setDisabled(!allowedToCall);
         this.callButton = callButton;
@@ -434,7 +497,7 @@ public class GameState {
     }
 
     public static synchronized void reset() {
-        instance = new GameState(instance.callInputField, instance.thirdLatestOutputLabel, instance.secondLatestOutputLabel, instance.latestOutputLabel, instance.autoButton,
+        instance = new GameState(instance.callInputField, instance.thirdLatestOutputLabel, instance.secondLatestOutputLabel, instance.latestOutputLabel, instance.currentPlayerLabel, instance.autoButton,
                 instance.callButton, instance.cup.getCupActor(), instance.leftDice.getDiceActor(), instance.middleDice.getDiceActor(), instance.rightDice.getDiceActor());
     }
 

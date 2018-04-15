@@ -5,6 +5,6 @@ package net.leejjon.bluffpoker.interfaces;
  */
 public interface Lockable {
     void lock();
-    void unlock();
+    void unlockWithSave();
     boolean isLocked();
 }
