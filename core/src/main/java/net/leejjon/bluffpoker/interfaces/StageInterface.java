@@ -15,5 +15,6 @@ public interface StageInterface {
     Texture getTexture(TextureKey textureKey);
     void startOpeningPauseScreen(int x);
 //	void movePauseScreen(int x);
+	void openPauseScreen();
     void closePauseScreen();
 }

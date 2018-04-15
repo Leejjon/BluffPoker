@@ -74,8 +74,8 @@ public class BluffPokerApp extends ApplicationAdapter implements
         gameInput.addProcessor(openPauseMenuListener);
 
         pauseMenuInput = new InputMultiplexer();
-        pauseMenuInput.addProcessor(pauseStage);
         pauseMenuInput.addProcessor(new ClosePauseMenuListener(pauseStage));
+        pauseMenuInput.addProcessor(pauseStage);
     }
 
     @Override
@@ -156,6 +156,11 @@ public class BluffPokerApp extends ApplicationAdapter implements
         pauseStage.setVisible(true);
         Gdx.input.setInputProcessor(openPauseMenuListener);
         pauseStage.setRightSideOfMenuX(x);
+    }
+
+    @Override
+    public void openPauseScreen() {
+        Gdx.input.setInputProcessor(pauseMenuInput);
     }
 
     @Override

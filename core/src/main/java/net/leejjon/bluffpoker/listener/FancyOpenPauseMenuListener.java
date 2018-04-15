@@ -15,8 +15,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.Getter;
 
 public class FancyOpenPauseMenuListener extends InputMultiplexer {
-    @Getter
-    private AtomicBoolean pauseMenuGestureActivated = new AtomicBoolean(false);
     private final StageInterface stageInterface;
     private final PauseStageInterface pauseStageInterface;
 
@@ -37,7 +35,11 @@ public class FancyOpenPauseMenuListener extends InputMultiplexer {
 
         @Override
         public boolean touchDown(int x, int y, int pointer, int button) {
-            if (x >= 0 && x < leftAreaApplicableForSwipe && !pauseMenuGestureActivated.weakCompareAndSet(false, true)) {
+            if (x >= 0 && x < leftAreaApplicableForSwipe && !pauseStageInterface.isMenuOpen() && pauseStageInterface.
+                    activatePauseMenuGesture()) {
+                stageInterface.startOpeningPauseScreen(x);
+                return true;
+            } else if (x > PauseStage.getRawMenuWidth() && pauseStageInterface.isMenuOpen() && pauseStageInterface.activatePauseMenuGesture()) {
                 stageInterface.startOpeningPauseScreen(x);
                 return true;
             }
@@ -46,7 +48,7 @@ public class FancyOpenPauseMenuListener extends InputMultiplexer {
 
         @Override
         public boolean touchDragged(int screenX, int screenY, int pointer) {
-            if (pauseMenuGestureActivated.get()) {
+            if (pauseStageInterface.isPauseMenuGestureActivated()) {
                 pauseStageInterface.setRightSideOfMenuX(screenX);
             }
             return super.touchDragged(screenX, screenY, pointer);
@@ -58,16 +60,16 @@ public class FancyOpenPauseMenuListener extends InputMultiplexer {
 
             int halfOfRawMenuWidth = PauseStage.getRawMenuWidth() / 2;
             
-            if (wasRightFling.compareAndSet(true, false)) {
-                Gdx.app.debug(BluffPokerApp.TAG, "Open pause menu after swipe right");
+            if (!pauseStageInterface.isMenuOpen() && wasRightFling.compareAndSet(true, false)) {
+                Gdx.app.log(BluffPokerApp.TAG, "Open pause menu after swipe right");
                 pauseStageInterface.continueOpeningPauseMenu();
                 return true;
-            } else if (!didTheOtherUiDetectAnything && pauseMenuGestureActivated.get() && screenX < halfOfRawMenuWidth) {
-                Gdx.app.debug(BluffPokerApp.TAG, "Close pause menu release before half");
+            } else if (!didTheOtherUiDetectAnything && !pauseStageInterface.isMenuOpen() && pauseStageInterface.isPauseMenuGestureActivated() && screenX < halfOfRawMenuWidth) {
+                Gdx.app.log(BluffPokerApp.TAG, "Close pause menu release before half");
                 pauseStageInterface.continueClosingPauseMenu();
                 return true;
-            } else if (!didTheOtherUiDetectAnything  && pauseMenuGestureActivated.get() && screenX >= halfOfRawMenuWidth) {
-                Gdx.app.debug(BluffPokerApp.TAG, "Open pause menu release over half");
+            } else if (!didTheOtherUiDetectAnything && !pauseStageInterface.isMenuOpen() && pauseStageInterface.isPauseMenuGestureActivated() && screenX >= halfOfRawMenuWidth) {
+                Gdx.app.log(BluffPokerApp.TAG, "Open pause menu release over half");
                 pauseStageInterface.continueOpeningPauseMenu();
                 return true;
             } else {
@@ -81,14 +83,15 @@ public class FancyOpenPauseMenuListener extends InputMultiplexer {
     public class FlingAdaptor extends GestureDetector.GestureAdapter {
         @Override
         public boolean fling(float velocityX, float velocityY, int button) {
-            if (pauseMenuGestureActivated.get()) { // Adjust fling to detect whether the fling actually starts on the menu.
+            if (pauseStageInterface.isPauseMenuGestureActivated()) { // Adjust fling to detect whether the fling actually starts on the menu.
                 if (Math.abs(velocityX) > Math.abs(velocityY)) {
                     if (velocityX > 0) {
-                        Gdx.app.debug(BluffPokerApp.TAG, "Swipe right");
+                        Gdx.app.log(BluffPokerApp.TAG, "Swipe right");
                         wasRightFling.set(true);
                         return super.fling(velocityX, velocityY, button);
                     } else {
-                        Gdx.app.debug(BluffPokerApp.TAG, "Swipe left");
+                        Gdx.app.log(BluffPokerApp.TAG, "Swipe left");
+                        // TODO: Implement
                         pauseStageInterface.continueClosingPauseMenu();
                         return true;
                     }
@@ -100,7 +103,7 @@ public class FancyOpenPauseMenuListener extends InputMultiplexer {
         @Override
         public boolean tap(float x, float y, int count, int button) {
             if (x > PauseStage.getRawMenuWidth()) {
-                Gdx.app.debug(BluffPokerApp.TAG, "Closed pause menu after tap in right area.");
+                Gdx.app.log(BluffPokerApp.TAG, "Closed pause menu after tap in right area.");
                 pauseStageInterface.continueClosingPauseMenu();
                 return true;
             }

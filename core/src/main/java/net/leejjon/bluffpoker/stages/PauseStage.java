@@ -34,17 +34,17 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
     private final float maxBackgroundAlpha = 0.5f;
     private ShapeRenderer screenDimmerRenderer;
 
+    private AtomicBoolean pauseMenuGestureActivated = new AtomicBoolean(false);
     private AtomicBoolean openPauseMenuActionRunning = new AtomicBoolean(false);
     private AtomicBoolean closePauseMenuActionRunning = new AtomicBoolean(false);
+    private AtomicBoolean pauseMenuOpen = new AtomicBoolean(false);
 
     public PauseStage(StageInterface stageInterface, Skin skin) {
         super(false);
         this.stageInterface = stageInterface;
 
         TextureRegionDrawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(stageInterface.getTexture(TextureKey.MENU_COLOR)));
-//        TextureRegionDrawable screenDimmerDrawable = new TextureRegionDrawable(new TextureRegion(stageInterface.getTexture(TextureKey.SCREEN_DIMMER)));
 
-        int width = Gdx.graphics.getWidth() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor();
         int height = Gdx.graphics.getHeight() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor();
 
         final float defaultPadding = 3f;
@@ -94,7 +94,6 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
             screenDimmerRenderer.begin(ShapeRenderer.ShapeType.Filled);
             screenDimmerRenderer.setColor(0f, 0f, 0f, backgroundAlpha);
-            // All Scene2D related
             screenDimmerRenderer.rect(rightSideOfMenuX, 0, Gdx.graphics.getWidth() - rightSideOfMenuX, Gdx.graphics.getHeight());
             screenDimmerRenderer.end();
         }
@@ -130,6 +129,7 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
     public void continueOpeningPauseMenu() {
         // TODO: Cancel out any close menu actions.
         if (openPauseMenuActionRunning.compareAndSet(false, true)) {
+            Gdx.app.log(BluffPokerApp.TAG, "Adding open menu action.");
             addAction(new OpenPauseMenuAction(this));
         } else {
             Gdx.app.log(BluffPokerApp.TAG, "Attempted to open pause menu while an openPauseMenuAction was already running.");
@@ -147,6 +147,21 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
     }
 
     @Override
+    public boolean activatePauseMenuGesture() {
+        return pauseMenuGestureActivated.weakCompareAndSet(false, true);
+    }
+
+    @Override
+    public boolean isPauseMenuGestureActivated() {
+        return pauseMenuGestureActivated.get();
+    }
+
+    @Override
+    public boolean isMenuOpen() {
+        return pauseMenuOpen.get();
+    }
+
+    @Override
     public boolean hasOpenPauseMenuActionRunning() {
         return openPauseMenuActionRunning.get();
     }
@@ -160,13 +175,20 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
     public void doneOpeningPauseMenu() {
         setRightSideOfMenuX(PauseStage.getRawMenuWidth());
         openPauseMenuActionRunning.set(false);
+        pauseMenuGestureActivated.set(false);
+        pauseMenuOpen.set(true);
+        stageInterface.openPauseScreen();
+        Gdx.app.log(BluffPokerApp.TAG, "Done opening method called.");
     }
 
     @Override
     public void doneClosingPauseMenu() {
         closePauseMenuActionRunning.set(false);
+        pauseMenuGestureActivated.set(false);
         setRightSideOfMenuX(0);
+        pauseMenuOpen.set(false);
         stageInterface.closePauseScreen();
+        Gdx.app.log(BluffPokerApp.TAG, "Done closing method called.");
     }
 
     public static int getMenuWidth() {

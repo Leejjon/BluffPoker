@@ -13,6 +13,12 @@ public interface PauseStageInterface {
 
     boolean hasClosePauseMenuActionRunning();
 
+    boolean isPauseMenuGestureActivated();
+
+    boolean activatePauseMenuGesture();
+
+    boolean isMenuOpen();
+
     void doneOpeningPauseMenu();
 
     void doneClosingPauseMenu();
