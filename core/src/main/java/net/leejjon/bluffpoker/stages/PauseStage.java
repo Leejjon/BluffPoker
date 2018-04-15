@@ -6,12 +6,14 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 
 import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.actions.ClosePauseMenuAction;
@@ -44,27 +46,25 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
         this.stageInterface = stageInterface;
 
         TextureRegionDrawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(stageInterface.getTexture(TextureKey.MENU_COLOR)));
+        TextureRegionDrawable darkBackgroundDrawable = new TextureRegionDrawable(new TextureRegion(stageInterface.getTexture(TextureKey.MENU_TOP_COLOR)));
 
         int height = Gdx.graphics.getHeight() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor();
 
         final float defaultPadding = 3f;
+        final float borderPadding = 7f;
+        final float topBottomPadding = 12f;
         final String console = "console";
 
-        Table menuTable = new Table();
-        menuTable.top();
-        menuTable.left();
-        menuTable.setBackground(backgroundDrawable);
+        Table menuTop = new Table();
+        menuTop.top();
+        menuTop.left();
+        menuTop.setBackground(backgroundDrawable);
 
-        menuTable.row();
-        menuTable.add(new Label("Players", skin, console, Color.BLACK)).pad(defaultPadding);
-        menuTable.add(new Label("Lives", skin, console, Color.BLACK)).pad(defaultPadding);
-        menuTable.row();
-
-        menuTable.add(new Label("Leejjon", skin, console, Color.BLACK)).pad(defaultPadding);
-        menuTable.add(new Label("1337", skin, console, Color.BLACK)).pad(defaultPadding);
-
-        menuTable.row();
-        TextButton forfeitButton = new TextButton("Forfeit", skin);
+        Label currentPlayerLabel = new Label("Turn:", skin, console, Color.BLACK);
+        menuTop.add(currentPlayerLabel).align(Align.left).pad(defaultPadding).pad(defaultPadding).padTop(topBottomPadding).padLeft(borderPadding);
+        menuTop.add(new Label("Leejjon", skin, console, Color.BLACK)).pad(defaultPadding).padLeft(borderPadding).padTop(topBottomPadding).align(Align.left).colspan(2);
+        menuTop.row();
+        TextButton forfeitButton = new TextButton("Forfeit", skin, "menu");
         forfeitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -72,13 +72,37 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
                 super.clicked(event, x, y);
             }
         });
+        TextButton endGameButton = new TextButton("Quit", skin, "menu");
+        endGameButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log(BluffPokerApp.TAG, "click");
+                super.clicked(event, x, y);
+            }
+        });
 
-        menuTable.add(forfeitButton);
+        menuTop.add().pad(defaultPadding).padBottom(topBottomPadding);
+        menuTop.add(forfeitButton).pad(defaultPadding).padBottom(topBottomPadding);
+        menuTop.add(endGameButton).pad(defaultPadding).padBottom(topBottomPadding);
+
+        Table menuTable = new Table();
+        menuTable.top();
+        menuTable.left();
+        menuTable.setBackground(darkBackgroundDrawable);
+
+        Color greyFontColor = new Color(0.75f, 0.75f, 0.75f, 1);
+        Label playerLabel = new Label("Players", skin, "arial32", greyFontColor);
+        Label livesLabel = new Label(" Lives", skin, "arial32", greyFontColor);
+
+        menuTable.add(playerLabel).pad(defaultPadding).padTop(topBottomPadding).padLeft(borderPadding);
+        menuTable.add(livesLabel).pad(defaultPadding).padTop(topBottomPadding);
 
         table.left();
-        table.add(menuTable).width(getMenuWidth()).height(height)
-                .padTop(BluffPokerApp.getPlatformSpecificInterface().getTopPadding())
-                .padBottom(BluffPokerApp.getPlatformSpecificInterface().getBottomPadding());
+        table.top();
+        table.add(menuTop).width(getMenuWidth());
+        table.row();
+        table.add(menuTable).width(getMenuWidth()).height(height);
+
         table.setX(0f);
 
         screenDimmerRenderer = new ShapeRenderer();

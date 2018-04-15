@@ -26,20 +26,6 @@ public enum TextureKey {
     DICE_LOCK("data/dicelock.png"),
     LOGO("data/logo.png"),
     OPEN_CUP("data/openCup.png"),
-    SCREEN_DIMMER() {
-        @Override
-        protected Texture get() {
-            int width = Gdx.graphics.getWidth() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor();
-            int height = Gdx.graphics.getHeight() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor();
-
-            Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-            pixmap.setColor(0, 0, 0, 0.6f);
-            pixmap.fillRectangle(0, 0, 1,1);
-            Texture texture = new Texture(pixmap);
-            pixmap.dispose();
-            return texture;
-        }
-    },
     BLACK_PIXEL() {
         @Override
         protected Texture get() {
@@ -51,11 +37,25 @@ public enum TextureKey {
             return onePixelTexture;
         }
     },
+    MENU_TOP_COLOR() {
+        @Override
+        protected Texture get() {
+            Pixmap onePixelPixmap = new Pixmap(1, 1, Pixmap.Format.RGB888);
+//            onePixelPixmap.setColor(0.10f, 0.12f, 0.09f, 1);
+            onePixelPixmap.setColor(0.40f, 0.40f, 0.40f, 1);
+
+            onePixelPixmap.fill();
+            Texture onePixelTexture = new Texture(onePixelPixmap);
+            onePixelPixmap.dispose();
+            return onePixelTexture;
+        }
+    },
     MENU_COLOR() {
         @Override
         protected Texture get() {
             Pixmap onePixelPixmap = new Pixmap(1, 1, Pixmap.Format.RGB888);
-            onePixelPixmap.setColor(0.29f, 0.47f, 0.33f, 1);
+            onePixelPixmap.setColor(0.75f, 0.75f, 0.75f, 1);
+//            onePixelPixmap.setColor(0.29f, 0.47f, 0.33f, 1);
             onePixelPixmap.fill();
             Texture onePixelTexture = new Texture(onePixelPixmap);
             onePixelPixmap.dispose();
