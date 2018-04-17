@@ -27,6 +27,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import lombok.Getter;
 
+import static net.leejjon.bluffpoker.state.GameState.state;
+
 public class PauseStage extends AbstractStage implements PauseStageInterface {
     private StageInterface stageInterface;
 
@@ -46,8 +48,8 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
         super(false);
         this.stageInterface = stageInterface;
 
-        TextureRegionDrawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(stageInterface.getTexture(TextureKey.MENU_COLOR)));
-        TextureRegionDrawable darkBackgroundDrawable = new TextureRegionDrawable(new TextureRegion(stageInterface.getTexture(TextureKey.MENU_TOP_COLOR)));
+        TextureRegionDrawable topMenuBackgroundDrawable = new TextureRegionDrawable(new TextureRegion(stageInterface.getTexture(TextureKey.MENU_TOP_COLOR)));
+        TextureRegionDrawable menuBackgroundDrawable = new TextureRegionDrawable(new TextureRegion(stageInterface.getTexture(TextureKey.MENU_COLOR)));
 
         int height = Gdx.graphics.getHeight() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor();
 
@@ -59,12 +61,15 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
         Table menuTop = new Table();
         menuTop.top();
         menuTop.left();
-        menuTop.setBackground(backgroundDrawable);
+        menuTop.setBackground(topMenuBackgroundDrawable);
 
-        Label turnLabel = new Label("Turn:", skin, console, Color.BLACK);
+        Label turnLabel = new Label("Current turn:", skin, console, Color.BLACK);
         menuTop.add(turnLabel).align(Align.left).pad(defaultPadding).pad(defaultPadding).padTop(topBottomPadding).padLeft(borderPadding);
-        menuTop.add(GameState.state().createCurrentPlayerLabel(skin)).pad(defaultPadding).padLeft(borderPadding).padTop(topBottomPadding).align(Align.left).colspan(2);
+        menuTop.add(state().createCurrentPlayerLabel(skin)).pad(defaultPadding).padLeft(borderPadding).padTop(topBottomPadding).align(Align.right);
         menuTop.row();
+
+        Color greyFontColor = new Color(0.75f, 0.75f, 0.75f, 1);
+
         TextButton forfeitButton = new TextButton("Forfeit", skin, "menu");
         forfeitButton.addListener(new ClickListener() {
             @Override
@@ -82,27 +87,22 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
             }
         });
 
-        menuTop.add().pad(defaultPadding).padBottom(topBottomPadding);
-        menuTop.add(forfeitButton).pad(defaultPadding).padBottom(topBottomPadding);
-        menuTop.add(endGameButton).pad(defaultPadding).padBottom(topBottomPadding);
+        menuTop.add(forfeitButton).pad(defaultPadding).padBottom(topBottomPadding).align(Align.right);
+        menuTop.add(endGameButton).pad(defaultPadding).padBottom(topBottomPadding).align(Align.right);
 
-        Table menuTable = new Table();
-        menuTable.top();
-        menuTable.left();
-        menuTable.setBackground(darkBackgroundDrawable);
-
-        Color greyFontColor = new Color(0.75f, 0.75f, 0.75f, 1);
         Label playerLabel = new Label("Players", skin, "arial32", greyFontColor);
         Label livesLabel = new Label(" Lives", skin, "arial32", greyFontColor);
 
-        menuTable.add(playerLabel).pad(defaultPadding).padTop(topBottomPadding).padLeft(borderPadding);
-        menuTable.add(livesLabel).pad(defaultPadding).padTop(topBottomPadding);
+        Table scores = state().createScores(skin, playerLabel, livesLabel, defaultPadding, topBottomPadding, greyFontColor);
+        scores.center();
+        scores.top();
+        scores.setBackground(menuBackgroundDrawable);
 
         table.left();
         table.top();
         table.add(menuTop).width(getMenuWidth());
         table.row();
-        table.add(menuTable).width(getMenuWidth()).height(height);
+        table.add(scores).width(getMenuWidth()).height(height);
 
         table.setX(0f);
 

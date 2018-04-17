@@ -41,9 +41,12 @@ public enum TextureKey {
         @Override
         protected Texture get() {
             Pixmap onePixelPixmap = new Pixmap(1, 1, Pixmap.Format.RGB888);
-//            onePixelPixmap.setColor(0.10f, 0.12f, 0.09f, 1);
-            onePixelPixmap.setColor(0.40f, 0.40f, 0.40f, 1);
 
+            onePixelPixmap.setColor(0.75f, 0.75f, 0.75f, 1);
+//            onePixelPixmap.setColor(0.29f, 0.47f, 0.33f, 1);
+
+            // Dark green
+//            onePixelPixmap.setColor(0.12f, 0.25f, 0.13f, 1);
             onePixelPixmap.fill();
             Texture onePixelTexture = new Texture(onePixelPixmap);
             onePixelPixmap.dispose();
@@ -54,8 +57,10 @@ public enum TextureKey {
         @Override
         protected Texture get() {
             Pixmap onePixelPixmap = new Pixmap(1, 1, Pixmap.Format.RGB888);
-            onePixelPixmap.setColor(0.75f, 0.75f, 0.75f, 1);
+//            onePixelPixmap.setColor(0.75f, 0.75f, 0.75f, 1);
 //            onePixelPixmap.setColor(0.29f, 0.47f, 0.33f, 1);
+//                        onePixelPixmap.setColor(0.10f, 0.12f, 0.09f, 1);
+            onePixelPixmap.setColor(0.25f, 0.25f, 0.25f, 1);
             onePixelPixmap.fill();
             Texture onePixelTexture = new Texture(onePixelPixmap);
             onePixelPixmap.dispose();

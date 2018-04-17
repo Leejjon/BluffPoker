@@ -5,8 +5,11 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
@@ -25,6 +28,10 @@ import net.leejjon.bluffpoker.logic.NumberCombination;
 import net.leejjon.bluffpoker.logic.Player;
 import net.leejjon.bluffpoker.stages.GameStage;
 import net.leejjon.bluffpoker.ui.ClickableLabel;
+import net.leejjon.bluffpoker.ui.ScoreTableRow;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A singleton to contain all the state in the game, designed with testability in mind.
@@ -164,6 +171,8 @@ public class GameState {
     private transient Label currentPlayerLabel;
     private transient ClickableLabel autoButton;
     private transient ClickableLabel callButton;
+    private transient Table scoreTable;
+    private transient List<ScoreTableRow> scores = new ArrayList<>();
 
     // UI element initialization methods
     public Label createCallInputFieldLabel(Skin uiSkin) {
@@ -269,6 +278,21 @@ public class GameState {
         } else {
             currentPlayerLabel.setText(getCurrentPlayer().getName());
         }
+    }
+
+    public Table createScores(Skin skin, Label playerNameTitle, Label playerLivesTitle, float defaultPadding, float topBottomPadding, Color greyFontColor) {
+        scoreTable = new Table();
+        scoreTable.add(playerNameTitle).pad(defaultPadding).padTop(topBottomPadding).padBottom(topBottomPadding);
+        scoreTable.add(playerLivesTitle).pad(defaultPadding).padTop(topBottomPadding).padBottom(topBottomPadding);
+        if (players != null) {
+            for (Player player : players) {
+                scoreTable.row();
+                Cell<Label> nameCell = scoreTable.add(new Label(player.getName(), skin, console, greyFontColor)).align(Align.left).padLeft(4f);
+                Cell<Label> livesCell = scoreTable.add(new Label(Integer.toString(player.getLives()), skin, console, greyFontColor)).align(Align.left).padLeft(13f);
+                scores.add(new ScoreTableRow(nameCell, livesCell));
+            }
+        }
+        return scoreTable;
     }
 
     public void currentPlayerLosesLife(boolean canUseBok) {
