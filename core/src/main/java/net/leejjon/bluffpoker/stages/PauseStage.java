@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.Align;
 import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.actions.ClosePauseMenuAction;
 import net.leejjon.bluffpoker.actions.OpenPauseMenuAction;
+import net.leejjon.bluffpoker.dialogs.QuitDialog;
 import net.leejjon.bluffpoker.enums.TextureKey;
 import net.leejjon.bluffpoker.interfaces.PauseStageInterface;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
@@ -29,6 +30,7 @@ import static net.leejjon.bluffpoker.state.GameState.state;
 
 public class PauseStage extends AbstractStage implements PauseStageInterface {
     private StageInterface stageInterface;
+    private QuitDialog quitDialog;
 
     @Getter
     private float rightSideOfMenuX;
@@ -42,10 +44,12 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
     private AtomicBoolean openPauseMenuActionRunning = new AtomicBoolean(false);
     private AtomicBoolean closePauseMenuActionRunning = new AtomicBoolean(false);
     private AtomicBoolean pauseMenuOpen = new AtomicBoolean(false);
+    private AtomicBoolean dialogOpen = new AtomicBoolean(false);
 
     public PauseStage(StageInterface stageInterface, Skin skin) {
         super(false);
         this.stageInterface = stageInterface;
+        quitDialog = new QuitDialog(skin, this, stageInterface);
 
         TextureRegionDrawable bottomMenuDrawable = new TextureRegionDrawable(new TextureRegion(stageInterface.getTexture(TextureKey.CURRENT_TURN_COLOR)));
         TextureRegionDrawable scoreBoardMenuDrawable = new TextureRegionDrawable(new TextureRegion(stageInterface.getTexture(TextureKey.SCOREBOARD_COLOR)));
@@ -81,8 +85,7 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
         endGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log(BluffPokerApp.TAG, "click");
-                super.clicked(event, x, y);
+                quitDialog.show(PauseStage.this);
             }
         });
 
@@ -124,7 +127,19 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
 
     @Override
     public void draw() {
+        // TODO: Find a better solution than the dialogOpen boolean.
+        // When a dialog is open we don't want the transparant background to draw over it.
+        if (dialogOpen.get()) {
+            drawTransparantBackground();
+        }
         super.draw();
+        // When animations occur and we draw transparancy before the stage, you get a glitch, so we draw after.
+        if (!dialogOpen.get()) {
+            drawTransparantBackground();
+        }
+    }
+
+    private void drawTransparantBackground() {
         if (isVisible()) {
             Gdx.gl.glEnable(GL20.GL_BLEND);
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -175,10 +190,10 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
     }
 
     @Override
-    public void continueClosingPauseMenu() {
+    public void continueClosingPauseMenu(boolean changeInputListener) {
         // TODO: Cancel out any close menu actions.
         if (closePauseMenuActionRunning.compareAndSet(false, true)) {
-            addAction(new ClosePauseMenuAction(this));
+            addAction(new ClosePauseMenuAction(this, changeInputListener));
         } else {
             Gdx.app.log(BluffPokerApp.TAG, "Attempted to close pause menu while a closePauseMenuAction was already running.");
         }
@@ -220,13 +235,27 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
     }
 
     @Override
-    public void doneClosingPauseMenu() {
+    public void doneClosingPauseMenu(boolean changeInputListener) {
         closePauseMenuActionRunning.set(false);
         pauseMenuGestureActivated.set(false);
         setRightSideOfMenuX(0);
         pauseMenuOpen.set(false);
-        stageInterface.closePauseScreen();
+        setVisible(false);
+
+        if (changeInputListener) {
+            stageInterface.closePauseScreen();
+        }
         Gdx.app.log(BluffPokerApp.TAG, "Done closing method called.");
+    }
+
+    @Override
+    public void openDialog() {
+        dialogOpen.set(true);
+    }
+
+    @Override
+    public void closeDialog() {
+        dialogOpen.set(false);
     }
 
     public static int getMenuWidth() {

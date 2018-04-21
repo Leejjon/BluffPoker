@@ -165,7 +165,6 @@ public class BluffPokerApp extends ApplicationAdapter implements
 
     @Override
     public void closePauseScreen() {
-        pauseStage.setVisible(false);
         Gdx.input.setInputProcessor(gameInput);
     }
 

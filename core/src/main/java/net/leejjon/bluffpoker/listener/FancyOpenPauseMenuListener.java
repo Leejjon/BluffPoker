@@ -66,7 +66,7 @@ public class FancyOpenPauseMenuListener extends InputMultiplexer {
                 return true;
             } else if (!didTheOtherUiDetectAnything && !pauseStageInterface.isMenuOpen() && pauseStageInterface.isPauseMenuGestureActivated() && screenX < halfOfRawMenuWidth) {
                 Gdx.app.log(BluffPokerApp.TAG, "Close pause menu release before half");
-                pauseStageInterface.continueClosingPauseMenu();
+                pauseStageInterface.continueClosingPauseMenu(true);
                 return true;
             } else if (!didTheOtherUiDetectAnything && !pauseStageInterface.isMenuOpen() && pauseStageInterface.isPauseMenuGestureActivated() && screenX >= halfOfRawMenuWidth) {
                 Gdx.app.log(BluffPokerApp.TAG, "Open pause menu release over half");
@@ -92,7 +92,7 @@ public class FancyOpenPauseMenuListener extends InputMultiplexer {
                     } else {
                         Gdx.app.log(BluffPokerApp.TAG, "Swipe left");
                         // TODO: Implement
-                        pauseStageInterface.continueClosingPauseMenu();
+                        pauseStageInterface.continueClosingPauseMenu(true);
                         return true;
                     }
                 }
@@ -104,7 +104,7 @@ public class FancyOpenPauseMenuListener extends InputMultiplexer {
         public boolean tap(float x, float y, int count, int button) {
             if (x > PauseStage.getRawMenuWidth()) {
                 Gdx.app.log(BluffPokerApp.TAG, "Closed pause menu after tap in right area.");
-                pauseStageInterface.continueClosingPauseMenu();
+                pauseStageInterface.continueClosingPauseMenu(true);
                 return true;
             }
             return super.tap(x, y, count, button);

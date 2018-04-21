@@ -16,7 +16,7 @@ public class ClosePauseMenuListener extends GestureDetector {
                 if (Math.abs(velocityX) > Math.abs(velocityY)) {
                     if (velocityX <= 0) {
                         Gdx.app.log(BluffPokerApp.TAG, "Log from closePauseMenuListener.fling");
-                        pauseStageInterface.continueClosingPauseMenu();
+                        pauseStageInterface.continueClosingPauseMenu(true);
                         return true;
                     }
                 }
@@ -27,7 +27,7 @@ public class ClosePauseMenuListener extends GestureDetector {
             public boolean tap(float x, float y, int count, int button) {
                 if (x / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor() > PauseStage.getMenuWidth()) {
                     Gdx.app.log(BluffPokerApp.TAG, "Log from closePauseMenuListener.tap x=" + x + " getmenuwidth=" + PauseStage.getMenuWidth());
-                    pauseStageInterface.continueClosingPauseMenu();
+                    pauseStageInterface.continueClosingPauseMenu(true);
                     return true;
                 }
 

@@ -7,7 +7,7 @@ public interface PauseStageInterface {
 
     void continueOpeningPauseMenu();
 
-    void continueClosingPauseMenu();
+    void continueClosingPauseMenu(boolean changeInputListener);
 
     boolean hasOpenPauseMenuActionRunning();
 
@@ -21,5 +21,9 @@ public interface PauseStageInterface {
 
     void doneOpeningPauseMenu();
 
-    void doneClosingPauseMenu();
+    void doneClosingPauseMenu(boolean changeInputListener);
+
+    void openDialog();
+
+    void closeDialog();
 }
