@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -21,7 +20,6 @@ import net.leejjon.bluffpoker.actions.OpenPauseMenuAction;
 import net.leejjon.bluffpoker.enums.TextureKey;
 import net.leejjon.bluffpoker.interfaces.PauseStageInterface;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
-import net.leejjon.bluffpoker.state.GameState;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -38,6 +36,7 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
     private float backgroundAlpha = 0f;
     private final float maxBackgroundAlpha = 0.5f;
     private ShapeRenderer screenDimmerRenderer;
+    private Table bottomTable;
 
     private AtomicBoolean pauseMenuGestureActivated = new AtomicBoolean(false);
     private AtomicBoolean openPauseMenuActionRunning = new AtomicBoolean(false);
@@ -48,8 +47,8 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
         super(false);
         this.stageInterface = stageInterface;
 
-        TextureRegionDrawable topMenuBackgroundDrawable = new TextureRegionDrawable(new TextureRegion(stageInterface.getTexture(TextureKey.MENU_TOP_COLOR)));
-        TextureRegionDrawable menuBackgroundDrawable = new TextureRegionDrawable(new TextureRegion(stageInterface.getTexture(TextureKey.MENU_COLOR)));
+        TextureRegionDrawable bottomMenuDrawable = new TextureRegionDrawable(new TextureRegion(stageInterface.getTexture(TextureKey.CURRENT_TURN_COLOR)));
+        TextureRegionDrawable scoreBoardMenuDrawable = new TextureRegionDrawable(new TextureRegion(stageInterface.getTexture(TextureKey.SCOREBOARD_COLOR)));
 
         int height = Gdx.graphics.getHeight() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor();
 
@@ -61,14 +60,14 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
         Table menuTop = new Table();
         menuTop.top();
         menuTop.left();
-        menuTop.setBackground(topMenuBackgroundDrawable);
+        menuTop.setBackground(bottomMenuDrawable);
 
         Label turnLabel = new Label("Current turn:", skin, console, Color.BLACK);
         menuTop.add(turnLabel).align(Align.left).pad(defaultPadding).pad(defaultPadding).padTop(topBottomPadding).padLeft(borderPadding);
         menuTop.add(state().createCurrentPlayerLabel(skin)).pad(defaultPadding).padLeft(borderPadding).padTop(topBottomPadding).align(Align.right);
         menuTop.row();
 
-        Color greyFontColor = new Color(0.75f, 0.75f, 0.75f, 1);
+        Color greyFontColor = new Color(1f, 1f, 1f, 1);
 
         TextButton forfeitButton = new TextButton("Forfeit", skin, "menu");
         forfeitButton.addListener(new ClickListener() {
@@ -96,19 +95,31 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
         Table scores = state().createScores(skin, playerLabel, livesLabel, defaultPadding, topBottomPadding, greyFontColor);
         scores.center();
         scores.top();
-        scores.setBackground(menuBackgroundDrawable);
+        scores.setBackground(scoreBoardMenuDrawable);
+        scores.padBottom(topBottomPadding);
+
+        Table middleTable = new Table();
+        middleTable.setBackground(scoreBoardMenuDrawable);
 
         table.left();
         table.top();
-        table.add(menuTop).width(getMenuWidth());
+        table.add(scores).width(getMenuWidth());
         table.row();
-        table.add(scores).width(getMenuWidth()).height(height);
+        table.add(middleTable).width(getMenuWidth()).height(height);
+
+        bottomTable = new Table();
+        bottomTable.setFillParent(true);
+        bottomTable.left();
+        bottomTable.bottom();
+        bottomTable.add(menuTop).width(getMenuWidth());
 
         table.setX(0f);
-
-        screenDimmerRenderer = new ShapeRenderer();
+        bottomTable.setX(0f);
 
         addActor(table);
+        addActor(bottomTable);
+
+        screenDimmerRenderer = new ShapeRenderer();
     }
 
     @Override
@@ -135,7 +146,9 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
         if (x <= getRawMenuWidth()) {
             this.rightSideOfMenuX = x;
             this.backgroundAlpha = calculateAlpha(x);
-            table.setX((rightSideOfMenuX / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor()) - getMenuWidth());
+            float menuX = (rightSideOfMenuX / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor()) - getMenuWidth();
+            table.setX(menuX);
+            bottomTable.setX(menuX);
         }
     }
 
@@ -221,6 +234,10 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
         int oneSixthOfWidth = width / 6;
         return (width / 2) + oneSixthOfWidth;
     }
+
+//    public static int getTopMenuHeight() {
+//        int height = Gdx.graphics.getHeight();
+//    }
 
     public static int getRawMenuWidth() {
         int width = Gdx.graphics.getWidth();

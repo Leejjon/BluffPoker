@@ -37,7 +37,7 @@ public enum TextureKey {
             return onePixelTexture;
         }
     },
-    MENU_TOP_COLOR() {
+    CURRENT_TURN_COLOR() {
         @Override
         protected Texture get() {
             Pixmap onePixelPixmap = new Pixmap(1, 1, Pixmap.Format.RGB888);
@@ -53,7 +53,7 @@ public enum TextureKey {
             return onePixelTexture;
         }
     },
-    MENU_COLOR() {
+    SCOREBOARD_COLOR() {
         @Override
         protected Texture get() {
             Pixmap onePixelPixmap = new Pixmap(1, 1, Pixmap.Format.RGB888);
