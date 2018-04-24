@@ -15,4 +15,12 @@ public class ScoreTableRow {
         table.removeActor(playerName.getActor());
         table.removeActor(playerLives.getActor());
     }
+
+    public String getPlayerName() {
+        return playerName.getActor().getText().toString();
+    }
+
+    public int getPlayerLives() {
+        return Integer.parseInt(playerLives.getActor().getText().toString());
+    }
 }

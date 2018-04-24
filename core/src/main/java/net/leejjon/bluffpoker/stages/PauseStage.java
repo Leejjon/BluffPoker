@@ -71,8 +71,6 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
         menuTop.add(state().createCurrentPlayerLabel(skin)).pad(defaultPadding).padLeft(borderPadding).padTop(topBottomPadding).align(Align.right);
         menuTop.row();
 
-        Color greyFontColor = new Color(1f, 1f, 1f, 1);
-
         TextButton forfeitButton = new TextButton("Forfeit", skin, "menu");
         forfeitButton.addListener(new ClickListener() {
             @Override
@@ -92,10 +90,10 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
         menuTop.add(forfeitButton).pad(defaultPadding).padBottom(topBottomPadding).align(Align.right);
         menuTop.add(endGameButton).pad(defaultPadding).padBottom(topBottomPadding).align(Align.right);
 
-        Label playerLabel = new Label("Players", skin, "arial32", greyFontColor);
-        Label livesLabel = new Label(" Lives", skin, "arial32", greyFontColor);
+        Label playerLabel = new Label("Players", skin, "arial32", Color.WHITE);
+        Label livesLabel = new Label(" Lives", skin, "arial32", Color.WHITE);
 
-        Table scores = state().createScores(skin, playerLabel, livesLabel, defaultPadding, topBottomPadding, greyFontColor);
+        Table scores = state().createScores(playerLabel, livesLabel, defaultPadding, topBottomPadding);
         scores.center();
         scores.top();
         scores.setBackground(scoreBoardMenuDrawable);

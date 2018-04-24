@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -163,6 +164,7 @@ public class GdxTest {
         dicesBeforeCupActors = new Group();
         dicesUnderCupActors = new Group();
 
+        state().setUiSkin(uiSkin);
         state().createCallInputFieldLabel(uiSkin);
         thirdLatestOutputLabel = state().createThirdLatestOutputLabel(uiSkin);
         secondLatestOutputLabel = state().createSecondLatestOutputLabel(uiSkin);
@@ -173,6 +175,10 @@ public class GdxTest {
         autoButton = state().createAutoButton(uiSkin);
         callButton = state().createCallButton(uiSkin);
         state().createDiceActors(diceTextures, diceLockTexture, dicesBeforeCupActors, dicesUnderCupActors, predictableDiceValueGenerator);
+
+        Label playerLabel = new Label("Players", uiSkin);
+        Label livesLabel = new Label(" Lives", uiSkin);
+        state().createScores(playerLabel, livesLabel, 0, 0);
     }
 
 

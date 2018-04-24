@@ -21,6 +21,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import static net.leejjon.bluffpoker.state.GameState.state;
+
 public class BluffPokerApp extends ApplicationAdapter implements
         StageInterface, PhoneInputListener {
     public static final String TAG = "bluffpoker";
@@ -54,6 +56,8 @@ public class BluffPokerApp extends ApplicationAdapter implements
         uiSkin.addRegions(new TextureAtlas("uiskin.atlas"));
 
         textureMap = TextureKey.getAllTextures();
+
+        state().setUiSkin(uiSkin);
 
         TutorialDialog tutorialDialog = new TutorialDialog(uiSkin);
 

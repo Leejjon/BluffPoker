@@ -45,6 +45,7 @@ public class GameState {
     private boolean newGameState = true;
 
     private void checkUiInitializedPreconditions() {
+        Preconditions.checkNotNull(uiSkin);
         Preconditions.checkNotNull(callInputField);
         Preconditions.checkNotNull(thirdLatestOutputLabel);
         Preconditions.checkNotNull(secondLatestOutputLabel);
@@ -56,6 +57,7 @@ public class GameState {
         Preconditions.checkNotNull(leftDice.getDiceActor());
         Preconditions.checkNotNull(middleDice.getDiceActor());
         Preconditions.checkNotNull(rightDice.getDiceActor());
+        Preconditions.checkNotNull(scoreTable);
     }
 
     // Actual state
@@ -164,6 +166,7 @@ public class GameState {
     }
 
     // Stateful UI elements
+    private transient Skin uiSkin;
     private transient Label callInputField;
     private transient Label thirdLatestOutputLabel;
     private transient Label secondLatestOutputLabel;
@@ -172,7 +175,13 @@ public class GameState {
     private transient ClickableLabel autoButton;
     private transient ClickableLabel callButton;
     private transient Table scoreTable;
+
+    @Getter
     private transient List<ScoreTableRow> scores = new ArrayList<>();
+
+    public void setUiSkin(Skin uiSkin) {
+        this.uiSkin = uiSkin;
+    }
 
     // UI element initialization methods
     public Label createCallInputFieldLabel(Skin uiSkin) {
@@ -262,6 +271,7 @@ public class GameState {
             players[i] = new Player(originalPlayers.get(i), numberOfLives);
         }
         updateCurrentPlayerLabel();
+        addPlayerScores();
         saveGame();
     }
 
@@ -280,19 +290,23 @@ public class GameState {
         }
     }
 
-    public Table createScores(Skin skin, Label playerNameTitle, Label playerLivesTitle, float defaultPadding, float topBottomPadding, Color greyFontColor) {
+    public Table createScores(Label playerNameTitle, Label playerLivesTitle, float defaultPadding, float topBottomPadding) {
         scoreTable = new Table();
         scoreTable.add(playerNameTitle).pad(defaultPadding).padTop(topBottomPadding).padBottom(topBottomPadding);
         scoreTable.add(playerLivesTitle).pad(defaultPadding).padTop(topBottomPadding).padBottom(topBottomPadding);
+        addPlayerScores();
+        return scoreTable;
+    }
+
+    private void addPlayerScores() {
         if (players != null) {
             for (Player player : players) {
                 scoreTable.row();
-                Cell<Label> nameCell = scoreTable.add(new Label(player.getName(), skin, console, greyFontColor)).align(Align.left).padLeft(4f);
-                Cell<Label> livesCell = scoreTable.add(new Label(Integer.toString(player.getLives()), skin, console, greyFontColor)).align(Align.left).padLeft(13f);
+                Cell<Label> nameCell = scoreTable.add(new Label(player.getName(), uiSkin, console, Color.WHITE)).align(Align.left).padLeft(4f);
+                Cell<Label> livesCell = scoreTable.add(new Label(Integer.toString(player.getLives()), uiSkin, console, Color.WHITE)).align(Align.left).padLeft(13f);
                 scores.add(new ScoreTableRow(nameCell, livesCell));
             }
         }
-        return scoreTable;
     }
 
     public void currentPlayerLosesLife(boolean canUseBok) {
@@ -433,8 +447,9 @@ public class GameState {
 
     }
 
-    private GameState(Label callInputField, Label thirdLatestOutputLabel, Label secondLatestOutputLabel, Label latestOutputLabel, Label currentPlayerLabel, ClickableLabel autoButton,
-                              ClickableLabel callButton, CupActor cupActor, DiceActor leftDiceActor, DiceActor middleDiceActor, DiceActor rightDiceActor) {
+    private GameState(Skin uiSkin, Label callInputField, Label thirdLatestOutputLabel, Label secondLatestOutputLabel, Label latestOutputLabel, Label currentPlayerLabel, ClickableLabel autoButton,
+                              ClickableLabel callButton, CupActor cupActor, DiceActor leftDiceActor, DiceActor middleDiceActor, DiceActor rightDiceActor, Table scoreTable) {
+        this.uiSkin = uiSkin;
         this.callInputField = callInputField;
         this.callInputField.setText(callInput);
         this.thirdLatestOutputLabel = thirdLatestOutputLabel;
@@ -445,6 +460,8 @@ public class GameState {
         this.autoButton.setDisabled(!allowedToCall);
         this.callButton = callButton;
         this.callButton.setDisabled(!allowedToCall);
+        this.scoreTable = scoreTable;
+
         updateOutputLabels();
 
         cup.setCupActor(cupActor);
@@ -521,8 +538,8 @@ public class GameState {
     }
 
     public static synchronized void reset() {
-        instance = new GameState(instance.callInputField, instance.thirdLatestOutputLabel, instance.secondLatestOutputLabel, instance.latestOutputLabel, instance.currentPlayerLabel, instance.autoButton,
-                instance.callButton, instance.cup.getCupActor(), instance.leftDice.getDiceActor(), instance.middleDice.getDiceActor(), instance.rightDice.getDiceActor());
+        instance = new GameState(instance.uiSkin, instance.callInputField, instance.thirdLatestOutputLabel, instance.secondLatestOutputLabel, instance.latestOutputLabel, instance.currentPlayerLabel, instance.autoButton,
+                instance.callButton, instance.cup.getCupActor(), instance.leftDice.getDiceActor(), instance.middleDice.getDiceActor(), instance.rightDice.getDiceActor(), instance.scoreTable);
     }
 
     /**

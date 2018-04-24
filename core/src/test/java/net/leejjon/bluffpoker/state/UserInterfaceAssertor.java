@@ -8,8 +8,13 @@ import com.badlogic.gdx.utils.SnapshotArray;
 import net.leejjon.bluffpoker.actors.CupActor;
 import net.leejjon.bluffpoker.actors.DiceActor;
 import net.leejjon.bluffpoker.logic.NumberCombination;
+import net.leejjon.bluffpoker.logic.Player;
 import net.leejjon.bluffpoker.ui.ClickableLabel;
+import net.leejjon.bluffpoker.ui.ScoreTableRow;
 
+import java.util.List;
+
+import static net.leejjon.bluffpoker.state.GameState.state;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -27,9 +32,9 @@ public interface UserInterfaceAssertor {
     }
 
     default void assertDicesInUI(Group dicesUnderCupActors, Group dicesBeforeCupActors, NumberCombination expectedValue) {
-        DiceActor left = GameState.state().getLeftDice().getDiceActor();
-        DiceActor middle = GameState.state().getMiddleDice().getDiceActor();
-        DiceActor right = GameState.state().getRightDice().getDiceActor();
+        DiceActor left = state().getLeftDice().getDiceActor();
+        DiceActor middle = state().getMiddleDice().getDiceActor();
+        DiceActor right = state().getRightDice().getDiceActor();
 
         assertDiceValuesInUI(left, middle, right, expectedValue);
         assertDiceLocksInUI(left, middle, right);
@@ -43,9 +48,11 @@ public interface UserInterfaceAssertor {
     // TODO: Implement when the player overview screen has been implemented.
 //    void assertPlayersInGameState(GameState gameState);
 
-    default void assertUserInterfaceState(String expectedCall, Label callInputLabel, ClickableLabel autoButton, ClickableLabel callButton, Group dicesUnderCupActors, Group dicesBeforeCupActors, NumberCombination expectedValue) {
+    default void assertUserInterfaceState(String expectedCall, Label callInputLabel, ClickableLabel autoButton, ClickableLabel callButton, Group dicesUnderCupActors, Group dicesBeforeCupActors,
+                                          NumberCombination expectedValue, Player expectedCurrentPlayer) {
+        assertPlayersInUI(expectedCurrentPlayer);
         assertCallBoardInUI(expectedCall, callInputLabel, autoButton, callButton);
-        assertCupInUI(GameState.state().getCup().getCupActor());
+        assertCupInUI(state().getCup().getCupActor());
         assertDicesInUI(dicesUnderCupActors, dicesBeforeCupActors, expectedValue);
     }
 
@@ -68,5 +75,13 @@ public interface UserInterfaceAssertor {
         assertTrue(children.contains(left, true));
         assertTrue(children.contains(middle, true));
         assertTrue(children.contains(right, true));
+    }
+
+    default void assertPlayersInUI(Player expectedCurrentPlayer) {
+        List<ScoreTableRow> scoresList = state().getScores();
+
+        ScoreTableRow leon = scoresList.get(0);
+        assertEquals("Leon", leon.getPlayerName());
+        assertEquals(3, leon.getPlayerLives());
     }
 }

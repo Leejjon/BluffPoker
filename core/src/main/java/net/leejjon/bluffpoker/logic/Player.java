@@ -28,6 +28,8 @@ public class Player {
         } else {
             dead = false;
         }
+
+        // TODO: Reduce live on scoreboard.
     }
 
 
