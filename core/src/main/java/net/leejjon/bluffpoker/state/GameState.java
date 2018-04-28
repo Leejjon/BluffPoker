@@ -171,7 +171,7 @@ public class GameState {
     private transient Label thirdLatestOutputLabel;
     private transient Label secondLatestOutputLabel;
     private transient Label latestOutputLabel;
-    private transient Label currentPlayerLabel;
+    @Getter private transient Label currentPlayerLabel;
     private transient ClickableLabel autoButton;
     private transient ClickableLabel callButton;
     private transient Table scoreTable;
@@ -278,12 +278,11 @@ public class GameState {
     public void updatePlayerIterator(int newPlayerIteratorValue) {
         playerIterator = newPlayerIteratorValue;
 
-        updateCurrentPlayerLabel();
         saveGame();
     }
 
-    private void updateCurrentPlayerLabel() {
-        if (isAllowedToBelieveOrNotBelieve() && !state().getCup().isBelieving()) {
+    public void updateCurrentPlayerLabel() {
+        if (isAllowedToBelieveOrNotBelieve() && !getCup().isBelieving()) {
             currentPlayerLabel.setText(getNextPlayer().getName());
         } else {
             currentPlayerLabel.setText(getCurrentPlayer().getName());
@@ -368,6 +367,7 @@ public class GameState {
         believed666 = false;
         hasToThrow = true;
         hasThrown = false;
+        updateCurrentPlayerLabel();
         saveGame();
     }
 

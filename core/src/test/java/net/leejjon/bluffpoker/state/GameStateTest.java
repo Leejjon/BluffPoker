@@ -208,11 +208,11 @@ public class GameStateTest extends GdxTest {
         BluffPokerGame game = call(throwSpecificValue(startNewGame(), expectedNumberCombination), call);
 
         GameStateEnum.CALL_BLIND.assertUserInterfaceState(call.toString(),
-                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer1(DEFAULT_LIVES));
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer2(DEFAULT_LIVES));
         GameStateEnum.CALL_BLIND.assertState(game, expectedNumberCombination, call, call, getPlayer1(DEFAULT_LIVES));
 
         GameStateEnum.CALL_BLIND.assertUserInterfaceState(call.toString(),
-                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer1(DEFAULT_LIVES));
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer2(DEFAULT_LIVES));
         GameStateEnum.CALL_BLIND.assertState(reloadGame(), expectedNumberCombination, call, call, getPlayer1(DEFAULT_LIVES));
 
         assertTrue(logMessages.get(logMessages.size - 1).contains(BluffPokerGame.BLIND_MESSAGE));
@@ -224,11 +224,11 @@ public class GameStateTest extends GdxTest {
         BluffPokerGame game = call(throwSpecificValue(startNewGame(), expectedNumberCombination), NumberCombination.BLUFF_NUMBER);
 
         GameStateEnum.CALL_BLIND.assertUserInterfaceState(NumberCombination.BLUFF_NUMBER.toString(),
-                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer1(DEFAULT_LIVES));
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer2(DEFAULT_LIVES));
         GameStateEnum.CALL_BLIND.assertState(game, expectedNumberCombination, NumberCombination.BLUFF_NUMBER, NumberCombination.BLUFF_NUMBER, getPlayer1(DEFAULT_LIVES));
 
         GameStateEnum.CALL_BLIND.assertUserInterfaceState(NumberCombination.BLUFF_NUMBER.toString(),
-                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer1(DEFAULT_LIVES));
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer2(DEFAULT_LIVES));
         GameStateEnum.CALL_BLIND.assertState(reloadGame(), expectedNumberCombination, NumberCombination.BLUFF_NUMBER, NumberCombination.BLUFF_NUMBER, getPlayer1(DEFAULT_LIVES));
 
         assertTrue(logMessages.get(logMessages.size - 1).contains(BluffPokerGame.BLIND_MESSAGE));
@@ -269,11 +269,11 @@ public class GameStateTest extends GdxTest {
         BluffPokerGame game = call(tapCup(throwSpecificValue(startNewGame(), expectedNumberCombination)), call);
 
         GameStateEnum.CALL.assertUserInterfaceState(call.toString(),
-                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer1(DEFAULT_LIVES));
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer2(DEFAULT_LIVES));
         GameStateEnum.CALL.assertState(game, expectedNumberCombination, call, call, getPlayer1(DEFAULT_LIVES));
 
         GameStateEnum.CALL.assertUserInterfaceState(call.toString(),
-                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer1(DEFAULT_LIVES));
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer2(DEFAULT_LIVES));
         GameStateEnum.CALL.assertState(reloadGame(), expectedNumberCombination, call, call, getPlayer1(DEFAULT_LIVES));
     }
 
@@ -298,11 +298,11 @@ public class GameStateTest extends GdxTest {
         BluffPokerGame game = call(moveLeftDiceOut(tapCup(throwSpecificValue(startNewGame(), expectedNumberCombination))), call);
 
         GameStateEnum.CALL_LEFT_SIX_OUT.assertUserInterfaceState(call.toString(),
-                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer1(DEFAULT_LIVES));
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer2(DEFAULT_LIVES));
         GameStateEnum.CALL_LEFT_SIX_OUT.assertState(game, expectedNumberCombination, call, call, getPlayer1(DEFAULT_LIVES));
 
         GameStateEnum.CALL_LEFT_SIX_OUT.assertUserInterfaceState(call.toString(),
-                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer1(DEFAULT_LIVES));
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer2(DEFAULT_LIVES));
         GameStateEnum.CALL_LEFT_SIX_OUT.assertState(reloadGame(), expectedNumberCombination, call, call, getPlayer1(DEFAULT_LIVES));
     }
 

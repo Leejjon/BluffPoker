@@ -50,10 +50,15 @@ public interface UserInterfaceAssertor {
 
     default void assertUserInterfaceState(String expectedCall, Label callInputLabel, ClickableLabel autoButton, ClickableLabel callButton, Group dicesUnderCupActors, Group dicesBeforeCupActors,
                                           NumberCombination expectedValue, Player expectedCurrentPlayer) {
-        assertPlayersInUI(expectedCurrentPlayer);
+        assertPlayersInUI();
+        assertCorrectCurrentPlayerInUI(expectedCurrentPlayer);
         assertCallBoardInUI(expectedCall, callInputLabel, autoButton, callButton);
         assertCupInUI(state().getCup().getCupActor());
         assertDicesInUI(dicesUnderCupActors, dicesBeforeCupActors, expectedValue);
+    }
+
+    default void assertCorrectCurrentPlayerInUI(Player expectedCurrentPlayer) {
+        assertEquals(expectedCurrentPlayer.getName(), state().getCurrentPlayerLabel().getText().toString());
     }
 
     default void assertDiceValuesInUI(DiceActor left, DiceActor middle, DiceActor right, NumberCombination expectedValue) {
@@ -77,11 +82,15 @@ public interface UserInterfaceAssertor {
         assertTrue(children.contains(right, true));
     }
 
-    default void assertPlayersInUI(Player expectedCurrentPlayer) {
+    default void assertPlayersInUI() {
         List<ScoreTableRow> scoresList = state().getScores();
 
         ScoreTableRow leon = scoresList.get(0);
         assertEquals("Leon", leon.getPlayerName());
         assertEquals(3, leon.getPlayerLives());
+
+        ScoreTableRow dirk = scoresList.get(1);
+        assertEquals("Dirk", dirk.getPlayerName());
+        assertEquals(3, dirk.getPlayerLives());
     }
 }

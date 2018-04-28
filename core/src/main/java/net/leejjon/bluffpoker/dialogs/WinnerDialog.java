@@ -39,6 +39,7 @@ public class WinnerDialog extends Dialog {
             public void clicked(InputEvent event, float x, float y) {
                 // Some logic to make the winner of the previous game start the next one.
                 SelectPlayersStageState.updatePlayerListMoveWinnerOnTop(winnerName);
+                GameState.reset();
                 stageListener.backToStartStage();
             }
         });
