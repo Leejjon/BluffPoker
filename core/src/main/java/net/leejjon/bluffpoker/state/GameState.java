@@ -298,6 +298,12 @@ public class GameState {
     }
 
     private void addPlayerScores() {
+//        Gdx.app.log(BluffPokerApp.TAG, "Before scoresize" + scores.size());
+//        for (ScoreTableRow str : scores) {
+//            str.deleteRow(scoreTable);
+//        }
+//        Gdx.app.log(BluffPokerApp.TAG, "After scoresize" + scores.size());
+
         if (players != null) {
             for (Player player : players) {
                 scoreTable.row();
@@ -305,11 +311,18 @@ public class GameState {
                 Cell<Label> livesCell = scoreTable.add(new Label(Integer.toString(player.getLives()), uiSkin, console, Color.WHITE)).align(Align.left).padLeft(13f);
                 scores.add(new ScoreTableRow(nameCell, livesCell));
             }
+        } else {
+            Gdx.app.log(BluffPokerApp.TAG, "Attempting to load scores while players list is null.");
         }
     }
 
     public void currentPlayerLosesLife(boolean canUseBok) {
         getCurrentPlayer().loseLife(canUseBok);
+        for (ScoreTableRow s : scores) {
+            if (s.getPlayerName().equals(getCurrentPlayer().getName())) {
+                s.loseLife(canUseBok);
+            }
+        }
         saveGame();
     }
 
@@ -448,7 +461,7 @@ public class GameState {
     }
 
     private GameState(Skin uiSkin, Label callInputField, Label thirdLatestOutputLabel, Label secondLatestOutputLabel, Label latestOutputLabel, Label currentPlayerLabel, ClickableLabel autoButton,
-                              ClickableLabel callButton, CupActor cupActor, DiceActor leftDiceActor, DiceActor middleDiceActor, DiceActor rightDiceActor, Table scoreTable) {
+                              ClickableLabel callButton, CupActor cupActor, DiceActor leftDiceActor, DiceActor middleDiceActor, DiceActor rightDiceActor, Table scoreTable, List<ScoreTableRow> scores) {
         this.uiSkin = uiSkin;
         this.callInputField = callInputField;
         this.callInputField.setText(callInput);
@@ -461,6 +474,11 @@ public class GameState {
         this.callButton = callButton;
         this.callButton.setDisabled(!allowedToCall);
         this.scoreTable = scoreTable;
+
+        for (ScoreTableRow s : scores) {
+            s.deleteRow(scoreTable);
+        }
+        this.scores = new ArrayList<>();
 
         updateOutputLabels();
 
@@ -539,7 +557,7 @@ public class GameState {
 
     public static synchronized void reset() {
         instance = new GameState(instance.uiSkin, instance.callInputField, instance.thirdLatestOutputLabel, instance.secondLatestOutputLabel, instance.latestOutputLabel, instance.currentPlayerLabel, instance.autoButton,
-                instance.callButton, instance.cup.getCupActor(), instance.leftDice.getDiceActor(), instance.middleDice.getDiceActor(), instance.rightDice.getDiceActor(), instance.scoreTable);
+                instance.callButton, instance.cup.getCupActor(), instance.leftDice.getDiceActor(), instance.middleDice.getDiceActor(), instance.rightDice.getDiceActor(), instance.scoreTable, instance.scores);
     }
 
     /**

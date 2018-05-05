@@ -1,13 +1,18 @@
 package net.leejjon.bluffpoker.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+
+import net.leejjon.bluffpoker.BluffPokerApp;
 
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class ScoreTableRow {
+    public static final String ON_THE_BOK_ICON = "0*";
+
     private Cell<Label> playerName;
     private Cell<Label> playerLives;
 
@@ -16,11 +21,28 @@ public class ScoreTableRow {
         table.removeActor(playerLives.getActor());
     }
 
+    public void loseLife(boolean canUseBok) {
+        if (getPlayerLives().equals(ON_THE_BOK_ICON)) {
+            playerLives.getActor().setText("0");
+        } else if (Integer.parseInt(getPlayerLives()) > 1) {
+            int lives = Integer.parseInt(getPlayerLives()) - 1;
+            playerLives.getActor().setText(Integer.toString(lives));
+        } else if (Integer.parseInt(getPlayerLives()) == 1) {
+            if (canUseBok) {
+                playerLives.getActor().setText(ON_THE_BOK_ICON);
+            } else {
+                playerLives.getActor().setText("0");
+            }
+        } else {
+            Gdx.app.log(BluffPokerApp.TAG, "You cannot kill that which has no life: " + playerName);
+        }
+    }
+
     public String getPlayerName() {
         return playerName.getActor().getText().toString();
     }
 
-    public int getPlayerLives() {
-        return Integer.parseInt(playerLives.getActor().getText().toString());
+    public String getPlayerLives() {
+        return playerLives.getActor().getText().toString();
     }
 }

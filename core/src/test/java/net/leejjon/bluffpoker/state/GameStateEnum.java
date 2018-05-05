@@ -696,11 +696,6 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
         }
 
         @Override
-        public void assertPlayersInUI() {
-            // TODO:
-        }
-
-        @Override
         public void assertDiceLocations(DiceActor left, DiceActor middle, DiceActor right, Group dicesUnderCupActors, Group dicesBeforeCupActors) {
             SnapshotArray<Actor> dicesBeforeCup = dicesBeforeCupActors.getChildren();
             dicesBeforeCup.contains(left, true);

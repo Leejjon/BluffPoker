@@ -45,12 +45,9 @@ public interface UserInterfaceAssertor {
         assertIfDicesAreInUnderCupGroup(left, middle, right, dicesUnderCupActors);
     }
 
-    // TODO: Implement when the player overview screen has been implemented.
-//    void assertPlayersInGameState(GameState gameState);
-
     default void assertUserInterfaceState(String expectedCall, Label callInputLabel, ClickableLabel autoButton, ClickableLabel callButton, Group dicesUnderCupActors, Group dicesBeforeCupActors,
                                           NumberCombination expectedValue, Player expectedCurrentPlayer) {
-        assertPlayersInUI();
+        assertPlayersInUiMatchesWithState();
         assertCorrectCurrentPlayerInUI(expectedCurrentPlayer);
         assertCallBoardInUI(expectedCall, callInputLabel, autoButton, callButton);
         assertCupInUI(state().getCup().getCupActor());
@@ -82,15 +79,19 @@ public interface UserInterfaceAssertor {
         assertTrue(children.contains(right, true));
     }
 
-    default void assertPlayersInUI() {
+    static void assertPlayersInUiMatchesWithState() {
         List<ScoreTableRow> scoresList = state().getScores();
 
+        Player leonPlayer = state().getPlayers()[0];
+
         ScoreTableRow leon = scoresList.get(0);
-        assertEquals("Leon", leon.getPlayerName());
-        assertEquals(3, leon.getPlayerLives());
+        assertEquals(leonPlayer.getName(), leon.getPlayerName());
+        assertEquals(leonPlayer.isRidingOnTheBok() ? ScoreTableRow.ON_THE_BOK_ICON : String.valueOf(leonPlayer.getLives()), leon.getPlayerLives());
+
+        Player dirkPlayer = state().getPlayers()[1];
 
         ScoreTableRow dirk = scoresList.get(1);
-        assertEquals("Dirk", dirk.getPlayerName());
-        assertEquals(3, dirk.getPlayerLives());
+        assertEquals(dirkPlayer.getName(), dirk.getPlayerName());
+        assertEquals(dirkPlayer.isRidingOnTheBok() ? ScoreTableRow.ON_THE_BOK_ICON : String.valueOf(dirkPlayer.getLives()), dirk.getPlayerLives());
     }
 }
