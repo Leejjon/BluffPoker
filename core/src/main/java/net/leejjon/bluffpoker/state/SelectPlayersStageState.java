@@ -37,6 +37,11 @@ public class SelectPlayersStageState {
         save();
     }
 
+    public void removePlayer(String playerName) {
+        players.remove(playerName);
+        playerList.setItems(players.toArray(new String[players.size()]));
+    }
+
     private void save() {
         Gson gson = new Gson();
         Preferences preferences = Gdx.app.getPreferences(BluffPokerPreferences.KEY);

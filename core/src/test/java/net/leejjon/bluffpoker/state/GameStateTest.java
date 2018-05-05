@@ -539,6 +539,11 @@ public class GameStateTest extends GdxTest {
             }
 
             @Override
+            public void forfeit() {
+
+            }
+
+            @Override
             public void finishGame(String winner) {
             }
 

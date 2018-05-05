@@ -4,6 +4,8 @@ import net.leejjon.bluffpoker.logic.BluffPokerGame;
 import net.leejjon.bluffpoker.logic.NumberCombination;
 import net.leejjon.bluffpoker.logic.Player;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -34,12 +36,12 @@ public interface GameStateAssertor {
      * @param expectedCurrentPlayer This is pretty weird but how I have built it. It is only the next players turn after a believe or unsuccessful not believe action.
      */
     default void assertPlayersInGameState(Player expectedCurrentPlayer) {
-        Player[] players = GameState.state().getPlayers();
-        Player leon = players[0];
+        ArrayList<Player> players = GameState.state().getPlayers();
+        Player leon = players.get(0);
         assertEquals("Leon", leon.getName());
         assertEquals(3, leon.getLives());
 
-        Player dirk = players[1];
+        Player dirk = players.get(1);
         assertEquals("Dirk", dirk.getName());
         assertEquals(3, dirk.getLives());
 

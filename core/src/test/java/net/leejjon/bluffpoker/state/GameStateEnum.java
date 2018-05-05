@@ -11,6 +11,8 @@ import net.leejjon.bluffpoker.logic.NumberCombination;
 import net.leejjon.bluffpoker.logic.Player;
 import net.leejjon.bluffpoker.ui.ClickableLabel;
 
+import java.util.ArrayList;
+
 import static net.leejjon.bluffpoker.state.GameState.state;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -529,12 +531,12 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertPlayersInGameState(Player expectedCurrentPlayer) {
-            Player[] players = state().getPlayers();
-            Player leon = players[0];
+            ArrayList<Player> players = state().getPlayers();
+            Player leon = players.get(0);
             assertEquals("Leon", leon.getName());
             assertEquals(2, leon.getLives());
 
-            Player dirk = players[1];
+            Player dirk = players.get(1);
             assertEquals("Dirk", dirk.getName());
             assertEquals(3, dirk.getLives());
 
@@ -573,12 +575,12 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertPlayersInGameState(Player expectedCurrentPlayer) {
-            Player[] players = state().getPlayers();
-            Player leon = players[0];
+            ArrayList<Player> players = state().getPlayers();
+            Player leon = players.get(0);
             assertEquals("Leon", leon.getName());
             assertEquals(3, leon.getLives());
 
-            Player dirk = players[1];
+            Player dirk = players.get(1);
             assertEquals("Dirk", dirk.getName());
             assertEquals(2, dirk.getLives());
 
@@ -617,12 +619,12 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertPlayersInGameState(Player expectedCurrentPlayer) {
-            Player[] players = state().getPlayers();
-            Player leon = players[0];
+            ArrayList<Player> players = state().getPlayers();
+            Player leon = players.get(0);
             assertEquals("Leon", leon.getName());
             assertEquals(2, leon.getLives());
 
-            Player dirk = players[1];
+            Player dirk = players.get(1);
             assertEquals("Dirk", dirk.getName());
             assertEquals(3, dirk.getLives());
 
@@ -682,12 +684,12 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
 
         @Override
         public void assertPlayersInGameState(Player expectedCurrentPlayer) {
-            Player[] players = state().getPlayers();
-            Player leon = players[0];
+            ArrayList<Player> players = state().getPlayers();
+            Player leon = players.get(0);
             assertEquals("Leon", leon.getName());
             assertEquals(3, leon.getLives());
 
-            Player dirk = players[1];
+            Player dirk = players.get(1);
             assertEquals("Dirk", dirk.getName());
             assertEquals(2, dirk.getLives());
 

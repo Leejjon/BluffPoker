@@ -60,9 +60,8 @@ public class GameState {
         Preconditions.checkNotNull(scoreTable);
     }
 
-    // Actual state
     @Getter
-    private Player[] players;
+    private ArrayList<Player> players;
 
     @Getter
     private int playerIterator = 0;
@@ -96,9 +95,25 @@ public class GameState {
     @Getter private boolean believed666 = false;
     @Getter private boolean blindPass = false;
 
+    public void removeCurrentPlayer() {
+        // Remove the player everywhere in the ui.
+        for (ScoreTableRow str : scores) {
+            if (str.getPlayerName().equals(getCurrentPlayer().getName())) {
+                str.deleteRow(scoreTable);
+                break;
+            }
+        }
+        SelectPlayersStageState.getInstance().removePlayer(getCurrentPlayer().getName());
+
+        // Don't update the current player label, that will happen automatically in the nextPlayer() method of the BluffPokerGame class.
+
+        players.remove(getCurrentPlayer());
+        updatePlayerIterator();
+    }
+
     // Custom state getter methods
     public Player getCurrentPlayer() {
-        return players[playerIterator];
+        return players.get(playerIterator);
     }
 
     public Player getNextPlayer() {
@@ -109,11 +124,11 @@ public class GameState {
         // At this point (during placing a call) not all players should be dead.
         do {
             // If the localPlayerIterator runs out of the arrays bounds, we moveUp it to 0.
-            if (localPlayerIterator == getPlayers().length) {
+            if (localPlayerIterator == getPlayers().size()) {
                 localPlayerIterator = 0;
             }
 
-            nextPlayer = getPlayers()[localPlayerIterator];
+            nextPlayer = getPlayers().get(localPlayerIterator);
 
             localPlayerIterator++;
         } while (nextPlayer.isDead());
@@ -266,13 +281,22 @@ public class GameState {
 
     // UI element update methods.
     public void constructPlayers(java.util.List<String> originalPlayers, int numberOfLives) {
-        players = new Player[originalPlayers.size()];
+        players = new ArrayList<>(originalPlayers.size());
         for (int i = 0; i < originalPlayers.size(); i++) {
-            players[i] = new Player(originalPlayers.get(i), numberOfLives);
+            players.add(new Player(originalPlayers.get(i), numberOfLives));
         }
         updateCurrentPlayerLabel();
         addPlayerScores();
         saveGame();
+    }
+
+
+    public void updatePlayerIterator() {
+        if (state().getPlayerIterator() + 1 < state().getPlayers().size()) {
+            state().updatePlayerIterator(state().getPlayerIterator() + 1);
+        } else {
+            state().updatePlayerIterator(0);
+        }
     }
 
     public void updatePlayerIterator(int newPlayerIteratorValue) {
@@ -298,12 +322,6 @@ public class GameState {
     }
 
     private void addPlayerScores() {
-//        Gdx.app.log(BluffPokerApp.TAG, "Before scoresize" + scores.size());
-//        for (ScoreTableRow str : scores) {
-//            str.deleteRow(scoreTable);
-//        }
-//        Gdx.app.log(BluffPokerApp.TAG, "After scoresize" + scores.size());
-
         if (players != null) {
             for (Player player : players) {
                 scoreTable.row();
@@ -355,11 +373,6 @@ public class GameState {
         saveGame();
     }
 
-    public void setFirstThrowSinceDeath(boolean value) {
-        firstThrowSinceDeath = value;
-        saveGame();
-    }
-
     public void setBokAvailable(boolean value) {
         bokAvailable = value;
         saveGame();
@@ -374,6 +387,7 @@ public class GameState {
     }
 
     public void resetLatestCall() {
+        firstThrowSinceDeath = true;
         latestCall = null;
         allowedToBelieveOrNotBelieve = false;
         allowedToViewOwnThrow = false;

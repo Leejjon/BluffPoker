@@ -66,7 +66,7 @@ public class BluffPokerApp extends ApplicationAdapter implements
         settingsStage = new SettingsStage(uiSkin, this);
         selectPlayersStage = new SelectPlayersStage(uiSkin, tutorialDialog,this);
         gameStage = new GameStage(uiSkin, tutorialDialog, this);
-        pauseStage = new PauseStage(this, uiSkin);
+        pauseStage = new PauseStage(this, gameStage, uiSkin);
 
         // Make sure touch input goes to the startStage.
         Gdx.input.setInputProcessor(startMenuStage);

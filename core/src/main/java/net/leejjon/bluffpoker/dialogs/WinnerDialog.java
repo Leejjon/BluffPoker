@@ -28,7 +28,11 @@ public class WinnerDialog extends Dialog {
                 GameState.reset();
 
                 // Some logic to make the winner of the previous game start the next one.
-                stageListener.startGame(SelectPlayersStageState.updatePlayerListMoveWinnerOnTop(winnerName));
+                if (SelectPlayersStageState.getInstance().getPlayers().size() > 1) {
+                    stageListener.startGame(SelectPlayersStageState.updatePlayerListMoveWinnerOnTop(winnerName));
+                } else {
+                    stageListener.backToStartStage();
+                }
             }
         });
         button(restartButton);

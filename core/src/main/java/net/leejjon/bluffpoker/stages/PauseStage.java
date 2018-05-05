@@ -17,10 +17,13 @@ import com.badlogic.gdx.utils.Align;
 import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.actions.ClosePauseMenuAction;
 import net.leejjon.bluffpoker.actions.OpenPauseMenuAction;
+import net.leejjon.bluffpoker.dialogs.ForfeitDialog;
 import net.leejjon.bluffpoker.dialogs.QuitDialog;
 import net.leejjon.bluffpoker.enums.TextureKey;
+import net.leejjon.bluffpoker.interfaces.GameInputInterface;
 import net.leejjon.bluffpoker.interfaces.PauseStageInterface;
 import net.leejjon.bluffpoker.interfaces.StageInterface;
+import net.leejjon.bluffpoker.interfaces.UserInterface;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -31,6 +34,7 @@ import static net.leejjon.bluffpoker.state.GameState.state;
 public class PauseStage extends AbstractStage implements PauseStageInterface {
     private StageInterface stageInterface;
     private QuitDialog quitDialog;
+    private ForfeitDialog forfeitDialog;
 
     @Getter
     private float rightSideOfMenuX;
@@ -46,9 +50,10 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
     private AtomicBoolean pauseMenuOpen = new AtomicBoolean(false);
     private AtomicBoolean dialogOpen = new AtomicBoolean(false);
 
-    public PauseStage(StageInterface stageInterface, Skin skin) {
+    public PauseStage(StageInterface stageInterface, UserInterface userInterface, Skin skin) {
         super(false);
         this.stageInterface = stageInterface;
+        forfeitDialog = new ForfeitDialog(skin, this, userInterface);
         quitDialog = new QuitDialog(skin, this, stageInterface);
 
         TextureRegionDrawable bottomMenuDrawable = new TextureRegionDrawable(new TextureRegion(stageInterface.getTexture(TextureKey.CURRENT_TURN_COLOR)));
@@ -75,8 +80,7 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
         forfeitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log(BluffPokerApp.TAG, "click");
-                super.clicked(event, x, y);
+                forfeitDialog.show(PauseStage.this);
             }
         });
         TextButton endGameButton = new TextButton("Quit", skin, "menu");

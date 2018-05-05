@@ -185,7 +185,6 @@ public class BluffPokerGame implements GameInputInterface {
             }
 
             state().currentPlayerLosesLife(canUseBok());
-            state().setFirstThrowSinceDeath(true);
             // TODO: make sure all people on the bok die when the shared bok is allowed.
 
             // Detect if the current player jumped on the block and check if we should not allow other players to state on the bok too.
@@ -218,6 +217,25 @@ public class BluffPokerGame implements GameInputInterface {
                 userInterface.showTutorialMessage(TutorialMessage.DID_NOT_BELIEVE_THRUTH, callingPlayer, whatWasCalled.toString());
             }
         }
+    }
+
+    @Override
+    public void forfeit() {
+        // TODO: Forfeit code
+        state().removeCurrentPlayer();
+
+        // TODO: Print console message that player has forfeited.
+
+        if (!nextPlayer()) {
+            Player winner = getWinner();
+            state().logGameConsoleMessage(String.format(WON_THE_GAME, winner.getName()));
+            userInterface.finishGame(winner.getName());
+            return;
+        }
+
+        // The cup should not be locked at this point.
+        state().resetLatestCall();
+        state().logGameConsoleMessage(String.format(SHAKE_THE_CUP, state().getCurrentPlayer().getName()));
     }
 
     /**
@@ -348,11 +366,6 @@ public class BluffPokerGame implements GameInputInterface {
         lookAtOwnThrowMessageHasBeenShown = false;
     }
 
-    @Override
-    public void openMenu() {
-
-    }
-
     /**
      * Watch out, this is a recursive function.
      * @return A boolean if there is a next player.
@@ -363,9 +376,9 @@ public class BluffPokerGame implements GameInputInterface {
             return false;
         }
 
-        updatePlayerIterator();
+        state().updatePlayerIterator();
 
-        if (state().getPlayers()[state().getPlayerIterator()].isDead()) {
+        if (state().getPlayers().get(state().getPlayerIterator()).isDead()) {
             nextPlayer();
         }
 
@@ -373,21 +386,13 @@ public class BluffPokerGame implements GameInputInterface {
         return true;
     }
 
-    public void updatePlayerIterator() {
-        if (state().getPlayerIterator() + 1 < state().getPlayers().length) {
-            state().updatePlayerIterator(state().getPlayerIterator() + 1);
-        } else {
-            state().updatePlayerIterator(0);
-        }
-    }
-
     private Player getWinner() {
         int numberOfPlayersStillAlive = 0;
 
         // Check if there are still more than two players alive.
         int indexOfLastLivingPlayer = 0;
-        for (int i = 0; i < state().getPlayers().length; i++) {
-            Player p = state().getPlayers()[i];
+        for (int i = 0; i < state().getPlayers().size(); i++) {
+            Player p = state().getPlayers().get(i);
             if (!p.isDead()) {
                 numberOfPlayersStillAlive++;
                 indexOfLastLivingPlayer = i;

@@ -7,5 +7,5 @@ public interface GameInputInterface {
 
     boolean longTapOnCup();
 
-    void openMenu();
+    void forfeit();
 }

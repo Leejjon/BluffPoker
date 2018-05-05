@@ -192,6 +192,11 @@ public class GameStage extends AbstractStage implements UserInterface {
         }
     }
 
+    @Override
+    public void forfeit() {
+        currentGame.forfeit();
+    }
+
     public static int getMiddleX() {
         return Gdx.graphics.getWidth() / 2;
     }
