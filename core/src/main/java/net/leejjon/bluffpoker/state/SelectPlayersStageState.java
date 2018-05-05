@@ -40,6 +40,7 @@ public class SelectPlayersStageState {
     public void removePlayer(String playerName) {
         players.remove(playerName);
         playerList.setItems(players.toArray(new String[players.size()]));
+        save();
     }
 
     private void save() {
