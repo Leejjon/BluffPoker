@@ -1,0 +1,11 @@
+
+// This can be run with 'gradle appengineRun'
+// This can be deployed with 'gradle appengineDeploy'
+appengine {
+    deploy {   // deploy configuration
+        version = '1'
+        stopPreviousVersion = true  // default - stop the current version
+        promote = true              // default - & make this the current version
+    }
+}
+
