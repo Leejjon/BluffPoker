@@ -82,16 +82,11 @@ public interface UserInterfaceAssertor {
     static void assertPlayersInUiMatchesWithState() {
         List<ScoreTableRow> scoresList = state().getScores();
 
-        Player leonPlayer = state().getPlayers().get(0);
-
-        ScoreTableRow leon = scoresList.get(0);
-        assertEquals(leonPlayer.getName(), leon.getPlayerName());
-        assertEquals(leonPlayer.isRidingOnTheBok() ? ScoreTableRow.ON_THE_BOK_ICON : String.valueOf(leonPlayer.getLives()), leon.getPlayerLives());
-
-        Player dirkPlayer = state().getPlayers().get(1);
-
-        ScoreTableRow dirk = scoresList.get(1);
-        assertEquals(dirkPlayer.getName(), dirk.getPlayerName());
-        assertEquals(dirkPlayer.isRidingOnTheBok() ? ScoreTableRow.ON_THE_BOK_ICON : String.valueOf(dirkPlayer.getLives()), dirk.getPlayerLives());
+        for (int i = 0; i < scoresList.size(); i++) {
+            ScoreTableRow str = scoresList.get(i);
+            Player player = state().getPlayers().get(i);
+            assertEquals(player.getName(), str.getPlayerName());
+            assertEquals(player.isRidingOnTheBok() ? ScoreTableRow.ON_THE_BOK_ICON : String.valueOf(player.getLives()), str.getPlayerLives());
+        }
     }
 }

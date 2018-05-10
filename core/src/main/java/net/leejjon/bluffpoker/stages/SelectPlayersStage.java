@@ -158,7 +158,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         addActor(table);
     }
 
-    static List.ListStyle getCustomListStyle(Skin uiSkin) {
+    public static List.ListStyle getCustomListStyle(Skin uiSkin) {
         List.ListStyle ls = uiSkin.get(List.ListStyle.class);
         ls.selection = addBordersToTextArea(ls.selection);
         ls.fontColorSelected = new Color(1f, 1f, 1f, 1.0f);

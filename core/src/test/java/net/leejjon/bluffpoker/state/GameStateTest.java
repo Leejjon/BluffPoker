@@ -12,6 +12,7 @@ import net.leejjon.bluffpoker.logic.BluffPokerGame;
 import net.leejjon.bluffpoker.logic.InputValidationException;
 import net.leejjon.bluffpoker.logic.NumberCombination;
 import net.leejjon.bluffpoker.logic.Player;
+import net.leejjon.bluffpoker.stages.SelectPlayersStage;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +33,7 @@ import static org.mockito.Mockito.when;
 public class GameStateTest extends GdxTest {
     private static final String PLAYER_1 = "Leon";
     private static final String PLAYER_2 = "Dirk";
+    private static final String PLAYER_3 = "Richard";
     private static final int DEFAULT_LIVES = 3;
     private static final int LOST_ONE_LIFE = 2;
 
@@ -81,10 +83,14 @@ public class GameStateTest extends GdxTest {
     }
 
     private BluffPokerGame startNewGame() {
+        return startNewGame(loadDefaultPlayers());
+    }
+
+    private BluffPokerGame startNewGame(ArrayList<String> players) {
         initializeUI();
 
         BluffPokerGame game = initializeGame();
-        game.startGame(loadDefaultPlayers());
+        game.startGame(players);
         return game;
     }
 
@@ -133,6 +139,11 @@ public class GameStateTest extends GdxTest {
 
     private BluffPokerGame call(BluffPokerGame game, NumberCombination call) throws InputValidationException {
         game.validateCall(call);
+        return game;
+    }
+
+    private BluffPokerGame forfeit(BluffPokerGame game) {
+        game.forfeit();
         return game;
     }
 
@@ -202,23 +213,6 @@ public class GameStateTest extends GdxTest {
     }
 
     @Test
-    public void testFirstThrow641_blindCall600() throws InputValidationException {
-        NumberCombination expectedNumberCombination = get641();
-        NumberCombination call = call600();
-        BluffPokerGame game = call(throwSpecificValue(startNewGame(), expectedNumberCombination), call);
-
-        GameStateEnum.CALL_BLIND.assertUserInterfaceState(call.toString(),
-                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer2(DEFAULT_LIVES));
-        GameStateEnum.CALL_BLIND.assertState(game, expectedNumberCombination, call, call, getPlayer1(DEFAULT_LIVES));
-
-        GameStateEnum.CALL_BLIND.assertUserInterfaceState(call.toString(),
-                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer2(DEFAULT_LIVES));
-        GameStateEnum.CALL_BLIND.assertState(reloadGame(), expectedNumberCombination, call, call, getPlayer1(DEFAULT_LIVES));
-
-        assertTrue(logMessages.get(logMessages.size - 1).contains(BluffPokerGame.BLIND_MESSAGE));
-    }
-
-    @Test
     public void testFirstThrow641_blindCall643() throws InputValidationException {
         NumberCombination expectedNumberCombination = get641();
         BluffPokerGame game = call(throwSpecificValue(startNewGame(), expectedNumberCombination), NumberCombination.BLUFF_NUMBER);
@@ -232,6 +226,58 @@ public class GameStateTest extends GdxTest {
         GameStateEnum.CALL_BLIND.assertState(reloadGame(), expectedNumberCombination, NumberCombination.BLUFF_NUMBER, NumberCombination.BLUFF_NUMBER, getPlayer1(DEFAULT_LIVES));
 
         assertTrue(logMessages.get(logMessages.size - 1).contains(BluffPokerGame.BLIND_MESSAGE));
+    }
+
+
+    @Test
+    public void testFirstThrow641_blindBelieve_forfeit() throws InputValidationException {
+        NumberCombination expectedNumberCombination = get641();
+        NumberCombination call = call600();
+
+        setUpSelectPlayerStageState();
+
+        BluffPokerGame game = forfeit(call(throwSpecificValue(startNewGame(), expectedNumberCombination), call));
+
+        GameStateEnum.CALL_BLIND_FORFEIT_TWO_PLAYERS.assertUserInterfaceState(call.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer2(DEFAULT_LIVES));
+        GameStateEnum.CALL_BLIND_FORFEIT_TWO_PLAYERS.assertState(game, expectedNumberCombination, call, call, getPlayer1(DEFAULT_LIVES));
+
+        GameStateEnum.CALL_BLIND_FORFEIT_TWO_PLAYERS.assertUserInterfaceState(call.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer2(DEFAULT_LIVES));
+        GameStateEnum.CALL_BLIND_FORFEIT_TWO_PLAYERS.assertState(reloadGame(), expectedNumberCombination, call, call, getPlayer1(DEFAULT_LIVES));
+
+        String stateLog = logMessages.get(logMessages.size - 1);
+        assertTrue(stateLog.contains(String.format(BluffPokerGame.FORFEITED_THE_GAME, getPlayer2(DEFAULT_LIVES).getName())));
+        assertTrue(stateLog.contains(String.format(BluffPokerGame.WON_THE_GAME, getPlayer1(DEFAULT_LIVES).getName())));
+    }
+
+    @Test
+    public void testFirstThrow641_blindBelieve_forfeit_threePlayers() throws InputValidationException {
+        NumberCombination expectedNumberCombination = get641();
+        NumberCombination call = call600();
+
+        setUpSelectPlayerStageState();
+
+        ArrayList<String> customPlayerList = new ArrayList<>();
+        customPlayerList.add(PLAYER_1);
+        customPlayerList.add(PLAYER_2);
+        customPlayerList.add(PLAYER_3);
+
+        BluffPokerGame game = forfeit(call(throwSpecificValue(startNewGame(customPlayerList), expectedNumberCombination), call));
+
+        GameStateEnum.CALL_BLIND_FORFEIT_THREE_PLAYERS.assertUserInterfaceState(call.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer3(DEFAULT_LIVES));
+        GameStateEnum.CALL_BLIND_FORFEIT_THREE_PLAYERS.assertState(game, expectedNumberCombination, null, call, getPlayer3(DEFAULT_LIVES));
+
+        GameStateEnum.CALL_BLIND_FORFEIT_THREE_PLAYERS.assertUserInterfaceState(call.toString(),
+                callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer3(DEFAULT_LIVES));
+        GameStateEnum.CALL_BLIND_FORFEIT_THREE_PLAYERS.assertState(reloadGame(), expectedNumberCombination, null, call, getPlayer3(DEFAULT_LIVES));
+
+        String stateLog = logMessages.get(logMessages.size - 1);
+        assertTrue(stateLog.contains(String.format(BluffPokerGame.FORFEITED_THE_GAME, getPlayer2(DEFAULT_LIVES).getName())));
+
+        // If one out of three players forfeits the other two should continue the game. So I check if the win message won't appear.
+        assertFalse(stateLog.contains(String.format(BluffPokerGame.WON_THE_GAME, getPlayer1(DEFAULT_LIVES).getName())));
     }
 
     @Test
@@ -521,8 +567,6 @@ public class GameStateTest extends GdxTest {
 
         BluffPokerGame game = swipeLeftDiceUp(tapCup(call(moveLeftDiceOut(tapCup(throwSpecificValue(startNewGame(), expectedNumberCombination))), call)));
 
-        // TODO: Write a method that moves the left dice back under the cup.
-
         GameStateEnum.AFTER_BELIEVE_LEFT_SIX_OUT_PULL_BACK_LEFT_SIX.assertUserInterfaceState(call.toString(),
                 callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer2(DEFAULT_LIVES));
         GameStateEnum.AFTER_BELIEVE_LEFT_SIX_OUT_PULL_BACK_LEFT_SIX.assertState(game, expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
@@ -530,6 +574,15 @@ public class GameStateTest extends GdxTest {
         GameStateEnum.AFTER_BELIEVE_LEFT_SIX_OUT_PULL_BACK_LEFT_SIX.assertUserInterfaceState(call.toString(),
                 callInputLabel, autoButton, callButton, dicesUnderCupActors, dicesBeforeCupActors, expectedNumberCombination, getPlayer2(DEFAULT_LIVES));
         GameStateEnum.AFTER_BELIEVE_LEFT_SIX_OUT_PULL_BACK_LEFT_SIX.assertState(reloadGame(), expectedNumberCombination, call, call, getPlayer2(DEFAULT_LIVES));
+    }
+
+    private void setUpSelectPlayerStageState() {
+        // Make sure the select
+        final String DEFAULT_PLAYERS = "{\"players\":[\"Leon\",\"Dirk\"]}";
+        when(preferences.getString(SelectPlayersStageState.KEY)).thenReturn(DEFAULT_PLAYERS);
+
+        SelectPlayersStageState selectPlayersStageState = SelectPlayersStageState.getInstance();
+        selectPlayersStageState.createPlayerList(SelectPlayersStage.getCustomListStyle(uiSkin));
     }
 
     private UserInterface getTestUserInterface() {
@@ -568,7 +621,7 @@ public class GameStateTest extends GdxTest {
         return new Player(PLAYER_1, lives);
     }
 
-    private Player getPlayer2(int lives) {
-        return new Player(PLAYER_2, lives);
-    }
+    private Player getPlayer2(int lives) { return new Player(PLAYER_2, lives); }
+
+    private Player getPlayer3(int lives) { return new Player(PLAYER_3, lives); }
 }

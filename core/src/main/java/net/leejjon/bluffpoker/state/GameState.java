@@ -95,20 +95,28 @@ public class GameState {
     @Getter private boolean believed666 = false;
     @Getter private boolean blindPass = false;
 
-    public void removeCurrentPlayer() {
+    public void removeCurrentPlayer(String forfeitMessage) {
+        Player playerToBeRemoved;
+        if (isAllowedToBelieveOrNotBelieve() && !getCup().isBelieving()) {
+            playerToBeRemoved = getNextPlayer();
+        } else {
+            playerToBeRemoved = getCurrentPlayer();
+        }
+
         // Remove the player everywhere in the ui.
         for (ScoreTableRow str : scores) {
-            if (str.getPlayerName().equals(getCurrentPlayer().getName())) {
+            if (str.getPlayerName().equals(playerToBeRemoved.getName())) {
                 str.deleteRow(scoreTable);
+                scores.remove(str);
                 break;
             }
         }
-        SelectPlayersStageState.getInstance().removePlayer(getCurrentPlayer().getName());
+
+        SelectPlayersStageState.getInstance().removePlayer(playerToBeRemoved.getName());
 
         // Don't update the current player label, that will happen automatically in the nextPlayer() method of the BluffPokerGame class.
-
-        players.remove(getCurrentPlayer());
-        updatePlayerIterator();
+        players.remove(playerToBeRemoved);
+        logGameConsoleMessage(String.format(forfeitMessage, playerToBeRemoved.getName())); // This saves.
     }
 
     // Custom state getter methods
@@ -579,5 +587,13 @@ public class GameState {
      */
     static void resetToNull() {
         instance = null;
+    }
+
+    /**
+     * Call this method once a player has won the game.
+     */
+    public void markAsNewGame() {
+        newGameState = true;
+        save();
     }
 }

@@ -43,8 +43,9 @@ public class BluffPokerGame implements GameInputInterface {
     private static final String RIDING_ON_THE_BOK = " is riding on the bok";
     private static final String WANTED_TO_PEEK_AFTER_ALL = " wanted to peek after all";
     private static final String LOST_A_LIFE = "%1$s lost a life and has %2$d left";
-    private static final String WON_THE_GAME = "%1$s has won the game!";
+    public static final String WON_THE_GAME = "%1$s has won the game!";
     private static final String HAS_NO_MORE_LIVES_LEFT = "%1$s has no more lives left";
+    public static final String FORFEITED_THE_GAME = "%1$s has forfeited the game";
 
 
     public BluffPokerGame(Sound diceRoll, UserInterface userInterface) {
@@ -199,6 +200,7 @@ public class BluffPokerGame implements GameInputInterface {
                 if (!nextPlayer()) {
                     Player winner = getWinner();
                     state().logGameConsoleMessage(String.format(WON_THE_GAME, winner.getName()));
+                    state().markAsNewGame();
                     userInterface.finishGame(winner.getName());
                     return;
                 }
@@ -221,14 +223,12 @@ public class BluffPokerGame implements GameInputInterface {
 
     @Override
     public void forfeit() {
-        // TODO: Forfeit code
-        state().removeCurrentPlayer();
-
-        // TODO: Print console message that player has forfeited.
+        state().removeCurrentPlayer(FORFEITED_THE_GAME);
 
         if (!nextPlayer()) {
             Player winner = getWinner();
             state().logGameConsoleMessage(String.format(WON_THE_GAME, winner.getName()));
+            state().markAsNewGame();
             userInterface.finishGame(winner.getName());
             return;
         }

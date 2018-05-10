@@ -176,6 +176,92 @@ public enum GameStateEnum implements GameStateAssertor, UserInterfaceAssertor {
             assertEquals(expectedCall, state().getLatestCall().getNumberCombination());
         }
     },
+    CALL_BLIND_FORFEIT_TWO_PLAYERS {
+        @Override
+        public void assertCallBoardInGameState(String expectedCall) {
+            assertEquals(expectedCall, state().getCallInput());
+            assertFalse(state().isAllowedToCall());
+        }
+
+        @Override
+        public void assertCupInGameState() {
+            assertFalse(state().getCup().isBelieving());
+            assertFalse(state().getCup().isLocked());
+            assertFalse(state().getCup().isWatching());
+        }
+
+        @Override
+        public void assertStatusses(NumberCombination expectedCall) {
+            // The states don't get updated from the state before because the game ends with one player left.
+            // If there was a third player, they would be updated.
+
+            // So I'm asserting the same values as the CALL_BLIND test case.
+            assertFalse(state().isAllowedToThrow());
+            assertTrue(state().isAllowedToBelieveOrNotBelieve());
+            assertFalse(state().isAllowedToViewOwnThrow());
+            assertFalse(state().isBlindPass());
+            assertFalse(state().isBelieved666());
+            assertEquals(expectedCall, state().getLatestCall().getNumberCombination());
+        }
+
+        @Override
+        public void assertPlayersInGameState(Player expectedCurrentPlayer) {
+            ArrayList<Player> players = GameState.state().getPlayers();
+            assertEquals(1, players.size());
+
+            Player leon = players.get(0);
+            assertEquals("Leon", leon.getName());
+            assertEquals(3, leon.getLives());
+
+            Player currentPlayer = GameState.state().getCurrentPlayer();
+            assertEquals(expectedCurrentPlayer, currentPlayer);
+        }
+    },
+    CALL_BLIND_FORFEIT_THREE_PLAYERS {
+        @Override
+        public void assertCallBoardInGameState(String expectedCall) {
+            assertEquals(expectedCall, state().getCallInput());
+            assertFalse(state().isAllowedToCall());
+        }
+
+        @Override
+        public void assertCupInGameState() {
+            assertFalse(state().getCup().isBelieving());
+            assertFalse(state().getCup().isLocked());
+            assertFalse(state().getCup().isWatching());
+        }
+
+        @Override
+        public void assertStatusses(NumberCombination expectedCall) {
+            assertTrue(state().isAllowedToThrow());
+            assertFalse(state().isAllowedToBelieveOrNotBelieve());
+            assertFalse(state().isAllowedToViewOwnThrow());
+            assertFalse(state().isBlindPass());
+
+            if (expectedCall == null) {
+                assertNull(state().getLatestCall());
+            } else {
+                assertEquals(expectedCall, state().getLatestCall().getNumberCombination());
+            }
+        }
+
+        @Override
+        public void assertPlayersInGameState(Player expectedCurrentPlayer) {
+            ArrayList<Player> players = GameState.state().getPlayers();
+            assertEquals(2, players.size());
+
+            Player leon = players.get(0);
+            assertEquals("Leon", leon.getName());
+            assertEquals(3, leon.getLives());
+
+            Player richard = players.get(1);
+            assertEquals("Richard", richard.getName());
+            assertEquals(3, leon.getLives());
+
+            Player currentPlayer = GameState.state().getCurrentPlayer();
+            assertEquals(expectedCurrentPlayer, currentPlayer);
+        }
+    },
     TAKE_6_OUT {
         @Override
         public void assertCallBoardInUI(String expectedCall, Label callInputLabel, ClickableLabel autoButton, ClickableLabel callButton) {
