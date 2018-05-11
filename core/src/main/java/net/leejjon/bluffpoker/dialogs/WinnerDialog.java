@@ -31,7 +31,7 @@ public class WinnerDialog extends Dialog {
                 if (SelectPlayersStageState.getInstance().getPlayers().size() > 1) {
                     stageListener.startGame(SelectPlayersStageState.updatePlayerListMoveWinnerOnTop(winnerName));
                 } else {
-                    stageListener.backToStartStage();
+                    stageListener.backToSelectPlayersStage();
                 }
             }
         });

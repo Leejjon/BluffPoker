@@ -143,6 +143,12 @@ public class BluffPokerApp extends ApplicationAdapter implements
     }
 
     @Override
+    public void backToSelectPlayersStage() {
+        gameStage.setVisible(false);
+        selectPlayersStage.startSelectingPlayers();
+    }
+
+    @Override
     public void startGame(ArrayList<String> players) {
         selectPlayersStage.setVisible(false);
         gameStage.setVisible(true);

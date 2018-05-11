@@ -10,6 +10,7 @@ public interface StageInterface {
 	void continuePlaying();
 	void openSettingsStage();
 	void closeSettingsStage();
+	void backToSelectPlayersStage();
 	void backToStartStage();
 	void startGame(ArrayList<String> players);
     Texture getTexture(TextureKey textureKey);
