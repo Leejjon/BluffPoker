@@ -29,6 +29,13 @@ public class ForfeitDialog extends Dialog {
         });
 
         TextButton noButton = new TextButton("No", skin);
+        noButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                pauseStageInterface.closeDialog();
+                super.clicked(event, x, y);
+            }
+        });
 
         text(String.format("Are you sure you want to forfeit?"));
         button(yesButton);

@@ -30,8 +30,8 @@ android {
         applicationId "net.leejjon.blufpoker.android"
         minSdkVersion 24
         targetSdkVersion 27
-        versionCode 22
-        versionName "5.0"
+        versionCode 23
+        versionName "5.1"
 
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8

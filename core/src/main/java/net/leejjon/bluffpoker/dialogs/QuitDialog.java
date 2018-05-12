@@ -27,6 +27,13 @@ public class QuitDialog extends Dialog {
         });
 
         TextButton noButton = new TextButton("No", skin);
+        noButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                pauseStageInterface.closeDialog();
+                super.clicked(event, x, y);
+            }
+        });
 
         text("Are you sure you want to quit the game?");
         button(yesButton);
