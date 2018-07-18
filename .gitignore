@@ -10,7 +10,6 @@ core/build/
 ios-moe/build/
 ios-moe/out/
 ios-moe/xcode/native/
-ios-moe/xcode/ios-moe/custom.xcconfig
 local.properties
 website/build/
 /.nb-gradle/
