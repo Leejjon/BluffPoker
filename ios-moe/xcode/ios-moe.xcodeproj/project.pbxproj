@@ -18,7 +18,6 @@
 		581773AE1E37A7EF004E28A9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 581773AD1E37A7EF004E28A9 /* UIKit.framework */; };
 		D01BA1EB1F50A8DD0066B137 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = D01BA1EA1F50A8DD0066B137 /* assets */; };
 		D0AF46361F9E5A8A00BC4CF0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D0AF46351F9E5A8900BC4CF0 /* Assets.xcassets */; };
-		D0AF46371F9E5D4900BC4CF0 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 58C6F5381DA66CB600309CB6 /* Info.plist */; };
 		FBEA51B59EBAFE3DD6CB65EB /* moe-main-interfaces.m in Sources */ = {isa = PBXBuildFile; fileRef = BF140766C410C641636C918B /* moe-main-interfaces.m */; };
 /* End PBXBuildFile section */
 
@@ -35,7 +34,6 @@
 		581773AD1E37A7EF004E28A9 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		5863B88E1DA682C800E46B6A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		58C6F5241DA66CB600309CB6 /* Bluff Poker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bluff Poker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		58C6F5381DA66CB600309CB6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8084D1F0A307440EC73CBFCA /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		BF140766C410C641636C918B /* moe-main-interfaces.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "moe-main-interfaces.m"; path = "../build/moe/main/ui-headers/moe-main-interfaces.m"; sourceTree = "<group>"; };
 		D01BA1EA1F50A8DD0066B137 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../../android/src/main/assets; sourceTree = "<group>"; };
@@ -117,7 +115,6 @@
 			isa = PBXGroup;
 			children = (
 				D0AF46351F9E5A8900BC4CF0 /* Assets.xcassets */,
-				58C6F5381DA66CB600309CB6 /* Info.plist */,
 				5817739D1E37A10D004E28A9 /* custom.xcconfig */,
 				58C6F5271DA66CB600309CB6 /* Supporting Files */,
 			);
@@ -167,7 +164,7 @@
 		58C6F51C1DA66CB600309CB6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0930;
+				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = x;
 				TargetAttributes = {
 					58C6F5231DA66CB600309CB6 = {
@@ -202,7 +199,6 @@
 			files = (
 				D01BA1EB1F50A8DD0066B137 /* assets in Resources */,
 				D0AF46361F9E5A8A00BC4CF0 /* Assets.xcassets in Resources */,
-				D0AF46371F9E5D4900BC4CF0 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
