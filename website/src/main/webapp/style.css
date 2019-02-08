@@ -1,0 +1,14 @@
+body {
+  color: white;
+  font-family: "Lucida Sans Unicode";
+  text-align: center;
+  background-color: #1A1F16;
+}
+
+.footer {
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   color: white;
+   text-align: center;
+}
