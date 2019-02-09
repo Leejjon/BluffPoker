@@ -3,6 +3,13 @@ body {
   font-family: "Lucida Sans Unicode";
   text-align: center;
   background-color: #1A1F16;
+
+}
+
+a, a:visited, a:hover, a:active, a:focus { color: white; }
+
+ul {
+    list-style-type: none;
 }
 
 .footer {
