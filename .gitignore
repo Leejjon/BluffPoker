@@ -4,6 +4,7 @@ build/
 *.iml
 android/build/
 android/release/
+android/src/main/jniLibs
 core/build/
 /gradle.properties
 ios-moe/build/
