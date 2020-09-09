@@ -27,15 +27,15 @@ project(":android") {
 }
 
 android {
-    buildToolsVersion "28.0.3"
-    compileSdkVersion 28
+    buildToolsVersion "29.0.2"
+    compileSdkVersion 29
 
     defaultConfig {
         applicationId "net.leejjon.blufpoker.android"
         minSdkVersion 24
-        targetSdkVersion 28
-        versionCode 24
-        versionName "5.2"
+        targetSdkVersion 29
+        versionCode 26
+        versionName "5.4"
 
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
