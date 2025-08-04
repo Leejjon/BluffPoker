@@ -81,7 +81,7 @@ public class SelectPlayersStage extends AbstractStage implements ModifyPlayerLis
         int height = Gdx.graphics.getHeight() / BluffPokerApp.getPlatformSpecificInterface().getZoomFactor();
 
         table.center();
-        table.bottom();
+        table.top().padTop((height * 100) / 350);
 
         // Take 50% of the screen.
         float fiftyPercentOfScreen = (width * 100) / 170;

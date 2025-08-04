@@ -83,6 +83,8 @@ public class AndroidLauncher extends AndroidApplication implements SensorEventLi
                 break;
             // Robert's Galaxy S6 Edge had DENSITY_XXHIGH with 2560x1440
             case DisplayMetrics.DENSITY_XXHIGH:
+            case DisplayMetrics.DENSITY_420:
+            case DisplayMetrics.DENSITY_440:
             case DisplayMetrics.DENSITY_XXXHIGH:
             // Michel's Moto X style had DENSITY_560. With 2560x1440.
             case DisplayMetrics.DENSITY_560:

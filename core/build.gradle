@@ -1,7 +1,11 @@
-apply plugin: "java"
+plugins {
+    id 'java'
+}
 apply plugin: "jacoco"
 
-sourceCompatibility = 1.8
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+}
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 repositories {
@@ -10,8 +14,8 @@ repositories {
 
 jacocoTestReport {
     reports {
-        xml.enabled false
-        html.enabled true
+        xml.required.set(false)
+        html.required.set(true)
     }
 }
 
