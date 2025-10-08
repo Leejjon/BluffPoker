@@ -13,10 +13,11 @@ import android.widget.EditText;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.badlogic.gdx.backends.android.AndroidInputThreePlus;
+import com.badlogic.gdx.backends.android.DefaultAndroidInput;
+
 import net.leejjon.bluffpoker.dialogs.CallInputDialog;
 
-public class BluffPokerAndroidInput extends AndroidInputThreePlus {
+public class BluffPokerAndroidInput extends DefaultAndroidInput {
     // Cant use the handle of the superclass because they made it private :(
     private Handler handle;
     private final Context context;

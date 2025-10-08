@@ -1,22 +1,28 @@
-plugins {
-    id 'java'
-}
-apply plugin: "jacoco"
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-}
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+eclipse.project.name = appName + '-core'
 
-repositories {
-    mavenCentral()
-}
+dependencies {
+    api "com.badlogicgames.box2dlights:box2dlights:$box2dlightsVersion"
+    api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+    api "com.badlogicgames.gdx:gdx:$gdxVersion"
+    api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
-jacocoTestReport {
-    reports {
-        xml.required.set(false)
-        html.required.set(true)
+    implementation 'com.google.guava:guava:33.4.8-android'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.13.1'
+
+    compileOnly 'org.projectlombok:lombok:1.18.38'
+    annotationProcessor 'org.projectlombok:lombok:1.18.38'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.38'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.38'
+
+    testImplementation "junit:junit:4.12"
+    testImplementation("org.mockito:mockito-core:5.0.0")
+
+    testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+    testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+
+    if(enableGraalNative == 'true') {
+        implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
     }
 }
-
-check.dependsOn jacocoTestReport

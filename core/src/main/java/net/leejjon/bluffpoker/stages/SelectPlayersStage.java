@@ -25,7 +25,7 @@ import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SelectPlayersStage extends AbstractStage implements ModifyPlayerListener {
-    public static final int MAX_PLAYER_NAME_LENGTH = 10;
+    public static final int MAX_PLAYER_NAME_LENGTH = 16;
 
     private final TutorialDialog tutorialDialog;
     private final WarningDialog playerAlreadyExistsWarning;

@@ -1,38 +1,68 @@
-project(":android") {
-    apply plugin: "android"
+//project(":android") {
+//    apply plugin: "android"
+//
+//    configurations { natives }
+//
+//    dependencies {
+//        implementation project(":core")
+//
+//        implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+//        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
+//        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
+//        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
+//        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
+//        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
+//        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-arm64-v8a"
+//        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64"
+//        implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+//        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi"
+//        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a"
+//        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
+//        testImplementation 'junit:junit:4.12'
+//        testImplementation("org.mockito:mockito-core:5.0.0")
+//        androidTestImplementation 'com.android.support:support-annotations:28.0.0'
+//        androidTestImplementation 'com.android.support.test:runner:1.0.2'
+//        androidTestImplementation 'com.android.support.test:rules:1.0.2'
+//    }
+//}
 
-    configurations { natives }
-
-    dependencies {
-        implementation project(":core")
-
-        implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
-        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-arm64-v8a"
-        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64"
-        implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi"
-        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a"
-        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
-        testImplementation 'junit:junit:4.12'
-        testImplementation("org.mockito:mockito-core:5.0.0")
-        androidTestImplementation 'com.android.support:support-annotations:28.0.0'
-        androidTestImplementation 'com.android.support.test:runner:1.0.2'
-        androidTestImplementation 'com.android.support.test:rules:1.0.2'
+buildscript {
+    repositories {
+        mavenCentral()
+        google()
     }
 }
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
     namespace = "net.leejjon.bluffpoker"
     compileSdk = 36
 
+    sourceSets {
+        main {
+            manifest.srcFile 'src/main/AndroidManifest.xml'
+            java.setSrcDirs(['src/main/java', 'src/main/kotlin'])
+            aidl.setSrcDirs(['src/main/java', 'src/main/kotlin'])
+            renderscript.setSrcDirs(['src/main/java', 'src/main/kotlin'])
+            res.setSrcDirs(['src/main/res'])
+            assets.setSrcDirs(['src/main/assets'])
+            jniLibs.setSrcDirs(['libs'])
+        }
+    }
+
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/robovm/ios/robovm.xml', 'META-INF/DEPENDENCIES.txt', 'META-INF/DEPENDENCIES',
+                         'META-INF/dependencies.txt', '**/*.gwt.xml']
+            pickFirsts += ['META-INF/LICENSE.txt', 'META-INF/LICENSE', 'META-INF/license.txt', 'META-INF/LGPL2.1',
+                           'META-INF/NOTICE.txt', 'META-INF/NOTICE', 'META-INF/notice.txt']
+        }
+    }
+
     defaultConfig {
         applicationId "net.leejjon.blufpoker.android"
-        minSdkVersion 24
+        minSdkVersion 26
         targetSdkVersion 36
         versionCode 28
         versionName "5.5"
@@ -40,7 +70,16 @@ android {
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
             targetCompatibility JavaVersion.VERSION_1_8
+            coreLibraryDesugaringEnabled true
         }
+
+        buildTypes {
+            release {
+                minifyEnabled true
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            }
+        }
+        kotlin.compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
 
         testOptions {
             // Currently have no Android specific unit tests.
@@ -49,30 +88,61 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
-// called every time gradle gets executed, takes the native dependencies of
+
+repositories {
+    // needed for AAPT2, may be needed for other tools
+    google()
+}
+
+configurations { natives }
+
+dependencies {
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
+    implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+    implementation project(':core')
+
+    natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-arm64-v8a"
+    natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a"
+    natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
+    natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64"
+    natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
+    natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
+    natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
+    natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support:support-annotations:28.0.0'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+}
+
+// Called every time gradle gets executed, takes the native dependencies of
 // the natives configuration, and extracts them to the proper libs/ folders
 // so they get packed with the APK.
-task copyAndroidNatives() {
-    file("src/main/jniLibs/armeabi/").mkdirs();
-    file("src/main/jniLibs/armeabi-v7a/").mkdirs();
-    file("src/main/jniLibs/arm64-v8a/").mkdirs()
-    file("src/main/jniLibs/x86_64/").mkdirs()
-    file("src/main/jniLibs/x86/").mkdirs();
+tasks.register('copyAndroidNatives') {
+    doFirst {
+        file("libs/armeabi-v7a/").mkdirs()
+        file("libs/arm64-v8a/").mkdirs()
+        file("libs/x86_64/").mkdirs()
+        file("libs/x86/").mkdirs()
 
-    configurations.natives.files.each { jar ->
-        def outputDir = null
-        if (jar.name.endsWith("natives-arm64-v8a.jar")) outputDir = file("src/main/jniLibs/arm64-v8a")
-        if (jar.name.endsWith("natives-armeabi-v7a.jar")) outputDir = file("src/main/jniLibs/armeabi-v7a")
-        if (jar.name.endsWith("natives-armeabi.jar")) outputDir = file("src/main/jniLibs/armeabi")
-        if (jar.name.endsWith("natives-x86.jar")) outputDir = file("src/main/jniLibs/x86")
-        if (jar.name.endsWith("natives-x86_64.jar")) outputDir = file("src/main/jniLibs/x86_64")
-        if (outputDir != null) {
-            copy {
-                from zipTree(jar)
-                into outputDir
-                include "*.so"
+        configurations.natives.copy().files.each { jar ->
+            def outputDir = null
+            if(jar.name.endsWith("natives-armeabi-v7a.jar")) outputDir = file("libs/armeabi-v7a")
+            if(jar.name.endsWith("natives-arm64-v8a.jar")) outputDir = file("libs/arm64-v8a")
+            if(jar.name.endsWith("natives-x86_64.jar")) outputDir = file("libs/x86_64")
+            if(jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
+            if(outputDir != null) {
+                copy {
+                    from zipTree(jar)
+                    into outputDir
+                    include "*.so"
+                }
             }
         }
     }
@@ -82,7 +152,7 @@ tasks.matching { it.name.contains("merge") && it.name.contains("JniLibFolders") 
     packageTask.dependsOn 'copyAndroidNatives'
 }
 
-task run(type: Exec) {
+tasks.register('run', Exec) {
     def path
     def localProperties = project.file("../local.properties")
     if (localProperties.exists()) {
@@ -94,14 +164,69 @@ task run(type: Exec) {
         if (sdkDir) {
             path = sdkDir
         } else {
-            path = "$System.env.ANDROID_HOME"
+            path = "$System.env.ANDROID_SDK_ROOT"
         }
     } else {
-        path = "$System.env.ANDROID_HOME"
+        path = "$System.env.ANDROID_SDK_ROOT"
     }
 
     def adb = path + "/platform-tools/adb"
-    commandLine "$adb", 'shell', 'am', 'start', '-n', 'net.leejjon.bluffpoker.android/net.leejjon.bluffpoker.android.AndroidLauncher'
+    commandLine "$adb", 'shell', 'am', 'start', '-n', 'net.leejjon.bluffpoker/net.leejjon.bluffpoker.android.AndroidLauncher'
 }
-dependencies {
-}
+
+eclipse.project.name = appName + "-android"
+
+//// called every time gradle gets executed, takes the native dependencies of
+//// the natives configuration, and extracts them to the proper libs/ folders
+//// so they get packed with the APK.
+//task copyAndroidNatives() {
+//    file("src/main/jniLibs/armeabi/").mkdirs();
+//    file("src/main/jniLibs/armeabi-v7a/").mkdirs();
+//    file("src/main/jniLibs/arm64-v8a/").mkdirs()
+//    file("src/main/jniLibs/x86_64/").mkdirs()
+//    file("src/main/jniLibs/x86/").mkdirs();
+//
+//    configurations.natives.files.each { jar ->
+//        def outputDir = null
+//        if (jar.name.endsWith("natives-arm64-v8a.jar")) outputDir = file("src/main/jniLibs/arm64-v8a")
+//        if (jar.name.endsWith("natives-armeabi-v7a.jar")) outputDir = file("src/main/jniLibs/armeabi-v7a")
+//        if (jar.name.endsWith("natives-armeabi.jar")) outputDir = file("src/main/jniLibs/armeabi")
+//        if (jar.name.endsWith("natives-x86.jar")) outputDir = file("src/main/jniLibs/x86")
+//        if (jar.name.endsWith("natives-x86_64.jar")) outputDir = file("src/main/jniLibs/x86_64")
+//        if (outputDir != null) {
+//            copy {
+//                from zipTree(jar)
+//                into outputDir
+//                include "*.so"
+//            }
+//        }
+//    }
+//}
+//
+//tasks.matching { it.name.contains("merge") && it.name.contains("JniLibFolders") }.configureEach { packageTask ->
+//    packageTask.dependsOn 'copyAndroidNatives'
+//}
+//
+//task run(type: Exec) {
+//    def path
+//    def localProperties = project.file("../local.properties")
+//    if (localProperties.exists()) {
+//        Properties properties = new Properties()
+//        localProperties.withInputStream { instr ->
+//            properties.load(instr)
+//        }
+//        def sdkDir = properties.getProperty('sdk.dir')
+//        if (sdkDir) {
+//            path = sdkDir
+//        } else {
+//            path = "$System.env.ANDROID_HOME"
+//        }
+//    } else {
+//        path = "$System.env.ANDROID_HOME"
+//    }
+//
+//    def adb = path + "/platform-tools/adb"
+//    commandLine "$adb", 'shell', 'am', 'start', '-n', 'net.leejjon.bluffpoker.android/net.leejjon.bluffpoker.android.AndroidLauncher'
+//}
+//dependencies {
+//}
