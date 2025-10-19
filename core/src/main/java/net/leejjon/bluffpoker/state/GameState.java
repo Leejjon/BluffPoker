@@ -13,7 +13,6 @@ import com.badlogic.gdx.utils.Align;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
-import lombok.Getter;
 
 import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.actors.CupActor;
@@ -41,8 +40,11 @@ public class GameState {
     // Font used in console is Microsoft JingHei
     private static final String console = "console";
 
-    @Getter
     private boolean newGameState = true;
+
+    public boolean isNewGameState() {
+        return newGameState;
+    }
 
     private void checkUiInitializedPreconditions() {
         Preconditions.checkNotNull(uiSkin);
@@ -60,40 +62,108 @@ public class GameState {
         Preconditions.checkNotNull(scoreTable);
     }
 
-    @Getter
     private ArrayList<Player> players;
 
-    @Getter
+    public ArrayList<Player> getPlayers() {
+        return players;
+    }
+
     private int playerIterator = 0;
 
-    @Getter
+    public int getPlayerIterator() {
+        return playerIterator;
+    }
+
     private Cup cup = new Cup();
 
-    // This is actually 643, but we show
-    @Getter private Dice leftDice;
-    @Getter private Dice middleDice;
-    @Getter private Dice rightDice;
+    public Cup getCup() {
+        return cup;
+    }
 
-    @Getter
+    // This is actually 643, but we show
+    private Dice leftDice;
+
+    public Dice getLeftDice() {
+        return leftDice;
+    }
+
+    private Dice middleDice;
+
+    public Dice getMiddleDice() {
+        return middleDice;
+    }
+
+    private Dice rightDice;
+
+    public Dice getRightDice() {
+        return rightDice;
+    }
+
     private Call latestCall = null;
 
-    @Getter private String callInput = NumberCombination.MIN.toString();
+    public Call getLatestCall() {
+        return latestCall;
+    }
+
+    private String callInput = NumberCombination.MIN.toString();
+
+    public String getCallInput() {
+        return callInput;
+    }
 
     String thirdLatestOutput = "";
     String secondLatestOutput = "";
     String latestOutput = "";
 
     // TODO: Create a statusses object.
-    @Getter private boolean bokAvailable = true;
-    @Getter private boolean firstThrowSinceDeath = true;
+    private boolean bokAvailable = true;
+
+    public boolean isBokAvailable() {
+        return bokAvailable;
+    }
+
+    private boolean firstThrowSinceDeath = true;
+
+    public boolean isFirstThrowSinceDeath() {
+        return firstThrowSinceDeath;
+    }
 
     private boolean hasToThrow = true;
-    @Getter private boolean hasThrown = false;
-    @Getter private boolean allowedToBelieveOrNotBelieve = false;
-    @Getter private boolean allowedToViewOwnThrow = false;
-    @Getter private boolean allowedToCall = false;
-    @Getter private boolean believed666 = false;
-    @Getter private boolean blindPass = false;
+    private boolean hasThrown = false;
+
+    public boolean isHasThrown() {
+        return hasThrown;
+    }
+
+    private boolean allowedToBelieveOrNotBelieve = false;
+
+    public boolean isAllowedToBelieveOrNotBelieve() {
+        return allowedToBelieveOrNotBelieve;
+    }
+
+    private boolean allowedToViewOwnThrow = false;
+
+    public boolean isAllowedToViewOwnThrow() {
+        return allowedToViewOwnThrow;
+    }
+
+    private boolean allowedToCall = false;
+
+    public boolean isAllowedToCall() {
+        return allowedToCall;
+    }
+
+    private boolean believed666 = false;
+
+    public boolean isBelieved666() {
+        return believed666;
+    }
+
+    private boolean blindPass = false;
+
+    public boolean isBlindPass() {
+        return blindPass;
+    }
 
     public void removeCurrentPlayer(String forfeitMessage) {
         Player playerToBeRemoved;
@@ -194,13 +264,21 @@ public class GameState {
     private transient Label thirdLatestOutputLabel;
     private transient Label secondLatestOutputLabel;
     private transient Label latestOutputLabel;
-    @Getter private transient Label currentPlayerLabel;
+    private transient Label currentPlayerLabel;
+
+    public Label getCurrentPlayerLabel() {
+        return currentPlayerLabel;
+    }
+
     private transient ClickableLabel autoButton;
     private transient ClickableLabel callButton;
     private transient Table scoreTable;
 
-    @Getter
     private transient List<ScoreTableRow> scores = new ArrayList<>();
+
+    public List<ScoreTableRow> getScores() {
+        return scores;
+    }
 
     public void setUiSkin(Skin uiSkin) {
         this.uiSkin = uiSkin;

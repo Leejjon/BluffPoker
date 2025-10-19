@@ -8,18 +8,31 @@ import net.leejjon.bluffpoker.interfaces.DiceValueGenerator;
 import net.leejjon.bluffpoker.interfaces.Lockable;
 import net.leejjon.bluffpoker.logic.DiceLocation;
 
-import lombok.Getter;
-import lombok.Setter;
-
 public class Dice implements Lockable {
-    @Setter private transient DiceValueGenerator diceValueGenerator;
-    @Getter private transient DiceActor diceActor;
+    private transient DiceValueGenerator diceValueGenerator;
+    private transient DiceActor diceActor;
+
+    public void setDiceValueGenerator(DiceValueGenerator diceValueGenerator) {
+        this.diceValueGenerator = diceValueGenerator;
+    }
+
+    public DiceActor getDiceActor() {
+        return diceActor;
+    }
 
     private int diceValue;
 
-    @Getter private boolean underCup = true;
-    @Getter private boolean locked = false;
+    private boolean underCup = true;
+    private boolean locked = false;
 
+    public boolean isUnderCup() {
+        return underCup;
+    }
+
+    @Override
+    public boolean isLocked() {
+        return locked;
+    }
 
     public Dice(DiceValueGenerator diceValueGenerator, int diceValue) {
         this.diceValueGenerator = diceValueGenerator;

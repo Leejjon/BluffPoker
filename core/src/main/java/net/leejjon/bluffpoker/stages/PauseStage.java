@@ -27,7 +27,6 @@ import net.leejjon.bluffpoker.interfaces.UserInterface;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import lombok.Getter;
 
 import static net.leejjon.bluffpoker.state.GameState.state;
 
@@ -36,7 +35,6 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
     private QuitDialog quitDialog;
     private ForfeitDialog forfeitDialog;
 
-    @Getter
     private float rightSideOfMenuX;
 
     private float backgroundAlpha = 0f;
@@ -274,5 +272,10 @@ public class PauseStage extends AbstractStage implements PauseStageInterface {
         int width = Gdx.graphics.getWidth();
         int oneSixthOfWidth = width / 6;
         return (width / 2) + oneSixthOfWidth;
+    }
+
+    @Override
+    public float getRightSideOfMenuX() {
+        return rightSideOfMenuX;
     }
 }

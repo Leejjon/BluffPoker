@@ -7,14 +7,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import net.leejjon.bluffpoker.BluffPokerApp;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
 public class ScoreTableRow {
+    public ScoreTableRow(Cell<Label> playerLives, Cell<Label> playerName) {
+        this.playerLives = playerLives;
+        this.playerName = playerName;
+    }
+
     public static final String ON_THE_BOK_ICON = "0*";
 
-    private Cell<Label> playerName;
-    private Cell<Label> playerLives;
+    private final Cell<Label> playerName;
+    private final Cell<Label> playerLives;
 
     public void deleteRow(Table table) {
         table.removeActor(playerName.getActor());

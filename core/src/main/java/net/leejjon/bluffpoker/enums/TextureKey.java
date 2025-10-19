@@ -1,18 +1,9 @@
 package net.leejjon.bluffpoker.enums;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ObjectMap;
 
-import net.leejjon.bluffpoker.BluffPokerApp;
-import net.leejjon.bluffpoker.stages.PauseStage;
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
-@NoArgsConstructor
-@AllArgsConstructor
 public enum TextureKey {
     CALL_BOARD("data/callboard.png"),
     CLOSED_CUP("data/closedCup.png"),
@@ -67,6 +58,13 @@ public enum TextureKey {
             return onePixelTexture;
         }
     };
+
+    TextureKey() {
+    }
+
+    TextureKey(String fileName) {
+        this.fileName = fileName;
+    }
 
     private String fileName;
 

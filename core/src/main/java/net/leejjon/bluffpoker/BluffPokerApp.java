@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ObjectMap;
-import lombok.Getter;
 import net.leejjon.bluffpoker.enums.TextureKey;
 import net.leejjon.bluffpoker.dialogs.TutorialDialog;
 import net.leejjon.bluffpoker.interfaces.PlatformSpecificInterface;
@@ -40,7 +39,6 @@ public class BluffPokerApp extends ApplicationAdapter implements
     private FancyOpenPauseMenuListener openPauseMenuListener;
 
     // Made it static because on iOS the zoomfactor cannot be calculated before the create method is initiated.
-    @Getter
     private static PlatformSpecificInterface platformSpecificInterface;
 
     private ObjectMap<TextureKey, Texture> textureMap;
@@ -187,5 +185,9 @@ public class BluffPokerApp extends ApplicationAdapter implements
         } catch (NullPointerException e) {
             Gdx.app.log("bluffpoker", "GameStage is null, why??", e);
         }
+    }
+
+    public static PlatformSpecificInterface getPlatformSpecificInterface() {
+        return platformSpecificInterface;
     }
 }

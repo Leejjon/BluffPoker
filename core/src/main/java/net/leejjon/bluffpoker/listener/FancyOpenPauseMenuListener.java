@@ -12,8 +12,6 @@ import net.leejjon.bluffpoker.stages.PauseStage;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import lombok.Getter;
-
 public class FancyOpenPauseMenuListener extends InputMultiplexer {
     private final StageInterface stageInterface;
     private final PauseStageInterface pauseStageInterface;

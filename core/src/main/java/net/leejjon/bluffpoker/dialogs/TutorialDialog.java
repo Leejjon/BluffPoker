@@ -6,8 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.enums.TutorialMessage;
 import net.leejjon.bluffpoker.state.SettingsState;
@@ -116,10 +114,27 @@ public class TutorialDialog extends Dialog {
         button(okButton);
     }
 
-    @AllArgsConstructor
     private static class TutorialMessageWithArguments {
-        @Getter private Stage stage;
-        @Getter private TutorialMessage tutorialMessage;
-        @Getter private String[] parameters;
+        private final Stage stage;
+        private final TutorialMessage tutorialMessage;
+        private final String[] parameters;
+
+        public TutorialMessageWithArguments(Stage stage, TutorialMessage tutorialMessage, String[] parameters) {
+            this.stage = stage;
+            this.tutorialMessage = tutorialMessage;
+            this.parameters = parameters;
+        }
+
+        public Stage getStage() {
+            return stage;
+        }
+
+        public TutorialMessage getTutorialMessage() {
+            return tutorialMessage;
+        }
+
+        public String[] getParameters() {
+            return parameters;
+        }
     }
 }
