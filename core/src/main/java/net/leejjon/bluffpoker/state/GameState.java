@@ -413,7 +413,7 @@ public class GameState {
                 scoreTable.row();
                 Cell<Label> nameCell = scoreTable.add(new Label(player.getName(), uiSkin, console, Color.WHITE)).align(Align.left).padLeft(4f);
                 Cell<Label> livesCell = scoreTable.add(new Label(Integer.toString(player.getLives()), uiSkin, console, Color.WHITE)).align(Align.left).padLeft(13f);
-                scores.add(new ScoreTableRow(nameCell, livesCell));
+                scores.add(new ScoreTableRow(livesCell, nameCell));
             }
         } else {
             Gdx.app.log(BluffPokerApp.TAG, "Attempting to load scores while players list is null.");
