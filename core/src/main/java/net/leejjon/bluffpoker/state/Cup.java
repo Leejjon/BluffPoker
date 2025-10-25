@@ -1,11 +1,9 @@
 package net.leejjon.bluffpoker.state;
 
 import net.leejjon.bluffpoker.actors.CupActor;
-import net.leejjon.bluffpoker.interfaces.Lockable;
 
-import lombok.Data;
+import java.util.Objects;
 
-@Data
 public class Cup {
     private boolean believing = false;
     private boolean watching = false;
@@ -63,5 +61,49 @@ public class Cup {
                 cupActor.getLockImage().setVisible(true);
             }
         }
+    }
+
+    public boolean isBelieving() {
+        return believing;
+    }
+
+    public void setBelieving(boolean believing) {
+        this.believing = believing;
+    }
+
+    public boolean isWatching() {
+        return watching;
+    }
+
+    public void setWatching(boolean watching) {
+        this.watching = watching;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+
+    public CupActor getCupActor() {
+        return cupActor;
+    }
+
+    public void setCupActor(CupActor cupActor) {
+        this.cupActor = cupActor;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Cup cup = (Cup) o;
+        return believing == cup.believing && watching == cup.watching && locked == cup.locked;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(believing, watching, locked);
     }
 }

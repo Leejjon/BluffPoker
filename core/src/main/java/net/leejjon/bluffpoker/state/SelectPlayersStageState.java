@@ -11,13 +11,14 @@ import net.leejjon.bluffpoker.logic.BluffPokerPreferences;
 
 import java.util.ArrayList;
 
-import lombok.Getter;
-
 public class SelectPlayersStageState {
     public static final String KEY = "selectPlayersStageState";
 
-    @Getter
     private transient List<String> playerList;
+
+    public List<String> getPlayerList() {
+        return playerList;
+    }
 
     public List<String> createPlayerList(List.ListStyle listStyle) {
         playerList = new List<>(listStyle);
