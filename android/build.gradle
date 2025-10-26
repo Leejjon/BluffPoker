@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 //project(":android") {
 //    apply plugin: "android"
 //
@@ -64,8 +66,8 @@ android {
         applicationId "net.leejjon.blufpoker.android"
         minSdkVersion 30
         targetSdkVersion 36
-        versionCode 28
-        versionName "5.5"
+        versionCode 37
+        versionName "6.0"
 
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
@@ -75,11 +77,11 @@ android {
 
         buildTypes {
             release {
-                minifyEnabled true
+                minifyEnabled false
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             }
         }
-        kotlin.compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
+        kotlin.compilerOptions.jvmTarget.set(JvmTarget.JVM_1_8)
 
         testOptions {
             // Currently have no Android specific unit tests.
