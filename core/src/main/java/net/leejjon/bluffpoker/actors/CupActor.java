@@ -14,18 +14,16 @@ import net.leejjon.bluffpoker.stages.GameStage;
 
 import java.util.Iterator;
 
-import lombok.Getter;
-
 public class CupActor extends Stack {
     private Group foregroundActors;
     private Group backgroundActors;
 
-    @Getter private TextureRegionDrawable closedCupDrawable;
-    @Getter private TextureRegionDrawable openCupDrawable;
+    private TextureRegionDrawable closedCupDrawable;
+    private TextureRegionDrawable openCupDrawable;
 
     private Texture closedCupTexture;
-    @Getter private Image cupImage;
-    @Getter private Image lockImage;
+    private Image cupImage;
+    private Image lockImage;
 
     private int middleYForCup = 0;
     private int middleXForCup = 0;
@@ -101,5 +99,21 @@ public class CupActor extends Stack {
 
     public int getMiddleYForCup() {
         return middleYForCup;
+    }
+
+    public TextureRegionDrawable getClosedCupDrawable() {
+        return closedCupDrawable;
+    }
+
+    public TextureRegionDrawable getOpenCupDrawable() {
+        return openCupDrawable;
+    }
+
+    public Image getCupImage() {
+        return cupImage;
+    }
+
+    public Image getLockImage() {
+        return lockImage;
     }
 }

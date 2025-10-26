@@ -1,6 +1,5 @@
 package net.leejjon.bluffpoker.enums;
 
-import lombok.Getter;
 import net.leejjon.bluffpoker.logic.BluffPokerGame;
 
 public enum TutorialMessage {
@@ -19,10 +18,13 @@ public enum TutorialMessage {
     PLAYER_EXPLANATION("This app is a mobile version of a dice game we call \"Bluff Poker\". It is played with 2-10 players using a cup and three dices. You need one phone and one or more friends. Pass the phone to the next player every turn. Before you start you first have to enter the player names."),
     RETHROW_ALL_DICES("You have believed %1$s's call, and now you need to throw again, hopefully higher than %2$s. Tap the cup to close it and shake the phone to throw again.");
 
-    @Getter
     private final String message;
 
     TutorialMessage(String message) {
         this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

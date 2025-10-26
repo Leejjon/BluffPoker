@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import lombok.Getter;
 import net.leejjon.bluffpoker.BluffPokerApp;
 import net.leejjon.bluffpoker.logic.BluffPokerPreferences;
 
@@ -72,7 +71,11 @@ public class SettingsState {
         this.actualNumberOfLivesDisplayLabel.setText(numberOfLives + "");
     }
 
-    @Getter private transient CheckBox tutorialModeCheckbox;
+    private transient CheckBox tutorialModeCheckbox;
+
+    public CheckBox getTutorialModeCheckbox() {
+        return tutorialModeCheckbox;
+    }
 
     public CheckBox createTutorialModeCheckbox(Skin uiSkin) {
         tutorialModeCheckbox = new CheckBox("Tutorial mode", uiSkin);
@@ -86,10 +89,29 @@ public class SettingsState {
         return tutorialModeCheckbox;
     }
 
-	@Getter private boolean allowBok = true;
-	@Getter private boolean allowSharedBok = false;
-	@Getter	private int numberOfLives = 3;
-	@Getter private boolean tutorialMode = true;
+	private boolean allowBok = true;
+
+    public boolean isAllowBok() {
+        return allowBok;
+    }
+
+    private boolean allowSharedBok = false;
+
+    public boolean isAllowSharedBok() {
+        return allowSharedBok;
+    }
+
+    private int numberOfLives = 3;
+
+    public int getNumberOfLives() {
+        return numberOfLives;
+    }
+
+    private boolean tutorialMode = true;
+
+    public boolean isTutorialMode() {
+        return tutorialMode;
+    }
 
     private void setNumberOfLives(int numberOfLives) {
         if (this.numberOfLives != numberOfLives) {
