@@ -1,8 +1,8 @@
 package net.leejjon.bluffpoker.logic;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class NumberCombinationTest {
     @Test
@@ -12,18 +12,18 @@ public class NumberCombinationTest {
         NumberCombination throw634 = new NumberCombination(6, 3, 4, true);
         NumberCombination throw643 = new NumberCombination(6, 4, 3, true);
 
-        assertTrue(call643.equals(call643));
-        assertFalse(call643.equals(call634));
+        assertEquals(call643, call643);
+        assertNotEquals(call643, call634);
         assertTrue(call643.isGreaterThan(call634));
         assertFalse(call643.isGreaterThan(call643));
         assertFalse(call634.isGreaterThan(call643));
         assertFalse(call643.isGreaterThan(throw634));
         assertFalse(throw643.isGreaterThan(throw634));
 
-        try {
-            NumberCombination.validNumberCombinationFrom("abc");
-            fail("InputValidationException should have been thrown.");
-        } catch (InputValidationException e) { }
+        assertThrows(InputValidationException.class,
+                () -> NumberCombination.validNumberCombinationFrom("abc"),
+                "InputValidationException should have been thrown."
+        );
     }
 
     @Test
@@ -35,25 +35,27 @@ public class NumberCombinationTest {
 
     @Test
     public void testValidateNumberCombinationConstructor() {
-        try {
-            new NumberCombination(7, 1, 1, false);
-            fail("Can't have anything higher than 6.");
-        } catch (IllegalArgumentException e) { }
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new NumberCombination(7, 1, 1, false),
+                "Can't have anything higher than 6."
+        );
 
-        try {
-            new NumberCombination(-1, 1, 1, false);
-            fail("Can't have numbers lower than 0.");
-        } catch (IllegalArgumentException e) { }
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new NumberCombination(-1, 1, 1, false),
+                "Can't have numbers lower than 0."
+        );
     }
 
     @Test
     public void testIncrementing() {
-        NumberCombination call643 = new NumberCombination(6,4,3, true);
+        NumberCombination call643 = new NumberCombination(6, 4, 3, true);
 
         NumberCombination incrementTo644 = call643.increment();
-        assertEquals(new NumberCombination(6,4,4, true), incrementTo644);
+        assertEquals(new NumberCombination(6, 4, 4, true), incrementTo644);
 
-        NumberCombination incrementTo661 = new NumberCombination(6,5,5, true).increment();
+        NumberCombination incrementTo661 = new NumberCombination(6, 5, 5, true).increment();
         assertEquals(new NumberCombination(6, 6, 1, true), incrementTo661);
     }
 }
