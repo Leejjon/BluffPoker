@@ -1,6 +1,12 @@
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 eclipse.project.name = appName + '-core'
 
+repositories {
+    mavenCentral()
+    google()
+}
+
+
 dependencies {
     api "com.badlogicgames.box2dlights:box2dlights:$box2dlightsVersion"
     api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
@@ -9,6 +15,12 @@ dependencies {
 
     implementation 'com.google.guava:guava:33.4.8-android'
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.13.1'
+
+    testImplementation platform("org.junit:junit-bom:5.14.0")
+    testImplementation "org.junit.jupiter:junit-jupiter-api"
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine"
 
     testImplementation "junit:junit:4.12"
     testImplementation("org.mockito:mockito-core:5.0.0")
@@ -19,4 +31,8 @@ dependencies {
     if(enableGraalNative == 'true') {
         implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
     }
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
 }
