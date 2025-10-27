@@ -27,7 +27,8 @@ class AndroidLauncher : AndroidApplication(), SensorEventListener, PlatformSpeci
     lateinit var game: BluffPokerApp
 
     lateinit var lastUpdate: AtomicLong
-    lateinit var numberOfTimesShaked: AtomicInteger
+
+    val numberOfTimesShaked: AtomicInteger = AtomicInteger(0)
 
     lateinit var playerModifier: ModifyPlayerListener
     private var alreadyExistingPlayers = emptySet<String>()
